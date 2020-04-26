@@ -132,7 +132,7 @@ class WrLoader extends LitElement
     this.coll = "";
     this.state = "waiting";
 
-    this.worker = new Worker("dbworker.js");
+    this.worker = new Worker("./dist/dbworker.js");
   }
 
   static get properties() {
