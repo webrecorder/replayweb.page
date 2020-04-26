@@ -92,7 +92,7 @@ class AppMain extends LitElement
 
   render() {
     return html`
-    <link href="./frontend.css" rel="stylesheet"/>
+    <link href="./dist/frontend.css" rel="stylesheet"/>
     <section class="section">
       <div class="level">
         <h1 class="level-item has-text-centered title is-1 is-family-sans-serif has-text-weight-bold">Webrecorder Viewer</h1>
@@ -219,7 +219,7 @@ class WrLoader extends LitElement
 
   render() {
     return html`
-    <link href="./frontend.css" rel="stylesheet"/>
+    <link href="./dist/frontend.css" rel="stylesheet"/>
     <section class="container">
       <div class="level">
         <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
@@ -330,7 +330,7 @@ class WrIndex extends LitElement
 
   render() {
     return html`
-    <link href="./frontend.css" rel="stylesheet"/>
+    <link href="./dist/frontend.css" rel="stylesheet"/>
     <section class="container">
       <nav class="panel">
         <p class="panel-heading">Local Archive Collections</p>
@@ -454,7 +454,7 @@ class WrColl extends LitElement
 
   render() {
     return html`
-    <link href="./frontend.css" rel="stylesheet"/>
+    <link href="./dist/frontend.css" rel="stylesheet"/>
     <nav class="panel is-primary">
       <div class="panel-heading">${this.collInfo.title}
       <a @click="${this.deleteColl}" class="is-pulled-right delete"></a>
@@ -742,7 +742,7 @@ class WrResources extends LitElement
 
   render() {
     return html`
-    <link href="./frontend.css" rel="stylesheet"/>
+    <link href="./dist/frontend.css" rel="stylesheet"/>
     <div class="notification level is-marginless">
       <div class="control level-left">
         <div>
