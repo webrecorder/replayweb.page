@@ -17,41 +17,23 @@ class AppMain extends LitElement
 
   constructor() {
     super();
-    this.coll = "";
-    this.collInfo = {};
-    this.loadInfo = {};
-    this.updateRoute();
+    this.sourceUrl = null;
+    this.pageParams = {};
   }
-
 
   static get properties() {
     return {
-      pageState: { type: String },
       pageParams: { type: Object },
-      coll: { type: String },
-      collInfo: { type: Object }
+      sourceUrl: { type: String },
     }
   }
 
-  async updateRoute() {
+  firstUpdated() {
+    this.initRoute();
+  }
+
+  initRoute() {
     this.pageParams = new URLSearchParams(window.location.search);
-    const source = this.pageParams.get("source");
-    if (source) {
-      const {url, coll} = await this.sourceToId(source);
-
-      this.coll = coll;
-
-      const resp = await fetch(`/wabac/api/${coll}`);
-      if (resp.status != 200) {
-        this.sourceUrl = source;
-        this.pageState = "load";
-      } else {
-        const json = await resp.json();
-        this.collInfo = json;
-        this.pageState = "coll";      
-      }
-      return;
-    }
 
     // Google Drive
     let state = this.pageParams.get("state");
@@ -72,53 +54,22 @@ class AppMain extends LitElement
       }
     }
 
-
-    this.pageState = "index";
-  }
-
-  async sourceToId(url) {
-    try {
-      url = new URL(url, window.location.origin).href;
-    } catch(e) {}
-
-    const digest = await digestMessage(url, 'SHA-256');
-    const coll = "id-" + digest.slice(0, 12);
-    return {url, coll};
-  }
-
-  onCollLoaded(event) {
-    this.updateRoute();
+    this.sourceUrl = this.pageParams.get("source") || "";
   }
 
   render() {
     return html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
-    <section class="section">
+    <section class="container">
       <div class="level">
         <h1 class="level-item has-text-centered title is-1 is-family-sans-serif has-text-weight-bold">Webrecorder Viewer</h1>
       </div>
     </section>
-    ${this.renderContent()}
+    ${this.sourceUrl ? html`
+      <wr-coll sourceUrl="${this.sourceUrl}"></wr-coll>
+    ` : this.sourceUrl === "" ? html`<wr-index></wr-index>` : html``}
     `;
   }
-
-  renderContent() {
-    switch (this.pageState) {
-      case "load":
-        return html`<wr-loader .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
-
-      case "coll":
-        return html`<wr-coll style="flex: 1" .coll="${this.coll}" .collInfo="${this.collInfo}"></wr-coll>`;
-
-      case "index":
-        return html`<wr-index style="flex: 1" .coll="${this.coll}" .collInfo="${this.collInfo}"></wr-index>`;
-
-      default:
-        return html``;
-    }
-  }
-
-  //createRenderRoot() { return this; }
 }
 
 // ===========================================================================
@@ -247,8 +198,6 @@ class WrLoader extends LitElement
         return html`<progress class="progress is-primary is-large" style="max-width: 400px"/>`;
     }
   }
-
-  //createRenderRoot() { return this; }
 }
 
 // ===========================================================================
@@ -266,33 +215,7 @@ class WrIndex extends LitElement
   }
 
   static get styles() {
-    return css`
-    fa-icon {
-      cursor: pointer;
-      display: inline-flex;
-    }
-
-    fa-icon.fa-spin {
-      -webkit-animation: fa-spin 2s infinite linear;
-              animation: fa-spin 2s infinite linear; }
-    }
-    
-    @-webkit-keyframes fa-spin {
-      0% {
-        -webkit-transform: rotate(0deg);
-                transform: rotate(0deg); }
-      100% {
-        -webkit-transform: rotate(360deg);
-                transform: rotate(360deg); } }
-    
-    @keyframes fa-spin {
-      0% {
-        -webkit-transform: rotate(0deg);
-                transform: rotate(0deg); }
-      100% {
-        -webkit-transform: rotate(360deg);
-                transform: rotate(360deg); } }
-    `;
+    return css``;
   }
 
   firstUpdated() {
@@ -353,8 +276,6 @@ class WrIndex extends LitElement
     </section>
     `;
   }
-
-  //createRenderRoot() { return this; }
 }
 
 // ===========================================================================
@@ -362,143 +283,308 @@ class WrColl extends LitElement
 {
   constructor() {
     super();
+    this.sourceUrl = null;
+
+    this.baseApiPrefix = "/wabac/api";
+    this.baseReplayPrefix = "/wabac";
+    this.apiPrefix = "";
+    this.replayPrefix = "";
+
     this.coll = "";
-    this.offset = 0;
-    this.currList = 0;
-    this.bookmarks = {};
-    this.collInfo = {lists: []};
-    this.currList = null;
-    this.lastST = 0;
+
+    this.collInfo = null;
 
     this.hasCurated = false;
-    this.currTab = "";
 
-    this.clickTime = 0;
+    this.tabData = {};
   }
 
   static get properties() {
     return {
-      hasCurated: { type: Boolean },
+      sourceUrl: { type: String },
+
       collInfo: { type: Object },
       coll: { type: String },
-      bookmarks: { type: Object },
-      currList: { type: Number },
-      currTab: { type: String }
-    }
-  }
 
-  async doLoadBookmarks() {
-    this.hasCurated = (this.collInfo.lists && this.collInfo.lists.length);
-    this.bookmarks = {};
+      hasCurated: { type: Boolean },
 
-    if (!this.hasCurated) {
-      return;
-    }
-
-    const resp = await fetch(`/wabac/api/${this.coll}/bookmarks?offset=${this.offset}`);
-    const json = await resp.json();
-
-    this.total = json.total;
-
-    for (const bookmark of json.bookmarks) {
-      if (!this.bookmarks[bookmark.list]) {
-        this.bookmarks[bookmark.list] = [];
-      }
-      this.bookmarks[bookmark.list].push(bookmark);
+      tabData: { type: Object }
     }
   }
 
   firstUpdated() {
-    window.addEventListener("hashchange", () => this.onHashChange());
+    window.addEventListener("hashchange", (event) => this.onHashChange(event));
+
+    this.doUpdateInfo().then(() => this.onHashChange());
+  }
+
+  async sourceToId(url) {
+    try {
+      url = new URL(url, window.location.origin).href;
+    } catch(e) {}
+
+    const digest = await digestMessage(url, 'SHA-256');
+    const coll = "id-" + digest.slice(0, 12);
+    return {url, coll};
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.get("sourceUrl")) {
+      this.doUpdateInfo();
+    }
+    if (changedProperties.get("tabData")) {
+      this._manualHash = true;
+      // don't add empty params to shorten query
+      Object.keys(this.tabData).
+        forEach(key => !this.tabData[key] && delete this.tabData[key]);
+      window.location.hash = "#" + new URLSearchParams(this.tabData).toString();
+    }
+  }
+
+  async doUpdateInfo() {
+    const {url, coll} = await this.sourceToId(this.sourceUrl);
+
+    this.coll = coll;
+
+    const apiPrefix = this.baseApiPrefix + "/" + coll;
+    const replayPrefix = this.baseReplayPrefix + "/" + coll;
+
+    const resp = await fetch(apiPrefix);
+
+    if (resp.status != 200) {
+      this.collInfo = {};
+      this.hasCurated = false;
+      return;
+    }
+
+    const json = await resp.json();
+
+    this.collInfo = {apiPrefix, replayPrefix, coll, ...json};
 
     if (!this.collInfo.title) {
       this.collInfo.title = "Archive from " + this.collInfo.displayName;
     }
 
-    this.doLoadBookmarks().then(() => this.onHashChange());
+    this.hasCurated = (this.collInfo.lists && this.collInfo.lists.length);
   }
 
-  onHashChange() {
-    const hash = window.location.hash;
-    if (!hash) {
-      this.currTab = this.hasCurated ? "curated" : "resources";
+  onCollLoaded(event) {
+    this.doUpdateInfo();
+  }
+
+  onHashChange(event) {
+    if (this._manualHash) {
+      this._manualHash = false;
       return;
     }
-
-    if (hash === "#resources") {
-      this.currTab = "resources";
-    } else if (hash === "#curated") {
-      this.currTab = "curated";
+    const hash = window.location.hash;
+    if (hash) {
+      this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
     }
-
-    if (hash.startsWith("#list-")) {
-      const id = hash.slice(6);
-      this.currTab = "curated";
-      this.scrollToList(id);
-    }
-  }
-
-  updated(changedProperties) {
-    if (changedProperties.get("lists")) {
-      this.doLoadBookmarks();
+    if (!this.tabData.currTab) {
+      this.tabData = {...this.tabData, currTab: this.hasCurated ? "curated" : "resources"};
     }
   }
 
   onTabClick(event) {
     event.preventDefault();
     const hash = event.target.getAttribute("href");
-    //this.currTab = hash.slice(1);
-    window.location.hash = hash;
+    this.tabData = {...this.tabData, currTab: hash.slice(1)};
     return false;
+  }
+
+  onCollTabNav(event) {
+    this.tabData = {...this.tabData, ...event.detail};
   }
 
   render() {
     return html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
-    <nav class="panel is-primary">
-      <div class="panel-heading">${this.collInfo.title}
-      <a @click="${this.deleteColl}" class="is-pulled-right delete"></a>
-      </div>
-      <p class="panel-tabs is-boxed">
-      ${this.hasCurated ? html`
-        <a @click="${this.onTabClick}" href="#curated" class="is-size-6 ${this.currTab === 'curated' ? 'is-active' : ''}">Curated Pages</a>
-      ` : ``}
-        <a @click="${this.onTabClick}" href="#resources" class="is-size-6 ${this.currTab === 'resources' ? 'is-active' : ''}">URL Resources</a>
-      </p>
-      ${this.hasCurated ? html`
-      <section id="curated" class="panel-block " style="display: ${this.currTab == 'curated' ? 'flex' : 'none'}">
-        <div class="columns">
-          <div class="column is-one-third" style="max-height: calc(100vh - 241px)">
-            <div class="menu" style="overflow-y: auto; height: 100%;">
-              <ul class="menu-list">
-                <li>
-                  <a href="#list-0" class="${!this.currList ? 'is-active' : ''}"
-                    @click=${(e) => this.scrollToList(0)}>${this.collInfo.title}</a>
-                  <ul class="menu-list">${this.collInfo.lists.map(list => html`
-                    <li>
-                      <a @click=${this.onClickScroll} href="#list-${list.id}"
-                      data-list="${list.id}" 
-                      class="${this.currList === list.id ? 'is-active' : ''}">${list.title}</a>
-                    </li>`)}
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div id="content" @scroll=${this.onScroll} class="column main-scroll" style="max-height: calc(100vh - 241px)">
-          <section id="list-0" class="container">
-          <h2 class="title is-3">${this.collInfo.title}</h2>
-          ${unsafeHTML(marked(this.collInfo.desc))}
-          </section>
-            ${this.renderContent()}
-          </div>
-        </div>
-      </section>
-      ` : ``}
-      <wr-coll-resources .coll=${this.coll} id="resources" class="panel-block is-paddingless" style="display: ${this.currTab == 'resources' ? 'initial' : 'none'}">
-      </wr-coll-resources>
-    </nav>
+    ${this.renderColl()}
     `;
+  }
+
+  renderColl() {
+    if (this.collInfo && !this.collInfo.coll) {
+      return html`<wr-loader .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
+    } else if (this.collInfo) {
+      return html`
+      <nav class="panel is-primary">
+        <div class="panel-heading">${this.collInfo.title}
+        <a @click="${this.deleteColl}" class="is-pulled-right delete"></a>
+        </div>
+        <p class="panel-tabs is-boxed">
+          ${this.hasCurated ? html`
+            <a @click="${this.onTabClick}" href="#curated" class="is-size-6 ${this.tabData.currTab === 'curated' ? 'is-active' : ''}">Curated Pages</a>
+          ` : ``}
+
+          <a @click="${this.onTabClick}" href="#resources" class="is-size-6 ${this.tabData.currTab === 'resources' ? 'is-active' : ''}">URL Resources</a>
+
+          ${this.tabData.replayUrl ? html`
+          <a @click="${this.onTabClick}" href="#replay" class="is-size-6 ${this.tabData.currTab === 'replay' ? 'is-active' : ''}">Replay!</a>
+          ` : ``}
+        </p>
+        ${this.renderCollTabs()}
+      </nav>`;
+    } else {
+      return html``;
+    }
+  }
+
+  renderCollTabs() {
+    return html`
+    <wr-coll-curated .collInfo="${this.collInfo}"
+    currList="${this.tabData.currList || 0}"
+    @coll-tab-nav="${this.onCollTabNav}" id="curated" class="panel-block ${this.tabData.currTab === 'curated' ? '' : 'is-hidden'}"
+    ></wr-coll-curated>
+
+    <wr-coll-resources .collInfo="${this.collInfo}"
+    urlSearch="${this.tabData.urlSearch || ""}"
+    urlSearchType="${this.tabData.urlSearchType || ""}"
+    currMime="${this.tabData.currMime || ""}"
+    @coll-tab-nav="${this.onCollTabNav}" id="resources" class="panel-block is-paddingless ${this.tabData.currTab === 'resources' ? '' : 'is-hidden'}">
+    </wr-coll-resources>
+
+    ${this.tabData.currTab === "replay" ? html`
+    <wr-replay-page .collInfo="${this.collInfo}" replayUrl="${this.tabData.replayUrl}" replayTS="${this.tabData.replayTS}">
+    </wr-replay-page>
+    ` : ``}
+    `;
+
+
+    switch (this.tabData.currTab) {
+      case "curated":
+        return html`
+        <wr-coll-curated .collInfo="${this.collInfo}"
+        currList="${this.tabData.currList || 0}"
+        @coll-tab-nav="${this.onCollTabNav}" id="curated" class="panel-block"
+        ></wr-coll-curated>`;
+
+      case "resources":
+        return html`
+        <wr-coll-resources .collInfo=${this.collInfo}
+        urlSearch="${this.tabData.urlSearch || ""}"
+        urlSearchType="${this.tabData.urlSearchType || "exact"}"
+        currMime="${this.tabData.currMime || ""}"
+        @coll-tab-nav="${this.onCollTabNav}" id="resources" class="panel-block is-paddingless">
+        </wr-coll-resources>`;
+
+      default:
+        return html``;
+    }
+  }
+}
+
+
+// ===========================================================================
+class WrCuratedPages extends LitElement
+{
+  constructor() {
+    super();
+
+    this.collInfo = null;
+
+    this.currList = 0;
+
+    this.curatedPages = {};
+
+    this.offset = 0;
+    this.lastST = 0;
+    this.clickTime = 0;
+  }
+
+  static get properties() {
+    return {
+      collInfo: { type: Object },
+
+      curatedPages: { type: Object },
+      currList: { type: Number },
+    }
+  }
+
+  static get styles() {
+    return css`
+    .column {
+      max-height: calc(100vh - 145px);
+    }
+
+    #content {
+      margin-top: 10px;
+      max-height: calc(100vh - 155px);
+    }
+    `;
+  }
+
+  firstUpdated() {
+    this.doLoadCurated();
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.get("collInfo")) {
+      this.doLoadCurated();
+    }
+  }
+
+  async doLoadCurated() {
+    this.curatedPages = {};
+
+    const resp = await fetch(`${this.collInfo.apiPrefix}/curatedPages?offset=${this.offset}`);
+    const json = await resp.json();
+
+    this.total = json.total;
+
+    for (const curated of json.curatedPages) {
+      if (!this.curatedPages[curated.list]) {
+        this.curatedPages[curated.list] = [];
+      }
+      this.curatedPages[curated.list].push(curated);
+    }
+
+    if (this.currList) {
+      this.scrollToList(this.currList);
+    }
+  }
+
+  render() {
+    return html`
+    <link href="./dist/frontend.css" rel="stylesheet"/>
+    <div class="columns">
+      <div class="column is-one-third">
+        <div class="menu" style="overflow-y: auto; height: 100%;">
+          <ul class="menu-list">
+            <li>
+              <a href="#list-0" class="${!this.currList ? 'is-active' : ''}"
+                @click=${this.onClickScroll}>${this.collInfo.title}</a>
+              <ul class="menu-list">${this.collInfo.lists.map(list => html`
+                <li>
+                  <a @click=${this.onClickScroll} href="#list-${list.id}"
+                  data-list="${list.id}" 
+                  class="${this.currList === list.id ? 'is-active' : ''}">${list.title}</a>
+                </li>`)}
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div id="content" @scroll=${this.onScroll} class="column main-scroll">
+        <section id="list-0" class="container">
+          <h2 class="title is-3">${this.collInfo.title}</h2>
+          ${this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ''}
+        </section>
+        ${this.renderContent()}
+      </div>
+    </div>
+  `;
+  }
+
+  onReplay(event) {
+    event.preventDefault();
+    const detail = {replayUrl: event.currentTarget.getAttribute("data-url"),
+                    replayTS: event.currentTarget.getAttribute("data-ts"),
+                    currTab: "replay"
+                   }
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
+    return false;
   }
 
   renderContent() {
@@ -510,15 +596,15 @@ class WrColl extends LitElement
           <hr/>
           <div class="content">${list.desc}</div>
           <ol style="margin-left: 30px">
-            ${this.bookmarks[list.id] ? this.bookmarks[list.id].map((b) => html`
+            ${this.curatedPages[list.id] ? this.curatedPages[list.id].map((p) => html`
               <li><article class="media">
                 <div class="media-content">
-                  <a href="${this.bookmarkUrl(b)}">
-                    <p>${b.title}</p>
-                    <p>${b.url}</p>
+                  <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(p.date)}" href="${this.collInfo.replayPrefix}/${getTS(p.date)}/${p.url}">
+                    <p>${p.title}</p>
+                    <p>${p.url}</p>
                   </a>
-                  <p>${b.date}</p>
-                  <p>${b.desc}</p>
+                  <p>${p.date}</p>
+                  <p>${p.desc}</p>
                 </div>
               </article></li>
             `) : html``}
@@ -530,11 +616,14 @@ class WrColl extends LitElement
   }
 
   onClickScroll(event) {
+    event.preventDefault();
     this.scrollToList(event.target.getAttribute("data-list"));
+    return false;
   }
 
   scrollToList(id) {
     this.currList = Number(id);
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {currList: this.currList || undefined}}));
     const opts = {behavior: "smooth", block: "start", inline: "nearest"};
     this.clickTime = new Date().getTime();
     this.renderRoot.getElementById("list-" + this.currList).scrollIntoView(opts);
@@ -565,6 +654,7 @@ class WrColl extends LitElement
     if (next && next != curr) {
       if (next.id.startsWith("list-")) {
         this.currList = Number(next.id.slice(5));
+        this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {currList: this.currList}}));
       }
     }
 
@@ -578,12 +668,6 @@ class WrColl extends LitElement
       sel.scrollIntoView(opts);
     }
   }
-
-  bookmarkUrl(b) {
-    return `/wabac/${this.coll}/${getTS(b.date)}/${b.url}`;
-  }
-
-  //createRenderRoot() { return this; }
 }
 
 // ===========================================================================
@@ -591,14 +675,18 @@ class WrResources extends LitElement
 {
   constructor() {
     super();
+    this.collInfo = null;
+
     this.currMime = "text/html,text/xhtml";
-    this.results = [];
+    this.urlSearch = "";
+    this.urlSearchType = "";
+
     this.filteredResults = [];
+
+    this.results = [];
+
     this.tryMore = false;
     this.loading = false;
-
-    this.urlSearch = "";
-    this.urlSearchType = "exact";
 
     this.filters = [
       {name: "HTML", filter: "text/html,text/xhtml"},
@@ -611,17 +699,27 @@ class WrResources extends LitElement
 
   static get properties() {
     return {
-      coll: { type: String },
+      collInfo: { type: Object },
       currMime: { type: String },
-      //filterText: { type: String },
+      urlSearch: { type: String },
+      urlSearchType: { type: String },
       filteredResults: { type: Array },
-      //loading: { type: Boolean }
     }
   }
 
   static get styles() {
     return css`
-
+    :host {
+      display: flex;
+      flex-direction: column;
+    }
+    .notification {
+      width: 100%;
+    }
+    .main-scroll {
+      max-height: calc(100vh - 295px);
+      width: 100vw;
+    }
     table {
       table-layout: fixed;
       word-wrap: break-word;
@@ -640,7 +738,15 @@ class WrResources extends LitElement
     .col-ts {
       width: 16%;
       max-width: 16%;
+      min-width: 16%;
       word-break: break-word;
+    }
+    td.col-mime {
+      width: 10%;
+      word-break: break-word;
+    }
+    td.col-status {
+      text-align: center;
     }
     .loading-cog {
       width: 100vw;
@@ -658,13 +764,20 @@ class WrResources extends LitElement
     const url = (this.urlSearchType !== "contains" ? this.urlSearch : "");
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
 
+    const detail = {urlSearch: this.urlSearch,
+                    currMime: this.currMime,
+                    urlSearchType: this.urlSearchType};
+
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
+
     const params = new URLSearchParams({
       mime: this.currMime,
       url,
       prefix,
       count
     }).toString();
-    let resp = await fetch(`/wabac/api/${this.coll}/urls?${params}`);
+
+    let resp = await fetch(`${this.collInfo.apiPrefix}/urls?${params}`);
     resp = await resp.json();
     this.results = resp.urls;
     this.tryMore = (resp.urls.length === count);
@@ -696,7 +809,7 @@ class WrResources extends LitElement
       count
     }).toString();
 
-    let resp = await fetch(`/wabac/api/${this.coll}/urls?${params}`);
+    let resp = await fetch(`${this.collInfo.apiPrefix}/urls?${params}`);
     resp = await resp.json();
     this.results = this.results.concat(resp.urls);
     console.log(resp.urls.length);
@@ -705,7 +818,7 @@ class WrResources extends LitElement
     this.loading = false;
   }
 
-  onChangeSearch(event) {
+  onChangeTypeSearch(event) {
     this.currMime = event.target.value;
     this.doLoadResources();
   }
@@ -746,9 +859,9 @@ class WrResources extends LitElement
     <div class="notification level is-marginless">
       <div class="control level-left">
         <div>
-          <input type="text" style="width: 400px" class="input level-item" @input="${this.onChangeUrlSearch}" type="text" placeholder="Search URL">
+          <input type="text" style="width: 400px" class="input level-item" @input="${this.onChangeUrlSearch}" value="${this.urlSearch}" type="text" placeholder="Search URL">
           <div class="control">
-            <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
+            <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
             <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
             <label class="radio has-text-left"><input type="radio" name="urltype" value="contains" ?checked="${this.urlSearchType === 'contains'}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
           </div>
@@ -761,7 +874,7 @@ class WrResources extends LitElement
         <label class="radio has-text-left">
           <input type="radio" name="mime"
           value="${filter.filter}"
-          @click="${this.onChangeSearch}"
+          @click="${this.onChangeTypeSearch}"
           ?checked="${filter.filter === this.currMime}"
           >
           ${filter.name}
@@ -775,23 +888,65 @@ class WrResources extends LitElement
           <tr>
             <th class="col-url">URL</th>
             <th class="col-ts">Timestamp</th>
-            <th>Mime</th>
-            <th>Status</th>
+            <th class="col-mime">Mime</th>
+            <th class="col-status">Status</th>
           </tr>
         </thead>
-        <tbody class="main-scroll" @scroll="${this.onScroll}" style="max-height: calc(100vh - 391px); width: 100vw">
+        <tbody class="main-scroll" @scroll="${this.onScroll}">
         ${this.filteredResults.length ? 
           this.filteredResults.map((result) => html`
             <tr>
-              <td class="col-url"><a href="/wabac/${this.coll}/${result.ts}/${result.url}">${result.url}</a></td>
+              <td class="col-url"><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="${this.collInfo.replayPrefix}/${result.ts}/${result.url}">${result.url}</a></td>
               <td class="col-ts">${new Date(result.date).toLocaleString()}</td>
-              <td>${result.mime}</td>
-              <td>${result.status}</td>
+              <td class="col-mime">${result.mime}</td>
+              <td class="col-status">${result.status}</td>
             </tr>
           `) : html`<div class="section"><i>No Results Found.</i></div>`}
         </tbody>
       </table>
     </div>
+    `;
+  }
+
+  onReplay(event) {
+    event.preventDefault();
+    const detail = {replayUrl: event.currentTarget.getAttribute("data-url"),
+                    replayTS: event.currentTarget.getAttribute("data-ts"),
+                    currTab: "replay"
+                   }
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
+    return false;
+  }
+}
+
+// ===========================================================================
+class WrReplayPage extends LitElement
+{
+  static get properties() {
+    return {
+      collInfo: {type: Object },
+
+      replayUrl: { type: String },
+      replayTS: { type: String }
+    }
+  }
+
+  static get styles() {
+    return css`
+      host: {
+        display: flex;
+      }
+
+      iframe {
+        width: 100vw;
+        height: calc(100vh - 150px);
+      }
+    `;
+  }
+
+  render() {
+    return html`
+    <iframe src="${this.collInfo.replayPrefix}/${this.replayTS || ""}mp_/${this.replayUrl}"></iframe>
     `;
   }
 }
@@ -876,18 +1031,56 @@ class WrGdrive extends LitElement
   }
 }
 
+// ===========================================================================
+class WrCollProxy extends LitElement
+{
+  constructor() {
+    super();
+    this.currTab = "replay";
+    this.replayTS = "";
+  }
+
+  static get properties() {
+    return {
+      replayUrl: { type: String },
+      replayTS: { type: String },
+      source: { type: String },
+
+      paramString: { type: String }
+    }
+  }
+
+  firstUpdated() {
+    this.paramString = new URLSearchParams({
+      replayUrl: this.replayUrl,
+      replayTS: this.replayTS,
+      source: this.source,
+      currTab: this.currTab
+    });
+  }
+
+  render() {
+    return html`
+    <iframe src="http://localhost:9990/?${this.paramString}"></iframe>
+    `;
+  }
+}
+
 
 // ===========================================================================
 // ===========================================================================
 
 async function main() {
-  const swPromise = initSW("swonly.js?replayPrefix=wabac&stats=true");
+  const swPromise = initSW("./dist/swonly.js?replayPrefix=wabac&stats=true");
   await swPromise;
   customElements.define("app-main", AppMain);
   customElements.define("wr-index", WrIndex);
   customElements.define("wr-loader", WrLoader);
   customElements.define("wr-coll", WrColl);
+  customElements.define("wr-coll-proxy", WrCollProxy);
   customElements.define("wr-coll-resources", WrResources);
+  customElements.define("wr-coll-curated", WrCuratedPages);
+  customElements.define("wr-replay-page", WrReplayPage);
   customElements.define("wr-gdrive", WrGdrive);
 }
 
