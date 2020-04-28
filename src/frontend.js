@@ -41,12 +41,9 @@ class AppMain extends LitElement
       try {
         state = JSON.parse(state);
         if ((state.ids instanceof Array) && state.userId && state.action === "open") {
-          //this.pageState = "gdriveLoad";
-          //this.loadInfo = state;
           this.pageParams.set("source", "googledrive://" + state.ids[0]);
           this.pageParams.delete("state");
           window.location.search = this.pageParams.toString();
-          //window.history.pushState({}, document.title, )
           return;
         }
       } catch (e) {
@@ -231,17 +228,12 @@ class WrIndex extends LitElement
   async deleteColl(event) {
     event.preventDefault();
 
-    const index = Number(event.target.getAttribute("data-coll-index"));
+    const index = Number(event.currentTarget.getAttribute("data-coll-index"));
     const coll = this.colls[index];
     if (!coll || coll.deleting) {
       return;
     }
     this.colls[index].deleting = true;
-
-    //event.target.setAttribute("class", "fas fa-cog fa-spin");
-    //event.target.iClass = "fas fa-cog fa-spin";
-    //event.target.firstUpdated();
-    //event.target.requestUpdate();
 
     const resp = await fetch(`/wabac/api/${coll.id}`, {method: 'DELETE'});
     if (resp.status === 200) {
@@ -388,12 +380,13 @@ class WrColl extends LitElement
 
   onTabClick(event) {
     event.preventDefault();
-    const hash = event.target.getAttribute("href");
+    const hash = event.currentTarget.getAttribute("href");
     this.tabData = {...this.tabData, currTab: hash.slice(1)};
     return false;
   }
 
   onCollTabNav(event) {
+    console.log(event.currentTarget);
     this.tabData = {...this.tabData, ...event.detail};
   }
 
@@ -435,13 +428,13 @@ class WrColl extends LitElement
     return html`
     <wr-coll-curated .collInfo="${this.collInfo}"
     currList="${this.tabData.currList || 0}"
-    @coll-tab-nav="${this.onCollTabNav}" id="curated" class="panel-block ${this.tabData.currTab === 'curated' ? '' : 'is-hidden'}"
-    ></wr-coll-curated>
+    @coll-tab-nav="${this.onCollTabNav}" id="curated" class="panel-block ${this.tabData.currTab === 'curated' ? '' : 'is-hidden'}">
+    </wr-coll-curated>
 
     <wr-coll-resources .collInfo="${this.collInfo}"
     urlSearch="${this.tabData.urlSearch || ""}"
     urlSearchType="${this.tabData.urlSearchType || ""}"
-    currMime="${this.tabData.currMime || ""}"
+    currMime="${this.tabData.currMime || "text/html,text/xhtml"}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources" class="panel-block is-paddingless ${this.tabData.currTab === 'resources' ? '' : 'is-hidden'}">
     </wr-coll-resources>
 
@@ -450,28 +443,6 @@ class WrColl extends LitElement
     </wr-replay-page>
     ` : ``}
     `;
-
-
-    switch (this.tabData.currTab) {
-      case "curated":
-        return html`
-        <wr-coll-curated .collInfo="${this.collInfo}"
-        currList="${this.tabData.currList || 0}"
-        @coll-tab-nav="${this.onCollTabNav}" id="curated" class="panel-block"
-        ></wr-coll-curated>`;
-
-      case "resources":
-        return html`
-        <wr-coll-resources .collInfo=${this.collInfo}
-        urlSearch="${this.tabData.urlSearch || ""}"
-        urlSearchType="${this.tabData.urlSearchType || "exact"}"
-        currMime="${this.tabData.currMime || ""}"
-        @coll-tab-nav="${this.onCollTabNav}" id="resources" class="panel-block is-paddingless">
-        </wr-coll-resources>`;
-
-      default:
-        return html``;
-    }
   }
 }
 
@@ -599,7 +570,7 @@ class WrCuratedPages extends LitElement
             ${this.curatedPages[list.id] ? this.curatedPages[list.id].map((p) => html`
               <li><article class="media">
                 <div class="media-content">
-                  <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(p.date)}" href="${this.collInfo.replayPrefix}/${getTS(p.date)}/${p.url}">
+                  <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(p.date)}" href="#">
                     <p>${p.title}</p>
                     <p>${p.url}</p>
                   </a>
@@ -617,7 +588,7 @@ class WrCuratedPages extends LitElement
 
   onClickScroll(event) {
     event.preventDefault();
-    this.scrollToList(event.target.getAttribute("data-list"));
+    this.scrollToList(event.currentTarget.getAttribute("data-list"));
     return false;
   }
 
@@ -630,7 +601,7 @@ class WrCuratedPages extends LitElement
   }
 
   onScroll(event) {
-    const scrollable = event.target;//this.renderRoot.querySelector("#curated");
+    const scrollable = event.currentTarget;
     const curr = this.renderRoot.getElementById("list-" + this.currList);
 
     if (!curr) {
@@ -819,17 +790,17 @@ class WrResources extends LitElement
   }
 
   onChangeTypeSearch(event) {
-    this.currMime = event.target.value;
+    this.currMime = event.currentTarget.value;
     this.doLoadResources();
   }
 
   onChangeUrlSearch(event) {
-    this.urlSearch = event.target.value;
+    this.urlSearch = event.currentTarget.value;
     this.doLoadResources();
   }
 
   onClickUrlType(event) {
-    this.urlSearchType = event.target.value;
+    this.urlSearchType = event.currentTarget.value;
     this.doLoadResources();
   }
 
@@ -845,8 +816,7 @@ class WrResources extends LitElement
   }
 
   onScroll(event) {
-    //console.log("pos", event.target.firstElementChild.getBoundingClientRect().bottom);
-    const element = event.target;
+    const element = event.currentTarget;
     const diff = (element.scrollHeight - element.scrollTop) - element.clientHeight;
     if (this.tryMore && diff < 40) {
       this.doLoadMore();
@@ -896,7 +866,7 @@ class WrResources extends LitElement
         ${this.filteredResults.length ? 
           this.filteredResults.map((result) => html`
             <tr>
-              <td class="col-url"><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="${this.collInfo.replayPrefix}/${result.ts}/${result.url}">${result.url}</a></td>
+              <td class="col-url"><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></td>
               <td class="col-ts">${new Date(result.date).toLocaleString()}</td>
               <td class="col-mime">${result.mime}</td>
               <td class="col-status">${result.status}</td>
@@ -1009,7 +979,11 @@ class WrGdrive extends LitElement
     ${!this.manual ? html`
     <p>Authorizing Google Drive...</p>
     ` : html`
-    <button @click="${this.onClickAuth}">Allow Google Drive</button>
+    <link href="./dist/frontend.css" rel="stylesheet"/>
+    <button class="button is-info is-light is-rounded" @click="${this.onClickAuth}">
+    <span class="icon"><fa-icon class="fab fa-google-drive"></fa-icon></span>
+    <span>Allow Google Drive</span>
+    </button>
     `}`;
   }
 
