@@ -1127,7 +1127,7 @@ class WrCollProxy extends LitElement
 // ===========================================================================
 
 async function main() {
-  const swPromise = initSW("./dist/swonly.js?replayPrefix=wabac&stats=true");
+  const swPromise = initSW("./swonly.js?replayPrefix=wabac&stats=true");
   await swPromise;
   customElements.define("app-main", AppMain);
   customElements.define("wr-index", WrIndex);
