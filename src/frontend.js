@@ -4,6 +4,7 @@ import { styleMap } from 'lit-html/directives/style-map';
 
 import { initSW, digestMessage, getTS } from './pageutils';
 
+import prettyBytes from 'pretty-bytes';
 import marked from 'marked';
 
 import '../scss/main.scss';
@@ -26,6 +27,41 @@ class AppMain extends LitElement
       pageParams: { type: Object },
       sourceUrl: { type: String },
     }
+  }
+
+  static get styles() {
+    return css`
+    .logo {
+      max-height: 2.0rem;
+      margin-right: 8px;
+    }
+    .has-allcaps {
+      font-variant-caps: all-small-caps;
+    }
+    `;
+  }
+
+  render() {
+    return html`
+    <link href="./dist/frontend.css" rel="stylesheet"/>
+    <div class="container">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
+        <img class="logo" src="/static/logo.svg"/>
+        <span class="has-text-primary">replay</span>
+        <span class="has-text-info">web.page</span>
+      </a>
+      <a class="navbar-item" href="https://webrecorder.net/">
+      <span class=""><small>A <span class="font-ssp">Webrecorder</span> Project</small></span>
+      </a>
+    </div>
+  </nav>
+  </div>
+    ${this.sourceUrl ? html`
+      <wr-coll sourceUrl="${this.sourceUrl}"></wr-coll>
+    ` : this.sourceUrl === "" ? html`<wr-index></wr-index>` : html``}
+    `;
   }
 
   firstUpdated() {
@@ -52,20 +88,6 @@ class AppMain extends LitElement
     }
 
     this.sourceUrl = this.pageParams.get("source") || "";
-  }
-
-  render() {
-    return html`
-    <link href="./dist/frontend.css" rel="stylesheet"/>
-    <section class="container">
-      <div class="level">
-        <h1 class="level-item has-text-centered title is-1 is-family-sans-serif has-text-weight-bold">Webrecorder Viewer</h1>
-      </div>
-    </section>
-    ${this.sourceUrl ? html`
-      <wr-coll sourceUrl="${this.sourceUrl}"></wr-coll>
-    ` : this.sourceUrl === "" ? html`<wr-index></wr-index>` : html``}
-    `;
   }
 }
 
@@ -126,14 +148,36 @@ class WrLoader extends LitElement
   }
 
   async doLoad() {
-    const sourceUrl = this.sourceUrl;
+    let sourceUrl = this.sourceUrl;
     let source = null;
 
-    if (sourceUrl.startsWith("googledrive://")) {
-      this.state = "googledrive";
-      this.fileId = sourceUrl.slice("googledrive://".length);
-      source = await this.googledriveInit();
-    } else {
+    // custom protocol handlers here...
+    try {
+      const sup = new URL(this.sourceUrl);
+      let firstSlash = null;
+
+      if (!sup.host) {
+        firstSlash = sup.pathname.indexOf("/", 2);
+      }
+
+      switch (sup.protocol) {
+        case "googledrive:":
+          this.state = "googledrive";
+          if (firstSlash < 0) {
+            firstSlash = undefined;
+          }
+          this.fileId = sup.pathname.slice(2, firstSlash);
+          source = await this.googledriveInit();
+          break;
+
+        case "s3:":
+          sourceUrl = `https://${sup.pathname.slice(2, firstSlash)}.s3.amazonaws.com${sup.pathname.slice(firstSlash)}`;
+          break;
+
+      }
+    } catch (e) {}
+
+    if (!source) {
       source = {sourceUrl};
     }
 
@@ -211,10 +255,6 @@ class WrIndex extends LitElement
     }
   }
 
-  static get styles() {
-    return css``;
-  }
-
   firstUpdated() {
     this.loadColls();
   }
@@ -243,6 +283,14 @@ class WrIndex extends LitElement
     return false;
   }
 
+  static get styles() {
+    return css`
+    .size {
+      margin-right: 20px;
+    }
+    `;
+  }
+
   render() {
     return html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
@@ -259,8 +307,8 @@ class WrIndex extends LitElement
                 </div>
               </div>
               <div class="level-right">
+                  <span class="size">Size: ${prettyBytes(coll.size)}</span>
                   <a data-coll-index="${i}" @click="${this.deleteColl}" class="delete"></a>
-                  <!--<fa-icon data-coll-index="${i}" @click="${this.deleteColl}" class="far fa-trash-alt"/>-->
               </div>
           </div>
         `)}
@@ -390,6 +438,27 @@ class WrColl extends LitElement
     this.tabData = {...this.tabData, ...event.detail};
   }
 
+  static get styles() {
+    return css`
+    .icon {
+      vertical-align: text-top;
+    }
+    .back fa-icon {
+      width: 2em;
+      vertical-align: bottom;
+      line-height: 0.5em;
+    }
+    .is-active {
+      font-weight: bold;
+    }
+    .header-info {
+      font-size: initial;
+      font-weight: initial;
+      margin-right: 20px;
+    }
+    `;
+  }
+
   render() {
     return html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
@@ -402,20 +471,33 @@ class WrColl extends LitElement
       return html`<wr-loader .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
     } else if (this.collInfo) {
       return html`
-      <nav class="panel is-primary">
-        <div class="panel-heading">${this.collInfo.title}
-        <a @click="${this.deleteColl}" class="is-pulled-right delete"></a>
+      <nav class="panel is-light">
+        <div class="panel-heading">
+          <a href="/" class="back">
+            <fa-icon class="fas fa-arrow-left" size="1.3em"></fa-icon>
+          </a>
+          <span>${this.collInfo.title}</span>
+          <a @click="${this.deleteColl}" class="is-pulled-right delete"></a>
+          <span class="header-info is-pulled-right">Size: ${prettyBytes(this.collInfo.size)}</span>
         </div>
         <p class="panel-tabs is-boxed">
           ${this.hasCurated ? html`
-            <a @click="${this.onTabClick}" href="#curated" class="is-size-6 ${this.tabData.currTab === 'curated' ? 'is-active' : ''}">Curated Pages</a>
+            <a @click="${this.onTabClick}" href="#curated"
+            class="is-size-6 ${this.tabData.currTab === 'curated' ? 'is-active' : ''}">
+            <span class="icon"><fa-icon class="far fa-list-alt"></fa-icon></span>
+            Curated Pages</a>
           ` : ``}
 
-          <a @click="${this.onTabClick}" href="#resources" class="is-size-6 ${this.tabData.currTab === 'resources' ? 'is-active' : ''}">URL Resources</a>
+          <a @click="${this.onTabClick}" href="#resources"
+          class="is-size-6 ${this.tabData.currTab === 'resources' ? 'is-active' : ''}">
+          <span class="icon"><fa-icon class="fas fa-search"></fa-icon></span>URL Resources</a>
 
           ${this.tabData.replayUrl ? html`
-          <a @click="${this.onTabClick}" href="#replay" class="is-size-6 ${this.tabData.currTab === 'replay' ? 'is-active' : ''}">Replay!</a>
+            <a @click="${this.onTabClick}" href="#replay"
+            class="is-size-6 ${this.tabData.currTab === 'replay' ? 'is-active' : ''}">
+            <span class="icon"><fa-icon class="far fa-play-circle"></fa-icon></span>Replay!</a>
           ` : ``}
+
         </p>
         ${this.renderCollTabs()}
       </nav>`;
@@ -473,19 +555,6 @@ class WrCuratedPages extends LitElement
     }
   }
 
-  static get styles() {
-    return css`
-    .column {
-      max-height: calc(100vh - 145px);
-    }
-
-    #content {
-      margin-top: 10px;
-      max-height: calc(100vh - 155px);
-    }
-    `;
-  }
-
   firstUpdated() {
     this.doLoadCurated();
   }
@@ -514,6 +583,19 @@ class WrCuratedPages extends LitElement
     if (this.currList) {
       this.scrollToList(this.currList);
     }
+  }
+
+  static get styles() {
+    return css`
+    .column {
+      max-height: calc(100vh - 145px);
+    }
+
+    #content {
+      margin-top: 10px;
+      max-height: calc(100vh - 155px);
+    }
+    `;
   }
 
   render() {
@@ -548,16 +630,6 @@ class WrCuratedPages extends LitElement
   `;
   }
 
-  onReplay(event) {
-    event.preventDefault();
-    const detail = {replayUrl: event.currentTarget.getAttribute("data-url"),
-                    replayTS: event.currentTarget.getAttribute("data-ts"),
-                    currTab: "replay"
-                   }
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
-    return false;
-  }
-
   renderContent() {
     return html`
     ${this.collInfo.lists.map((list, i) => html`
@@ -584,6 +656,16 @@ class WrCuratedPages extends LitElement
       </article>
       `)}
     `;
+  }
+
+  onReplay(event) {
+    event.preventDefault();
+    const detail = {replayUrl: event.currentTarget.getAttribute("data-url"),
+                    replayTS: event.currentTarget.getAttribute("data-ts"),
+                    currTab: "replay"
+                   }
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
+    return false;
   }
 
   onClickScroll(event) {
@@ -676,54 +758,6 @@ class WrResources extends LitElement
       urlSearchType: { type: String },
       filteredResults: { type: Array },
     }
-  }
-
-  static get styles() {
-    return css`
-    :host {
-      display: flex;
-      flex-direction: column;
-    }
-    .notification {
-      width: 100%;
-    }
-    .main-scroll {
-      max-height: calc(100vh - 295px);
-      width: 100vw;
-    }
-    table {
-      table-layout: fixed;
-      word-wrap: break-word;
-      text-overflow: ellipsis;
-    }
-    tbody > tr {
-      display: table;
-      width: 100%;
-    }
-    .col-url {
-      width: 66%;
-      max-width: 66%;
-      min-width: 66%;
-      word-break: break-word;
-    }
-    .col-ts {
-      width: 16%;
-      max-width: 16%;
-      min-width: 16%;
-      word-break: break-word;
-    }
-    td.col-mime {
-      width: 10%;
-      word-break: break-word;
-    }
-    td.col-status {
-      text-align: center;
-    }
-    .loading-cog {
-      width: 100vw;
-      display: flex;
-    }
-    `;
   }
 
   firstUpdated() {
@@ -821,6 +855,54 @@ class WrResources extends LitElement
     if (this.tryMore && diff < 40) {
       this.doLoadMore();
     }
+  }
+
+  static get styles() {
+    return css`
+    :host {
+      display: flex;
+      flex-direction: column;
+    }
+    .notification {
+      width: 100%;
+    }
+    .main-scroll {
+      max-height: calc(100vh - 295px);
+      width: 100vw;
+    }
+    table {
+      table-layout: fixed;
+      word-wrap: break-word;
+      text-overflow: ellipsis;
+    }
+    tbody > tr {
+      display: table;
+      width: 100%;
+    }
+    .col-url {
+      width: 66%;
+      max-width: 66%;
+      min-width: 66%;
+      word-break: break-word;
+    }
+    .col-ts {
+      width: 16%;
+      max-width: 16%;
+      min-width: 16%;
+      word-break: break-word;
+    }
+    td.col-mime {
+      width: 10%;
+      word-break: break-word;
+    }
+    td.col-status {
+      text-align: center;
+    }
+    .loading-cog {
+      width: 100vw;
+      display: flex;
+    }
+    `;
   }
 
   render() {
@@ -977,12 +1059,12 @@ class WrGdrive extends LitElement
     return html`
     ${this.script()}
     ${!this.manual ? html`
-    <p>Authorizing Google Drive...</p>
+    <p>Connecting to Google Drive...</p>
     ` : html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
-    <button class="button is-info is-light is-rounded" @click="${this.onClickAuth}">
+    <button class="button is-primary is-rounded" @click="${this.onClickAuth}">
     <span class="icon"><fa-icon class="fab fa-google-drive"></fa-icon></span>
-    <span>Allow Google Drive</span>
+    <span>Authorize Google Drive</span>
     </button>
     `}`;
   }
@@ -1045,7 +1127,7 @@ class WrCollProxy extends LitElement
 // ===========================================================================
 
 async function main() {
-  const swPromise = initSW("/swonly.js?replayPrefix=wabac&stats=true");
+  const swPromise = initSW("./dist/swonly.js?replayPrefix=wabac&stats=true");
   await swPromise;
   customElements.define("app-main", AppMain);
   customElements.define("wr-index", WrIndex);
