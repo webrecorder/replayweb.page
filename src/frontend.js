@@ -1,5 +1,6 @@
-import { LitElement, html, css, customElement } from 'lit-element';
-import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
+import { LitElement, html, css, unsafeCSS } from 'lit-element';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { styleMap } from 'lit-html/directives/style-map';
 
 import { initSW, digestMessage, getTS } from './pageutils';
@@ -9,7 +10,13 @@ import marked from 'marked';
 
 import '../scss/main.scss';
 
-import 'fa-icons';
+//import 'fa-icons';
+//import '@fortawesome/fontawesome-free/sprites/solid.svg';
+import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
+import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
+import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
+import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
+import fabGoogleDrive from '@fortawesome/fontawesome-free/svgs/brands/google-drive.svg';
 
 
 // ===========================================================================
@@ -31,8 +38,8 @@ class AppMain extends LitElement
 
   static get styles() {
     return css`
-    .logo {
-      max-height: 2.0rem;
+    #logo {
+      max-height: 2.5rem;
       margin-right: 8px;
     }
     .has-allcaps {
@@ -48,7 +55,7 @@ class AppMain extends LitElement
     <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
-        <img class="logo" src="/static/logo.svg"/>
+        <img id="logo" src="/static/logo.svg"/>
         <span class="has-text-primary">replay</span>
         <span class="has-text-info">web.page</span>
       </a>
@@ -444,7 +451,7 @@ class WrColl extends LitElement
       vertical-align: text-top;
     }
     .back fa-icon {
-      width: 2em;
+      width: 1.5em;
       vertical-align: bottom;
       line-height: 0.5em;
     }
@@ -474,7 +481,7 @@ class WrColl extends LitElement
       <nav class="panel is-light">
         <div class="panel-heading">
           <a href="/" class="back">
-            <fa-icon class="fas fa-arrow-left" size="1.3em"></fa-icon>
+            <fa-icon size="1.3em" .svg="${fasArrowLeft}"></fa-icon>
           </a>
           <span>${this.collInfo.title}</span>
           <a @click="${this.deleteColl}" class="is-pulled-right delete"></a>
@@ -484,18 +491,18 @@ class WrColl extends LitElement
           ${this.hasCurated ? html`
             <a @click="${this.onTabClick}" href="#curated"
             class="is-size-6 ${this.tabData.currTab === 'curated' ? 'is-active' : ''}">
-            <span class="icon"><fa-icon class="far fa-list-alt"></fa-icon></span>
+            <span class="icon"><fa-icon .svg="${farListAlt}"></fa-icon></span>
             Curated Pages</a>
           ` : ``}
 
           <a @click="${this.onTabClick}" href="#resources"
           class="is-size-6 ${this.tabData.currTab === 'resources' ? 'is-active' : ''}">
-          <span class="icon"><fa-icon class="fas fa-search"></fa-icon></span>URL Resources</a>
+          <span class="icon"><fa-icon .svg="${fasSearch}"></fa-icon></span>URL Resources</a>
 
           ${this.tabData.replayUrl ? html`
             <a @click="${this.onTabClick}" href="#replay"
             class="is-size-6 ${this.tabData.currTab === 'replay' ? 'is-active' : ''}">
-            <span class="icon"><fa-icon class="far fa-play-circle"></fa-icon></span>Replay!</a>
+            <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></fa-icon></span>Replay!</a>
           ` : ``}
 
         </p>
@@ -1063,7 +1070,7 @@ class WrGdrive extends LitElement
     ` : html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
     <button class="button is-primary is-rounded" @click="${this.onClickAuth}">
-    <span class="icon"><fa-icon class="fab fa-google-drive"></fa-icon></span>
+    <span class="icon"><fa-icon .svg="${fabGoogleDrive}"></fa-icon></span>
     <span>Authorize Google Drive</span>
     </button>
     `}`;
@@ -1123,6 +1130,48 @@ class WrCollProxy extends LitElement
 }
 
 
+class WrFaIcon extends LitElement
+{
+  constructor() {
+    super();
+    this.size = "1.1em";
+  }
+
+  static get properties() {
+    return {
+      svg: { type: String },
+      size: { type: String }
+    }
+  }
+
+  static get styles() {
+    return css`
+    :host {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+    }
+    :host svg {
+      fill: var(--fa-icon-fill-color, currentcolor);
+      width: var(--fa-icon-width, 19px);
+      height: var(--fa-icon-height, 19px);
+    }
+    `;
+  }
+
+  render() {
+    if (!this.svg) {
+      return html``;
+    }
+
+    const styles = {width: this.size, height: this.size};
+
+    return html`<svg style="${styleMap(styles)}"><g>${unsafeSVG(this.svg)}</g></svg>`;
+    //return html`${unsafeSVG(this.svg)}`;
+  }
+}
+
+
 // ===========================================================================
 // ===========================================================================
 
@@ -1138,6 +1187,7 @@ async function main() {
   customElements.define("wr-coll-curated", WrCuratedPages);
   customElements.define("wr-replay-page", WrReplayPage);
   customElements.define("wr-gdrive", WrGdrive);
+  customElements.define("fa-icon", WrFaIcon);
 }
 
 main();
