@@ -314,7 +314,7 @@ class WrIndex extends LitElement
                 </div>
               </div>
               <div class="level-right">
-                  <span class="size">Size: ${prettyBytes(coll.size)}</span>
+                  <span class="size">Size: ${prettyBytes(coll.size || 0)}</span>
                   <a data-coll-index="${i}" @click="${this.deleteColl}" class="delete"></a>
               </div>
           </div>
@@ -485,7 +485,7 @@ class WrColl extends LitElement
           </a>
           <span>${this.collInfo.title}</span>
           <a @click="${this.deleteColl}" class="is-pulled-right delete"></a>
-          <span class="header-info is-pulled-right">Size: ${prettyBytes(this.collInfo.size)}</span>
+          <span class="header-info is-pulled-right">Size: ${prettyBytes(this.collInfo.size || 0)}</span>
         </div>
         <p class="panel-tabs is-boxed">
           ${this.hasCurated ? html`
@@ -1166,7 +1166,7 @@ class WrFaIcon extends LitElement
 
     const styles = {width: this.size, height: this.size};
 
-    return html`<svg style="${styleMap(styles)}"><g>${unsafeSVG(this.svg)}</g></svg>`;
+    return html`<svg style="${styleMap(styles)}"><g>${unsafeHTML(this.svg)}</g></svg>`;
     //return html`${unsafeSVG(this.svg)}`;
   }
 }
