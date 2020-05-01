@@ -51,7 +51,7 @@ class AppMain extends LitElement
   render() {
     return html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
-    <div class="container">
+    <div class="container" style="display: sticky">
     <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
@@ -134,9 +134,7 @@ class WrLoader extends LitElement
       switch (event.data.msg_type) {
         case "collProgress":
           if (event.data.name === this.coll) {
-            this.progress = event.data.progress;
-            this.total = event.data.total;
-            this.percent = Math.round(this.progress / this.total * 100);
+            this.percent = event.data.percent;
           }
           break;
 
@@ -179,6 +177,9 @@ class WrLoader extends LitElement
 
         case "s3:":
           sourceUrl = `https://${sup.pathname.slice(2, firstSlash)}.s3.amazonaws.com${sup.pathname.slice(firstSlash)}`;
+          source = {sourceUrl,
+                    sourceId: this.sourceUrl,
+                    name: this.sourceUrl};
           break;
 
       }
@@ -239,7 +240,7 @@ class WrLoader extends LitElement
 
       case "started":
         return html`
-          <progress class="progress is-primary is-large" data-percent="${this.percent}" value="${this.progress}" max="${this.total}" style="max-width: 400px"/>`;
+          <progress class="progress is-primary is-large" data-percent="${this.percent}" value="${this.percent}" max="100" style="max-width: 400px"/>`;
 
       case "waiting":
       default:
@@ -314,7 +315,7 @@ class WrIndex extends LitElement
                 </div>
               </div>
               <div class="level-right">
-                  <span class="size">Size: ${prettyBytes(coll.size || 0)}</span>
+                  <span class="size">Size: ${prettyBytes(Number(coll.size || 0))}</span>
                   <a data-coll-index="${i}" @click="${this.deleteColl}" class="delete"></a>
               </div>
           </div>
@@ -485,7 +486,7 @@ class WrColl extends LitElement
           </a>
           <span>${this.collInfo.title}</span>
           <a @click="${this.deleteColl}" class="is-pulled-right delete"></a>
-          <span class="header-info is-pulled-right">Size: ${prettyBytes(this.collInfo.size || 0)}</span>
+          <span class="header-info is-pulled-right">Size: ${prettyBytes(Number(this.collInfo.size || 0))}</span>
         </div>
         <p class="panel-tabs is-boxed">
           ${this.hasCurated ? html`
@@ -684,7 +685,7 @@ class WrCuratedPages extends LitElement
   scrollToList(id) {
     this.currList = Number(id);
     this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {currList: this.currList || undefined}}));
-    const opts = {behavior: "smooth", block: "start", inline: "nearest"};
+    const opts = {behavior: "smooth", block: "nearest", inline: "nearest"};
     this.clickTime = new Date().getTime();
     this.renderRoot.getElementById("list-" + this.currList).scrollIntoView(opts);
   }
@@ -874,7 +875,7 @@ class WrResources extends LitElement
       width: 100%;
     }
     .main-scroll {
-      max-height: calc(100vh - 295px);
+      max-height: calc(100vh - 255px);
       width: 100vw;
     }
     table {
@@ -1166,8 +1167,7 @@ class WrFaIcon extends LitElement
 
     const styles = {width: this.size, height: this.size};
 
-    return html`<svg style="${styleMap(styles)}"><g>${unsafeHTML(this.svg)}</g></svg>`;
-    //return html`${unsafeSVG(this.svg)}`;
+    return html`<svg style="${styleMap(styles)}"><g>${unsafeSVG(this.svg)}</g></svg>`;
   }
 }
 
