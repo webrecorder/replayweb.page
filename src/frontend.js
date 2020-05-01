@@ -17,6 +17,7 @@ import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
 import fabGoogleDrive from '@fortawesome/fontawesome-free/svgs/brands/google-drive.svg';
+import fasUpload from '@fortawesome/fontawesome-free/svgs/solid/upload.svg'
 
 
 // ===========================================================================
@@ -66,8 +67,13 @@ class AppMain extends LitElement
   </nav>
   </div>
     ${this.sourceUrl ? html`
-      <wr-coll sourceUrl="${this.sourceUrl}"></wr-coll>
-    ` : this.sourceUrl === "" ? html`<wr-index></wr-index>` : html``}
+      <wr-coll .loadInfo="${this.loadInfo}"
+      sourceUrl="${this.sourceUrl}"
+      @coll-loaded=${this.onCollLoaded}></wr-coll>
+    ` : this.sourceUrl === "" ? html`
+      <wr-index @load-start=${this.onStartLoad}></wr-index>` : 
+      
+      html``}
     `;
   }
 
@@ -96,6 +102,28 @@ class AppMain extends LitElement
 
     this.sourceUrl = this.pageParams.get("source") || "";
   }
+
+  onStartLoad(event) {
+    // just redirect right away?
+    if (!event.detail.blobUrl) {
+      this.pageParams.set("source", event.detail.sourceUrl);
+      window.location.search = this.pageParams.toString();
+      return;
+    }
+
+    this.sourceUrl = event.detail.sourceUrl;
+    this.loadInfo = event.detail;
+  }
+
+  onCollLoaded(event) {
+    this.loadInfo = null;
+    this.initRoute();
+
+    if (event.detail.sourceUrl !== this.sourceUrl) {
+      this.pageParams.set("source", event.detail.sourceUrl);
+      window.location.search = this.pageParams.toString();
+    }
+  }
 }
 
 // ===========================================================================
@@ -108,6 +136,7 @@ class WrLoader extends LitElement
     this.percent = 0;
     this.coll = "";
     this.state = "waiting";
+    this.loadInfo = null;
 
     this.worker = new Worker("./dist/dbworker.js");
   }
@@ -115,9 +144,11 @@ class WrLoader extends LitElement
   static get properties() {
     return {
       sourceUrl: { type: String },
+      loadInfo: { type: Object },
       state: { type: String },
       progress: { type: Number },
       percent: { type: Number },
+      error: { type: String},
       total: { type: Number },
       status: { type: String },
       coll: { type: String },
@@ -135,6 +166,10 @@ class WrLoader extends LitElement
         case "collProgress":
           if (event.data.name === this.coll) {
             this.percent = event.data.percent;
+            if (event.data.error) {
+              this.error = event.data.error;
+              this.state = "errored";
+            }
           }
           break;
 
@@ -182,6 +217,20 @@ class WrLoader extends LitElement
                     name: this.sourceUrl};
           break;
 
+        case "file:":
+          if (!this.loadInfo) {
+            this.state = "errored";
+            this.error = "File URLs are local and can not be shared. You can choose a file to upload from the main page.";
+            return;
+          }
+
+          source = {
+            sourceUrl: this.loadInfo.blobUrl,
+            sourceId: this.loadInfo.name,
+            name: this.loadInfo.name
+          }
+          break;
+
       }
     } catch (e) {}
 
@@ -202,7 +251,6 @@ class WrLoader extends LitElement
   }
 
   async onLoadReady(event) {
-    console.log(event);
     if (this._gdResolve) {
       //const digest = await digestMessage(url, 'SHA-256');
       //this.coll = "id-" + digest.slice(0, 12);
@@ -242,9 +290,13 @@ class WrLoader extends LitElement
         return html`
           <progress class="progress is-primary is-large" data-percent="${this.percent}" value="${this.percent}" max="100" style="max-width: 400px"/>`;
 
+      case "errored":
+        return html`<div class="has-text-danger">${this.error}</div>`;
+
       case "waiting":
       default:
         return html`<progress class="progress is-primary is-large" style="max-width: 400px"/>`;
+
     }
   }
 }
@@ -255,11 +307,15 @@ class WrIndex extends LitElement
   constructor() {
     super();
     this.colls = [];
+
+    this.fileDisplayName = "";
+    this.file = null;
   }
 
   static get properties() {
     return {
       colls: { type: Array },
+      fileDisplayName: { type: String }
     }
   }
 
@@ -291,10 +347,53 @@ class WrIndex extends LitElement
     return false;
   }
 
+  onChooseFile(event) {
+    if (event.currentTarget.files.length === 0) {
+      return;
+    }
+
+    this.file = event.currentTarget.files[0];
+    this.fileDisplayName = "file://" + this.file.name;
+    this.requestUpdate();
+  }
+
+  onStartLoad(event) {
+    event.preventDefault();
+
+    const detail = {sourceUrl: this.fileDisplayName};
+
+    if (this.file) {
+      detail.blobUrl = URL.createObjectURL(this.file);
+      detail.name = this.fileDisplayName;
+    }
+                
+    this.dispatchEvent(new CustomEvent("load-start", {detail}));
+    
+    return false;
+  }
+
+  onInput(event) {
+    this.fileDisplayName = event.currentTarget.value;
+
+    if (this.file && this.fileDisplayName && this.fileDisplayName.startsWith("file://")) {
+      this.file = null;
+      this.fileDisplayName = "";
+    }
+  }
+
   static get styles() {
     return css`
     .size {
       margin-right: 20px;
+    }
+    .extra-padding {
+      padding: 2em;
+    }
+    .no-top-padding {
+      padding-top: 1.0em;
+    }
+    div.field.has-addons {
+      flex: auto;
     }
     `;
   }
@@ -302,9 +401,46 @@ class WrIndex extends LitElement
   render() {
     return html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
+    <section class="section no-top-padding">
+      <div class="container">
+        <nav class="panel is-info">
+          <p class="panel-heading">Add Web Archive</p>
+          <div class="extra-padding panel-block file has-name">
+            <form class="container" @submit="${this.onStartLoad}">
+              <label class="file-label">
+                <input class="file-input"
+                  @click="${(e) => e.currentTarget.value = null}"
+                  @change=${this.onChooseFile} type="file" id="fileupload" name="fileupload">
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <fa-icon size="0.9em" .svg=${fasUpload}></fa-icon>
+                  </span>
+                  <span class="file-label">
+                    Choose File...
+                  </span>
+                </span>
+                <div class="field has-addons">
+                  <p class="control is-expanded">
+                    <input style="max-width: 100%" class="file-name input" type="text"
+                    name="filename"
+                    .value="${this.fileDisplayName}"
+                    @input="${this.onInput}"
+                    autocomplete="off"
+                    placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or WAZ) archive">
+                  </p>
+                  <div class="control">
+                    <button type="submit" class="button is-primary">Replay!</button>
+                  </div>
+                </div>
+              </label>
+            </form>
+          </div>
+        </nav>
+      </div>
+    </section>
     <section class="container">
       <nav class="panel">
-        <p class="panel-heading">Local Archive Collections</p>
+        <p class="panel-heading">Replayable Archive Collections</p>
         ${this.colls.map((coll, i) => html`
           <div class="panel-block">
             <div class="level" style="width: 100%">
@@ -350,6 +486,7 @@ class WrColl extends LitElement
   static get properties() {
     return {
       sourceUrl: { type: String },
+      loadInfo: { type: Object },
 
       collInfo: { type: Object },
       coll: { type: String },
@@ -361,9 +498,8 @@ class WrColl extends LitElement
   }
 
   firstUpdated() {
+    this.doUpdateInfo();
     window.addEventListener("hashchange", (event) => this.onHashChange(event));
-
-    this.doUpdateInfo().then(() => this.onHashChange());
   }
 
   async sourceToId(url) {
@@ -382,6 +518,11 @@ class WrColl extends LitElement
     }
     if (changedProperties.get("tabData")) {
       this._manualHash = true;
+
+      if (this.collInfo && !this.collInfo.coll) {
+        return
+      }
+
       // don't add empty params to shorten query
       Object.keys(this.tabData).
         forEach(key => !this.tabData[key] && delete this.tabData[key]);
@@ -414,10 +555,21 @@ class WrColl extends LitElement
     }
 
     this.hasCurated = (this.collInfo.lists && this.collInfo.lists.length);
+
+    const hash = window.location.hash;
+    if (hash) {
+      this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
+    }
+
+    if (this.collInfo.coll && !this.tabData.currTab) {
+      this.tabData = {...this.tabData, currTab: this.hasCurated ? "curated" : "resources"};
+    }
   }
 
   onCollLoaded(event) {
     this.doUpdateInfo();
+    this.loadInfo = null;
+    this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {sourceUrl: this.sourceUrl}}));
   }
 
   onHashChange(event) {
@@ -429,9 +581,6 @@ class WrColl extends LitElement
     if (hash) {
       this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
     }
-    if (!this.tabData.currTab) {
-      this.tabData = {...this.tabData, currTab: this.hasCurated ? "curated" : "resources"};
-    }
   }
 
   onTabClick(event) {
@@ -442,7 +591,6 @@ class WrColl extends LitElement
   }
 
   onCollTabNav(event) {
-    console.log(event.currentTarget);
     this.tabData = {...this.tabData, ...event.detail};
   }
 
@@ -476,7 +624,7 @@ class WrColl extends LitElement
 
   renderColl() {
     if (this.collInfo && !this.collInfo.coll) {
-      return html`<wr-loader .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
+      return html`<wr-loader .loadInfo="${this.loadInfo}" .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
     } else if (this.collInfo) {
       return html`
       <nav class="panel is-light">
@@ -774,8 +922,13 @@ class WrResources extends LitElement
 
   async doLoadResources() {
     const count = 100;
-    const url = (this.urlSearchType !== "contains" ? this.urlSearch : "");
+    let url = (this.urlSearchType !== "contains" ? this.urlSearch : "");
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
+    // optimization: if not starting with http, likely won't have a match here, so just add https://
+
+    if (url && !url.startsWith("http")) {
+      url = "https://" + url;
+    }
 
     const detail = {urlSearch: this.urlSearch,
                     currMime: this.currMime,
@@ -825,7 +978,6 @@ class WrResources extends LitElement
     let resp = await fetch(`${this.collInfo.apiPrefix}/urls?${params}`);
     resp = await resp.json();
     this.results = this.results.concat(resp.urls);
-    console.log(resp.urls.length);
     this.tryMore = (resp.urls.length === count);
     this.filter();
     this.loading = false;
