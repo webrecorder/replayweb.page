@@ -7,7 +7,7 @@ module.exports = (env, argv) => {
     mode: 'production',
     entry: {
       'frontend': './src/frontend.js',
-      'sw': './src/sw.js',
+      'sw': 'wabac/src/sw.js',
       'wombat': 'wombat/src/wbWombat.js',
     },
 

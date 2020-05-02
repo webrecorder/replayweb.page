@@ -5,14 +5,14 @@
   "main": "index.js",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "author": "Ilya Kreymer <ikreymer@gmail.com>",
-  "license": "AGPL3",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "bulma": "^0.8.2",
     "lit-element": "^2.3.1",
     "marked": "^1.0.0",
     "pretty-bytes": "^5.3.0",
-    "wabac": "link:../serviceworker/",
+    "wabac": "github:https://github.com/webrecorder/wabac.js",
     "wombat": "github:https://github.com/webrecorder/wombat"
   },
   "devDependencies": {
