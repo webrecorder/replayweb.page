@@ -10,8 +10,6 @@ import marked from 'marked';
 
 import '../scss/main.scss';
 
-//import 'fa-icons';
-//import '@fortawesome/fontawesome-free/sprites/solid.svg';
 import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
@@ -265,10 +263,23 @@ class WrLoader extends LitElement
     }
   }
 
+  static get styles() {
+    return css`
+      .logo {
+        width: 96px;
+        height: 96px;
+        margin: 1em;
+      }
+    `;
+  }
+
   render() {
     return html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
     <section class="container">
+    <div class="level">
+    <img class="level-item logo" src="/static/logo.svg"/>
+  </div>
       <div class="level">
         <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
       </div>
@@ -288,7 +299,9 @@ class WrLoader extends LitElement
 
       case "started":
         return html`
-          <progress class="progress is-primary is-large" data-percent="${this.percent}" value="${this.percent}" max="100" style="max-width: 400px"/>`;
+          <progress class="progress is-primary is-large" 
+          data-percent="${this.percent}" value="${this.percent}" max="100"
+          style="max-width: 400px"/>`;
 
       case "errored":
         return html`<div class="has-text-danger">${this.error}</div>`;
@@ -517,8 +530,6 @@ class WrColl extends LitElement
       this.doUpdateInfo();
     }
     if (changedProperties.get("tabData")) {
-      this._manualHash = true;
-
       if (this.collInfo && !this.collInfo.coll) {
         return
       }
@@ -573,13 +584,10 @@ class WrColl extends LitElement
   }
 
   onHashChange(event) {
-    if (this._manualHash) {
-      this._manualHash = false;
-      return;
-    }
     const hash = window.location.hash;
-    if (hash) {
+    if (hash && hash !== this._lastHash) {
       this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
+      this._lastHash = hash;
     }
   }
 
@@ -722,12 +730,12 @@ class WrCuratedPages extends LitElement
   }
 
   async doLoadCurated() {
-    this.curatedPages = {};
-
     const resp = await fetch(`${this.collInfo.apiPrefix}/curatedPages?offset=${this.offset}`);
     const json = await resp.json();
 
     this.total = json.total;
+
+    this.curatedPages = {};
 
     for (const curated of json.curatedPages) {
       if (!this.curatedPages[curated.list]) {
@@ -913,6 +921,7 @@ class WrResources extends LitElement
       urlSearch: { type: String },
       urlSearchType: { type: String },
       filteredResults: { type: Array },
+      loading: { type: Boolean }
     }
   }
 
@@ -922,6 +931,7 @@ class WrResources extends LitElement
 
   async doLoadResources() {
     const count = 100;
+    this.loading = true;
     let url = (this.urlSearchType !== "contains" ? this.urlSearch : "");
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
     // optimization: if not starting with http, likely won't have a match here, so just add https://
@@ -933,8 +943,6 @@ class WrResources extends LitElement
     const detail = {urlSearch: this.urlSearch,
                     currMime: this.currMime,
                     urlSearchType: this.urlSearchType};
-
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
 
     const params = new URLSearchParams({
       mime: this.currMime,
@@ -948,6 +956,9 @@ class WrResources extends LitElement
     this.results = resp.urls;
     this.tryMore = (resp.urls.length === count);
     this.filter();
+
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
+    this.loading = false;
   }
 
   async doLoadMore() {
@@ -1062,6 +1073,15 @@ class WrResources extends LitElement
       width: 100vw;
       display: flex;
     }
+    .flex-column {
+      display: flex;
+      flex: auto;
+      max-width: 80%;
+      flex-direction: column;
+    }
+    .flex-auto {
+      flex: auto;
+    }
     `;
   }
 
@@ -1069,16 +1089,18 @@ class WrResources extends LitElement
     return html`
     <link href="./dist/frontend.css" rel="stylesheet"/>
     <div class="notification level is-marginless">
-      <div class="control level-left">
-        <div>
-          <input type="text" style="width: 400px" class="input level-item" @input="${this.onChangeUrlSearch}" value="${this.urlSearch}" type="text" placeholder="Search URL">
+      <div class="level-left flex-auto">
+        <div class="field flex-column">
+          <div class="control ${this.loading ? 'is-loading' : ''}">
+            <input type="text" class="input" @input="${this.onChangeUrlSearch}" value="${this.urlSearch}" type="text" placeholder="Search URL">
+          </div>
           <div class="control">
             <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
             <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
             <label class="radio has-text-left"><input type="radio" name="urltype" value="contains" ?checked="${this.urlSearchType === 'contains'}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
+            <span class="is-pulled-right" style="margin-left: 1em">Showing ${this.filteredResults.length} Results</span>
           </div>
         </div>
-        <p class="level-item">Showing ${this.filteredResults.length} Results</p>
       </div>
       <div class="control level-right">
         <span>Resource Type:&nbsp;&nbsp;</span>
