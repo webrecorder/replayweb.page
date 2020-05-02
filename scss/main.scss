@@ -1,0 +1,84 @@
+@charset "utf-8";
+
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap');
+
+
+$wr-green: #64e986;
+$wr-yellow:  #f5c71a;
+$wr-light-blue: #43daff;
+$wr-med-blue: #27a0ff;
+$wr-dark-blue: #4876ff;
+$wr-accent: #1b0921;
+
+$primary: $wr-green;
+$info: $wr-yellow;
+$link: $wr-dark-blue;
+
+$light: $wr-light-blue;
+$dark: $wr-accent;
+
+/*$navbar-height: 3.75rem;*/
+
+
+html {
+  scroll-behavior: smooth;
+  overflow-y: hidden;
+}
+
+/*
+@font-face {
+  font-family: 'SourceSansPro';
+  src: url('../static/SourceSansPro-Regular.ttf');
+}
+*/
+
+.font-ssp {
+  font-family: 'Source Code Pro', monospace;
+}
+
+.font-ssp-c {
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: -1.5px; 
+}
+
+html.no-overflow {
+  overflow-y: hidden;
+}
+
+.page-desc {
+  font-weight: initial;
+  font-size: initial;
+  margin-top: 10px;
+}
+
+progress:after {
+  content: attr(data-percent)'%';
+  position: absolute;
+  -webkit-transform: translate(-50%, -100%);
+  -ms-transform: translate(-50%, -100%);
+  transform: translateX(-50%, -100%);
+  font-size: calc(1.5rem / 1.5);
+  line-height: 1.5rem;
+}
+
+.sticky	{
+	position: sticky;
+  	top: 30px;
+    left: 0px;
+}
+
+.main-scroll {
+  flex: 1;
+  scroll-behavior: smooth;
+  overflow-y: auto;
+  max-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+
+@import "../node_modules/bulma/bulma";
+
+

@@ -1,0 +1,72 @@
+const path = require('path');
+const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = (env, argv) => {
+  return {
+    mode: 'production',
+    entry: {
+      'frontend': './src/frontend.js',
+      'sw': './src/sw.js',
+      'wombat': 'wombat/src/wbWombat.js',
+    },
+
+    output: {
+      path: path.join(__dirname, 'dist'),
+      filename: (chunkData) => {
+        switch (chunkData.chunk.name) {
+          case 'sw':
+            return argv.mode === 'production' ? '../[name].js': '[name].js';
+
+          case 'wombat':
+            return '../static/[name].js';
+
+          case 'frontend':
+          default:
+            return '[name].js';
+        }
+      },
+      libraryTarget: 'self',
+      globalObject: 'self',
+      publicPath: '/dist/'
+    },
+
+    devServer: {
+      compress: true,
+      port: 9990,
+      headers: {'Service-Worker-Allowed': '/'},
+      open: false,
+      publicPath: '/dist/'
+    },
+
+    plugins: [
+      new MiniCssExtractPlugin(),
+      new webpack.DefinePlugin({
+        __SW_PATH__: JSON.stringify(argv.mode === 'production' ? './sw.js' : './dist/sw.js')
+      }),
+    ],
+
+    module: {
+      rules: [{
+        test: /\.s[ac]ss$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              // Prefer `dart-sass`
+              implementation: require('node-sass'),
+            },
+          },
+        ],
+      },
+      {
+        test:  /\.svg$/,
+        loader: 'svg-inline-loader'
+      }]
+    }
+  }
+}
+
+

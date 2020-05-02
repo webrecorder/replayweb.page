@@ -136,7 +136,7 @@ class WrLoader extends LitElement
     this.state = "waiting";
     this.loadInfo = null;
 
-    this.worker = new Worker("./dist/dbworker.js");
+    this.worker = new Worker(__SW_PATH__);
   }
 
   static get properties() {
@@ -1350,7 +1350,7 @@ class WrFaIcon extends LitElement
 // ===========================================================================
 
 async function main() {
-  const swPromise = initSW("./swonly.js?replayPrefix=wabac&stats=true");
+  const swPromise = initSW(__SW_PATH__ + "?replayPrefix=wabac&stats=true");
   await swPromise;
   customElements.define("app-main", AppMain);
   customElements.define("wr-index", WrIndex);
