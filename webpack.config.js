@@ -47,24 +47,20 @@ module.exports = (env, argv) => {
     ],
 
     module: {
-      rules: [{
-        test: /\.s[ac]ss$/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              // Prefer `dart-sass`
-              implementation: require('node-sass'),
-            },
-          },
-        ],
-      },
+      rules: [
       {
         test:  /\.svg$/,
         loader: 'svg-inline-loader'
-      }]
+      },
+      {
+        test: /base.scss$/,
+        loaders: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+      },
+      {
+        test: /main.scss$/,
+        loaders: ['to-string-loader', 'css-loader', 'sass-loader']
+      },
+      ]
     }
   }
 }

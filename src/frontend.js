@@ -8,7 +8,8 @@ import { initSW, digestMessage, getTS } from './pageutils';
 import prettyBytes from 'pretty-bytes';
 import marked from 'marked';
 
-import '../scss/main.scss';
+import '../scss/base.scss';
+import allCssRaw from '../scss/main.scss';
 
 import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
@@ -17,6 +18,12 @@ import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circl
 import fabGoogleDrive from '@fortawesome/fontawesome-free/svgs/brands/google-drive.svg';
 import fasUpload from '@fortawesome/fontawesome-free/svgs/solid/upload.svg'
 
+
+// ===========================================================================
+const allCss = unsafeCSS(allCssRaw);
+function wrapCss(custom) {
+  return [allCss, custom];
+}
 
 // ===========================================================================
 class AppMain extends LitElement
@@ -36,7 +43,7 @@ class AppMain extends LitElement
   }
 
   static get styles() {
-    return css`
+    return wrapCss(css`
     #logo {
       max-height: 2.5rem;
       margin-right: 8px;
@@ -44,12 +51,11 @@ class AppMain extends LitElement
     .has-allcaps {
       font-variant-caps: all-small-caps;
     }
-    `;
+    `);
   }
 
   render() {
     return html`
-    <link href="./dist/frontend.css" rel="stylesheet"/>
     <div class="container" style="display: sticky">
     <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
@@ -264,18 +270,27 @@ class WrLoader extends LitElement
   }
 
   static get styles() {
-    return css`
+    return wrapCss(css`
       .logo {
         width: 96px;
         height: 96px;
         margin: 1em;
       }
-    `;
+
+      progress:after {
+        content: attr(data-percent)'%';
+        position: absolute;
+        -webkit-transform: translate(-50%, -100%);
+        -ms-transform: translate(-50%, -100%);
+        transform: translateX(-50%, -100%);
+        font-size: calc(1.5rem / 1.5);
+        line-height: 1.5rem;
+      }
+    `);
   }
 
   render() {
     return html`
-    <link href="./dist/frontend.css" rel="stylesheet"/>
     <section class="container">
     <div class="level">
     <img class="level-item logo" src="/static/logo.svg"/>
@@ -395,7 +410,7 @@ class WrIndex extends LitElement
   }
 
   static get styles() {
-    return css`
+    return wrapCss(css`
     .size {
       margin-right: 20px;
     }
@@ -408,12 +423,11 @@ class WrIndex extends LitElement
     div.field.has-addons {
       flex: auto;
     }
-    `;
+    `);
   }
 
   render() {
     return html`
-    <link href="./dist/frontend.css" rel="stylesheet"/>
     <section class="section no-top-padding">
       <div class="container">
         <nav class="panel is-info">
@@ -603,7 +617,7 @@ class WrColl extends LitElement
   }
 
   static get styles() {
-    return css`
+    return wrapCss(css`
     .icon {
       vertical-align: text-top;
     }
@@ -620,17 +634,10 @@ class WrColl extends LitElement
       font-weight: initial;
       margin-right: 20px;
     }
-    `;
+    `);
   }
 
   render() {
-    return html`
-    <link href="./dist/frontend.css" rel="stylesheet"/>
-    ${this.renderColl()}
-    `;
-  }
-
-  renderColl() {
     if (this.collInfo && !this.collInfo.coll) {
       return html`<wr-loader .loadInfo="${this.loadInfo}" .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
     } else if (this.collInfo) {
@@ -750,7 +757,7 @@ class WrCuratedPages extends LitElement
   }
 
   static get styles() {
-    return css`
+    return wrapCss(css`
     .column {
       max-height: calc(100vh - 145px);
     }
@@ -759,12 +766,11 @@ class WrCuratedPages extends LitElement
       margin-top: 10px;
       max-height: calc(100vh - 155px);
     }
-    `;
+    `);
   }
 
   render() {
     return html`
-    <link href="./dist/frontend.css" rel="stylesheet"/>
     <div class="columns">
       <div class="column is-one-third">
         <div class="menu" style="overflow-y: auto; height: 100%;">
@@ -1029,7 +1035,7 @@ class WrResources extends LitElement
   }
 
   static get styles() {
-    return css`
+    return wrapCss(css`
     :host {
       display: flex;
       flex-direction: column;
@@ -1082,12 +1088,11 @@ class WrResources extends LitElement
     .flex-auto {
       flex: auto;
     }
-    `;
+    `);
   }
 
   render() {
     return html`
-    <link href="./dist/frontend.css" rel="stylesheet"/>
     <div class="notification level is-marginless">
       <div class="level-left flex-auto">
         <div class="field flex-column">
@@ -1243,7 +1248,6 @@ class WrGdrive extends LitElement
     ${!this.manual ? html`
     <p>Connecting to Google Drive...</p>
     ` : html`
-    <link href="./dist/frontend.css" rel="stylesheet"/>
     <button class="button is-primary is-rounded" @click="${this.onClickAuth}">
     <span class="icon"><fa-icon .svg="${fabGoogleDrive}"></fa-icon></span>
     <span>Authorize Google Drive</span>
