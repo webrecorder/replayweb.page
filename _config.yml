@@ -14,9 +14,11 @@ heading_anchors: true
 
 # Aux links for the upper right navigation
 aux_links:
-  "View replayweb.page on GitHub":
-    - "//github.com/ikreymer/replayweb.page"
-
+  "Back to ReplayWeb.page":
+    - "https://replayweb.page/"
 
 logo: "/static/logo.svg"
+
+plugins:
+  - jekyll-remote-theme
 

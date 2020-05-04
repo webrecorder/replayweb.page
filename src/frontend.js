@@ -3,7 +3,8 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { styleMap } from 'lit-html/directives/style-map';
 
-import { initSW, digestMessage, getTS, tsToDate } from './pageutils';
+import { digestMessage, getTS, tsToDate } from './pageutils';
+import { register } from 'register-service-worker';
 
 import prettyBytes from 'pretty-bytes';
 import marked from 'marked';
@@ -80,7 +81,7 @@ class AppMain extends LitElement
     <div class="navbar-start">
       ${this.sourceUrl ? 
         html`
-      <div class="navbar-item">Browsing:&nbsp;<b>${this.sourceUrl}</b>
+      <div class="navbar-item">Current Archive:&nbsp;<b>${this.sourceUrl}</b>
       </div>` : html``}
     </div>
     <div class="navbar-end">
@@ -287,7 +288,7 @@ class WrLoader extends LitElement
   }
 
   updated(changedProperties) {
-    if (changedProperties.get("sourceUrl")) {
+    if (changedProperties.has("sourceUrl")) {
       this.doLoad();
     }
   }
@@ -547,7 +548,7 @@ class WrColl extends LitElement
 
       tabData: { type: Object },
 
-      locationHash: { type: String }
+      _locationHash: { type: String }
     }
   }
 
@@ -567,27 +568,28 @@ class WrColl extends LitElement
   }
 
   updated(changedProperties) {
-    if (changedProperties.get("sourceUrl")) {
+    if (changedProperties.has("sourceUrl")) {
       this.doUpdateInfo();
     }
-    if (changedProperties.get("tabData")) {
-      if (this.collInfo && !this.collInfo.coll) {
-        return
+    if (changedProperties.has("tabData")) {
+      if (!this.collInfo || !this.collInfo.coll) {
+        return;
       }
 
       // don't add empty params to shorten query
       Object.keys(this.tabData).
         forEach(key => !this.tabData[key] && delete this.tabData[key]);
 
-      this.locationHash = new URLSearchParams(this.tabData).toString();
+      this._locationHash = "#" + new URLSearchParams(this.tabData).toString();
     }
-    if (changedProperties.get("locationHash")) {
+    if (changedProperties.has("_locationHash")) {
       if (this.replaceLoc) {
         const newLoc = new URL(window.location.href);
-        newLoc.hash = "#" + this.locationHash;
+        newLoc.hash = this._locationHash;
         window.history.replaceState({}, "", newLoc.href);
+        this.replaceLoc = false;
       } else {
-        window.location.hash = "#" + this.locationHash;
+        window.location.hash = this._locationHash;
       }
     }
   }
@@ -625,6 +627,7 @@ class WrColl extends LitElement
 
     if (this.collInfo.coll && !this.tabData.view) {
       this.tabData = {...this.tabData, view: this.hasCurated ? "curated" : "resources"};
+      this.replaceLoc = true;
     }
   }
 
@@ -636,9 +639,9 @@ class WrColl extends LitElement
 
   onHashChange(event) {
     const hash = window.location.hash;
-    if (hash && hash !== this._lastHash) {
+    if (hash && hash !== this._locationHash) {
       this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
-      this._lastHash = hash;
+      this._locationHash = hash;
     }
   }
 
@@ -650,10 +653,10 @@ class WrColl extends LitElement
   }
 
   onCollTabNav(event) {
-    //this.tabData = {...this.tabData, ...event.detail};
-    this.tabData = {view: this.tabData.view, ...event.detail.data};
-    this.replaceLoc = event.detail.replaceLoc || false;
-    //this.tabData = event.detail;
+    if (event.target.id === this.tabData.view) {
+      this.tabData = {view: this.tabData.view, ...event.detail.data};
+      this.replaceLoc = event.detail.replaceLoc || false;
+    }
   }
 
   static get styles() {
@@ -698,12 +701,9 @@ class WrColl extends LitElement
           class="is-size-6 ${this.tabData.view === 'resources' ? 'is-active' : ''}">
           <span class="icon"><fa-icon .svg="${fasSearch}"></fa-icon></span>URL Resources</a>
 
-          ${this.tabData.replayUrl ? html`
-            <a @click="${this.onTabClick}" href="#replay"
-            class="is-size-6 ${this.tabData.view === 'replay' ? 'is-active' : ''}">
-            <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></fa-icon></span>Replay!</a>
-          ` : ``}
-
+          <a @click="${this.onTabClick}" href="#replay"
+          class="is-size-6 ${this.tabData.view === 'replay' ? 'is-active' : ''}">
+          <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></fa-icon></span>Replay!</a>
         </p>
         ${this.renderCollTabs()}
       </nav>`;
@@ -729,9 +729,9 @@ class WrColl extends LitElement
     </wr-coll-resources>
 
     <wr-replay-page .collInfo="${this.collInfo}"
-    replayUrl="${this.tabData.replayUrl}"
-    replayTS="${this.tabData.replayTS}"
-    @coll-tab-nav="${this.onCollTabNav}"
+    replayUrl="${this.tabData.url || ""}"
+    replayTS="${this.tabData.ts || ""}"
+    @coll-tab-nav="${this.onCollTabNav}" id="replay"
     class="${this.tabData.view === 'replay' ? '' : 'is-hidden'}">
     </wr-replay-page>
     `;
@@ -770,7 +770,7 @@ class WrCuratedPages extends LitElement
   }
 
   updated(changedProperties) {
-    if (changedProperties.get("collInfo")) {
+    if (changedProperties.has("collInfo")) {
       this.doLoadCurated();
     }
   }
@@ -870,8 +870,8 @@ class WrCuratedPages extends LitElement
   onReplay(event) {
     event.preventDefault();
     const data = {
-      replayUrl: event.currentTarget.getAttribute("data-url"),
-      replayTS: event.currentTarget.getAttribute("data-ts"),
+      url: event.currentTarget.getAttribute("data-url"),
+      ts: event.currentTarget.getAttribute("data-ts"),
       view: "replay"
     };
     this.sendChangeEvent(data);
@@ -981,22 +981,32 @@ class WrResources extends LitElement
     this.doLoadResources();
   }
 
+  updated(changedProperties) {
+    if (changedProperties.has("urlSearch") || 
+        changedProperties.has("urlSearchType") ||
+        changedProperties.has("currMime")) {
+
+      this.doLoadResources();
+      const data = {
+        urlSearch: this.urlSearch,
+        urlSearchType: this.urlSearchType,
+        currMime: this.currMime
+      };
+      const replaceLoc = !changedProperties.has("currMime") && !changedProperties.has("urlSearchType");
+      this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc, data}}));
+    }
+  }
+
   async doLoadResources() {
     const count = 100;
     this.loading = true;
-    let url = (this.urlSearchType !== "contains" ? this.urlSearch : "");
+    let url = (this.urlSearchType !== "" ? this.urlSearch : "");
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
     // optimization: if not starting with http, likely won't have a match here, so just add https://
 
     if (url && !url.startsWith("http")) {
       url = "https://" + url;
     }
-
-    const data = {
-      urlSearch: this.urlSearch,
-      currMime: this.currMime,
-      urlSearchType: this.urlSearchType
-    };
 
     const params = new URLSearchParams({
       mime: this.currMime,
@@ -1011,7 +1021,12 @@ class WrResources extends LitElement
     this.tryMore = (resp.urls.length === count);
     this.filter();
 
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
+    const data = {
+      urlSearch: this.urlSearch,
+      currMime: this.currMime,
+      urlSearchType: this.urlSearchType
+    };
+
     this.loading = false;
   }
 
@@ -1026,7 +1041,7 @@ class WrResources extends LitElement
     }
     this.loading = true;
     
-    const url = (this.urlSearchType !== "contains" ? this.urlSearch : "");
+    const url = (this.urlSearchType !== "" ? this.urlSearch : "");
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
 
     const last = this.results[this.results.length - 1];
@@ -1050,22 +1065,22 @@ class WrResources extends LitElement
 
   onChangeTypeSearch(event) {
     this.currMime = event.currentTarget.value;
-    this.doLoadResources();
+    //this.doLoadResources();
   }
 
   onChangeUrlSearch(event) {
     this.urlSearch = event.currentTarget.value;
-    this.doLoadResources();
+    //this.doLoadResources();
   }
 
   onClickUrlType(event) {
     this.urlSearchType = event.currentTarget.value;
-    this.doLoadResources();
+    //this.doLoadResources();
   }
 
   filter() {
     const filteredResults = [];
-    const filterText = (this.urlSearchType === "contains" ? this.urlSearch : "");
+    const filterText = (this.urlSearchType === "" ? this.urlSearch : "");
     for (const result of this.results) {
       if (!filterText || result.url.indexOf(filterText) >= 0) {
         filteredResults.push(result);
@@ -1148,9 +1163,9 @@ class WrResources extends LitElement
             <input type="text" class="input" @input="${this.onChangeUrlSearch}" value="${this.urlSearch}" type="text" placeholder="Search URL">
           </div>
           <div class="control">
-            <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
+            <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
             <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
-            <label class="radio has-text-left"><input type="radio" name="urltype" value="contains" ?checked="${this.urlSearchType === 'contains'}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
+            <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
             <span class="is-pulled-right" style="margin-left: 1em">Showing ${this.filteredResults.length} Results</span>
           </div>
         </div>
@@ -1198,8 +1213,8 @@ class WrResources extends LitElement
   onReplay(event) {
     event.preventDefault();
     const data = {
-      replayUrl: event.currentTarget.getAttribute("data-url"),
-      replayTS: event.currentTarget.getAttribute("data-ts"),
+      url: event.currentTarget.getAttribute("data-url"),
+      ts: event.currentTarget.getAttribute("data-ts"),
       view: "replay"
     };
 
@@ -1211,6 +1226,11 @@ class WrResources extends LitElement
 // ===========================================================================
 class WrReplayPage extends LitElement
 {
+  constructor() {
+    super();
+    this._replaceLoc = null;
+  }
+
   static get properties() {
     return {
       collInfo: {type: Object },
@@ -1224,11 +1244,29 @@ class WrReplayPage extends LitElement
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
+    this.doSetIframeUrl();
+  }
+
+  doSetIframeUrl() {
+    this.iframeUrl = this.replayUrl ? `${this.collInfo.replayPrefix}/${this.replayTS || ""}mp_/${this.replayUrl}` : "";
   }
 
   updated(changedProperties) {
-    if (changedProperties.get("replayUrl") || changedProperties.get("replayTS")) {
-      this.iframeUrl = `${this.collInfo.replayPrefix}/${this.replayTS || ""}mp_/${this.replayUrl}`;
+    if (changedProperties.has("replayUrl") || 
+        changedProperties.has("replayTS")) {
+      this.doSetIframeUrl();
+
+      if (this._replaceLoc === null) {
+        return;
+      }
+
+      const data = {
+        url: this.replayUrl,
+        ts: this.replayTS,
+      };
+  
+      this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: this._replaceLoc, data}}));
+      this._replaceLoc = null;
     }
   }
 
@@ -1237,9 +1275,9 @@ class WrReplayPage extends LitElement
 
     if (iframe && event.source === iframe.contentWindow) {
       if (event.data.wb_type === "load") {
-        this.replayTS = event.data.ts;
+        this.replayTs = event.data.ts;
         this.replayUrl = event.data.url;
-        this.sendChangeEvent();
+        this._replaceLoc = true;
       }
     }
   }
@@ -1248,17 +1286,8 @@ class WrReplayPage extends LitElement
     event.preventDefault();
     const value = this.renderRoot.querySelector("input").value;
     this.replayUrl = value;
-    this.sendChangeEvent();
+    this._replaceLoc = false;
     return false;
-  }
-
-  sendChangeEvent() {
-    const data = {
-      replayUrl: this.replayUrl,
-      replayTS: this.replayTS,
-    };
-
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: true, data}}));
   }
 
   static get styles() {
@@ -1300,7 +1329,7 @@ class WrReplayPage extends LitElement
       <form @submit="${this.onSubmit}">
         <div class="field has-addons">
           <p class="control has-icons-left is-expanded">
-            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="">
+            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here">
             <span class="icon is-left">
               <fa-icon size="1.0em" .svg="${fasFile}"></fa-icon>
             </span>
@@ -1482,8 +1511,29 @@ class WrFaIcon extends LitElement
 // ===========================================================================
 // ===========================================================================
 
+function registerSW(url) {
+  let resolve, reject; 
+  const p = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  
+  register(url, {
+    registrationOptions: { scope: '/', otherOptions: 'foo' },
+    ready (registration) {
+      console.log('Service worker is active.');
+      resolve();
+    },
+    error (error) {
+      console.error('Error during service worker registration:', error);
+      reject();
+    }
+  });
+}
+
 async function main() {
-  const swPromise = initSW(__SW_PATH__ + "?replayPrefix=wabac&stats=true");
+  //const swPromise = initSW(__SW_PATH__ + "?replayPrefix=wabac&stats=true");
+  const swPromise = registerSW(__SW_PATH__ + "?replayPrefix=wabac&stats=true");
   await swPromise;
   customElements.define("app-main", AppMain);
   customElements.define("wr-index", WrIndex);
