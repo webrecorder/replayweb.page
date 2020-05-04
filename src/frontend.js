@@ -38,6 +38,7 @@ class AppMain extends LitElement
   constructor() {
     super();
     this.sourceUrl = null;
+    this.showTerms = false;
     this.pageParams = {};
   }
 
@@ -45,7 +46,8 @@ class AppMain extends LitElement
     return {
       pageParams: { type: Object },
       sourceUrl: { type: String },
-      navShown: { type: Boolean }
+      navMenuShown: { type: Boolean },
+      showTerms: { type: Boolean }
     }
   }
 
@@ -64,41 +66,75 @@ class AppMain extends LitElement
   render() {
     return html`
     <div class="container" style="display: sticky">
-    <nav class="navbar breadcrumbs" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
-        <img id="logo" src="/static/logo.svg"/>
-        <span class="has-text-primary">replay</span>
-        <span class="has-text-info">web.page</span>
-      </a>
-      <a role="button" @click="${this.onNavMenu}" class="navbar-burger burger ${this.navShown ? 'is-active' : ''}" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-    <div class="navbar-menu ${this.navShown ? 'is-active' : ''}">
-    <div class="navbar-start">
-      ${this.sourceUrl ? 
-        html`
-      <div class="navbar-item">Current Archive:&nbsp;<b>${this.sourceUrl}</b>
-      </div>` : html``}
-    </div>
-    <div class="navbar-end">
-      <a href="/docs" class="navbar-item">
-      <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;About</a>
-    </div>
-  </nav>
+      <nav class="navbar breadcrumbs" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
+          <img id="logo" src="/static/logo.svg"/>
+          <span class="has-text-primary">replay</span>
+          <span class="has-text-info">web.page</span>
+        </a>
+        <a role="button" @click="${this.onNavMenu}" class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
+      <div class="navbar-start">
+        ${this.sourceUrl ? 
+          html`
+        <div class="navbar-item">Current Archive:&nbsp;<b>${this.sourceUrl}</b>
+        </div>` : html``}
+      </div>
+      <div class="navbar-end">
+        <a href="?terms" class="navbar-item">Terms</a>
+        <a href="/docs" class="navbar-item">
+          <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;About
+        </a>
+      </div>
+    </nav>
   </div>
-    ${this.sourceUrl ? html`
+  ${this.renderContent()}
+  `;
+  }
+
+  renderContent() {
+    if (this.sourceUrl) {
+      return html`
       <wr-coll .loadInfo="${this.loadInfo}"
       sourceUrl="${this.sourceUrl}"
       @coll-loaded=${this.onCollLoaded}></wr-coll>
-    ` : this.sourceUrl === "" ? html`
-      <wr-index @load-start=${this.onStartLoad}></wr-index>` : 
-      
-      html``}
-    `;
+      `;
+    } else if (this.showTerms) {
+      return html`
+      <div class="container">
+        <div class="content">
+          <h3 class="title">Terms</h3>
+          <p>This site is a static browser-based application that loads web archive files provided by the user
+          and renders them for replay in the browser.</p>
+          <p>The site is operated by the <a href="https://webrecorder.net/">Webrecorder Project</a></p>
+          <p>See the <a href="/docs">About</a> for more info on how it works.</p>
+
+          <h3>Privacy</h3>
+          <p><b>No data is uploaded anywhere and no information is collected.</b></p>
+          <p>All content rendered stays directly in your browser.</p>
+
+          <h4>Disclaimer of Warranties</h4>
+          <p>The application may not always be available. No guarantees!</p>
+          <p>Some legalese:</p>
+          <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE" 
+          AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE, 
+          INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+          </p>
+          <a class="button is-primary" href="#" @click="${(e) => window.history.back()}">Back</a>
+        </div>
+      </div>
+      `;
+    } else if (this.sourceUrl === "") {
+      return html`
+      <wr-index @load-start=${this.onStartLoad}></wr-index>
+      `;
+    }
   }
 
   firstUpdated() {
@@ -106,7 +142,7 @@ class AppMain extends LitElement
   }
 
   onNavMenu() {
-    this.navShown = !this.navShown;
+    this.navMenuShown = !this.navMenuShown;
   }
 
   initRoute() {
@@ -129,6 +165,10 @@ class AppMain extends LitElement
     }
 
     this.sourceUrl = this.pageParams.get("source") || "";
+
+    if (this.pageParams.has("terms")) {
+      this.showTerms = true;
+    }
   }
 
   onStartLoad(event) {
