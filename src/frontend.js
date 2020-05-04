@@ -31,6 +31,8 @@ function wrapCss(custom) {
   return [allCss, custom];
 }
 
+const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.googleusercontent.com";
+
 // ===========================================================================
 class AppMain extends LitElement
 {
@@ -1461,7 +1463,7 @@ class WrGdrive extends LitElement
   gauth(prompt, callback) {
     gapi.load('auth2', () => {
       gapi.auth2.authorize({
-          client_id: "758792702348-kokjbpv1leqid7ac7tjq7pbp37cg05kq.apps.googleusercontent.com",
+          client_id: GDRIVE_CLIENT_ID,
           scope: "https://www.googleapis.com/auth/drive.file",
           prompt
       }, callback);
