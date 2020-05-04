@@ -3,7 +3,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { styleMap } from 'lit-html/directives/style-map';
 
-import { initSW, digestMessage, getTS } from './pageutils';
+import { initSW, digestMessage, getTS, tsToDate } from './pageutils';
 
 import prettyBytes from 'pretty-bytes';
 import marked from 'marked';
@@ -11,10 +11,15 @@ import marked from 'marked';
 import '../scss/base.scss';
 import allCssRaw from '../scss/main.scss';
 
-import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
+//import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
+
+//import fasInfo from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
+import fasHelp from '@fortawesome/fontawesome-free/svgs/solid/question-circle.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
+import fasFile from '@fortawesome/fontawesome-free/svgs/solid/file.svg';
 import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
+
 import fabGoogleDrive from '@fortawesome/fontawesome-free/svgs/brands/google-drive.svg';
 import fasUpload from '@fortawesome/fontawesome-free/svgs/solid/upload.svg'
 
@@ -39,6 +44,7 @@ class AppMain extends LitElement
     return {
       pageParams: { type: Object },
       sourceUrl: { type: String },
+      navShown: { type: Boolean }
     }
   }
 
@@ -57,16 +63,29 @@ class AppMain extends LitElement
   render() {
     return html`
     <div class="container" style="display: sticky">
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <nav class="navbar breadcrumbs" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
         <img id="logo" src="/static/logo.svg"/>
         <span class="has-text-primary">replay</span>
         <span class="has-text-info">web.page</span>
       </a>
-      <a class="navbar-item" href="https://webrecorder.net/">
-      <span class=""><small>A <span class="font-ssp">Webrecorder</span> Project</small></span>
+      <a role="button" @click="${this.onNavMenu}" class="navbar-burger burger ${this.navShown ? 'is-active' : ''}" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
       </a>
+    </div>
+    <div class="navbar-menu ${this.navShown ? 'is-active' : ''}">
+    <div class="navbar-start">
+      ${this.sourceUrl ? 
+        html`
+      <div class="navbar-item">Browsing:&nbsp;<b>${this.sourceUrl}</b>
+      </div>` : html``}
+    </div>
+    <div class="navbar-end">
+      <a href="/docs" class="navbar-item">
+      <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;About</a>
     </div>
   </nav>
   </div>
@@ -83,6 +102,10 @@ class AppMain extends LitElement
 
   firstUpdated() {
     this.initRoute();
+  }
+
+  onNavMenu() {
+    this.navShown = !this.navShown;
   }
 
   initRoute() {
@@ -507,6 +530,8 @@ class WrColl extends LitElement
 
     this.hasCurated = false;
 
+    this.replaceLoc = false;
+
     this.tabData = {};
   }
 
@@ -520,7 +545,9 @@ class WrColl extends LitElement
 
       hasCurated: { type: Boolean },
 
-      tabData: { type: Object }
+      tabData: { type: Object },
+
+      locationHash: { type: String }
     }
   }
 
@@ -551,7 +578,17 @@ class WrColl extends LitElement
       // don't add empty params to shorten query
       Object.keys(this.tabData).
         forEach(key => !this.tabData[key] && delete this.tabData[key]);
-      window.location.hash = "#" + new URLSearchParams(this.tabData).toString();
+
+      this.locationHash = new URLSearchParams(this.tabData).toString();
+    }
+    if (changedProperties.get("locationHash")) {
+      if (this.replaceLoc) {
+        const newLoc = new URL(window.location.href);
+        newLoc.hash = "#" + this.locationHash;
+        window.history.replaceState({}, "", newLoc.href);
+      } else {
+        window.location.hash = "#" + this.locationHash;
+      }
     }
   }
 
@@ -586,8 +623,8 @@ class WrColl extends LitElement
       this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
     }
 
-    if (this.collInfo.coll && !this.tabData.currTab) {
-      this.tabData = {...this.tabData, currTab: this.hasCurated ? "curated" : "resources"};
+    if (this.collInfo.coll && !this.tabData.view) {
+      this.tabData = {...this.tabData, view: this.hasCurated ? "curated" : "resources"};
     }
   }
 
@@ -608,12 +645,15 @@ class WrColl extends LitElement
   onTabClick(event) {
     event.preventDefault();
     const hash = event.currentTarget.getAttribute("href");
-    this.tabData = {...this.tabData, currTab: hash.slice(1)};
+    this.tabData = {...this.tabData, view: hash.slice(1)};
     return false;
   }
 
   onCollTabNav(event) {
-    this.tabData = {...this.tabData, ...event.detail};
+    //this.tabData = {...this.tabData, ...event.detail};
+    this.tabData = {view: this.tabData.view, ...event.detail.data};
+    this.replaceLoc = event.detail.replaceLoc || false;
+    //this.tabData = event.detail;
   }
 
   static get styles() {
@@ -634,6 +674,9 @@ class WrColl extends LitElement
       font-weight: initial;
       margin-right: 20px;
     }
+    .bg-alice-blue {
+      background-color: aliceblue;
+    }
     `);
   }
 
@@ -643,29 +686,21 @@ class WrColl extends LitElement
     } else if (this.collInfo) {
       return html`
       <nav class="panel is-light">
-        <div class="panel-heading">
-          <a href="/" class="back">
-            <fa-icon size="1.3em" .svg="${fasArrowLeft}"></fa-icon>
-          </a>
-          <span>${this.collInfo.title}</span>
-          <a @click="${this.deleteColl}" class="is-pulled-right delete"></a>
-          <span class="header-info is-pulled-right">Size: ${prettyBytes(Number(this.collInfo.size || 0))}</span>
-        </div>
-        <p class="panel-tabs is-boxed">
+        <p class="panel-tabs bg-alice-blue">
           ${this.hasCurated ? html`
             <a @click="${this.onTabClick}" href="#curated"
-            class="is-size-6 ${this.tabData.currTab === 'curated' ? 'is-active' : ''}">
+            class="is-size-6 ${this.tabData.view === 'curated' ? 'is-active' : ''}">
             <span class="icon"><fa-icon .svg="${farListAlt}"></fa-icon></span>
             Curated Pages</a>
           ` : ``}
 
           <a @click="${this.onTabClick}" href="#resources"
-          class="is-size-6 ${this.tabData.currTab === 'resources' ? 'is-active' : ''}">
+          class="is-size-6 ${this.tabData.view === 'resources' ? 'is-active' : ''}">
           <span class="icon"><fa-icon .svg="${fasSearch}"></fa-icon></span>URL Resources</a>
 
           ${this.tabData.replayUrl ? html`
             <a @click="${this.onTabClick}" href="#replay"
-            class="is-size-6 ${this.tabData.currTab === 'replay' ? 'is-active' : ''}">
+            class="is-size-6 ${this.tabData.view === 'replay' ? 'is-active' : ''}">
             <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></fa-icon></span>Replay!</a>
           ` : ``}
 
@@ -681,20 +716,24 @@ class WrColl extends LitElement
     return html`
     <wr-coll-curated .collInfo="${this.collInfo}"
     currList="${this.tabData.currList || 0}"
-    @coll-tab-nav="${this.onCollTabNav}" id="curated" class="panel-block ${this.tabData.currTab === 'curated' ? '' : 'is-hidden'}">
+    @coll-tab-nav="${this.onCollTabNav}" id="curated"
+    class="panel-block ${this.tabData.view === 'curated' ? '' : 'is-hidden'}">
     </wr-coll-curated>
 
     <wr-coll-resources .collInfo="${this.collInfo}"
     urlSearch="${this.tabData.urlSearch || ""}"
     urlSearchType="${this.tabData.urlSearchType || ""}"
     currMime="${this.tabData.currMime || "text/html,text/xhtml"}"
-    @coll-tab-nav="${this.onCollTabNav}" id="resources" class="panel-block is-paddingless ${this.tabData.currTab === 'resources' ? '' : 'is-hidden'}">
+    @coll-tab-nav="${this.onCollTabNav}" id="resources"
+    class="panel-block is-paddingless ${this.tabData.view === 'resources' ? '' : 'is-hidden'}">
     </wr-coll-resources>
 
-    ${this.tabData.currTab === "replay" ? html`
-    <wr-replay-page .collInfo="${this.collInfo}" replayUrl="${this.tabData.replayUrl}" replayTS="${this.tabData.replayTS}">
+    <wr-replay-page .collInfo="${this.collInfo}"
+    replayUrl="${this.tabData.replayUrl}"
+    replayTS="${this.tabData.replayTS}"
+    @coll-tab-nav="${this.onCollTabNav}"
+    class="${this.tabData.view === 'replay' ? '' : 'is-hidden'}">
     </wr-replay-page>
-    ` : ``}
     `;
   }
 }
@@ -830,12 +869,17 @@ class WrCuratedPages extends LitElement
 
   onReplay(event) {
     event.preventDefault();
-    const detail = {replayUrl: event.currentTarget.getAttribute("data-url"),
-                    replayTS: event.currentTarget.getAttribute("data-ts"),
-                    currTab: "replay"
-                   }
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
+    const data = {
+      replayUrl: event.currentTarget.getAttribute("data-url"),
+      replayTS: event.currentTarget.getAttribute("data-ts"),
+      view: "replay"
+    };
+    this.sendChangeEvent(data);
     return false;
+  }
+
+  sendChangeEvent(data) {
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
   }
 
   onClickScroll(event) {
@@ -846,7 +890,9 @@ class WrCuratedPages extends LitElement
 
   scrollToList(id) {
     this.currList = Number(id);
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {currList: this.currList || undefined}}));
+    
+    this.sendChangeEvent({currList: this.currList || undefined});
+
     const opts = {behavior: "smooth", block: "nearest", inline: "nearest"};
     this.clickTime = new Date().getTime();
     this.renderRoot.getElementById("list-" + this.currList).scrollIntoView(opts);
@@ -877,7 +923,7 @@ class WrCuratedPages extends LitElement
     if (next && next != curr) {
       if (next.id.startsWith("list-")) {
         this.currList = Number(next.id.slice(5));
-        this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {currList: this.currList}}));
+        this.sendChangeEvent({currList: this.currList});
       }
     }
 
@@ -946,9 +992,11 @@ class WrResources extends LitElement
       url = "https://" + url;
     }
 
-    const detail = {urlSearch: this.urlSearch,
-                    currMime: this.currMime,
-                    urlSearchType: this.urlSearchType};
+    const data = {
+      urlSearch: this.urlSearch,
+      currMime: this.currMime,
+      urlSearchType: this.urlSearchType
+    };
 
     const params = new URLSearchParams({
       mime: this.currMime,
@@ -963,7 +1011,7 @@ class WrResources extends LitElement
     this.tryMore = (resp.urls.length === count);
     this.filter();
 
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
     this.loading = false;
   }
 
@@ -1149,11 +1197,13 @@ class WrResources extends LitElement
 
   onReplay(event) {
     event.preventDefault();
-    const detail = {replayUrl: event.currentTarget.getAttribute("data-url"),
-                    replayTS: event.currentTarget.getAttribute("data-ts"),
-                    currTab: "replay"
-                   }
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail}));
+    const data = {
+      replayUrl: event.currentTarget.getAttribute("data-url"),
+      replayTS: event.currentTarget.getAttribute("data-ts"),
+      view: "replay"
+    };
+
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
     return false;
   }
 }
@@ -1166,12 +1216,53 @@ class WrReplayPage extends LitElement
       collInfo: {type: Object },
 
       replayUrl: { type: String },
-      replayTS: { type: String }
+      replayTS: { type: String },
+
+      iframeUrl: { type: String }
     }
   }
 
+  firstUpdated() {
+    window.addEventListener("message", (event) => this.onReplayMessage(event));
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.get("replayUrl") || changedProperties.get("replayTS")) {
+      this.iframeUrl = `${this.collInfo.replayPrefix}/${this.replayTS || ""}mp_/${this.replayUrl}`;
+    }
+  }
+
+  onReplayMessage(event) {
+    const iframe = this.renderRoot.querySelector("iframe");
+
+    if (iframe && event.source === iframe.contentWindow) {
+      if (event.data.wb_type === "load") {
+        this.replayTS = event.data.ts;
+        this.replayUrl = event.data.url;
+        this.sendChangeEvent();
+      }
+    }
+  }
+
+  onSubmit(event) {
+    event.preventDefault();
+    const value = this.renderRoot.querySelector("input").value;
+    this.replayUrl = value;
+    this.sendChangeEvent();
+    return false;
+  }
+
+  sendChangeEvent() {
+    const data = {
+      replayUrl: this.replayUrl,
+      replayTS: this.replayTS,
+    };
+
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: true, data}}));
+  }
+
   static get styles() {
-    return css`
+    return wrapCss(css`
       host: {
         display: flex;
       }
@@ -1179,13 +1270,49 @@ class WrReplayPage extends LitElement
       iframe {
         width: 100vw;
         height: calc(100vh - 150px);
+        border: 0px;
       }
-    `;
+
+      .replay-bar {
+        padding: 1em;
+        max-width: none;
+        border-bottom: solid .1rem #97989A;
+      }
+
+      input#url {
+        border-radius: 4px;
+      }
+
+      #datetime {
+        position: absolute;
+        right: 1em;
+        z-index: 10;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0), #FFF 15%, #FFF);
+        margin: 5px 0.75em 5px 0;
+        line-height: 2;
+      }
+    `);
   }
 
   render() {
     return html`
-    <iframe src="${this.collInfo.replayPrefix}/${this.replayTS || ""}mp_/${this.replayUrl}"></iframe>
+    <div class="container replay-bar">
+      <form @submit="${this.onSubmit}">
+        <div class="field has-addons">
+          <p class="control has-icons-left is-expanded">
+            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="">
+            <span class="icon is-left">
+              <fa-icon size="1.0em" .svg="${fasFile}"></fa-icon>
+            </span>
+          </p>
+          <p id="datetime" class="control is-hidden-mobile">${tsToDate(this.replayTS).toLocaleString()}</p>
+        </div>
+      </form>
+    </div>
+    ${this.iframeUrl ? html`
+    <iframe @message="${this.onReplayMessage}"
+    src="${this.iframeUrl}"></iframe>
+    ` : ``}
     `;
   }
 }
@@ -1278,7 +1405,7 @@ class WrCollProxy extends LitElement
 {
   constructor() {
     super();
-    this.currTab = "replay";
+    this.view = "replay";
     this.replayTS = "";
   }
 
@@ -1297,7 +1424,7 @@ class WrCollProxy extends LitElement
       replayUrl: this.replayUrl,
       replayTS: this.replayTS,
       source: this.source,
-      currTab: this.currTab
+      view: this.view
     });
   }
 
@@ -1309,6 +1436,7 @@ class WrCollProxy extends LitElement
 }
 
 
+// ===========================================================================
 class WrFaIcon extends LitElement
 {
   constructor() {
@@ -1329,6 +1457,7 @@ class WrFaIcon extends LitElement
       display: inline-block;
       padding: 0;
       margin: 0;
+      line-height: 1.0em;
     }
     :host svg {
       fill: var(--fa-icon-fill-color, currentcolor);
