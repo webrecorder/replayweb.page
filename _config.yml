@@ -1,0 +1,22 @@
+remote_theme: pmarsceill/just-the-docs
+theme: "just-the-docs"
+
+title: ReplayWeb.Page
+
+# Enable or disable the site search
+search_enabled: false
+
+# Set the search token separator for hyphenated-word search:
+search_tokenizer_separator: /[\s/]+/
+
+# Enable or disable heading anchors
+heading_anchors: true
+
+# Aux links for the upper right navigation
+aux_links:
+  "View replayweb.page on GitHub":
+    - "//github.com/ikreymer/replayweb.page"
+
+
+logo: "/static/logo.svg"
+

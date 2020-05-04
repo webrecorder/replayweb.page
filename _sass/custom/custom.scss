@@ -1,0 +1,33 @@
+$rwp-green: #64e986;
+$rwp-yellow: #f5c71a;
+//$link-color: #27a0ff;
+$link-color: #4876ff;
+
+//$content-width: 960px;
+$nav-width-md: $nav-width;
+
+.side-bar {
+  @include mq(md) {
+    //max-width: calc(0.5rem + #{$nav-width});
+    max-width: $nav-width;
+  }
+}
+
+.site-title {
+  padding-right: 1.5rem !important;
+}
+
+.rwp-logo-font {
+  font-variant-caps: all-small-caps;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.rwp-green {
+  color: $rwp-green;
+}
+
+.rwp-yellow {
+  color: $rwp-yellow;
+}
+

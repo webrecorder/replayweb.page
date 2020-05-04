@@ -6,4 +6,7 @@ dist/sw.js
 **/node_modules
 yarn-error.log
 coverage/
+local-examples/
 .DS_Store
+.sass-cache/
+_site/
