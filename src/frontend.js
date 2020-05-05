@@ -15,10 +15,10 @@ import allCssRaw from '../scss/main.scss';
 //import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
 
 //import fasInfo from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
+import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
 import fasHelp from '@fortawesome/fontawesome-free/svgs/solid/question-circle.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
-import fasFile from '@fortawesome/fontawesome-free/svgs/solid/file.svg';
 import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
 
 import fabGoogleDrive from '@fortawesome/fontawesome-free/svgs/brands/google-drive.svg';
@@ -227,7 +227,7 @@ class WrLoader extends LitElement
 
   firstUpdated(props) {
     this.initMessages();
-    this.doLoad();
+    //this.doLoad();
   }
 
   initMessages() {
@@ -330,7 +330,7 @@ class WrLoader extends LitElement
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("sourceUrl")) {
+    if (this.sourceUrl && changedProperties.has("sourceUrl")) {
       this.doLoad();
     }
   }
@@ -595,7 +595,7 @@ class WrColl extends LitElement
   }
 
   firstUpdated() {
-    this.doUpdateInfo();
+    //this.doUpdateInfo();
     window.addEventListener("hashchange", (event) => this.onHashChange(event));
   }
 
@@ -808,7 +808,7 @@ class WrCuratedPages extends LitElement
   }
 
   firstUpdated() {
-    this.doLoadCurated();
+    //this.doLoadCurated();
   }
 
   updated(changedProperties) {
@@ -884,23 +884,24 @@ class WrCuratedPages extends LitElement
   renderContent() {
     return html`
     ${this.collInfo.lists.map((list, i) => html`
-      <article id="list-${list.id}" class="media content">
-        <div class="media-content">
-          <div class="content"><p class="subtitle is-4">${list.title}</p></div>
+      <article id="list-${list.id}">
+        <div class="content">
           <hr/>
-          <div class="content">${list.desc}</div>
+          <h3>${list.title}</h3>
+          <p>${list.desc}</p>
           <ol style="margin-left: 30px">
             ${this.curatedPages[list.id] ? this.curatedPages[list.id].map((p) => html`
-              <li><article class="media">
-                <div class="media-content">
+              <li>
+                <div class="content">
                   <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(p.date)}" href="#">
-                    <p>${p.title}</p>
+                    <p class="is-size-6 has-text-weight-bold has-text-link">${p.title}</p>
                     <p>${p.url}</p>
                   </a>
-                  <p>${p.date}</p>
+                  <p>${new Date(p.date).toLocaleString()}</p>
                   <p>${p.desc}</p>
                 </div>
-              </article></li>
+                <hr/>
+              </li>
             `) : html``}
           </ol>
         </div>
@@ -1020,7 +1021,7 @@ class WrResources extends LitElement
   }
 
   firstUpdated() {
-    this.doLoadResources();
+    //this.doLoadResources();
   }
 
   updated(changedProperties) {
@@ -1271,6 +1272,7 @@ class WrReplayPage extends LitElement
   constructor() {
     super();
     this._replaceLoc = null;
+    this.isLoading = false;
   }
 
   static get properties() {
@@ -1280,7 +1282,8 @@ class WrReplayPage extends LitElement
       replayUrl: { type: String },
       replayTS: { type: String },
 
-      iframeUrl: { type: String }
+      iframeUrl: { type: String },
+      isLoading: { type: Boolean }
     }
   }
 
@@ -1294,9 +1297,13 @@ class WrReplayPage extends LitElement
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("replayUrl") || 
-        changedProperties.has("replayTS")) {
-      this.doSetIframeUrl();
+    if (this.replayUrl &&
+        (changedProperties.has("replayUrl") || 
+        changedProperties.has("replayTS"))) {
+
+      if (this._replaceLoc !== true) {
+        this.doSetIframeUrl();
+      }
 
       if (this._replaceLoc === null) {
         return;
@@ -1310,16 +1317,20 @@ class WrReplayPage extends LitElement
       this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: this._replaceLoc, data}}));
       this._replaceLoc = null;
     }
+    if (changedProperties.has("iframeUrl") && this.iframeUrl) {
+      this.isLoading = true;
+    }
   }
 
   onReplayMessage(event) {
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe && event.source === iframe.contentWindow) {
-      if (event.data.wb_type === "load") {
+      if (event.data.wb_type === "load" || event.data.wb_type === "replace-url") {
         this.replayTs = event.data.ts;
         this.replayUrl = event.data.url;
         this._replaceLoc = true;
+        this.isLoading = false;
       }
     }
   }
@@ -1330,6 +1341,20 @@ class WrReplayPage extends LitElement
     this.replayUrl = value;
     this._replaceLoc = false;
     return false;
+  }
+
+  onRefresh(event) {
+    event.preventDefault();
+    if (this.isLoading) {
+      return;
+    }
+
+    const iframe = this.renderRoot.querySelector("iframe");
+
+    if (iframe) {
+      this.isLoading = true;
+      iframe.contentWindow.location.reload();
+    }
   }
 
   static get styles() {
@@ -1362,6 +1387,10 @@ class WrReplayPage extends LitElement
         margin: 5px 0.75em 5px 0;
         line-height: 2;
       }
+
+      #refresh {
+        border: 0px;
+      }
     `);
   }
 
@@ -1370,11 +1399,15 @@ class WrReplayPage extends LitElement
     <div class="container replay-bar">
       <form @submit="${this.onSubmit}">
         <div class="field has-addons">
-          <p class="control has-icons-left is-expanded">
-            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here">
-            <span class="icon is-left">
-              <fa-icon size="1.0em" .svg="${fasFile}"></fa-icon>
+          <a id="refresh" class="button ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
+            <span class="icon is-small">
+              ${!this.isLoading ? html`
+              <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
+              ` : ``}
             </span>
+          </a>
+          <p class="control is-expanded">
+            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here">
           </p>
           <p id="datetime" class="control is-hidden-mobile">${tsToDate(this.replayTS).toLocaleString()}</p>
         </div>
