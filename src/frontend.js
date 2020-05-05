@@ -91,7 +91,7 @@ class AppMain extends LitElement
       <div class="navbar-end">
         <a href="?terms" class="navbar-item">Terms</a>
         <a href="/docs" class="navbar-item">
-          <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;About
+          <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;Docs
         </a>
       </div>
     </nav>
@@ -404,12 +404,15 @@ class WrIndex extends LitElement
 
     this.fileDisplayName = "";
     this.file = null;
+
+    this._deleting = {};
   }
 
   static get properties() {
     return {
       colls: { type: Array },
-      fileDisplayName: { type: String }
+      fileDisplayName: { type: String },
+      _deleting: { type: Object }
     }
   }
 
@@ -421,17 +424,20 @@ class WrIndex extends LitElement
     const resp = await fetch("/wabac/api/index");
     const json = await resp.json();
     this.colls = json.colls;
+    this._deleting = {};
   }
 
-  async deleteColl(event) {
+  async onDeleteColl(event) {
     event.preventDefault();
 
     const index = Number(event.currentTarget.getAttribute("data-coll-index"));
     const coll = this.colls[index];
-    if (!coll || coll.deleting) {
+    if (!coll || this._deleting[coll.sourceId]) {
       return;
     }
-    this.colls[index].deleting = true;
+
+    this._deleting[coll.sourceId] = true;
+    this.requestUpdate();
 
     const resp = await fetch(`/wabac/api/${coll.id}`, {method: 'DELETE'});
     if (resp.status === 200) {
@@ -489,6 +495,13 @@ class WrIndex extends LitElement
     div.field.has-addons {
       flex: auto;
     }
+    button.is-loading {
+      line-height: 1.5em;
+      height: 1.5em;
+      border: 0px;
+      background-color: transparent !important;
+      width: auto;
+    }
     `);
   }
 
@@ -497,7 +510,7 @@ class WrIndex extends LitElement
     <section class="section no-top-padding">
       <div class="container">
         <nav class="panel is-info">
-          <p class="panel-heading">Add Web Archive</p>
+          <p class="panel-heading">Load Web Archive</p>
           <div class="extra-padding panel-block file has-name">
             <form class="container" @submit="${this.onStartLoad}">
               <label class="file-label">
@@ -522,7 +535,7 @@ class WrIndex extends LitElement
                     placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or WAZ) archive">
                   </p>
                   <div class="control">
-                    <button type="submit" class="button is-primary">Replay!</button>
+                    <button type="submit" class="button is-primary">Load</button>
                   </div>
                 </div>
               </label>
@@ -533,7 +546,7 @@ class WrIndex extends LitElement
     </section>
     <section class="container">
       <nav class="panel">
-        <p class="panel-heading">Replayable Archive Collections</p>
+        <p class="panel-heading">Loaded Archives</p>
         ${this.colls.map((coll, i) => html`
           <div class="panel-block">
             <div class="level" style="width: 100%">
@@ -544,8 +557,11 @@ class WrIndex extends LitElement
                 </div>
               </div>
               <div class="level-right">
-                  <span class="size">Size: ${prettyBytes(Number(coll.size || 0))}</span>
-                  <a data-coll-index="${i}" @click="${this.deleteColl}" class="delete"></a>
+                <span class="size">Size: ${prettyBytes(Number(coll.size || 0))}</span>
+                ${!this._deleting[coll.sourceId] ? html`
+                <button data-coll-index="${i}" @click="${this.onDeleteColl}" class="delete"></button>
+                ` : html`
+                <button class="button is-loading is-static"></button>`}
               </div>
           </div>
         `)}
@@ -573,7 +589,10 @@ class WrColl extends LitElement
 
     this.hasCurated = false;
 
-    this.replaceLoc = false;
+    this._replaceLoc = false;
+    this._locUpdateNeeded = false;
+
+    this._locationHash = "";
 
     this.tabData = {};
   }
@@ -590,7 +609,7 @@ class WrColl extends LitElement
 
       tabData: { type: Object },
 
-      _locationHash: { type: String }
+      //_locationHash: { type: String }
     }
   }
 
@@ -622,17 +641,19 @@ class WrColl extends LitElement
       Object.keys(this.tabData).
         forEach(key => !this.tabData[key] && delete this.tabData[key]);
 
-      this._locationHash = "#" + new URLSearchParams(this.tabData).toString();
-    }
-    if (changedProperties.has("_locationHash")) {
-      if (this.replaceLoc) {
-        const newLoc = new URL(window.location.href);
-        newLoc.hash = this._locationHash;
-        window.history.replaceState({}, "", newLoc.href);
-        this.replaceLoc = false;
-      } else {
-        window.location.hash = this._locationHash;
+      const newHash = "#" + new URLSearchParams(this.tabData).toString();
+      if (newHash !== this._locationHash) {
+        this._locationHash = newHash;
+        if (this._replaceLoc) {
+          const newLoc = new URL(window.location.href);
+          newLoc.hash = this._locationHash;
+          window.history.replaceState({}, "", newLoc.href);
+          this._replaceLoc = false;
+        } else {
+          window.location.hash = this._locationHash;
+        }
       }
+      this._locUpdateNeeded = false;
     }
   }
 
@@ -669,7 +690,7 @@ class WrColl extends LitElement
 
     if (this.collInfo.coll && !this.tabData.view) {
       this.tabData = {...this.tabData, view: this.hasCurated ? "curated" : "resources"};
-      this.replaceLoc = true;
+      //this.replaceLoc = true;
     }
   }
 
@@ -697,7 +718,8 @@ class WrColl extends LitElement
   onCollTabNav(event) {
     if (event.target.id === this.tabData.view) {
       this.tabData = {view: this.tabData.view, ...event.detail.data};
-      this.replaceLoc = event.detail.replaceLoc || false;
+      this._replaceLoc = !this._locUpdateNeeded && event.detail.replaceLoc;
+      this._locUpdateNeeded = true;
     }
   }
 
@@ -745,7 +767,7 @@ class WrColl extends LitElement
 
           <a @click="${this.onTabClick}" href="#replay"
           class="is-size-6 ${this.tabData.view === 'replay' ? 'is-active' : ''}">
-          <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></fa-icon></span>Replay!</a>
+          <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></fa-icon></span>Replay</a>
         </p>
         ${this.renderCollTabs()}
       </nav>`;
@@ -770,12 +792,14 @@ class WrColl extends LitElement
     class="panel-block is-paddingless ${this.tabData.view === 'resources' ? '' : 'is-hidden'}">
     </wr-coll-resources>
 
+    ${this.tabData.view === 'replay' ? html`
     <wr-replay-page .collInfo="${this.collInfo}"
-    replayUrl="${this.tabData.url || ""}"
-    replayTS="${this.tabData.ts || ""}"
+    url="${this.tabData.url || ""}"
+    ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="replay"
     class="${this.tabData.view === 'replay' ? '' : 'is-hidden'}">
     </wr-replay-page>
+    ` : ``}
     `;
   }
 }
@@ -840,12 +864,12 @@ class WrCuratedPages extends LitElement
   static get styles() {
     return wrapCss(css`
     .column {
-      max-height: calc(100vh - 145px);
+      max-height: calc(100vh - 92px);
     }
 
     #content {
       margin-top: 10px;
-      max-height: calc(100vh - 155px);
+      max-height: calc(100vh - 102px);
     }
     `);
   }
@@ -894,7 +918,7 @@ class WrCuratedPages extends LitElement
               <li>
                 <div class="content">
                   <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(p.date)}" href="#">
-                    <p class="is-size-6 has-text-weight-bold has-text-link">${p.title}</p>
+                    <p class="is-size-6 has-text-weight-bold has-text-link">${p.title || p.url}</p>
                     <p>${p.url}</p>
                   </a>
                   <p>${new Date(p.date).toLocaleString()}</p>
@@ -1150,7 +1174,7 @@ class WrResources extends LitElement
       width: 100%;
     }
     .main-scroll {
-      max-height: calc(100vh - 255px);
+      max-height: calc(100vh - 247px);
       width: 100vw;
     }
     table {
@@ -1271,14 +1295,22 @@ class WrReplayPage extends LitElement
 {
   constructor() {
     super();
-    this._replaceLoc = null;
     this.isLoading = false;
+    this.replayUrl = "";
+    this.replayTS = "";
+    this.url = "";
+    this.ts = "";
   }
 
   static get properties() {
     return {
       collInfo: {type: Object },
 
+      // external url set by parent
+      url: { type: String },
+      ts: { type: String },
+
+      // actual replay url
       replayUrl: { type: String },
       replayTS: { type: String },
 
@@ -1289,36 +1321,33 @@ class WrReplayPage extends LitElement
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
-    this.doSetIframeUrl();
   }
 
   doSetIframeUrl() {
-    this.iframeUrl = this.replayUrl ? `${this.collInfo.replayPrefix}/${this.replayTS || ""}mp_/${this.replayUrl}` : "";
+    this.iframeUrl = this.url ? `${this.collInfo.replayPrefix}/${this.ts || ""}mp_/${this.url}` : "";
   }
 
   updated(changedProperties) {
-    if (this.replayUrl &&
-        (changedProperties.has("replayUrl") || 
-        changedProperties.has("replayTS"))) {
+    if (this.url && 
+        ((this.replayUrl != this.url) || (this.replayTS != this.ts)) &&
+        (changedProperties.has("url") || changedProperties.has("ts"))) {
 
-      if (this._replaceLoc !== true) {
-        this.doSetIframeUrl();
-      }
+      this.replayUrl = this.url;
+      this.replayTS = this.ts;
+      this.doSetIframeUrl();
+    }
 
-      if (this._replaceLoc === null) {
-        return;
-      }
+    if (this.iframeUrl && changedProperties.has("iframeUrl")) {
+      this.isLoading = true;
+    }
 
+    if (this.replayUrl && changedProperties.has("replayUrl")) {
       const data = {
         url: this.replayUrl,
         ts: this.replayTS,
       };
   
-      this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: this._replaceLoc, data}}));
-      this._replaceLoc = null;
-    }
-    if (changedProperties.has("iframeUrl") && this.iframeUrl) {
-      this.isLoading = true;
+      this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: true, data}}));
     }
   }
 
@@ -1327,9 +1356,8 @@ class WrReplayPage extends LitElement
 
     if (iframe && event.source === iframe.contentWindow) {
       if (event.data.wb_type === "load" || event.data.wb_type === "replace-url") {
-        this.replayTs = event.data.ts;
+        this.replayTS = event.data.ts;
         this.replayUrl = event.data.url;
-        this._replaceLoc = true;
         this.isLoading = false;
       }
     }
@@ -1338,8 +1366,8 @@ class WrReplayPage extends LitElement
   onSubmit(event) {
     event.preventDefault();
     const value = this.renderRoot.querySelector("input").value;
-    this.replayUrl = value;
-    this._replaceLoc = false;
+    //this.replayUrl = value;
+    this.url = value;
     return false;
   }
 
@@ -1471,6 +1499,10 @@ class WrGdrive extends LitElement
     const sourceUrl = metadataUrl + "?alt=media";
 
     this.dispatchEvent(new CustomEvent("load-ready", {detail: {name, displayName, sourceId, sourceUrl, headers}}));
+  }
+
+  static get styles() {
+    return wrapCss(css``);
   }
 
   render() {
