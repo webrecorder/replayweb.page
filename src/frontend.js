@@ -1529,16 +1529,28 @@ class WrGdrive extends LitElement
     super();
     this.manual = false;
     this.fileId = "";
+    this.scriptLoaded = false;
+    this.error = false;
   }
 
   static get properties() {
     return {
       manual: { type: Boolean },
-      fileId: { type: String }
+      fileId: { type: String },
+      error: { type: Boolean }
+    }
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("fileId")) {
+      this.error = false;
+      //this.scriptLoaded = false;
+      this.manual = false;
     }
   }
 
   onLoad() {
+    this.scriptLoaded = true;
     this.gauth('none', (response) => {
       if (response.error === "immediate_failed") {
         this.manual = true;
@@ -1563,6 +1575,15 @@ class WrGdrive extends LitElement
     const headers = {"Authorization": `Bearer ${authToken}`};
 
     const resp = await fetch(metadataUrl + "?fields=name", {headers});
+
+    if ((resp.status === 404 || resp.status == 403)) {
+      this.manual = true;
+      this.error = true;
+      return;
+    }
+
+    this.error = false;
+
     const metadata = await resp.json();
 
     const sourceId = `googledrive://${fileId}`;
@@ -1584,6 +1605,12 @@ class WrGdrive extends LitElement
     ${!this.manual ? html`
     <p>Connecting to Google Drive...</p>
     ` : html`
+    ${this.error ? html`
+    <div class="error has-text-danger">
+      <p>Could not access this file with the current Google Drive account.</p>
+      <p>If you have multiple Google Drive accounts, be sure to select the correct one</p>
+    </div>
+    ` : ``}
     <button class="button is-primary is-rounded" @click="${this.onClickAuth}">
     <span class="icon"><fa-icon .svg="${fabGoogleDrive}"></fa-icon></span>
     <span>Authorize Google Drive</span>
@@ -1592,6 +1619,9 @@ class WrGdrive extends LitElement
   }
 
   script() {
+    if (this.scriptLoaded) {
+      return html``;
+    }
     const script = document.createElement('script');
     script.onload = (() => this.onLoad());
     script.src = 'https://apis.google.com/js/platform.js';
