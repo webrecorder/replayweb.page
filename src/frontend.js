@@ -40,6 +40,7 @@ class AppMain extends LitElement
   constructor() {
     super();
     this.sourceUrl = null;
+    this.sourceLoaded = false;
     this.showTerms = false;
     this.pageParams = {};
   }
@@ -49,7 +50,8 @@ class AppMain extends LitElement
       pageParams: { type: Object },
       sourceUrl: { type: String },
       navMenuShown: { type: Boolean },
-      showTerms: { type: Boolean }
+      showTerms: { type: Boolean },
+      sourceLoaded: { type: Boolean }
     }
   }
 
@@ -83,7 +85,7 @@ class AppMain extends LitElement
       </div>
       <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
       <div class="navbar-start">
-        ${this.sourceUrl ? 
+        ${this.sourceUrl && this.sourceLoaded ? 
           html`
         <div class="navbar-item">Current Archive:&nbsp;<b>${this.sourceUrl}</b>
         </div>` : html``}
@@ -105,6 +107,7 @@ class AppMain extends LitElement
       return html`
       <wr-coll .loadInfo="${this.loadInfo}"
       sourceUrl="${this.sourceUrl}"
+      @replay-favicons=${this.onFavIcons}
       @coll-loaded=${this.onCollLoaded}></wr-coll>
       `;
     } else if (this.showTerms) {
@@ -141,6 +144,28 @@ class AppMain extends LitElement
 
   firstUpdated() {
     this.initRoute();
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("sourceUrl")) {
+      this.sourceLoaded = false;
+    }
+  }
+
+  onFavIcons(event) {
+    const head = document.querySelector('head'); 
+    const oldLinks = document.querySelectorAll("link[rel*='icon']");
+
+    for (const link of oldLinks) { 
+      head.removeChild(link); 
+    } 
+
+    for (const icon of event.detail.icons) {
+      const link = document.createElement('link'); 
+      link.rel = icon.rel; 
+      link.href = icon.href; 
+      head.appendChild(link);  
+    }
   }
 
   onNavMenu() {
@@ -187,6 +212,11 @@ class AppMain extends LitElement
 
   onCollLoaded(event) {
     this.loadInfo = null;
+    if (event.detail.alreadyLoaded) {
+      this.sourceLoaded = true;
+      return;
+    }
+
     this.initRoute();
 
     if (event.detail.sourceUrl !== this.sourceUrl) {
@@ -352,6 +382,10 @@ class WrLoader extends LitElement
         font-size: calc(1.5rem / 1.5);
         line-height: 1.5rem;
       }
+      .error {
+        white-space: pre-wrap;
+        text-align: left;
+      }
     `);
   }
 
@@ -385,7 +419,7 @@ class WrLoader extends LitElement
           style="max-width: 400px"/>`;
 
       case "errored":
-        return html`<div class="has-text-danger">${this.error}</div>`;
+        return html`<div class="error has-text-danger">${this.error}</div>`;
 
       case "waiting":
       default:
@@ -502,6 +536,12 @@ class WrIndex extends LitElement
       background-color: transparent !important;
       width: auto;
     }
+    .coll-list {
+      overflow-y: auto;
+    }
+    nav.main-scroll {
+      max-height: calc(100vh - 279px);
+    }
     `);
   }
 
@@ -545,9 +585,10 @@ class WrIndex extends LitElement
       </div>
     </section>
     <section class="container">
-      <nav class="panel">
+      <nav class="panel main-scroll">
         <p class="panel-heading">Loaded Archives</p>
-        ${this.colls.map((coll, i) => html`
+        <div class="coll-list">
+        ${this.colls.length ? this.colls.map((coll, i) => html`
           <div class="panel-block">
             <div class="level" style="width: 100%">
               <div class="level-left">
@@ -564,7 +605,12 @@ class WrIndex extends LitElement
                 <button class="button is-loading is-static"></button>`}
               </div>
           </div>
-        `)}
+        `) : html`
+          <div class="panel-block extra-padding">
+            <i>No Archices so far! Archives loaded in the section above will appear here.</i>
+          </div>
+        `}
+        </div>
       </nav>
     </section>
     `;
@@ -682,6 +728,7 @@ class WrColl extends LitElement
     }
 
     this.hasCurated = (this.collInfo.lists && this.collInfo.lists.length);
+    this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {alreadyLoaded: true}}));
 
     const hash = window.location.hash;
     if (hash) {
@@ -1300,6 +1347,7 @@ class WrReplayPage extends LitElement
     this.replayTS = "";
     this.url = "";
     this.ts = "";
+    this.title = "";
   }
 
   static get properties() {
@@ -1313,6 +1361,7 @@ class WrReplayPage extends LitElement
       // actual replay url
       replayUrl: { type: String },
       replayTS: { type: String },
+      title: { type: String },
 
       iframeUrl: { type: String },
       isLoading: { type: Boolean }
@@ -1358,7 +1407,15 @@ class WrReplayPage extends LitElement
       if (event.data.wb_type === "load" || event.data.wb_type === "replace-url") {
         this.replayTS = event.data.ts;
         this.replayUrl = event.data.url;
+        this.title = event.data.title || this.title;
         this.isLoading = false;
+
+        if (event.data.icons) {
+          const icons = event.data.icons;
+          this.dispatchEvent(new CustomEvent("replay-favicons", {bubbles: true, composed: true, detail: {icons}}));
+        }
+      } else if (event.data.wb_type === "title") {
+        this.title = event.data.title;
       }
     }
   }
@@ -1403,6 +1460,15 @@ class WrReplayPage extends LitElement
         border-bottom: solid .1rem #97989A;
       }
 
+      .embed-bar {
+        padding: 0.25em;
+        max-width: none;
+        border-bottom: solid .1rem #97989A;
+        background-color: aliceblue;
+        text-align: center;
+        height: 44px;
+      }
+
       input#url {
         border-radius: 4px;
       }
@@ -1424,6 +1490,7 @@ class WrReplayPage extends LitElement
 
   render() {
     return html`
+    ${!this.embed ? html`
     <div class="container replay-bar">
       <form @submit="${this.onSubmit}">
         <div class="field has-addons">
@@ -1440,7 +1507,13 @@ class WrReplayPage extends LitElement
           <p id="datetime" class="control is-hidden-mobile">${tsToDate(this.replayTS).toLocaleString()}</p>
         </div>
       </form>
+    </div>` : html`
+
+    <div class="container embed-bar">
+    <p class="is-size-5">${this.title}</p>
     </div>
+    `}
+
     ${this.iframeUrl ? html`
     <iframe @message="${this.onReplayMessage}"
     src="${this.iframeUrl}"></iframe>
@@ -1626,7 +1699,7 @@ function registerSW(url) {
   });
   
   register(url, {
-    registrationOptions: { scope: '/', otherOptions: 'foo' },
+    registrationOptions: { scope: '/' },
     ready (registration) {
       console.log('Service worker is active.');
       resolve();
