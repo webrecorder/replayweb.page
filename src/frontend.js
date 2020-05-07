@@ -56,7 +56,6 @@ class AppMain extends LitElement
       navMenuShown: { type: Boolean },
       showTerms: { type: Boolean },
       sourceLoaded: { type: Boolean },
-      gdriveReAuth: { type: String }
     }
   }
 
@@ -74,7 +73,6 @@ class AppMain extends LitElement
 
   render() {
     return html`
-    ${!this.gdriveReAuth ? html`
     <div class="container" style="display: sticky">
       <nav class="navbar breadcrumbs" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
@@ -97,65 +95,57 @@ class AppMain extends LitElement
         </div>` : html``}
       </div>
       <div class="navbar-end">
-        <a href="?terms" class="navbar-item">Terms</a>
-        <a href="/docs" class="navbar-item">
+        <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
+        <a href="/docs" target="_blank" class="navbar-item">
           <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;Docs
         </a>
       </div>
     </nav>
-  </div>` : html``}
-  ${this.renderContent()}
-  `;
-  }
-
-  renderContent() {
-    if (this.gdriveReAuth) {
-      return html`
-      <div class="hero is-fullheight">
-      <div class="hero-body">
-      <div class="container has-text-centered">
-      <wr-gdrive .fileId=${this.gdriveReAuth} .reauth="${true}" @load-ready=${this.onReAuthed}/>
+  </div>
+  
+  ${this.sourceUrl ? html`
+  <wr-coll .loadInfo="${this.loadInfo}"
+  sourceUrl="${this.sourceUrl}"
+  @replay-favicons=${this.onFavIcons}
+  @coll-loaded=${this.onCollLoaded}></wr-coll>
+  ` : html`
+  <wr-index @load-start=${this.onStartLoad}></wr-index>
+  `}
+  ${this.showTerms ? html`
+  <div class="modal is-active">
+    <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+        <p class="modal-card-title">Terms and Privacy</p>
+          <button class="delete" aria-label="close" @click="${(e) => this.showTerms = false}"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="container">
+            <div class="content">
+            <p>This site is a static browser-based application that loads web archive files provided by the user
+            and renders them for replay in the browser.</p>
+            <p>The site is operated by the <a href="https://webrecorder.net/">Webrecorder Project</a></p>
+            <p>See the <a target="_blank" href="/docs">Docs</a> for more info on how it works.</p>
+        
+            <h3>Privacy</h3>
+            <p><b>No data is uploaded anywhere and no information is collected.</b></p>
+            <p>All content rendered stays directly in your browser.</p>
+        
+            <h4>Disclaimer of Warranties</h4>
+            <p>The application may not always be available. No guarantees!</p>
+            <p>Some legalese:</p>
+            <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE" 
+            AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE, 
+            INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+            </p>
+            <a class="button is-primary" href="#" @click="${(e) => this.showTerms = false}">Close</a>
+            </div>
+          </div>
+        </section>
       </div>
-      </div>
-      </div>
-      `;
-    } else if (this.sourceUrl) {
-      return html`
-      <wr-coll .loadInfo="${this.loadInfo}"
-      sourceUrl="${this.sourceUrl}"
-      @replay-favicons=${this.onFavIcons}
-      @coll-loaded=${this.onCollLoaded}></wr-coll>
-      `;
-    } else if (this.showTerms) {
-      return html`
-      <div class="container">
-        <div class="content">
-          <h3 class="title">Terms</h3>
-          <p>This site is a static browser-based application that loads web archive files provided by the user
-          and renders them for replay in the browser.</p>
-          <p>The site is operated by the <a href="https://webrecorder.net/">Webrecorder Project</a></p>
-          <p>See the <a href="/docs">About</a> for more info on how it works.</p>
-
-          <h3>Privacy</h3>
-          <p><b>No data is uploaded anywhere and no information is collected.</b></p>
-          <p>All content rendered stays directly in your browser.</p>
-
-          <h4>Disclaimer of Warranties</h4>
-          <p>The application may not always be available. No guarantees!</p>
-          <p>Some legalese:</p>
-          <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE" 
-          AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE, 
-          INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
-          </p>
-          <a class="button is-primary" href="#" @click="${(e) => window.history.back()}">Back</a>
-        </div>
-      </div>
-      `;
-    } else if (this.sourceUrl === "") {
-      return html`
-      <wr-index @load-start=${this.onStartLoad}></wr-index>
-      `;
-    }
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+  ` : ``} `
   }
 
   firstUpdated() {
@@ -165,22 +155,6 @@ class AppMain extends LitElement
   updated(changedProperties) {
     if (changedProperties.has("sourceUrl")) {
       this.sourceLoaded = false;
-    }
-  }
-
-  async onReAuthed(event) {
-    const redir = this.pageParams.get("redirUrl");
-    const {coll} = await sourceToId(this.sourceUrl);
-
-    const headers = event.detail.headers;
-
-    const resp = await fetch(`/wabac/api/${coll}/updateAuth`, { 
-      method: 'POST',
-      body: JSON.stringify({headers})
-    });
-
-    if (redir) {
-      window.location.href = redir;
     }
   }
 
@@ -224,11 +198,6 @@ class AppMain extends LitElement
     }
 
     this.sourceUrl = this.pageParams.get("source") || "";
-
-    //todo: make more generic?
-    if (this.pageParams.get("autherr") && this.pageParams.get("redirUrl") && this.sourceUrl.startsWith("googledrive://")) {
-      this.gdriveReAuth = this.sourceUrl.slice("googledrive://".length);
-    }
 
     if (this.pageParams.has("terms")) {
       this.showTerms = true;
@@ -333,7 +302,6 @@ class WrLoader extends LitElement
       switch (scheme) {
         case "googledrive":
           this.state = "googledrive";
-          this.fileId = host;
           source = await this.googledriveInit();
           break;
 
@@ -442,7 +410,7 @@ class WrLoader extends LitElement
   renderContent() {
     switch (this.state) {
       case "googledrive":
-        return html`<wr-gdrive .fileId=${this.fileId} @load-ready=${this.onLoadReady}/>`
+        return html`<wr-gdrive .sourceId=${this.sourceUrl} @load-ready=${this.onLoadReady}/>`
 
       case "started":
         return html`
@@ -1376,6 +1344,8 @@ class WrReplayPage extends LitElement
     this.url = "";
     this.ts = "";
     this.title = "";
+
+    this.authNeeded = null;
   }
 
   static get properties() {
@@ -1392,12 +1362,19 @@ class WrReplayPage extends LitElement
       title: { type: String },
 
       iframeUrl: { type: String },
-      isLoading: { type: Boolean }
+      isLoading: { type: Boolean },
+
+      authNeeded: { type: Object }
     }
   }
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      if (event.data.type === "authneeded") {
+        this.authNeeded = event.data;
+      }
+    });
   }
 
   doSetIframeUrl() {
@@ -1456,9 +1433,12 @@ class WrReplayPage extends LitElement
     return false;
   }
 
-  onRefresh(event) {
-    event.preventDefault();
-    if (this.isLoading) {
+  onRefresh(event, forceReload) {
+    if (event) {
+      event.preventDefault();
+    }
+    
+    if (this.isLoading && !forceReload) {
       return;
     }
 
@@ -1513,6 +1493,11 @@ class WrReplayPage extends LitElement
       #refresh {
         border: 0px;
       }
+
+      .modal {
+        top: 174px;
+      }
+
     `);
   }
 
@@ -1546,7 +1531,42 @@ class WrReplayPage extends LitElement
     <iframe @message="${this.onReplayMessage}"
     src="${this.iframeUrl}"></iframe>
     ` : ``}
+
+    ${this.authNeeded ? html`
+    <div class="modal is-active">
+      <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+          <p class="modal-card-title">Auth Needed</p>
+            <button class="delete" aria-label="close" @click="${(e) => this.authNeeded = null}"></button>
+          </header>
+          <section class="modal-card-body">
+            <div class="container has-text-centered">
+            <wr-gdrive .sourceId=${this.authNeeded.source} .reauth="${true}" @load-ready=${this.onReAuthed}/>
+            </div>
+          </section>
+        </div>
+      <button class="modal-close is-large" aria-label="close"></button>
+    </div>
+    ` : ``}
     `;
+  }
+
+  async onReAuthed(event) {
+    if (!this.authNeeded) {
+      return;
+    }
+
+    const headers = event.detail.headers;
+
+    const resp = await fetch(`/wabac/api/${this.authNeeded.coll}/updateAuth`, { 
+      method: 'POST',
+      body: JSON.stringify({headers})
+    });
+
+    this.authNeeded = false;
+
+    this.onRefresh(null, true);
   }
 }
 
@@ -1556,7 +1576,7 @@ class WrGdrive extends LitElement
   constructor() {
     super();
     this.manual = false;
-    this.fileId = "";
+    this.sourceId = "";
     this.scriptLoaded = false;
     this.error = false;
   }
@@ -1564,14 +1584,14 @@ class WrGdrive extends LitElement
   static get properties() {
     return {
       manual: { type: Boolean },
-      fileId: { type: String },
+      sourceId: { type: String },
       error: { type: Boolean },
       reauth: { type: Boolean }
     }
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("fileId")) {
+    if (changedProperties.has("sourceId")) {
       this.error = false;
       //this.scriptLoaded = false;
       this.manual = false;
@@ -1598,7 +1618,8 @@ class WrGdrive extends LitElement
   }
 
   async authed(response) {
-    const fileId = this.fileId;
+    const sourceId = this.sourceId;
+    const fileId = sourceId.slice("googledrive://".length);
     const metadataUrl = `https://www.googleapis.com/drive/v3/files/${fileId}`;
     const authToken = response.access_token;
     const headers = {"Authorization": `Bearer ${authToken}`};
@@ -1614,8 +1635,6 @@ class WrGdrive extends LitElement
     this.error = false;
 
     const metadata = await resp.json();
-
-    const sourceId = `googledrive://${fileId}`;
     const name = metadata.name;
     const displayName = `Google Drive file: ` + metadata.name;
 
@@ -1636,7 +1655,7 @@ class WrGdrive extends LitElement
     ` : html`
     ${this.error ? html`
     <div class="error has-text-danger">
-      <p>${this.reauth ? 'Please reauthorize Google Drive to continue loading.' :
+      <p>${this.reauth ? 'Some resources are loaded on demand from Google Drive, which requires reauthorization.' :
       'Could not access this file with the current Google Drive account.'}</p>
       <p>If you have multiple Google Drive accounts, be sure to select the correct one.</p>
     </div>
