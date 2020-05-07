@@ -3,7 +3,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { styleMap } from 'lit-html/directives/style-map';
 
-import { digestMessage, getTS, tsToDate } from './pageutils';
+import { digestMessage, getTS, tsToDate, sourceToId } from './pageutils';
 import { register } from 'register-service-worker';
 
 import prettyBytes from 'pretty-bytes';
@@ -51,7 +51,8 @@ class AppMain extends LitElement
       sourceUrl: { type: String },
       navMenuShown: { type: Boolean },
       showTerms: { type: Boolean },
-      sourceLoaded: { type: Boolean }
+      sourceLoaded: { type: Boolean },
+      gdriveReAuth: { type: String }
     }
   }
 
@@ -69,6 +70,7 @@ class AppMain extends LitElement
 
   render() {
     return html`
+    ${!this.gdriveReAuth ? html`
     <div class="container" style="display: sticky">
       <nav class="navbar breadcrumbs" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
@@ -97,13 +99,23 @@ class AppMain extends LitElement
         </a>
       </div>
     </nav>
-  </div>
+  </div>` : html``}
   ${this.renderContent()}
   `;
   }
 
   renderContent() {
-    if (this.sourceUrl) {
+    if (this.gdriveReAuth) {
+      return html`
+      <div class="hero is-fullheight">
+      <div class="hero-body">
+      <div class="container has-text-centered">
+      <wr-gdrive .fileId=${this.gdriveReAuth} .reauth="${true}" @load-ready=${this.onReAuthed}/>
+      </div>
+      </div>
+      </div>
+      `;
+    } else if (this.sourceUrl) {
       return html`
       <wr-coll .loadInfo="${this.loadInfo}"
       sourceUrl="${this.sourceUrl}"
@@ -152,6 +164,22 @@ class AppMain extends LitElement
     }
   }
 
+  async onReAuthed(event) {
+    const redir = this.pageParams.get("redirUrl");
+    const {coll} = await sourceToId(this.sourceUrl);
+
+    const headers = event.detail.headers;
+
+    const resp = await fetch(`/wabac/api/${coll}/updateAuth`, { 
+      method: 'POST',
+      body: JSON.stringify({headers})
+    });
+
+    if (redir) {
+      //window.location.href = redir;
+    }
+  }
+
   onFavIcons(event) {
     const head = document.querySelector('head'); 
     const oldLinks = document.querySelectorAll("link[rel*='icon']");
@@ -192,6 +220,11 @@ class AppMain extends LitElement
     }
 
     this.sourceUrl = this.pageParams.get("source") || "";
+
+    //todo: make more generic?
+    if (this.pageParams.get("autherr") && this.pageParams.get("redirUrl") && this.sourceUrl.startsWith("googledrive://")) {
+      this.gdriveReAuth = this.sourceUrl.slice("googledrive://".length);
+    }
 
     if (this.pageParams.has("terms")) {
       this.showTerms = true;
@@ -664,16 +697,6 @@ class WrColl extends LitElement
     window.addEventListener("hashchange", (event) => this.onHashChange(event));
   }
 
-  async sourceToId(url) {
-    try {
-      url = new URL(url, window.location.origin).href;
-    } catch(e) {}
-
-    const digest = await digestMessage(url, 'SHA-256');
-    const coll = "id-" + digest.slice(0, 12);
-    return {url, coll};
-  }
-
   updated(changedProperties) {
     if (changedProperties.has("sourceUrl")) {
       this.doUpdateInfo();
@@ -704,7 +727,7 @@ class WrColl extends LitElement
   }
 
   async doUpdateInfo() {
-    const {url, coll} = await this.sourceToId(this.sourceUrl);
+    const {url, coll} = await sourceToId(this.sourceUrl);
 
     this.coll = coll;
 
@@ -910,6 +933,10 @@ class WrCuratedPages extends LitElement
 
   static get styles() {
     return wrapCss(css`
+    .columns {
+      width: 100vw;
+    }
+
     .column {
       max-height: calc(100vh - 92px);
     }
@@ -941,7 +968,7 @@ class WrCuratedPages extends LitElement
           </ul>
         </div>
       </div>
-      <div id="content" @scroll=${this.onScroll} class="column main-scroll">
+      <div id="content" @scroll=${this.onScroll} class="is-two-thirds column main-scroll">
         <section id="list-0" class="container">
           <h2 class="title is-3">${this.collInfo.title}</h2>
           ${this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ''}
@@ -1537,7 +1564,8 @@ class WrGdrive extends LitElement
     return {
       manual: { type: Boolean },
       fileId: { type: String },
-      error: { type: Boolean }
+      error: { type: Boolean },
+      reauth: { type: Boolean }
     }
   }
 
@@ -1561,7 +1589,7 @@ class WrGdrive extends LitElement
   }
 
   onClickAuth() {
-    this.gauth(undefined, (response) => {
+    this.gauth('select_account', (response) => {
       if (!response.error) {
         this.authed(response);
       }
@@ -1607,9 +1635,11 @@ class WrGdrive extends LitElement
     ` : html`
     ${this.error ? html`
     <div class="error has-text-danger">
-      <p>Could not access this file with the current Google Drive account.</p>
-      <p>If you have multiple Google Drive accounts, be sure to select the correct one</p>
+      <p>${this.reauth ? 'Please reauthorize Google Drive to continue loading.' :
+      'Could not access this file with the current Google Drive account.'}</p>
+      <p>If you have multiple Google Drive accounts, be sure to select the correct one.</p>
     </div>
+    <br/>
     ` : ``}
     <button class="button is-primary is-rounded" @click="${this.onClickAuth}">
     <span class="icon"><fa-icon .svg="${fabGoogleDrive}"></fa-icon></span>
