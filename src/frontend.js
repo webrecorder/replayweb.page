@@ -3,7 +3,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { styleMap } from 'lit-html/directives/style-map';
 
-import { digestMessage, getTS, tsToDate, sourceToId } from './pageutils';
+import { digestMessage, getTS, tsToDate, sourceToId, parseURLSchemeHostPath } from './pageutils';
 import { register } from 'register-service-worker';
 
 import prettyBytes from 'pretty-bytes';
@@ -32,6 +32,10 @@ function wrapCss(custom) {
 }
 
 const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.googleusercontent.com";
+
+
+const dbworker = new Worker(__SW_PATH__);
+
 
 // ===========================================================================
 class AppMain extends LitElement
@@ -270,8 +274,6 @@ class WrLoader extends LitElement
     this.coll = "";
     this.state = "waiting";
     this.loadInfo = null;
-
-    this.worker = new Worker(__SW_PATH__);
   }
 
   static get properties() {
@@ -294,7 +296,7 @@ class WrLoader extends LitElement
   }
 
   initMessages() {
-    this.worker.addEventListener("message", (event) => {
+    dbworker.addEventListener("message", (event) => {
       switch (event.data.msg_type) {
         case "collProgress":
           if (event.data.name === this.coll) {
@@ -313,7 +315,7 @@ class WrLoader extends LitElement
             }
             this.progress = this.total;
             this.percent = 100;
-            this.dispatchEvent(new CustomEvent("coll-loaded", {detail: event.data}));
+            //this.dispatchEvent(new CustomEvent("coll-loaded", {detail: event.data}));
           }
           break;
       }
@@ -326,31 +328,23 @@ class WrLoader extends LitElement
 
     // custom protocol handlers here...
     try {
-      const sup = new URL(this.sourceUrl);
-      let firstSlash = null;
+      const {scheme, host, path} = parseURLSchemeHostPath(sourceUrl);
 
-      if (!sup.host) {
-        firstSlash = sup.pathname.indexOf("/", 2);
-      }
-
-      switch (sup.protocol) {
-        case "googledrive:":
+      switch (scheme) {
+        case "googledrive":
           this.state = "googledrive";
-          if (firstSlash < 0) {
-            firstSlash = undefined;
-          }
-          this.fileId = sup.pathname.slice(2, firstSlash);
+          this.fileId = host;
           source = await this.googledriveInit();
           break;
 
-        case "s3:":
-          sourceUrl = `https://${sup.pathname.slice(2, firstSlash)}.s3.amazonaws.com${sup.pathname.slice(firstSlash)}`;
+        case "s3":
+          sourceUrl = `https://${host}.s3.amazonaws.com${path}`;
           source = {sourceUrl,
                     sourceId: this.sourceUrl,
                     name: this.sourceUrl};
           break;
 
-        case "file:":
+        case "file":
           if (!this.loadInfo) {
             this.state = "errored";
             this.error = "File URLs are local and can not be shared. You can choose a file to upload from the main page.";
@@ -375,7 +369,7 @@ class WrLoader extends LitElement
 
     const msg = {"msg_type": "addColl", "name": this.coll, skipExisting: true, file: source};
 
-    this.worker.postMessage(msg);
+    dbworker.postMessage(msg);
   }
 
   googledriveInit() {
@@ -406,15 +400,20 @@ class WrLoader extends LitElement
         margin: 1em;
       }
 
-      progress:after {
-        content: attr(data-percent)'%';
+      .progress-div {
+        position: relative;
+        width: 400px !important;
+      }
+
+      .progress-label {
         position: absolute;
-        -webkit-transform: translate(-50%, -100%);
-        -ms-transform: translate(-50%, -100%);
-        transform: translateX(-50%, -100%);
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
         font-size: calc(1.5rem / 1.5);
         line-height: 1.5rem;
       }
+
       .error {
         white-space: pre-wrap;
         text-align: left;
@@ -447,9 +446,11 @@ class WrLoader extends LitElement
 
       case "started":
         return html`
-          <progress class="progress is-primary is-large" 
-          data-percent="${this.percent}" value="${this.percent}" max="100"
-          style="max-width: 400px"/>`;
+          <div class="progress-div">
+            <progress id="progress" class="progress is-primary is-large" 
+            value="${this.percent}" max="100"></progress>
+            <label class="progress-label" for="progress">${this.percent}%</label>
+          </div>`;
 
       case "errored":
         return html`<div class="error has-text-danger">${this.error}</div>`;

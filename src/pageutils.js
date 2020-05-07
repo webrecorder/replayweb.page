@@ -39,8 +39,39 @@ async function sourceToId(url) {
   return {url, coll};
 }
 
+// simple parse of scheme, host, rest of path
+// not using URL due to different browser behavior
+function parseURLSchemeHostPath(url) {
+  let inx = url.indexOf("://");
+  let hostInx = 0;
+  let scheme = "";
+  let host = "";
+  let path = "";
+
+  if (inx >= 0) {
+    scheme = url.slice(0, inx);
+    inx += 3;
+  } else {
+    inx++;
+    if (url.startsWith("//")) {
+      inx += 2;
+    }
+  }
+
+  hostInx = url.indexOf("/", inx);
+  if (hostInx > 0) {
+    host = url.slice(inx, hostInx);
+    path = url.slice(hostInx);
+  } else {
+    host = url.slice(inx);
+    path = "";
+  }
+
+  return {scheme, host, path};
+}
 
 
 
 
-export { digestMessage, tsToDate, getTS, sourceToId };
+
+export { digestMessage, tsToDate, getTS, sourceToId, parseURLSchemeHostPath };
