@@ -180,7 +180,7 @@ class AppMain extends LitElement
     });
 
     if (redir) {
-      //window.location.href = redir;
+      window.location.href = redir;
     }
   }
 
