@@ -309,10 +309,13 @@ const ae=new WeakMap,re=v(e=>t=>{if(!(t instanceof P))throw new Error("unsafeHTM
     nav.main-scroll {
       max-height: calc(100vh - 279px);
     }
+    #index-heading {
+      background-color: aliceblue;
+    }
     `)}render(){return M`
     <section class="section no-top-padding">
       <div class="container">
-        <nav class="panel is-info">
+        <nav class="panel is-light">
           <p class="panel-heading">Load Web Archive</p>
           <div class="extra-padding panel-block file has-name">
             <form class="container" @submit="${this.onStartLoad}">
@@ -349,7 +352,7 @@ const ae=new WeakMap,re=v(e=>t=>{if(!(t instanceof P))throw new Error("unsafeHTM
     </section>
     <section class="container">
       <nav class="panel main-scroll">
-        <p class="panel-heading">Loaded Archives</p>
+        <p id="index-heading" class="panel-heading">Loaded Archives</p>
         <div class="coll-list">
         ${this.colls.length?this.colls.map((e,t)=>M`
           <div class="panel-block">
@@ -370,7 +373,7 @@ const ae=new WeakMap,re=v(e=>t=>{if(!(t instanceof P))throw new Error("unsafeHTM
           </div>
         `):M`
           <div class="panel-block extra-padding">
-            <i>No Archices so far! Archives loaded in the section above will appear here.</i>
+            <i>No Archives so far! Archives loaded in the section above will appear here.</i>
           </div>
         `}
         </div>

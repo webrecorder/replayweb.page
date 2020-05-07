@@ -544,6 +544,9 @@ class WrIndex extends LitElement
     nav.main-scroll {
       max-height: calc(100vh - 279px);
     }
+    #index-heading {
+      background-color: aliceblue;
+    }
     `);
   }
 
@@ -551,7 +554,7 @@ class WrIndex extends LitElement
     return html`
     <section class="section no-top-padding">
       <div class="container">
-        <nav class="panel is-info">
+        <nav class="panel is-light">
           <p class="panel-heading">Load Web Archive</p>
           <div class="extra-padding panel-block file has-name">
             <form class="container" @submit="${this.onStartLoad}">
@@ -588,7 +591,7 @@ class WrIndex extends LitElement
     </section>
     <section class="container">
       <nav class="panel main-scroll">
-        <p class="panel-heading">Loaded Archives</p>
+        <p id="index-heading" class="panel-heading">Loaded Archives</p>
         <div class="coll-list">
         ${this.colls.length ? this.colls.map((coll, i) => html`
           <div class="panel-block">
@@ -609,7 +612,7 @@ class WrIndex extends LitElement
           </div>
         `) : html`
           <div class="panel-block extra-padding">
-            <i>No Archices so far! Archives loaded in the section above will appear here.</i>
+            <i>No Archives so far! Archives loaded in the section above will appear here.</i>
           </div>
         `}
         </div>
