@@ -308,7 +308,7 @@ class WrLoader extends LitElement
         case "s3":
           sourceUrl = `https://${host}.s3.amazonaws.com${path}`;
           source = {sourceUrl,
-                    sourceId: this.sourceUrl,
+                    //sourceId: this.sourceUrl,
                     name: this.sourceUrl};
           break;
 
@@ -321,7 +321,7 @@ class WrLoader extends LitElement
 
           source = {
             sourceUrl: this.loadInfo.blobUrl,
-            sourceId: this.loadInfo.name,
+            //sourceId: this.loadInfo.name,
             name: this.loadInfo.name
           }
           break;
@@ -410,7 +410,7 @@ class WrLoader extends LitElement
   renderContent() {
     switch (this.state) {
       case "googledrive":
-        return html`<wr-gdrive .sourceId=${this.sourceUrl} @load-ready=${this.onLoadReady}/>`
+        return html`<wr-gdrive .sourceUrl=${this.sourceUrl} @load-ready=${this.onLoadReady}/>`
 
       case "started":
         return html`
@@ -468,11 +468,11 @@ class WrIndex extends LitElement
 
     const index = Number(event.currentTarget.getAttribute("data-coll-index"));
     const coll = this.colls[index];
-    if (!coll || this._deleting[coll.sourceId]) {
+    if (!coll || this._deleting[coll.sourceUrl]) {
       return;
     }
 
-    this._deleting[coll.sourceId] = true;
+    this._deleting[coll.sourceUrl] = true;
     this.requestUpdate();
 
     const resp = await fetch(`/wabac/api/${coll.id}`, {method: 'DELETE'});
@@ -595,13 +595,13 @@ class WrIndex extends LitElement
             <div class="level" style="width: 100%">
               <div class="level-left">
                 <div>
-                  <span class="subtitle"><a href="?source=${coll.sourceId}">${coll.title || coll.displayName}</a></span>
+                  <span class="subtitle"><a href="?source=${coll.sourceUrl}">${coll.title || coll.displayName}</a></span>
                   <p><i>Source: ${coll.displayName}</i></p>
                 </div>
               </div>
               <div class="level-right">
                 <span class="size">Size: ${prettyBytes(Number(coll.size || 0))}</span>
-                ${!this._deleting[coll.sourceId] ? html`
+                ${!this._deleting[coll.sourceUrl] ? html`
                 <button data-coll-index="${i}" @click="${this.onDeleteColl}" class="delete"></button>
                 ` : html`
                 <button class="button is-loading is-static"></button>`}
@@ -1547,7 +1547,7 @@ class WrReplayPage extends LitElement
           </header>
           <section class="modal-card-body">
             <div class="container has-text-centered">
-            <wr-gdrive .sourceId=${this.authNeeded.source} .reauth="${true}" @load-ready=${this.onReAuthed}/>
+            <wr-gdrive .sourceUrl=${this.authNeeded.source} .reauth="${true}" @load-ready=${this.onReAuthed}/>
             </div>
           </section>
         </div>
@@ -1580,26 +1580,75 @@ class WrGdrive extends LitElement
 {
   constructor() {
     super();
-    this.manual = false;
-    this.sourceId = "";
+    this.state = "trypublic";
+    this.sourceUrl = "";
     this.scriptLoaded = false;
     this.error = false;
   }
 
   static get properties() {
     return {
-      manual: { type: Boolean },
-      sourceId: { type: String },
+      state: { type: String },
+      sourceUrl: { type: String },
       error: { type: Boolean },
       reauth: { type: Boolean }
     }
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("sourceId")) {
+    if (changedProperties.has("sourceUrl")) {
       this.error = false;
-      //this.scriptLoaded = false;
-      this.manual = false;
+      this.state = "trypublic";
+      this.tryPublicAccess().then((result) => {
+        if (!result) {
+          this.state = "tryauto";
+          this.requestUpdate();
+        }
+      });
+    }
+  }
+
+  async tryPublicAccess() {
+    try {
+      const sourceUrl = this.sourceUrl;
+      const fileId = sourceUrl.slice("googledrive://".length);
+      const publicCheckUrl = `https://gdrive-proxy.webrecorder.workers.dev/g/${fileId}`;
+
+      let resp = null;
+      try {
+        resp = await fetch(publicCheckUrl);
+      } catch (e) {
+        return false;
+      }
+      const json = await resp.json();
+      if (!json.url || !json.name) {
+        return false;
+      }
+
+      const publicUrl = json.url;
+
+      try {
+        const abort = new AbortController();
+        const signal = abort.signal;
+        resp = await fetch(publicUrl, {signal});
+        abort.abort();
+        if (resp.status != 200) {
+          return false;
+        }
+      } catch(e) {
+        return false;
+      }
+
+      const name = json.name;
+      const displayName = `Google Drive file: ` + name;
+      const extra = {publicUrl};
+      const size = Number(json.size);
+  
+      this.dispatchEvent(new CustomEvent("load-ready", {detail: {name, displayName, extra, size, sourceUrl}}));
+      return true;
+
+    } catch (e) {
+      return false;
     }
   }
 
@@ -1607,7 +1656,7 @@ class WrGdrive extends LitElement
     this.scriptLoaded = true;
     this.gauth('none', (response) => {
       if (response.error === "immediate_failed") {
-        this.manual = true;
+        this.state = "trymanual";
       } else {
         this.authed(response);
       }
@@ -1623,16 +1672,16 @@ class WrGdrive extends LitElement
   }
 
   async authed(response) {
-    const sourceId = this.sourceId;
-    const fileId = sourceId.slice("googledrive://".length);
+    const sourceUrl = this.sourceUrl;
+    const fileId = sourceUrl.slice("googledrive://".length);
     const metadataUrl = `https://www.googleapis.com/drive/v3/files/${fileId}`;
     const authToken = response.access_token;
     const headers = {"Authorization": `Bearer ${authToken}`};
 
-    const resp = await fetch(metadataUrl + "?fields=name", {headers});
+    const resp = await fetch(metadataUrl + "?fields=name,size", {headers});
 
     if ((resp.status === 404 || resp.status == 403)) {
-      this.manual = true;
+      this.state = "trymanual";
       this.error = true;
       return;
     }
@@ -1641,11 +1690,10 @@ class WrGdrive extends LitElement
 
     const metadata = await resp.json();
     const name = metadata.name;
+    const size = Number(metadata.size);
     const displayName = `Google Drive file: ` + metadata.name;
 
-    const sourceUrl = metadataUrl + "?alt=media";
-
-    this.dispatchEvent(new CustomEvent("load-ready", {detail: {name, displayName, sourceId, sourceUrl, headers}}));
+    this.dispatchEvent(new CustomEvent("load-ready", {detail: {sourceUrl, headers, size, name, displayName}}));
   }
 
   static get styles() {
@@ -1655,7 +1703,7 @@ class WrGdrive extends LitElement
   render() {
     return html`
     ${this.script()}
-    ${!this.manual ? html`
+    ${this.state !== "trymanual" ? html`
     <p>Connecting to Google Drive...</p>
     ` : html`
     ${this.error ? html`
@@ -1674,7 +1722,7 @@ class WrGdrive extends LitElement
   }
 
   script() {
-    if (this.scriptLoaded) {
+    if (this.state === "trypublic" || this.scriptLoaded) {
       return html``;
     }
     const script = document.createElement('script');
@@ -1688,6 +1736,7 @@ class WrGdrive extends LitElement
       gapi.auth2.authorize({
           client_id: GDRIVE_CLIENT_ID,
           scope: "https://www.googleapis.com/auth/drive.file",
+          response_type: "token",
           prompt
       }, callback);
     });
