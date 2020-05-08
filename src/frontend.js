@@ -79,7 +79,7 @@ class AppMain extends LitElement
         <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
           <img id="logo" src="/static/logo.svg"/>
           <span class="has-text-primary">replay</span>
-          <span class="has-text-info">web.page</span>
+          <span class="has-text-link">web.page</span>
         </a>
         <a role="button" @click="${this.onNavMenu}" class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
           <span aria-hidden="true"></span>
@@ -95,10 +95,10 @@ class AppMain extends LitElement
         </div>` : html``}
       </div>
       <div class="navbar-end">
-        <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
         <a href="/docs" target="_blank" class="navbar-item">
-          <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;Docs
+          <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;Info
         </a>
+        <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
       </div>
     </nav>
   </div>
@@ -284,7 +284,7 @@ class WrLoader extends LitElement
             }
             this.progress = this.total;
             this.percent = 100;
-            //this.dispatchEvent(new CustomEvent("coll-loaded", {detail: event.data}));
+            this.dispatchEvent(new CustomEvent("coll-loaded", {detail: event.data}));
           }
           break;
       }
@@ -392,7 +392,7 @@ class WrLoader extends LitElement
   render() {
     return html`
     <section class="container">
-    <div class="level">
+    <div class="level has-text-centered">
     <img class="level-item logo" src="/static/logo.svg"/>
   </div>
       <div class="level">
@@ -544,9 +544,6 @@ class WrIndex extends LitElement
     nav.main-scroll {
       max-height: calc(100vh - 279px);
     }
-    #index-heading {
-      background-color: aliceblue;
-    }
     `);
   }
 
@@ -554,7 +551,7 @@ class WrIndex extends LitElement
     return html`
     <section class="section no-top-padding">
       <div class="container">
-        <nav class="panel is-light">
+        <nav class="panel is-info">
           <p class="panel-heading">Load Web Archive</p>
           <div class="extra-padding panel-block file has-name">
             <form class="container" @submit="${this.onStartLoad}">
@@ -590,8 +587,8 @@ class WrIndex extends LitElement
       </div>
     </section>
     <section class="container">
-      <nav class="panel main-scroll">
-        <p id="index-heading" class="panel-heading">Loaded Archives</p>
+      <nav class="panel main-scroll is-light">
+        <p class="panel-heading">Loaded Archives</p>
         <div class="coll-list">
         ${this.colls.length ? this.colls.map((coll, i) => html`
           <div class="panel-block">
@@ -783,19 +780,21 @@ class WrColl extends LitElement
       font-weight: initial;
       margin-right: 20px;
     }
-    .bg-alice-blue {
-      background-color: aliceblue;
+    .bg-light {
+      background-color: #f0fff8";
     }
     `);
   }
 
   render() {
     if (this.collInfo && !this.collInfo.coll) {
-      return html`<wr-loader .loadInfo="${this.loadInfo}" .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
+      return html`
+      <wr-loader .loadInfo="${this.loadInfo}" 
+      .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
     } else if (this.collInfo) {
       return html`
       <nav class="panel is-light">
-        <p class="panel-tabs bg-alice-blue">
+        <p class="panel-tabs bg-light">
           ${this.hasCurated ? html`
             <a @click="${this.onTabClick}" href="#curated"
             class="is-size-6 ${this.tabData.view === 'curated' ? 'is-active' : ''}">
@@ -916,6 +915,9 @@ class WrCuratedPages extends LitElement
     #content {
       margin-top: 10px;
       max-height: calc(100vh - 102px);
+    }
+    ul.menu-list a.is-active {
+      background-color: #55be6f;
     }
     `);
   }

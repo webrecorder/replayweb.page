@@ -1,17 +1,20 @@
 @charset "utf-8";
 
 $wr-green: #64e986;
-$wr-yellow:  #f5c71a;
+$wr-yellow:  #ffd975;
 $wr-light-blue: #43daff;
 $wr-med-blue: #27a0ff;
 $wr-dark-blue: #4876ff;
 $wr-accent: #1b0921;
 
+$wr-light-green: #d2f9d6;
+
 $primary: $wr-green;
 $info: $wr-yellow;
+//$info: #97e7ff;
 $link: $wr-dark-blue;
 
-$light: $wr-light-blue;
+$light: $wr-light-green;
 $dark: $wr-accent;
 
 .main-scroll {
