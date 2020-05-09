@@ -306,9 +306,8 @@ class WrLoader extends LitElement
           break;
 
         case "s3":
-          sourceUrl = `https://${host}.s3.amazonaws.com${path}`;
           source = {sourceUrl,
-                    //sourceId: this.sourceUrl,
+                    loadUrl: `https://${host}.s3.amazonaws.com${path}`,
                     name: this.sourceUrl};
           break;
 
@@ -323,7 +322,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
 
           source = {
             sourceUrl: this.loadInfo.sourceUrl,
-            extra: {blobUrl: this.loadInfo.blobUrl},
+            loadUrl: this.loadInfo.blobUrl,
             name: this.loadInfo.name
           }
           break;
@@ -354,6 +353,10 @@ You can select a file to upload from the main page by clicking the \'Choose File
 
       this._gdResolve(event.detail);
     }
+  }
+
+  onCancel() {
+    dbworker.postMessage({"msg_type": "cancelLoad", "name": this.coll});
   }
 
   updated(changedProperties) {
@@ -420,6 +423,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
             <progress id="progress" class="progress is-primary is-large" 
             value="${this.percent}" max="100"></progress>
             <label class="progress-label" for="progress">${this.percent}%</label>
+            <button @click="${this.onCancel}" class="button is-danger">Cancel</button>
           </div>`;
 
       case "errored":
@@ -582,7 +586,7 @@ class WrIndex extends LitElement
                   <p class="control is-expanded">
                     <input style="max-width: 100%" class="file-name input" type="url"
                     name="filename"
-                    pattern="^(file|http|https|googledrive|s3):\/\/.*\.(warc|warc.gz|har|zip|waz)$"
+                    pattern="^((file|http|https|s3):\/\/.*\.(warc|warc.gz|har|zip|waz))|(googledrive:\/\/[^\/\s]+)$"
                     .value="${this.fileDisplayName}"
                     @input="${this.onInput}"
                     autocomplete="off"
@@ -607,8 +611,10 @@ class WrIndex extends LitElement
             <div class="level" style="width: 100%">
               <div class="level-left">
                 <div>
-                  <span class="subtitle"><a href="?source=${coll.sourceUrl}">${coll.title || coll.displayName}</a></span>
-                  <p><i>Source: ${coll.displayName}</i></p>
+                  <span class="subtitle"><a href="?source=${coll.sourceUrl}">${coll.title || coll.filename}</a></span>
+                  <p><i>Source: ${coll.sourceUrl}</i></p>
+                  ${coll.sourceUrl.startsWith("googledrive://") ? html`
+                  <p><i>Filename: ${coll.filename}</i></p>` : ''}
                 </div>
               </div>
               <div class="level-right">
@@ -728,7 +734,7 @@ class WrColl extends LitElement
     this.collInfo = {apiPrefix, replayPrefix, coll, ...json};
 
     if (!this.collInfo.title) {
-      this.collInfo.title = "Archive from " + this.collInfo.displayName;
+      this.collInfo.title = this.collInfo.filename;
     }
 
     this.hasCurated = (this.collInfo.lists && this.collInfo.lists.length);
@@ -1666,11 +1672,10 @@ class WrGdrive extends LitElement
       }
 
       const name = json.name;
-      const displayName = `Google Drive file: ` + name;
       const extra = {publicUrl};
       const size = Number(json.size);
   
-      this.dispatchEvent(new CustomEvent("load-ready", {detail: {name, displayName, extra, size, sourceUrl}}));
+      this.dispatchEvent(new CustomEvent("load-ready", {detail: {name, extra, size, sourceUrl}}));
       return true;
 
     } catch (e) {
@@ -1721,9 +1726,8 @@ class WrGdrive extends LitElement
     const metadata = await resp.json();
     const name = metadata.name;
     const size = Number(metadata.size);
-    const displayName = `Google Drive file: ` + metadata.name;
 
-    this.dispatchEvent(new CustomEvent("load-ready", {detail: {sourceUrl, headers, size, name, displayName}}));
+    this.dispatchEvent(new CustomEvent("load-ready", {detail: {sourceUrl, headers, size, name}}));
   }
 
   static get styles() {
