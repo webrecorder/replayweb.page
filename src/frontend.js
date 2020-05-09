@@ -846,7 +846,7 @@ class WrColl extends LitElement
     <wr-coll-resources .collInfo="${this.collInfo}"
     urlSearch="${this.tabData.urlSearch || ""}"
     urlSearchType="${this.tabData.urlSearchType || ""}"
-    currMime="${this.tabData.currMime || "text/html,text/xhtml"}"
+    .currMime="${this.tabData.currMime}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
     class="panel-block is-paddingless ${this.tabData.view === 'resources' ? '' : 'is-hidden'}">
     </wr-coll-resources>
@@ -1081,11 +1081,27 @@ class WrCuratedPages extends LitElement
 // ===========================================================================
 class WrResources extends LitElement
 {
+  static get filters() {
+    return [
+      {name: "HTML", filter: "text/html,text/xhtml"},
+      {name: "Images", filter: "image/"},
+      {name: "Audio/Video", filter: "audio/,video/"},
+      {name: "PDF", filter: "application/pdf"},
+      {name: "Javascript", filter: "application/javascript,application/x-javascript"},
+      {name: "CSS", filter: "text/css"},
+      {name: "Fonts", filter: "font/,application/font-woff"},
+      {name: "Plain Text", filter: "text/plain"},
+      {name: "JSON", filter: "application/json"},
+      {name: "DASH/HLS", filter: "application/dash+xml,application/x-mpegURL,application/vnd.apple.mpegurl"},
+      {name: "All URLs", filter: "all"}
+    ];
+  }
+
   constructor() {
     super();
     this.collInfo = null;
 
-    this.currMime = "text/html,text/xhtml";
+    this.currMime = "";
     this.urlSearch = "";
     this.urlSearchType = "";
 
@@ -1095,14 +1111,6 @@ class WrResources extends LitElement
 
     this.tryMore = false;
     this.loading = false;
-
-    this.filters = [
-      {name: "HTML", filter: "text/html,text/xhtml"},
-      {name: "Images", filter: "image/"},
-      {name: "Audio/Video", filter: "audio/,video/"},
-      {name: "PDF", filter: "application/pdf"},
-      {name: "All", filter: ""}
-    ]
   }
 
   static get properties() {
@@ -1124,6 +1132,10 @@ class WrResources extends LitElement
     if (changedProperties.has("urlSearch") || 
         changedProperties.has("urlSearchType") ||
         changedProperties.has("currMime")) {
+
+      if (!this.currMime) {
+        this.currMime = "text/html,text/xhtml";
+      }
 
       this.doLoadResources();
       const data = {
@@ -1147,8 +1159,10 @@ class WrResources extends LitElement
       url = "https://" + url;
     }
 
+    const mime = this.currMime === "all" ? "" : this.currMime;
+
     const params = new URLSearchParams({
-      mime: this.currMime,
+      mime,
       url,
       prefix,
       count
@@ -1159,12 +1173,6 @@ class WrResources extends LitElement
     this.results = resp.urls;
     this.tryMore = (resp.urls.length === count);
     this.filter();
-
-    const data = {
-      urlSearch: this.urlSearch,
-      currMime: this.currMime,
-      urlSearchType: this.urlSearchType
-    };
 
     this.loading = false;
   }
@@ -1182,10 +1190,11 @@ class WrResources extends LitElement
     
     const url = (this.urlSearchType !== "" ? this.urlSearch : "");
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
+    const mime = this.currMime === "all" ? "" : this.currMime;
 
     const last = this.results[this.results.length - 1];
     const params = new URLSearchParams({
-      mime: this.currMime,
+      mime,
       url,
       prefix,
       fromMime: last.mime,
@@ -1246,7 +1255,7 @@ class WrResources extends LitElement
       width: 100%;
     }
     .main-scroll {
-      max-height: calc(100vh - 247px);
+      max-height: calc(100vh - 199px);
       width: 100vw;
     }
     table {
@@ -1297,30 +1306,32 @@ class WrResources extends LitElement
     return html`
     <div class="notification level is-marginless">
       <div class="level-left flex-auto">
-        <div class="field flex-column">
-          <div class="control ${this.loading ? 'is-loading' : ''}">
-            <input type="text" class="input" @input="${this.onChangeUrlSearch}" value="${this.urlSearch}" type="text" placeholder="Search URL">
+        <div class="level-item flex-auto">
+          <span>Search:&nbsp;&nbsp;</span>
+          <div class="select">
+            <select @change="${this.onChangeTypeSearch}">
+            ${WrResources.filters.map((filter) => html`
+            <option value="${filter.filter}"
+            ?selected="${filter.filter === this.currMime}">
+            ${filter.name}
+            </option>
+            `)}
+            </select>
           </div>
-          <div class="control">
-            <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
-            <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
-            <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
-            <span class="is-pulled-right" style="margin-left: 1em">Showing ${this.filteredResults.length} Results</span>
+          <div class="field flex-auto">
+            <div class="control ${this.loading ? 'is-loading' : ''}">
+              <input type="text" class="input" @input="${this.onChangeUrlSearch}" value="${this.urlSearch}" type="text" placeholder="Enter URL search here">
+            </div>
           </div>
         </div>
       </div>
       <div class="control level-right">
-        <span>Resource Type:&nbsp;&nbsp;</span>
-        ${this.filters.map((filter) => html`
-        <label class="radio has-text-left">
-          <input type="radio" name="mime"
-          value="${filter.filter}"
-          @click="${this.onChangeTypeSearch}"
-          ?checked="${filter.filter === this.currMime}"
-          >
-          ${filter.name}
-        </label>
-        `)}
+        <div style="margin-left: 1em" class="control">
+          <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
+          <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
+          <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
+          <span class="is-pulled-right" style="margin-left: 1em">(${this.filteredResults.length} Results)</span>
+        </div>
       </div>
     </div>
     <div class="" style="">
