@@ -902,7 +902,7 @@ class WrCuratedPages extends LitElement
   }
 
   async doLoadCurated() {
-    const resp = await fetch(`${this.collInfo.apiPrefix}/curatedPages?offset=${this.offset}`);
+    const resp = await fetch(`${this.collInfo.apiPrefix}/curatedPages?offset=${this.offset}&count=1000`);
     const json = await resp.json();
 
     this.total = json.total;

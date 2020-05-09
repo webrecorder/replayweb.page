@@ -454,7 +454,7 @@ const ae=new WeakMap,re=v(e=>t=>{if(!(t instanceof U))throw new Error("unsafeHTM
     class="${"replay"===this.tabData.view?"":"is-hidden"}">
     </wr-replay-page>
     `:""}
-    `}}class Be extends ie{constructor(){super(),this.collInfo=null,this.currList=0,this.curatedPages={},this.offset=0,this.lastST=0,this.clickTime=0}static get properties(){return{collInfo:{type:Object},curatedPages:{type:Object},currList:{type:Number}}}firstUpdated(){}updated(e){e.has("collInfo")&&this.doLoadCurated()}async doLoadCurated(){const e=await fetch(`${this.collInfo.apiPrefix}/curatedPages?offset=${this.offset}`),t=await e.json();this.total=t.total,this.curatedPages={};for(const e of t.curatedPages)this.curatedPages[e.list]||(this.curatedPages[e.list]=[]),this.curatedPages[e.list].push(e);this.currList&&this.scrollToList(this.currList)}static get styles(){return Ne(ee`
+    `}}class Be extends ie{constructor(){super(),this.collInfo=null,this.currList=0,this.curatedPages={},this.offset=0,this.lastST=0,this.clickTime=0}static get properties(){return{collInfo:{type:Object},curatedPages:{type:Object},currList:{type:Number}}}firstUpdated(){}updated(e){e.has("collInfo")&&this.doLoadCurated()}async doLoadCurated(){const e=await fetch(`${this.collInfo.apiPrefix}/curatedPages?offset=${this.offset}&count=1000`),t=await e.json();this.total=t.total,this.curatedPages={};for(const e of t.curatedPages)this.curatedPages[e.list]||(this.curatedPages[e.list]=[]),this.curatedPages[e.list].push(e);this.currList&&this.scrollToList(this.currList)}static get styles(){return Ne(ee`
     .columns {
       width: 100vw;
     }
