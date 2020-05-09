@@ -138,7 +138,7 @@ class AppMain extends LitElement
             AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE, 
             INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
             </p>
-            <a class="button is-primary" href="#" @click="${(e) => this.showTerms = false}">Close</a>
+            <a class="button is-info" href="#" @click="${(e) => this.showTerms = false}">Close</a>
             </div>
           </div>
         </section>
@@ -315,13 +315,15 @@ class WrLoader extends LitElement
         case "file":
           if (!this.loadInfo) {
             this.state = "errored";
-            this.error = "File URLs are local and can not be shared. You can choose a file to upload from the main page.";
+            this.error = `\
+File URLs can not be entered directly or shared.
+You can select a file to upload from the main page by clicking the \'Choose File...\' button.`;
             return;
           }
 
           source = {
-            sourceUrl: this.loadInfo.blobUrl,
-            //sourceId: this.loadInfo.name,
+            sourceUrl: this.loadInfo.sourceUrl,
+            extra: {blobUrl: this.loadInfo.blobUrl},
             name: this.loadInfo.name
           }
           break;
@@ -384,7 +386,7 @@ class WrLoader extends LitElement
 
       .error {
         white-space: pre-wrap;
-        text-align: left;
+        margin-bottom: 2em;
       }
     `);
   }
@@ -421,7 +423,11 @@ class WrLoader extends LitElement
           </div>`;
 
       case "errored":
-        return html`<div class="error has-text-danger">${this.error}</div>`;
+        return html`
+          <div class="has-text-left">
+          <div class="error  has-text-danger">${this.error}</div>
+          <div><a href="/" class="button is-info">Back</a></div>
+          </div>`;
 
       case "waiting":
       default:
@@ -544,6 +550,11 @@ class WrIndex extends LitElement
     nav.main-scroll {
       max-height: calc(100vh - 279px);
     }
+
+    input.file-name:invalid {
+      border: 1px dashed red;
+    }
+
     `);
   }
 
@@ -569,12 +580,13 @@ class WrIndex extends LitElement
                 </span>
                 <div class="field has-addons">
                   <p class="control is-expanded">
-                    <input style="max-width: 100%" class="file-name input" type="text"
+                    <input style="max-width: 100%" class="file-name input" type="url"
                     name="filename"
+                    pattern="^(file|http|https|googledrive|s3):\/\/.*\.(warc|warc.gz|har|zip|waz)$"
                     .value="${this.fileDisplayName}"
                     @input="${this.onInput}"
                     autocomplete="off"
-                    placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or WAZ) archive">
+                    placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or ZIP) archive">
                   </p>
                   <div class="control">
                     <button type="submit" class="button is-primary">Load</button>
@@ -835,6 +847,7 @@ class WrColl extends LitElement
 
     ${this.tabData.view === 'replay' ? html`
     <wr-replay-page .collInfo="${this.collInfo}"
+    .sourceUrl="${this.sourceUrl}"
     url="${this.tabData.url || ""}"
     ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="replay"
@@ -1005,6 +1018,11 @@ class WrCuratedPages extends LitElement
 
   scrollToList(id) {
     this.currList = Number(id);
+
+    // lists are 1 based, 0 is header, 1 is first list
+    if (this.currList > this.collInfo.lists.length) {
+      this.currList = 0;
+    }
     
     this.sendChangeEvent({currList: this.currList || undefined});
 
@@ -1350,12 +1368,13 @@ class WrReplayPage extends LitElement
     this.ts = "";
     this.title = "";
 
-    this.authNeeded = null;
+    this.showAuth = false;
   }
 
   static get properties() {
     return {
       collInfo: {type: Object },
+      sourceUrl: { type: String },
 
       // external url set by parent
       url: { type: String },
@@ -1369,15 +1388,15 @@ class WrReplayPage extends LitElement
       iframeUrl: { type: String },
       isLoading: { type: Boolean },
 
-      authNeeded: { type: Object }
+      showAuth: { type: Boolean }
     }
   }
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
     navigator.serviceWorker.addEventListener("message", (event) => {
-      if (event.data.type === "authneeded") {
-        this.authNeeded = event.data;
+      if (event.data.type === "authneeded" && this.collInfo && event.data.coll === this.collInfo.coll) {
+        this.showAuth = true;
       }
     });
   }
@@ -1387,6 +1406,11 @@ class WrReplayPage extends LitElement
   }
 
   updated(changedProperties) {
+    if (changedProperties.has("sourceUrl") || changedProperties.has("collInfo")) {
+      this.isAuthable = (this.sourceUrl.startsWith("googledrive://") && 
+        this.collInfo && this.collInfo.onDemand);
+    }
+
     if (this.url && 
         ((this.replayUrl != this.url) || (this.replayTS != this.ts)) &&
         (changedProperties.has("url") || changedProperties.has("ts"))) {
@@ -1537,8 +1561,8 @@ class WrReplayPage extends LitElement
     src="${this.iframeUrl}"></iframe>
     ` : ``}
 
-    ${this.authNeeded ? html`
-    <div class="modal is-active">
+    ${this.isAuthable ? html`
+    <div class="modal ${this.showAuth ? 'is-active' : ''}">
       <div class="modal-background"></div>
         <div class="modal-card">
           <header class="modal-card-head">
@@ -1547,7 +1571,7 @@ class WrReplayPage extends LitElement
           </header>
           <section class="modal-card-body">
             <div class="container has-text-centered">
-            <wr-gdrive .sourceUrl=${this.authNeeded.source} .reauth="${true}" @load-ready=${this.onReAuthed}/>
+            <wr-gdrive .sourceUrl=${this.sourceUrl} .state="${this.showAuth ? 'trymanual' : 'implicitonly'}" .reauth="${true}" @load-ready=${this.onReAuthed}/>
             </div>
           </section>
         </div>
@@ -1558,20 +1582,17 @@ class WrReplayPage extends LitElement
   }
 
   async onReAuthed(event) {
-    if (!this.authNeeded) {
-      return;
-    }
-
     const headers = event.detail.headers;
 
-    const resp = await fetch(`/wabac/api/${this.authNeeded.coll}/updateAuth`, { 
+    const resp = await fetch(`/wabac/api/${this.collInfo.coll}/updateAuth`, { 
       method: 'POST',
       body: JSON.stringify({headers})
     });
 
-    this.authNeeded = false;
-
-    this.onRefresh(null, true);
+    if (this.showAuth) {
+      this.onRefresh(null, true);
+      this.showAuth = false;
+    }
   }
 }
 
@@ -1621,7 +1642,12 @@ class WrGdrive extends LitElement
         return false;
       }
       const json = await resp.json();
-      if (!json.url || !json.name) {
+      if (!json.url || !json.name || !json.size) {
+        return false;
+      }
+
+      // only allow for small downloads that will not result in partial download
+      if (json.size > 15000000) {
         return false;
       }
 
@@ -1656,7 +1682,9 @@ class WrGdrive extends LitElement
     this.scriptLoaded = true;
     this.gauth('none', (response) => {
       if (response.error === "immediate_failed") {
-        this.state = "trymanual";
+        if (this.state !== "implicitonly") {
+          this.state = "trymanual";
+        }
       } else {
         this.authed(response);
       }
@@ -1681,7 +1709,9 @@ class WrGdrive extends LitElement
     const resp = await fetch(metadataUrl + "?fields=name,size", {headers});
 
     if ((resp.status === 404 || resp.status == 403)) {
-      this.state = "trymanual";
+      if (this.state !== "implicitonly") {
+        this.state = "trymanual";
+      }
       this.error = true;
       return;
     }
@@ -1714,7 +1744,7 @@ class WrGdrive extends LitElement
     </div>
     <br/>
     ` : ``}
-    <button class="button is-primary is-rounded" @click="${this.onClickAuth}">
+    <button class="button is-info is-rounded" @click="${this.onClickAuth}">
     <span class="icon"><fa-icon .svg="${fabGoogleDrive}"></fa-icon></span>
     <span>Authorize Google Drive</span>
     </button>
