@@ -555,8 +555,13 @@ class WrIndex extends LitElement
       max-height: calc(100vh - 279px);
     }
 
-    input.file-name:invalid {
+    input.input.file-name:invalid {
       border: 1px dashed red;
+    }
+    input.input.file-name {
+      max-width: 100%;
+      border-width: 1px;
+      margin-left: -1px;
     }
 
     `);
@@ -569,7 +574,7 @@ class WrIndex extends LitElement
         <nav class="panel is-info">
           <p class="panel-heading">Load Web Archive</p>
           <div class="extra-padding panel-block file has-name">
-            <form class="container" @submit="${this.onStartLoad}">
+            <form class="container is-flex" @submit="${this.onStartLoad}">
               <label class="file-label">
                 <input class="file-input"
                   @click="${(e) => e.currentTarget.value = null}"
@@ -582,21 +587,23 @@ class WrIndex extends LitElement
                     Choose File...
                   </span>
                 </span>
-                <div class="field has-addons">
-                  <p class="control is-expanded">
-                    <input style="max-width: 100%" class="file-name input" type="url"
-                    name="filename"
-                    pattern="^((file|http|https|s3):\/\/.*\.(warc|warc.gz|har|zip|waz))|(googledrive:\/\/[^\/\s]+)$"
-                    .value="${this.fileDisplayName}"
-                    @input="${this.onInput}"
-                    autocomplete="off"
-                    placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or ZIP) archive">
-                  </p>
-                  <div class="control">
-                    <button type="submit" class="button is-primary">Load</button>
-                  </div>
-                </div>
               </label>
+
+              <div class="field has-addons">
+                <p class="control is-expanded">
+                  <input class="file-name input" type="text"
+                  name="filename" id="filename"
+                  pattern="^((file|http|https|s3):\/\/.*\.(warc|warc.gz|har|zip|waz))|(googledrive:\/\/[^\/\s]+)$"
+                  .value="${this.fileDisplayName}"
+                  @input="${this.onInput}"
+                  autocomplete="off"
+                  placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or ZIP) archive">
+                </p>
+                <div class="control">
+                  <button type="submit" class="button is-primary">Load</button>
+                </div>
+              </div>
+
             </form>
           </div>
         </nav>
@@ -613,7 +620,7 @@ class WrIndex extends LitElement
                 <div>
                   <span class="subtitle"><a href="?source=${coll.sourceUrl}">${coll.title || coll.filename}</a></span>
                   <p><i>Source: ${coll.sourceUrl}</i></p>
-                  ${coll.sourceUrl.startsWith("googledrive://") ? html`
+                  ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://") ? html`
                   <p><i>Filename: ${coll.filename}</i></p>` : ''}
                 </div>
               </div>

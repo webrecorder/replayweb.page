@@ -315,8 +315,13 @@ const ae=new WeakMap,re=v(e=>t=>{if(!(t instanceof U))throw new Error("unsafeHTM
       max-height: calc(100vh - 279px);
     }
 
-    input.file-name:invalid {
+    input.input.file-name:invalid {
       border: 1px dashed red;
+    }
+    input.input.file-name {
+      max-width: 100%;
+      border-width: 1px;
+      margin-left: -1px;
     }
 
     `)}render(){return O`
@@ -325,7 +330,7 @@ const ae=new WeakMap,re=v(e=>t=>{if(!(t instanceof U))throw new Error("unsafeHTM
         <nav class="panel is-info">
           <p class="panel-heading">Load Web Archive</p>
           <div class="extra-padding panel-block file has-name">
-            <form class="container" @submit="${this.onStartLoad}">
+            <form class="container is-flex" @submit="${this.onStartLoad}">
               <label class="file-label">
                 <input class="file-input"
                   @click="${e=>e.currentTarget.value=null}"
@@ -338,21 +343,23 @@ const ae=new WeakMap,re=v(e=>t=>{if(!(t instanceof U))throw new Error("unsafeHTM
                     Choose File...
                   </span>
                 </span>
-                <div class="field has-addons">
-                  <p class="control is-expanded">
-                    <input style="max-width: 100%" class="file-name input" type="url"
-                    name="filename"
-                    pattern="^((file|http|https|s3):\/\/.*\.(warc|warc.gz|har|zip|waz))|(googledrive:\/\/[^\/\s]+)$"
-                    .value="${this.fileDisplayName}"
-                    @input="${this.onInput}"
-                    autocomplete="off"
-                    placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or ZIP) archive">
-                  </p>
-                  <div class="control">
-                    <button type="submit" class="button is-primary">Load</button>
-                  </div>
-                </div>
               </label>
+
+              <div class="field has-addons">
+                <p class="control is-expanded">
+                  <input class="file-name input" type="text"
+                  name="filename" id="filename"
+                  pattern="^((file|http|https|s3):\/\/.*\.(warc|warc.gz|har|zip|waz))|(googledrive:\/\/[^\/\s]+)$"
+                  .value="${this.fileDisplayName}"
+                  @input="${this.onInput}"
+                  autocomplete="off"
+                  placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or ZIP) archive">
+                </p>
+                <div class="control">
+                  <button type="submit" class="button is-primary">Load</button>
+                </div>
+              </div>
+
             </form>
           </div>
         </nav>
@@ -369,7 +376,7 @@ const ae=new WeakMap,re=v(e=>t=>{if(!(t instanceof U))throw new Error("unsafeHTM
                 <div>
                   <span class="subtitle"><a href="?source=${e.sourceUrl}">${e.title||e.filename}</a></span>
                   <p><i>Source: ${e.sourceUrl}</i></p>
-                  ${e.sourceUrl.startsWith("googledrive://")?O`
+                  ${e.sourceUrl&&e.sourceUrl.startsWith("googledrive://")?O`
                   <p><i>Filename: ${e.filename}</i></p>`:""}
                 </div>
               </div>
