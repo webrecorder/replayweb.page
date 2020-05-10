@@ -986,7 +986,7 @@ class WrCuratedPages extends LitElement
                 <div class="content">
                   <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(p.date)}" href="#">
                     <p class="is-size-6 has-text-weight-bold has-text-link">${p.title || p.url}</p>
-                    <p>${p.url}</p>
+                    <p class="has-text-dark">${p.url}</p>
                   </a>
                   <p>${new Date(p.date).toLocaleString()}</p>
                   <p>${p.desc}</p>
@@ -1892,7 +1892,7 @@ function registerSW(url) {
 
 async function main() {
   //const swPromise = initSW(__SW_PATH__ + "?replayPrefix=wabac&stats=true");
-  const swPromise = registerSW(__SW_PATH__ + "?replayPrefix=wabac&stats=true");
+  const swPromise = registerSW(__SW_PATH__);
   await swPromise;
   customElements.define("app-main", AppMain);
   customElements.define("wr-index", WrIndex);
