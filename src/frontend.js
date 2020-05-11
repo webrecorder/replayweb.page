@@ -56,6 +56,7 @@ class AppMain extends LitElement
       navMenuShown: { type: Boolean },
       showTerms: { type: Boolean },
       sourceLoaded: { type: Boolean },
+      embed: { type: String },
     }
   }
 
@@ -68,12 +69,29 @@ class AppMain extends LitElement
     .has-allcaps {
       font-variant-caps: all-small-caps;
     }
+    :host {
+      position: fixed;
+      left: 0px;
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      width: 100%;
+      flex-grow: 0;
+    }
+    wr-coll {
+      height: 100%;
+    }
     `);
   }
 
   render() {
     return html`
-    <div class="container" style="display: sticky">
+    ${!this.embed ? html`
+    <div class="container">
       <nav class="navbar breadcrumbs" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
@@ -91,7 +109,7 @@ class AppMain extends LitElement
       <div class="navbar-start">
         ${this.sourceUrl && this.sourceLoaded ? 
           html`
-        <div class="navbar-item">Current Archive:&nbsp;<b>${this.sourceUrl}</b>
+        <div class="navbar-item">Current Archive:&nbsp;<b>${this.sourceUrl.slice(this.sourceUrl.lastIndexOf('/') + 1)}</b>
         </div>` : html``}
       </div>
       <div class="navbar-end">
@@ -101,11 +119,12 @@ class AppMain extends LitElement
         <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
       </div>
     </nav>
-  </div>
+  </div>` : ''}
   
   ${this.sourceUrl ? html`
   <wr-coll .loadInfo="${this.loadInfo}"
   sourceUrl="${this.sourceUrl}"
+  embed="${this.embed}"
   @replay-favicons=${this.onFavIcons}
   @coll-loaded=${this.onCollLoaded}></wr-coll>
   ` : html`
@@ -198,6 +217,7 @@ class AppMain extends LitElement
     }
 
     this.sourceUrl = this.pageParams.get("source") || "";
+    this.embed = this.pageParams.get("embed") || "";
 
     if (this.pageParams.has("terms")) {
       this.showTerms = true;
@@ -682,6 +702,11 @@ class WrColl extends LitElement
 
       tabData: { type: Object },
 
+      replayUrl: { type: String },
+      replayTS: { type: String },
+
+      embed: { type: String },
+
       //_locationHash: { type: String }
     }
   }
@@ -692,6 +717,10 @@ class WrColl extends LitElement
   }
 
   updated(changedProperties) {
+    if (changedProperties.has("replayUrl") || changedProperties.has("replayTS")) {
+      this.tabData = {view: "replay", url: this.replayUrl, ts: this.replayTS};
+    }
+
     if (changedProperties.has("sourceUrl")) {
       this.doUpdateInfo();
     }
@@ -805,9 +834,20 @@ class WrColl extends LitElement
       font-weight: initial;
       margin-right: 20px;
     }
-    .bg-light {
-      background-color: #f0fff8";
+
+    #contents {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
     }
+
+    wr-replay-page, wr-coll-resources, wr-coll-curated {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
     `);
   }
 
@@ -818,7 +858,8 @@ class WrColl extends LitElement
       .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
     } else if (this.collInfo) {
       return html`
-      <nav class="panel is-light">
+      <nav id="contents" class="panel is-light">
+      ${!this.embed ? html`
         <p class="panel-tabs bg-light">
           ${this.hasCurated ? html`
             <a @click="${this.onTabClick}" href="#curated"
@@ -834,7 +875,7 @@ class WrColl extends LitElement
           <a @click="${this.onTabClick}" href="#replay"
           class="is-size-6 ${this.tabData.view === 'replay' ? 'is-active' : ''}">
           <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></fa-icon></span>Replay</a>
-        </p>
+        </p>` : ``}
         ${this.renderCollTabs()}
       </nav>`;
     } else {
@@ -860,7 +901,8 @@ class WrColl extends LitElement
 
     ${this.tabData.view === 'replay' ? html`
     <wr-replay-page .collInfo="${this.collInfo}"
-    .sourceUrl="${this.sourceUrl}"
+    sourceUrl="${this.sourceUrl}"
+    embed="${this.embed}"
     url="${this.tabData.url || ""}"
     ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="replay"
@@ -932,16 +974,20 @@ class WrCuratedPages extends LitElement
     return wrapCss(css`
     .columns {
       width: 100vw;
+      display: flex;
+      flex-direction: row;
+      max-height: 100%
     }
 
     .column {
-      max-height: calc(100vh - 92px);
+      height: calc(100% - 70px);
     }
 
     #content {
       margin-top: 10px;
-      max-height: calc(100vh - 102px);
+      height: calc(100% - 90px);
     }
+
     ul.menu-list a.is-active {
       background-color: #55be6f;
     }
@@ -955,7 +1001,7 @@ class WrCuratedPages extends LitElement
         <div class="menu" style="overflow-y: auto; height: 100%;">
           <ul class="menu-list">
             <li>
-              <a href="#list-0" class="${!this.currList ? 'is-active' : ''}"
+              <a href="#list-0" data-list="0" class="${!this.currList ? 'is-active' : ''}"
                 @click=${this.onClickScroll}>${this.collInfo.title}</a>
               <ul class="menu-list">${this.collInfo.lists.map(list => html`
                 <li>
@@ -1262,13 +1308,15 @@ class WrResources extends LitElement
       width: 100%;
     }
     .main-scroll {
-      max-height: calc(100vh - 199px);
+      height: calc(100vh - 220px);
+      flex-grow: 1;
       width: 100vw;
     }
     table {
       table-layout: fixed;
       word-wrap: break-word;
       text-overflow: ellipsis;
+      height: 100%;
     }
     tbody > tr {
       display: table;
@@ -1341,29 +1389,27 @@ class WrResources extends LitElement
         </div>
       </div>
     </div>
-    <div class="" style="">
-      <table class="table is-striped is-fullwidth">
-        <thead>
+    <table class="table is-striped is-fullwidth">
+      <thead>
+        <tr>
+          <th class="col-url">URL</th>
+          <th class="col-ts">Timestamp</th>
+          <th class="col-mime">Mime</th>
+          <th class="col-status">Status</th>
+        </tr>
+      </thead>
+      <tbody class="main-scroll" @scroll="${this.onScroll}">
+      ${this.filteredResults.length ? 
+        this.filteredResults.map((result) => html`
           <tr>
-            <th class="col-url">URL</th>
-            <th class="col-ts">Timestamp</th>
-            <th class="col-mime">Mime</th>
-            <th class="col-status">Status</th>
+            <td class="col-url"><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></td>
+            <td class="col-ts">${new Date(result.date).toLocaleString()}</td>
+            <td class="col-mime">${result.mime}</td>
+            <td class="col-status">${result.status}</td>
           </tr>
-        </thead>
-        <tbody class="main-scroll" @scroll="${this.onScroll}">
-        ${this.filteredResults.length ? 
-          this.filteredResults.map((result) => html`
-            <tr>
-              <td class="col-url"><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></td>
-              <td class="col-ts">${new Date(result.date).toLocaleString()}</td>
-              <td class="col-mime">${result.mime}</td>
-              <td class="col-status">${result.status}</td>
-            </tr>
-          `) : html`<div class="section"><i>No Results Found.</i></div>`}
-        </tbody>
-      </table>
-    </div>
+        `) : html`<div class="section"><i>No Results Found.</i></div>`}
+      </tbody>
+    </table>
     `;
   }
 
@@ -1412,7 +1458,8 @@ class WrReplayPage extends LitElement
       iframeUrl: { type: String },
       isLoading: { type: Boolean },
 
-      showAuth: { type: Boolean }
+      showAuth: { type: Boolean },
+      embed: { type: String }
     }
   }
 
@@ -1455,6 +1502,14 @@ class WrReplayPage extends LitElement
       };
   
       this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: true, data}}));
+    }
+
+    if (this.embed && window.parent !== window && changedProperties.has("title")) {
+      window.parent.postMessage({
+        title: this.title,
+        url: this.replayUrl,
+        ts: this.replayTS
+      }, '*');
     }
   }
 
@@ -1511,7 +1566,8 @@ class WrReplayPage extends LitElement
 
       iframe {
         width: 100vw;
-        height: calc(100vh - 150px);
+        #height: calc(100vh - 150px);
+        height: 100%;
         border: 0px;
       }
 
@@ -1519,6 +1575,7 @@ class WrReplayPage extends LitElement
         padding: 1em;
         max-width: none;
         border-bottom: solid .1rem #97989A;
+        width: 100%;
       }
 
       .embed-bar {
@@ -1556,7 +1613,7 @@ class WrReplayPage extends LitElement
 
   render() {
     return html`
-    ${!this.embed ? html`
+    ${this.embed !== "replayonly" ? html`
     <div class="container replay-bar">
       <form @submit="${this.onSubmit}">
         <div class="field has-addons">
@@ -1574,14 +1631,10 @@ class WrReplayPage extends LitElement
         </div>
       </form>
     </div>` : html`
-
-    <div class="container embed-bar">
-    <p class="is-size-5">${this.title}</p>
-    </div>
     `}
 
     ${this.iframeUrl ? html`
-    <iframe @message="${this.onReplayMessage}"
+    <iframe @message="${this.onReplayMessage}" allow="autoplay; fullscreen"
     src="${this.iframeUrl}"></iframe>
     ` : ``}
 
@@ -1796,42 +1849,6 @@ class WrGdrive extends LitElement
 }
 
 // ===========================================================================
-class WrCollProxy extends LitElement
-{
-  constructor() {
-    super();
-    this.view = "replay";
-    this.replayTS = "";
-  }
-
-  static get properties() {
-    return {
-      replayUrl: { type: String },
-      replayTS: { type: String },
-      source: { type: String },
-
-      paramString: { type: String }
-    }
-  }
-
-  firstUpdated() {
-    this.paramString = new URLSearchParams({
-      replayUrl: this.replayUrl,
-      replayTS: this.replayTS,
-      source: this.source,
-      view: this.view
-    });
-  }
-
-  render() {
-    return html`
-    <iframe src="http://localhost:9990/?${this.paramString}"></iframe>
-    `;
-  }
-}
-
-
-// ===========================================================================
 class WrFaIcon extends LitElement
 {
   constructor() {
@@ -1905,7 +1922,6 @@ async function main() {
   customElements.define("wr-index", WrIndex);
   customElements.define("wr-loader", WrLoader);
   customElements.define("wr-coll", WrColl);
-  customElements.define("wr-coll-proxy", WrCollProxy);
   customElements.define("wr-coll-resources", WrResources);
   customElements.define("wr-coll-curated", WrCuratedPages);
   customElements.define("wr-replay-page", WrReplayPage);

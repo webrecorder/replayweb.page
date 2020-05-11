@@ -7,6 +7,10 @@ html.no-overflow {
   overflow-y: hidden;
 };
 
+body {
+  height: 100vh;
+}
+
 @import "../node_modules/bulma/sass/utilities/_all.sass";
 @import "../node_modules/bulma/sass/base/_all.sass";
 
