@@ -15,7 +15,7 @@ import allCssRaw from '../scss/main.scss';
 //import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
 
 //import fasInfo from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
-import fasArchiveIcon from '@fortawesome/fontawesome-free/svgs/solid/box-open.svg';
+import fasArchiveIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
 import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
 import fasHelp from '@fortawesome/fontawesome-free/svgs/solid/question-circle.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
@@ -85,6 +85,9 @@ class AppMain extends LitElement
     .navbar {
       padding: 0 0.5em;
     }
+    .info-menu {
+      padding: 0 1.0em;
+    }
     `);
   }
 
@@ -108,12 +111,15 @@ class AppMain extends LitElement
       <div class="navbar-start">
       ${this.sourceUrl && this.collInfo ? html`
         <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link is-arrowless"><fa-icon size="1.5em" .svg="${fasArchiveIcon}"></fa-icon></a>
+          <a class="info-menu navbar-link is-arrowless"><fa-icon size="1.2em" .svg="${fasArchiveIcon}"></fa-icon></a>
           <div class="navbar-dropdown">
-            <div class="navbar-item"><i>Currently Loaded Archive</i></div>
+            <div class="navbar-item"><i>About this Archive</i></div>
             <hr class="navbar-divider">
             <div class="navbar-item">
               Source:&nbsp;<b>${this.sourceUrl}</b>
+            </div>
+            <div class="navbar-item">
+              Filename:&nbsp;<b>${this.collInfo.filename}</b>
             </div>
             <div class="navbar-item">
               Total Size:&nbsp;<b>${prettyBytes(Number(this.collInfo.size || 0))}</b>
@@ -865,14 +871,14 @@ class WrColl extends LitElement
       }
     }
 
-    @media screen and (min-width: 660px) {
+    @media screen and (min-width: 680px) {
       .main.tabs {
         position: absolute;
         top: 0px;
         left: 50%;
         -webkit-transform: translateX(-50%);
         transform: translateX(-50%);
-        z-index: 50;
+        z-index: 35;
         display: flex;
         flex-direction: row;
       }
@@ -1381,7 +1387,7 @@ class WrResources extends LitElement
       width: 100%;
     }
     .main-scroll {
-      height: calc(100vh - 220px);
+      height: calc(100vh - 180px);
       flex-grow: 1;
       width: 100vw;
     }
