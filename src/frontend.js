@@ -85,14 +85,18 @@ class AppMain extends LitElement
     wr-coll {
       height: 100%;
     }
+    .navback {
+      width: 100%;
+    }
     `);
   }
 
   render() {
     return html`
     ${!this.embed ? html`
+    <div class="navback has-background-info">
     <div class="container">
-      <nav class="navbar breadcrumbs" role="navigation" aria-label="main navigation">
+      <nav class="navbar has-background-info" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
           <img id="logo" src="/static/logo.svg"/>
@@ -107,10 +111,7 @@ class AppMain extends LitElement
       </div>
       <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
       <div class="navbar-start">
-        ${this.sourceUrl && this.sourceLoaded ? 
-          html`
-        <div class="navbar-item">Current Archive:&nbsp;<b>${this.sourceUrl.slice(this.sourceUrl.lastIndexOf('/') + 1)}</b>
-        </div>` : html``}
+        <div class="navbar-item"></div>
       </div>
       <div class="navbar-end">
         <a href="/docs" target="_blank" class="navbar-item">
@@ -119,7 +120,7 @@ class AppMain extends LitElement
         <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
       </div>
     </nav>
-  </div>` : ''}
+  </div></div>` : ''}
   
   ${this.sourceUrl ? html`
   <wr-coll .loadInfo="${this.loadInfo}"
@@ -157,7 +158,7 @@ class AppMain extends LitElement
             AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE, 
             INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
             </p>
-            <a class="button is-info" href="#" @click="${(e) => this.showTerms = false}">Close</a>
+            <a class="button is-warning" href="#" @click="${(e) => this.showTerms = false}">Close</a>
             </div>
           </div>
         </section>
@@ -450,7 +451,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
         return html`
           <div class="has-text-left">
           <div class="error  has-text-danger">${this.error}</div>
-          <div><a href="/" class="button is-info">Back</a></div>
+          <div><a href="/" class="button is-warning">Back</a></div>
           </div>`;
 
       case "waiting":
@@ -591,7 +592,7 @@ class WrIndex extends LitElement
     return html`
     <section class="section no-top-padding">
       <div class="container">
-        <nav class="panel is-info">
+        <nav class="panel is-warning">
           <p class="panel-heading">Load Web Archive</p>
           <div class="extra-padding panel-block file has-name">
             <form class="container is-flex" @submit="${this.onStartLoad}">
@@ -821,18 +822,47 @@ class WrColl extends LitElement
     .icon {
       vertical-align: text-top;
     }
+
     .back fa-icon {
       width: 1.5em;
       vertical-align: bottom;
       line-height: 0.5em;
     }
+
     .is-active {
       font-weight: bold;
     }
-    .header-info {
-      font-size: initial;
-      font-weight: initial;
-      margin-right: 20px;
+
+    .tab-label {
+      display: none;
+    }
+
+    @media screen and (min-width: 1024px) {
+      .tab-label {
+        display: inline;
+      }
+    }
+
+    @media screen and (min-width: 660px) {
+      .main.tabs {
+        position: absolute;
+        top: 0px;
+        left: 50%;
+        -webkit-transform: translateX(-50%);
+        transform: translateX(-50%);
+        z-index: 50;
+        display: flex;
+        flex-direction: row;
+      }
+  
+      .main.tabs li {
+        line-height: 1.5;
+        padding-top: 0.5em;
+      }
+    }
+
+    .main.tabs {
+      min-height: 41px;
     }
 
     #contents {
@@ -858,24 +888,34 @@ class WrColl extends LitElement
       .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
     } else if (this.collInfo) {
       return html`
-      <nav id="contents" class="panel is-light">
+      <nav id="contents" class="is-light">
       ${!this.embed ? html`
-        <p class="panel-tabs bg-light">
+        <div class="main tabs has-background-info is-centered">
+          <ul>
           ${this.hasCurated ? html`
-            <a @click="${this.onTabClick}" href="#curated"
-            class="is-size-6 ${this.tabData.view === 'curated' ? 'is-active' : ''}">
-            <span class="icon"><fa-icon .svg="${farListAlt}"></fa-icon></span>
-            Curated Pages</a>
+            <li class="${this.tabData.view === 'curated' ? 'is-active' : ''}">
+              <a @click="${this.onTabClick}" href="#curated" class="is-size-6">
+                <span class="icon"><fa-icon .svg="${farListAlt}"></fa-icon></span>
+                <span class="tab-label" title="Curated Pages">Curated Pages</span>
+              </a>
+            </li>
           ` : ``}
 
-          <a @click="${this.onTabClick}" href="#resources"
-          class="is-size-6 ${this.tabData.view === 'resources' ? 'is-active' : ''}">
-          <span class="icon"><fa-icon .svg="${fasSearch}"></fa-icon></span>URL Resources</a>
+            <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
+              <a @click="${this.onTabClick}" href="#resources" class="is-size-6">
+                <span class="icon"><fa-icon .svg="${fasSearch}"></fa-icon></span>
+                <span class="tab-label" title="URL Resources">URL Resources</span>
+              </a>
+            </li>
 
-          <a @click="${this.onTabClick}" href="#replay"
-          class="is-size-6 ${this.tabData.view === 'replay' ? 'is-active' : ''}">
-          <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></fa-icon></span>Replay</a>
-        </p>` : ``}
+            <li class="${this.tabData.view === 'replay' ? 'is-active' : ''}">
+              <a @click="${this.onTabClick}" href="#replay" class="is-size-6">
+                <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></span>
+                <span class="tab-label" title="Replay">Replay</span>
+              </a>
+            </li>
+          </ul>
+        </div>` : ``}
         ${this.renderCollTabs()}
       </nav>`;
     } else {
@@ -888,7 +928,7 @@ class WrColl extends LitElement
     <wr-coll-curated .collInfo="${this.collInfo}"
     currList="${this.tabData.currList || 0}"
     @coll-tab-nav="${this.onCollTabNav}" id="curated"
-    class="panel-block ${this.tabData.view === 'curated' ? '' : 'is-hidden'}">
+    class="${this.tabData.view === 'curated' ? '' : 'is-hidden'}">
     </wr-coll-curated>
 
     <wr-coll-resources .collInfo="${this.collInfo}"
@@ -896,7 +936,7 @@ class WrColl extends LitElement
     urlSearchType="${this.tabData.urlSearchType || ""}"
     .currMime="${this.tabData.currMime}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
-    class="panel-block is-paddingless ${this.tabData.view === 'resources' ? '' : 'is-hidden'}">
+    class="is-paddingless ${this.tabData.view === 'resources' ? '' : 'is-hidden'}">
     </wr-coll-resources>
 
     ${this.tabData.view === 'replay' ? html`
@@ -977,19 +1017,30 @@ class WrCuratedPages extends LitElement
       display: flex;
       flex-direction: row;
       max-height: 100%
+      align-items: flex-start;
+      height: 100%;
     }
 
     .column {
-      height: calc(100% - 70px);
+      max-height: calc(100% - 70px);
     }
 
     #content {
       margin-top: 10px;
-      height: calc(100% - 90px);
+      max-height: calc(100% - 90px);
+      display: flex;
+      flex-direction: column;
+      height: fit-content;
     }
 
     ul.menu-list a.is-active {
       background-color: #55be6f;
+    }
+
+    :host {
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: 1em;
     }
     `);
   }
@@ -1582,7 +1633,6 @@ class WrReplayPage extends LitElement
         padding: 0.25em;
         max-width: none;
         border-bottom: solid .1rem #97989A;
-        background-color: aliceblue;
         text-align: center;
         height: 44px;
       }
@@ -1819,7 +1869,7 @@ class WrGdrive extends LitElement
     </div>
     <br/>
     ` : ``}
-    <button class="button is-info is-rounded" @click="${this.onClickAuth}">
+    <button class="button is-warning is-rounded" @click="${this.onClickAuth}">
     <span class="icon"><fa-icon .svg="${fabGoogleDrive}"></fa-icon></span>
     <span>Authorize Google Drive</span>
     </button>

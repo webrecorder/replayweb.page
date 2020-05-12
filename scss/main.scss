@@ -1,18 +1,20 @@
 @charset "utf-8";
 
-$wr-green: #64e986;
+/*$wr-green: #64e986;*/
+$wr-green: #55be6f;
 $wr-yellow:  #ffd975;
 $wr-light-blue: #43daff;
 $wr-med-blue: #27a0ff;
 $wr-dark-blue: #4876ff;
 $wr-accent: #1b0921;
+$wr-light-bg: #f0f8ff;
 
 $wr-light-green: #d2f9d6;
 $wr-dark-green: #459558;
 
 $primary: $wr-green;
-$info: $wr-yellow;
-//$info: #97e7ff;
+$info: $wr-light-bg;
+$warning: $wr-yellow;
 $link: $wr-dark-blue;
 
 $light: $wr-light-green;
