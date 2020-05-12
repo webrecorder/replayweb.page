@@ -15,6 +15,7 @@ import allCssRaw from '../scss/main.scss';
 //import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
 
 //import fasInfo from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
+import fasArchiveIcon from '@fortawesome/fontawesome-free/svgs/solid/box-open.svg';
 import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
 import fasHelp from '@fortawesome/fontawesome-free/svgs/solid/question-circle.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
@@ -44,7 +45,7 @@ class AppMain extends LitElement
   constructor() {
     super();
     this.sourceUrl = null;
-    this.sourceLoaded = false;
+    this.collInfo = null;
     this.showTerms = false;
     this.pageParams = {};
   }
@@ -55,7 +56,7 @@ class AppMain extends LitElement
       sourceUrl: { type: String },
       navMenuShown: { type: Boolean },
       showTerms: { type: Boolean },
-      sourceLoaded: { type: Boolean },
+      collInfo: { type: Object },
       embed: { type: String },
     }
   }
@@ -67,7 +68,7 @@ class AppMain extends LitElement
       margin-right: 8px;
     }
     .has-allcaps {
-      font-variant-caps: all-small-caps;
+      font-variant-caps: small-caps;
     }
     :host {
       position: fixed;
@@ -78,15 +79,11 @@ class AppMain extends LitElement
       display: flex;
       flex-direction: column;
     }
-    .container {
-      width: 100%;
-      flex-grow: 0;
-    }
     wr-coll {
       height: 100%;
     }
-    .navback {
-      width: 100%;
+    .navbar {
+      padding: 0 0.5em;
     }
     `);
   }
@@ -94,11 +91,9 @@ class AppMain extends LitElement
   render() {
     return html`
     ${!this.embed ? html`
-    <div class="navback has-background-info">
-    <div class="container">
       <nav class="navbar has-background-info" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps " href="/">
+        <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps" href="/">
           <img id="logo" src="/static/logo.svg"/>
           <span class="has-text-primary">replay</span>
           <span class="has-text-link">web.page</span>
@@ -111,16 +106,33 @@ class AppMain extends LitElement
       </div>
       <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
       <div class="navbar-start">
-        <div class="navbar-item"></div>
+      ${this.sourceUrl && this.collInfo ? html`
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link is-arrowless"><fa-icon size="1.5em" .svg="${fasArchiveIcon}"></fa-icon></a>
+          <div class="navbar-dropdown">
+            <div class="navbar-item"><i>Currently Loaded Archive</i></div>
+            <hr class="navbar-divider">
+            <div class="navbar-item">
+              Source:&nbsp;<b>${this.sourceUrl}</b>
+            </div>
+            <div class="navbar-item">
+              Total Size:&nbsp;<b>${prettyBytes(Number(this.collInfo.size || 0))}</b>
+            </div>
+            <div class="navbar-item">
+              Loading Mode:&nbsp;<b>${this.collInfo.onDemand ? "Download On-Demand" : "Fully Local"}</b>
+            </div>
+          </div>
+        </div>
+        ` : ``}
       </div>
       <div class="navbar-end">
         <a href="/docs" target="_blank" class="navbar-item">
-          <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;Info
+          <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;How it Works
         </a>
         <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
       </div>
     </nav>
-  </div></div>` : ''}
+  ` : ''}
   
   ${this.sourceUrl ? html`
   <wr-coll .loadInfo="${this.loadInfo}"
@@ -174,7 +186,7 @@ class AppMain extends LitElement
 
   updated(changedProperties) {
     if (changedProperties.has("sourceUrl")) {
-      this.sourceLoaded = false;
+      this.collInfo = null;
     }
   }
 
@@ -239,8 +251,12 @@ class AppMain extends LitElement
 
   onCollLoaded(event) {
     this.loadInfo = null;
+    if (event.detail.collInfo) {
+      this.collInfo = event.detail.collInfo;
+    }
+
     if (event.detail.alreadyLoaded) {
-      this.sourceLoaded = true;
+      //this.sourceLoaded = true;
       return;
     }
 
@@ -775,7 +791,10 @@ class WrColl extends LitElement
     }
 
     this.hasCurated = (this.collInfo.lists && this.collInfo.lists.length);
-    this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {alreadyLoaded: true}}));
+    this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {
+      collInfo: this.collInfo,
+      alreadyLoaded: true
+    }}));
 
     const hash = window.location.hash;
     if (hash) {
@@ -791,7 +810,10 @@ class WrColl extends LitElement
   onCollLoaded(event) {
     this.doUpdateInfo();
     this.loadInfo = null;
-    this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {sourceUrl: this.sourceUrl}}));
+    this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {
+      sourceUrl: this.sourceUrl,
+      collInfo: this.collInfo,
+    }}));
   }
 
   onHashChange(event) {
@@ -1030,7 +1052,7 @@ class WrCuratedPages extends LitElement
       max-height: calc(100% - 90px);
       display: flex;
       flex-direction: column;
-      height: fit-content;
+      height: min-content;
     }
 
     ul.menu-list a.is-active {
@@ -1684,7 +1706,7 @@ class WrReplayPage extends LitElement
     `}
 
     ${this.iframeUrl ? html`
-    <iframe @message="${this.onReplayMessage}" allow="autoplay; fullscreen"
+    <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen"
     src="${this.iframeUrl}"></iframe>
     ` : ``}
 
@@ -1832,7 +1854,7 @@ class WrGdrive extends LitElement
     const authToken = response.access_token;
     const headers = {"Authorization": `Bearer ${authToken}`};
 
-    const resp = await fetch(metadataUrl + "?fields=name,size", {headers});
+    const resp = await fetch(metadataUrl + "?fields=name,size&supportsAllDrives=true", {headers});
 
     if ((resp.status === 404 || resp.status == 403)) {
       if (this.state !== "implicitonly") {

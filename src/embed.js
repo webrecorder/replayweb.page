@@ -69,7 +69,6 @@ class EmbedRWP extends LitElement
       :host {
         width: 100%;
         height: 100%;
-        flex-direction: column;
       }
     `;
   }
@@ -77,7 +76,7 @@ class EmbedRWP extends LitElement
   render() {
     return html`
     ${this.paramString && this.hashString ? html`
-      <iframe src="${this.replayBase}?${this.paramString}#${this.hashString}" allow="autoplay; fullscreen"></iframe>
+      <iframe src="${this.replayBase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
       ` : html``}
     `;
   }
