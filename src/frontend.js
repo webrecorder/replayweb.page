@@ -130,6 +130,9 @@ class AppMain extends LitElement
             <div class="navbar-item">
               Loading Mode:&nbsp;<b>${this.collInfo.onDemand ? "Download On-Demand" : "Fully Local"}</b>
             </div>
+            <div class="navbar-item">
+              Collection Id:&nbsp;<b>${this.collInfo.coll}</b>
+            </div>
           </div>
         </div>
         ` : ``}
@@ -597,6 +600,9 @@ class WrIndex extends LitElement
 
   static get styles() {
     return wrapCss(css`
+    :host {
+      overflow-y: auto;
+    }
     .size {
       margin-right: 20px;
     }
@@ -616,13 +622,9 @@ class WrIndex extends LitElement
       background-color: transparent !important;
       width: auto;
     }
-    .coll-list {
-      overflow-y: auto;
+    nav.panel.is-light {
+      margin-bottom: 2em;
     }
-    nav.main-scroll {
-      max-height: calc(100vh - 279px);
-    }
-
     input.input.file-name:invalid {
       border: 1px dashed red;
     }
@@ -678,7 +680,7 @@ class WrIndex extends LitElement
       </div>
     </section>
     <section class="container">
-      <nav class="panel main-scroll is-light">
+      <nav class="panel is-light">
         <p class="panel-heading">Loaded Archives</p>
         <div class="coll-list">
         ${this.colls.length ? this.colls.map((coll, i) => html`
@@ -1271,6 +1273,9 @@ class WrResources extends LitElement
 
     this.tryMore = false;
     this.loading = false;
+
+    this.sortKey = "url";
+    this.sortDesc = false;
   }
 
   static get properties() {
@@ -1280,7 +1285,10 @@ class WrResources extends LitElement
       urlSearch: { type: String },
       urlSearchType: { type: String },
       filteredResults: { type: Array },
-      loading: { type: Boolean }
+      loading: { type: Boolean },
+
+      sortKey: { type: String },
+      sortDesc: { type: Boolean }
     }
   }
 
@@ -1305,6 +1313,10 @@ class WrResources extends LitElement
       };
       const replaceLoc = !changedProperties.has("currMime") && !changedProperties.has("urlSearchType");
       this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc, data}}));
+    }
+
+    if (changedProperties.has("sortKey") || changedProperties.has("sortDesc")) {
+      this.filter();
     }
   }
 
@@ -1368,6 +1380,7 @@ class WrResources extends LitElement
     this.results = this.results.concat(resp.urls);
     this.tryMore = (resp.urls.length === count);
     this.filter();
+
     this.loading = false;
   }
 
@@ -1394,7 +1407,18 @@ class WrResources extends LitElement
         filteredResults.push(result);
       }
     }
+
     this.filteredResults = filteredResults;
+
+    if (this.sortKey && !(this.sortKey === "url" && !this.sortDesc)) {
+      this.filteredResults.sort((first, second) => {
+        if (first[this.sortKey] === second[this.sortKey]) {
+          return 0;
+        }
+
+        return (this.sortDesc == (first[this.sortKey] < second[this.sortKey])) ? 1 : -1;
+      });
+    }
   }
 
   onScroll(event) {
@@ -1413,6 +1437,7 @@ class WrResources extends LitElement
     }
     .notification {
       width: 100%;
+      min-height: 80px;
     }
     .main-scroll {
       height: calc(100vh - 180px);
@@ -1424,6 +1449,9 @@ class WrResources extends LitElement
       word-wrap: break-word;
       text-overflow: ellipsis;
       height: 100%;
+    }
+    tr > th {
+      cursor: pointer;
     }
     tbody > tr {
       display: table;
@@ -1461,6 +1489,15 @@ class WrResources extends LitElement
     .flex-auto {
       flex: auto;
     }
+    .asc:after {
+      content: "▼";
+      font-size: 0.75em;
+    }
+    .desc:after {
+      content: "▲";
+      font-size: 0.75em;
+    }
+
     `);
   }
 
@@ -1496,13 +1533,14 @@ class WrResources extends LitElement
         </div>
       </div>
     </div>
+    
     <table class="table is-striped is-fullwidth">
       <thead>
         <tr>
-          <th class="col-url">URL</th>
-          <th class="col-ts">Timestamp</th>
-          <th class="col-mime">Mime</th>
-          <th class="col-status">Status</th>
+          <th @click="${this.onSort}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''} col-url">URL</th>
+          <th @click="${this.onSort}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''} col-ts">Timestamp</th>
+          <th @click="${this.onSort}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''} col-mime">Mime</th>
+          <th @click="${this.onSort}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''} col-status">Status</th>
         </tr>
       </thead>
       <tbody class="main-scroll" @scroll="${this.onScroll}">
@@ -1518,6 +1556,16 @@ class WrResources extends LitElement
       </tbody>
     </table>
     `;
+  }
+
+  onSort(event) {
+    const key = event.currentTarget.getAttribute("data-key");
+    if (key === this.sortKey) {
+      this.sortDesc = !this.sortDesc;
+    } else {
+      this.sortDesc = false;
+      this.sortKey = key;
+    }
   }
 
   onReplay(event) {
