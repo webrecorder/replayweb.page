@@ -10,6 +10,8 @@ class EmbedRWP extends LitElement
     this.view = "replay";
     this.ts = "";
     this.url = "";
+    this.config = "";
+    this.coll = "";
     this.paramString = null;
   }
 
@@ -21,6 +23,9 @@ class EmbedRWP extends LitElement
       replayBase: { type: String },
 
       title: { type: String },
+
+      coll: { type: String },
+      config: { type: String },
 
       paramString: { type: String },
       hashString: { type: String }
@@ -46,6 +51,8 @@ class EmbedRWP extends LitElement
 
       this.paramString = new URLSearchParams({
         source: this.source,
+        customColl: this.coll,
+        config: this.config,
         embed: "true"
       }).toString();
   

@@ -17,6 +17,8 @@ import allCssRaw from '../scss/main.scss';
 //import fasInfo from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
 import fasArchiveIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
 import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
+import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
+import fasUnfullscreen from '@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg';
 import fasHelp from '@fortawesome/fontawesome-free/svgs/solid/question-circle.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
@@ -57,6 +59,7 @@ class AppMain extends LitElement
       navMenuShown: { type: Boolean },
       showTerms: { type: Boolean },
       collInfo: { type: Object },
+      loadInfo: { type: Object },
       embed: { type: String },
     }
   }
@@ -241,6 +244,24 @@ class AppMain extends LitElement
     if (this.pageParams.has("terms")) {
       this.showTerms = true;
     }
+
+    if (this.pageParams.has("config")) {
+      if (!this.loadInfo) {
+        this.loadInfo = {}
+      }
+      try {
+        this.loadInfo.extraConfig = JSON.parse(this.pageParams.get("config"));
+      } catch (e) {
+        console.log("invalid config: " + e);
+      }
+    }
+
+    if (this.pageParams.has("customColl")) {
+      if (!this.loadInfo) {
+        this.loadInfo = {}
+      }
+      this.loadInfo.customColl = this.pageParams.get("customColl");
+    }
   }
 
   onStartLoad(event) {
@@ -380,6 +401,10 @@ You can select a file to upload from the main page by clicking the \'Choose File
     this.state = "started";
 
     const msg = {"msg_type": "addColl", "name": this.coll, skipExisting: true, file: source};
+
+    if (this.loadInfo && this.loadInfo.extraConfig) {
+      msg.extraConfig = this.loadInfo.extraConfig;
+    }
 
     dbworker.postMessage(msg);
   }
@@ -729,8 +754,6 @@ class WrColl extends LitElement
       replayTS: { type: String },
 
       embed: { type: String },
-
-      //_locationHash: { type: String }
     }
   }
 
@@ -773,7 +796,12 @@ class WrColl extends LitElement
   }
 
   async doUpdateInfo() {
-    const {url, coll} = await sourceToId(this.sourceUrl);
+    let coll = this.loadInfo && this.loadInfo.customColl;
+
+    if (!coll) {
+      const res = await sourceToId(this.sourceUrl);
+      coll = res.coll;
+    }
 
     this.coll = coll;
 
@@ -1518,6 +1546,7 @@ class WrReplayPage extends LitElement
     this.title = "";
 
     this.showAuth = false;
+    this.reauthWait = null;
   }
 
   static get properties() {
@@ -1538,17 +1567,35 @@ class WrReplayPage extends LitElement
       isLoading: { type: Boolean },
 
       showAuth: { type: Boolean },
-      embed: { type: String }
+
+      embed: { type: String },
+      isFullscreen: { type: Boolean }
     }
   }
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
-    navigator.serviceWorker.addEventListener("message", (event) => {
+    navigator.serviceWorker.addEventListener("message", async (event) => {
       if (event.data.type === "authneeded" && this.collInfo && event.data.coll === this.collInfo.coll) {
-        this.showAuth = true;
+        if (this.reauthWait) {
+          await this.reauthWait;
+        } else {
+          this.showAuth = true;
+        }
       }
     });
+
+    this.addEventListener("fullscreenchange", (event) => {
+      this.isFullscreen = !!document.fullscreenElement;
+    });
+  }
+
+  onFullscreenToggle() {
+    if (!this.isFullscreen) {
+      this.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
   }
 
   doSetIframeUrl() {
@@ -1559,6 +1606,8 @@ class WrReplayPage extends LitElement
     if (changedProperties.has("sourceUrl") || changedProperties.has("collInfo")) {
       this.isAuthable = (this.sourceUrl.startsWith("googledrive://") && 
         this.collInfo && this.collInfo.onDemand);
+
+      this.reauthWait = null;
     }
 
     if (this.url && 
@@ -1655,6 +1704,7 @@ class WrReplayPage extends LitElement
         max-width: none;
         border-bottom: solid .1rem #97989A;
         width: 100%;
+        background-color: white;
       }
 
       .embed-bar {
@@ -1678,7 +1728,7 @@ class WrReplayPage extends LitElement
         line-height: 2;
       }
 
-      #refresh {
+      .is-borderless {
         border: 0px;
       }
 
@@ -1695,7 +1745,12 @@ class WrReplayPage extends LitElement
     <div class="container replay-bar">
       <form @submit="${this.onSubmit}">
         <div class="field has-addons">
-          <a id="refresh" class="button ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
+          <a id="fullscreen" class="button is-borderless" @click="${this.onFullscreenToggle}">
+            <span class="icon is-small">
+              <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+            </span>
+          </a>
+          <a id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
             <span class="icon is-small">
               ${!this.isLoading ? html`
               <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
@@ -1722,7 +1777,7 @@ class WrReplayPage extends LitElement
         <div class="modal-card">
           <header class="modal-card-head">
           <p class="modal-card-title">Auth Needed</p>
-            <button class="delete" aria-label="close" @click="${(e) => this.authNeeded = null}"></button>
+            <button class="delete" aria-label="close" @click="${(e) => this.showAuth = false}"></button>
           </header>
           <section class="modal-card-body">
             <div class="container has-text-centered">
@@ -1736,18 +1791,20 @@ class WrReplayPage extends LitElement
     `;
   }
 
-  async onReAuthed(event) {
-    const headers = event.detail.headers;
+  onReAuthed(event) {
+    this.reauthWait = (async () => {
+      const headers = event.detail.headers;
 
-    const resp = await fetch(`/wabac/api/${this.collInfo.coll}/updateAuth`, { 
-      method: 'POST',
-      body: JSON.stringify({headers})
-    });
+      const resp = await fetch(`/wabac/api/${this.collInfo.coll}/updateAuth`, { 
+        method: 'POST',
+        body: JSON.stringify({headers})
+      });
 
-    if (this.showAuth) {
-      this.onRefresh(null, true);
-      this.showAuth = false;
-    }
+      if (this.showAuth) {
+        this.onRefresh(null, true);
+        this.showAuth = false;
+      }
+    })();
   }
 }
 
