@@ -9,12 +9,9 @@ import { register } from 'register-service-worker';
 import prettyBytes from 'pretty-bytes';
 import marked from 'marked';
 
-import '../scss/base.scss';
-import allCssRaw from '../scss/main.scss';
+import allCssRaw from '../assets/main.scss';
+import rwpLogo from '../assets/logo.svg';
 
-//import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
-
-//import fasInfo from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
 import fasArchiveIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
 import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
 import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
@@ -66,7 +63,7 @@ class AppMain extends LitElement
 
   static get styles() {
     return wrapCss(css`
-    #logo {
+    #wrlogo {
       max-height: 2.5rem;
       margin-right: 8px;
     }
@@ -100,7 +97,7 @@ class AppMain extends LitElement
       <nav class="navbar has-background-info" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps" href="/">
-          <img id="logo" src="/static/logo.svg"/>
+          <fa-icon id="wrlogo" size="2.5rem" .svg=${rwpLogo}></fa-icon>
           <span class="has-text-primary">replay</span>
           <span class="has-text-link">web.page</span>
         </a>
@@ -469,7 +466,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
     return html`
     <section class="container">
     <div class="level has-text-centered">
-    <img class="level-item logo" src="/static/logo.svg"/>
+    <fa-icon class="level-item logo" size="96px" .svg=${rwpLogo}></fa-icon>
   </div>
       <div class="level">
         <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
@@ -721,8 +718,8 @@ class WrColl extends LitElement
     super();
     this.sourceUrl = null;
 
-    this.baseApiPrefix = "/wabac/api";
-    this.baseReplayPrefix = "/wabac";
+    this.baseApiPrefix = "./wabac/api";
+    this.baseReplayPrefix = "./wabac";
     this.apiPrefix = "";
     this.replayPrefix = "";
 
@@ -2085,7 +2082,7 @@ function registerSW(url) {
   });
   
   register(url, {
-    registrationOptions: { scope: '/' },
+    registrationOptions: { scope: './' },
     ready (registration) {
       console.log('Service worker is active.');
       resolve();

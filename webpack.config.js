@@ -8,8 +8,7 @@ module.exports = (env, argv) => {
     entry: {
       'frontend': './src/frontend.js',
       'embed': './src/embed.js',
-      'sw': 'wabac/src/sw.js',
-      'wombat': 'wombat/src/wbWombat.js',
+      'sw': 'wabac/src/sw.js'
     },
 
     output: {
@@ -61,6 +60,10 @@ module.exports = (env, argv) => {
         test: /main.scss$/,
         loaders: ['to-string-loader', 'css-loader', 'sass-loader']
       },
+      {
+        test: /wombat.js|wombatWorkers.js$/i,
+        loaders: ['raw-loader'],
+      }
       ]
     }
   }

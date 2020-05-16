@@ -33,15 +33,27 @@ $navbar-breakpoint: 800px;
   overflow-x: hidden;
 }
 
-.font-ssp {
-  font-family: 'Source Code Pro', monospace;
-}
-
-.font-ssp-c {
-  font-family: 'Source Code Pro', monospace;
-  letter-spacing: -1.5px; 
-}
 
 @import "../node_modules/bulma/bulma";
 
+// Add html and body styles to :host for webcomponents
+:host {
+  background-color: $body-background-color;
+  font-size: $body-size;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  min-width: $body-min-width;
+  overflow-x: $body-overflow-x;
+  overflow-y: $body-overflow-y;
+  text-rendering: $body-rendering;
+  text-size-adjust: 100%;
 
+  font-family: $body-family;
+  color: $body-color;
+  font-size: $body-font-size;
+  font-weight: $body-weight;
+  line-height: $body-line-height;
+
+  box-sizing: border-box;
+  overflow: hidden;
+}
