@@ -33,6 +33,8 @@ function wrapCss(custom) {
 
 const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.googleusercontent.com";
 
+const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
+
 
 const dbworker = new Worker(__SW_PATH__);
 
@@ -245,7 +247,7 @@ class AppMain extends LitElement
       this.showTerms = true;
     }
 
-    if (this.pageParams.has("config")) {
+    if (this.pageParams.get("config")) {
       if (!this.loadInfo) {
         this.loadInfo = {}
       }
@@ -256,7 +258,7 @@ class AppMain extends LitElement
       }
     }
 
-    if (this.pageParams.has("customColl")) {
+    if (this.pageParams.get("customColl")) {
       if (!this.loadInfo) {
         this.loadInfo = {}
       }
@@ -390,7 +392,6 @@ You can select a file to upload from the main page by clicking the \'Choose File
             name: this.loadInfo.name
           }
           break;
-
       }
     } catch (e) {}
 
@@ -536,8 +537,13 @@ class WrIndex extends LitElement
 
   async loadColls() {
     const resp = await fetch("/wabac/api/index");
-    const json = await resp.json();
-    this.colls = json.colls;
+    try {
+      const json = await resp.json();
+      this.colls = json.colls;
+    } catch (e) {
+      // likely no sw registered yet
+    }
+
     this._deleting = {};
   }
 
@@ -1890,7 +1896,7 @@ class WrGdrive extends LitElement
     try {
       const sourceUrl = this.sourceUrl;
       const fileId = sourceUrl.slice("googledrive://".length);
-      const publicCheckUrl = `https://gdrive-proxy.webrecorder.workers.dev/g/${fileId}`;
+      const publicCheckUrl = `${HELPER_PROXY}/g/${fileId}`;
 
       let resp = null;
       try {
