@@ -268,7 +268,7 @@ class AppMain extends LitElement
 
   onStartLoad(event) {
     // just redirect right away?
-    if (!event.detail.blobUrl) {
+    if (!event.detail.isFile) {
       this.pageParams.set("source", event.detail.sourceUrl);
       window.location.search = this.pageParams.toString();
       return;
@@ -388,7 +388,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
 
           source = {
             sourceUrl: this.loadInfo.sourceUrl,
-            loadUrl: this.loadInfo.blobUrl,
+            loadUrl: this.loadInfo.loadUrl,
             name: this.loadInfo.name
           }
           break;
@@ -537,7 +537,7 @@ class WrIndex extends LitElement
   }
 
   async loadColls() {
-    const resp = await fetch("/wabac/api/index");
+    const resp = await fetch("./wabac/api/index");
     try {
       const json = await resp.json();
       this.colls = json.colls;
@@ -574,7 +574,7 @@ class WrIndex extends LitElement
     }
 
     this.file = event.currentTarget.files[0];
-    this.fileDisplayName = "file://" + this.file.name;
+    this.fileDisplayName = "file://" + (this.file.path || this.file.name);
     this.requestUpdate();
   }
 
@@ -584,7 +584,8 @@ class WrIndex extends LitElement
     const detail = {sourceUrl: this.fileDisplayName};
 
     if (this.file) {
-      detail.blobUrl = URL.createObjectURL(this.file);
+      detail.isFile = true;
+      detail.loadUrl = this.file.path ? __APP_FILE_SERVE_PREFIX__ + this.file.path : URL.createObjectURL(this.file);
       detail.name = this.fileDisplayName;
     }
                 
@@ -2082,7 +2083,6 @@ function registerSW(url) {
 }
 
 async function main() {
-  //const swPromise = initSW(__SW_PATH__ + "?replayPrefix=wabac&stats=true");
   const swPromise = registerSW(__SW_PATH__);
   await swPromise;
   customElements.define("app-main", AppMain);

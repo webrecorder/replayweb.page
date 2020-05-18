@@ -10,3 +10,6 @@ local-examples/
 .DS_Store
 .sass-cache/
 _site/
+dist/
+!dist/frontend.js
+!dist/embed.js

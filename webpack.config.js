@@ -2,8 +2,59 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-module.exports = (env, argv) => {
+// fake url used in app to serve files
+// can not use custom scheme due to service worker issues
+const APP_FILE_SERVE_PREFIX = "https://files.replayweb.page";
+
+
+// if running in dev-server, build sw.js in dist/sw.js
+// to support hot-reloading, otherwise, build sw.js in root
+const IS_DEV_SERVER = process.env.WEBPACK_DEV_SERVER;
+
+
+const electronMainConfig = (env, argv) => {
   return {
+    target: 'electron-main',
+    mode: 'production',
+    entry: {
+      'electron': './src/electron-main.js', 
+    },
+    output: {
+      path: path.join(__dirname, 'dist'),
+      filename: '[name].js'
+    },
+    node: {
+      __dirname: false,
+      __filename: false,
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
+      })
+    ]
+  }
+};
+
+
+const electronPreloadConfig = (env, argv) => {
+  return {
+    target: 'electron-preload',
+    mode: 'production',
+    entry: {
+      'preload': './src/electron-preload.js', 
+    },
+    output: {
+      path: path.join(__dirname, 'dist'),
+      filename: '[name].js'
+    },
+  }
+};
+ 
+ 
+
+const browserConfig = (env, argv) => {
+  return {
+    target: 'web',
     mode: 'production',
     entry: {
       'frontend': './src/frontend.js',
@@ -16,7 +67,7 @@ module.exports = (env, argv) => {
       filename: (chunkData) => {
         switch (chunkData.chunk.name) {
           case 'sw':
-            return argv.mode === 'production' ? '../[name].js': '[name].js';
+            return !IS_DEV_SERVER ? '../[name].js': '[name].js';
 
           case 'wombat':
             return '../static/[name].js';
@@ -31,6 +82,10 @@ module.exports = (env, argv) => {
       publicPath: '/dist/'
     },
 
+    externals: {
+      electron: 'electron',
+    },
+
     devServer: {
       compress: true,
       port: 9990,
@@ -42,7 +97,8 @@ module.exports = (env, argv) => {
     plugins: [
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({
-        __SW_PATH__: JSON.stringify(argv.mode === 'production' ? './sw.js' : './dist/sw.js')
+        __SW_PATH__: JSON.stringify(!IS_DEV_SERVER ? './sw.js' : './dist/sw.js'),
+        __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
       }),
     ],
 
@@ -67,6 +123,8 @@ module.exports = (env, argv) => {
       ]
     }
   }
-}
+};
+
+module.exports = [ browserConfig, electronMainConfig, electronPreloadConfig ];
 
 

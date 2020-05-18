@@ -1,8 +1,8 @@
 {
-  "name": "replaywebpage",
+  "name": "ReplayWeb.page",
   "version": "1.0.0",
   "description": "Serverless Web Archive Replay",
-  "main": "index.js",
+  "main": "dist/electron.js",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "author": "Ilya Kreymer <ikreymer@gmail.com>",
   "license": "AGPL-3.0-or-later",
@@ -18,6 +18,8 @@
   },
   "devDependencies": {
     "css-loader": "^3.5.3",
+    "electron": "^9.0.0",
+    "electron-builder": "^22.6.1",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.14.0",
     "raw-loader": "^4.0.1",
@@ -32,6 +34,66 @@
   "scripts": {
     "build": "webpack --mode production",
     "build-dev": "webpack --mode development",
-    "start-dev": "webpack-dev-server --mode development"
+    "start-dev": "webpack-dev-server --mode development",
+    "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
+    "dist": "electron-builder",
+    "start-electron": "NODE_ENV=development electron ./dist/electron.js",
+    "build-electron": "yarn run build && yarn run pack"
+  },
+  "build": {
+    "productName": "ReplayWeb.page",
+    "asar": true,
+    "appId": "org.webrecorder.page.replayweb",
+    "artifactName": "${name}-${version}.${ext}",
+    "files": [
+      "!**/node_modules/**/*",
+      "dist/*.js",
+      "index.html",
+      "sw.js",
+      "package.json"
+    ],
+    "extraResources": [
+      "plugins"
+    ],
+    "dmg": {
+      "icon": "assets/icon.icns"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "dmg"
+    },
+    "linux": {
+      "category": "Archiving;Utility;",
+      "target": [
+        "AppImage"
+      ]
+    },
+    "win": {
+      "target": "portable"
+    },
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "fileAssociations": [
+      {
+        "ext": "warc",
+        "name": "WARC File",
+        "description": "WARC File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "warc.gz",
+        "name": "WARC File",
+        "description": "WARC File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "har",
+        "name": "HAR File",
+        "description": "HAR File",
+        "role": "Viewer"
+      }
+    ]
   }
 }
