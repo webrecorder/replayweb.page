@@ -54,7 +54,9 @@ class EmbedRWP extends LitElement
           url: event.data.url,
           ts: event.data.ts,
         });
-        window.location.hash = "#" + currHash.toString();
+        const url = new URL(window.location.href);
+        url.hash = "#" + currHash.toString();
+        window.history.replaceState({}, "", url);
       }
     });
 
