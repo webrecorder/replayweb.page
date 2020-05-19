@@ -440,6 +440,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
         width: 96px;
         height: 96px;
         margin: 1em;
+        flex-grow: 1;
       }
 
       .progress-div {
@@ -466,8 +467,8 @@ You can select a file to upload from the main page by clicking the \'Choose File
   render() {
     return html`
     <section class="container">
-    <div class="level has-text-centered">
-    <fa-icon class="level-item logo" size="96px" .svg=${rwpLogo}></fa-icon>
+    <div class="has-text-centered is-flex">
+    <fa-icon class="logo" size="96px" .svg=${rwpLogo}></fa-icon>
   </div>
       <div class="level">
         <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
@@ -1323,13 +1324,22 @@ class WrResources extends LitElement
     }
   }
 
-  async doLoadResources() {
+  async doLoadResources(isMore = false) {
     const count = 100;
+
+    if (isMore && (!this.tryMore || !this.results.length)) {
+      return;
+    }
+
+    if (this.loading) {
+      return;
+    }
+
     this.loading = true;
     let url = (this.urlSearchType !== "" ? this.urlSearch : "");
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
-    // optimization: if not starting with http, likely won't have a match here, so just add https://
 
+    // optimization: if not starting with http, likely won't have a match here, so just add https://
     if (url && !url.startsWith("http")) {
       url = "https://" + url;
     }
@@ -1341,47 +1351,20 @@ class WrResources extends LitElement
       url,
       prefix,
       count
-    }).toString();
+    });
 
-    let resp = await fetch(`${this.collInfo.apiPrefix}/urls?${params}`);
-    resp = await resp.json();
-    this.results = resp.urls;
-    this.tryMore = (resp.urls.length === count);
-    this.filter();
-
-    this.loading = false;
-  }
-
-  async doLoadMore() {
-    const count = 100;
-
-    if (!this.tryMore || !this.results.length) {
-      return;
+    if (isMore) {
+      const last = this.results[this.results.length - 1];
+      params.set("fromMime", last.mime);
+      params.set("fromUrl", last.url);
+      params.set("fromTs", new Date(last.date).getTime());
     }
-    if (this.loading) {
-      return;
-    }
-    this.loading = true;
-    
-    const url = (this.urlSearchType !== "" ? this.urlSearch : "");
-    const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
-    const mime = this.currMime === "all" ? "" : this.currMime;
 
-    const last = this.results[this.results.length - 1];
-    const params = new URLSearchParams({
-      mime,
-      url,
-      prefix,
-      fromMime: last.mime,
-      fromUrl: last.url,
-      fromTs: new Date(last.date).getTime(),
-      count
-    }).toString();
-
-    let resp = await fetch(`${this.collInfo.apiPrefix}/urls?${params}`);
+    let resp = await fetch(`${this.collInfo.apiPrefix}/urls?${params.toString()}`);
     resp = await resp.json();
-    this.results = this.results.concat(resp.urls);
-    this.tryMore = (resp.urls.length === count);
+    this.results = isMore ? this.results.concat(resp.urls) : resp.urls;
+    // can be more than count if multiple mimes
+    this.tryMore = (resp.urls.length >= count);
     this.filter();
 
     this.loading = false;
@@ -1428,7 +1411,7 @@ class WrResources extends LitElement
     const element = event.currentTarget;
     const diff = (element.scrollHeight - element.scrollTop) - element.clientHeight;
     if (this.tryMore && diff < 40) {
-      this.doLoadMore();
+      this.doLoadResources(true);
     }
   }
 
@@ -1440,7 +1423,6 @@ class WrResources extends LitElement
     }
     .notification {
       width: 100%;
-      min-height: 80px;
     }
     .main-scroll {
       height: calc(100vh - 180px);
