@@ -50,7 +50,7 @@ GEM
       forwardable-extended (~> 2.6)
     public_suffix (4.0.3)
     rake (12.3.3)
-    rb-fsevent (0.10.3)
+    rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rouge (3.17.0)

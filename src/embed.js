@@ -13,6 +13,7 @@ class EmbedRWP extends LitElement
     this.config = "";
     this.coll = "";
     this.paramString = null;
+    this.deepLink = false;
   }
 
   static get properties() {
@@ -28,7 +29,9 @@ class EmbedRWP extends LitElement
       config: { type: String },
 
       paramString: { type: String },
-      hashString: { type: String }
+      hashString: { type: String },
+
+      deepLink: { type: Boolean }
     }
   }
 
@@ -40,8 +43,36 @@ class EmbedRWP extends LitElement
         if (event.data.title) {
           this.title = event.data.title;
         }
+
+        console.log(event.data);
+
+        if (!this.deepLink) {
+          return;
+        }
+
+        const currHash = new URLSearchParams({
+          url: event.data.url,
+          ts: event.data.ts,
+        });
+        window.location.hash = "#" + currHash.toString();
       }
     });
+
+    if (this.deepLink) {
+      this.updateFromHash();
+      window.addEventListener("hashchange", (event) => this.updateFromHash());
+    }
+  }
+
+  updateFromHash() {
+    const qs = new URLSearchParams(window.location.hash.slice(1));
+
+    if (qs.has("url")) {
+      this.url = qs.get("url");
+    }
+    if (qs.has("ts")) {
+      this.ts = qs.get("ts");
+    }
   }
 
   updated(changedProperties) {

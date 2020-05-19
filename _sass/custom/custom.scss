@@ -1,7 +1,8 @@
-$rwp-green: #64e986;
+$rwp-green: #55be6f;
 $rwp-yellow: #f5c71a;
+$rwp-blue: #4876ff;
 //$link-color: #27a0ff;
-$link-color: #4876ff;
+$link-color: #384ea2;
 
 //$content-width: 960px;
 $nav-width-md: $nav-width;
@@ -31,3 +32,6 @@ $nav-width-md: $nav-width;
   color: $rwp-yellow;
 }
 
+.rwp-blue {
+  color: $rwp-blue;
+}

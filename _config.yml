@@ -17,7 +17,7 @@ aux_links:
   "Back to ReplayWeb.page":
     - "https://replayweb.page/"
 
-logo: "/static/logo.svg"
+logo: "/assets/logo.svg"
 
 plugins:
   - jekyll-remote-theme

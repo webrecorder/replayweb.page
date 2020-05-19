@@ -156,7 +156,7 @@ class AppMain extends LitElement
   `}
   ${this.showTerms ? html`
   <div class="modal is-active">
-    <div class="modal-background"></div>
+    <div class="modal-background" @click="${(e) => this.showTerms = false}"></div>
       <div class="modal-card">
         <header class="modal-card-head">
         <p class="modal-card-title">Terms and Privacy</p>
@@ -172,7 +172,8 @@ class AppMain extends LitElement
         
             <h3>Privacy</h3>
             <p><b>No data is uploaded anywhere and no information is collected.</b></p>
-            <p>All content rendered stays directly in your browser.</p>
+            <p>All content rendered stays directly in your browser. When loading an archive from Google Drive, 
+            the site may ask for account authorization to download the specified file only.</p>
         
             <h4>Disclaimer of Warranties</h4>
             <p>The application may not always be available. No guarantees!</p>
@@ -186,7 +187,6 @@ class AppMain extends LitElement
           </div>
         </section>
       </div>
-    <button class="modal-close is-large" aria-label="close"></button>
   </div>
   ` : ``} `
   }
@@ -1818,7 +1818,6 @@ class WrReplayPage extends LitElement
             </div>
           </section>
         </div>
-      <button class="modal-close is-large" aria-label="close"></button>
     </div>
     ` : ``}
     `;
