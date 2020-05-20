@@ -260,7 +260,9 @@ function createWindow () {
   });
 
   mainWindow.loadURL(STATIC_PREFIX + "index.html");
-  mainWindow.webContents.openDevTools();
+  if (process.env.NODE_ENV === "development") {
+    mainWindow.webContents.openDevTools();
+  }
 }
 
 // This method will be called when Electron has finished
