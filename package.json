@@ -42,17 +42,18 @@
     "build-electron": "yarn run build && yarn run pack"
   },
   "build": {
-    "afterSign": "notarize.js",
+    "afterSign": "build/notarize.js",
     "productName": "ReplayWeb.page",
     "asar": true,
     "appId": "net.webrecorder.replaywebpage",
     "artifactName": "${name}-${version}.${ext}",
     "files": [
+      "!**/*",
       "!**/node_modules/**/*",
+      "package.json",
       "dist/*.js",
-      "index.html",
-      "sw.js",
-      "package.json"
+      "docs/*.js",
+      "docs/index.html"
     ],
     "extraResources": [
       "plugins"

@@ -63,23 +63,11 @@ const browserConfig = (env, argv) => {
     },
 
     output: {
-      path: path.join(__dirname, 'dist'),
-      filename: (chunkData) => {
-        switch (chunkData.chunk.name) {
-          case 'sw':
-            return !IS_DEV_SERVER ? '../[name].js': '[name].js';
-
-          case 'wombat':
-            return '../static/[name].js';
-
-          case 'frontend':
-          default:
-            return '[name].js';
-        }
-      },
+      path: path.join(__dirname, 'docs'),
+      filename: '[name].js',
       libraryTarget: 'self',
       globalObject: 'self',
-      publicPath: '/dist/'
+      publicPath: '/'
     },
 
     externals: {
@@ -89,15 +77,15 @@ const browserConfig = (env, argv) => {
     devServer: {
       compress: true,
       port: 9990,
-      headers: {'Service-Worker-Allowed': '/'},
       open: false,
-      publicPath: '/dist/'
+      contentBase:  path.join(__dirname, 'docs'),
+      publicPath: '/'
     },
 
     plugins: [
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({
-        __SW_PATH__: JSON.stringify(!IS_DEV_SERVER ? './sw.js' : './dist/sw.js'),
+        __SW_PATH__: JSON.stringify('./sw.js'),
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
       }),
     ],

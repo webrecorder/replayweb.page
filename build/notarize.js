@@ -6,6 +6,13 @@ exports.default = async function notarizing(context) {
     return;
   }
 
+  if (process.env.CSC_IDENTITY_AUTO_DISCOVERY === "false") {
+    console.log('Skipped signing and notarizing');
+    return;
+  }
+
+  console.log('Notarizing...');
+
   const appName = context.packager.appInfo.productFilename;
 
   const password = `@keychain:WR Notarize`;

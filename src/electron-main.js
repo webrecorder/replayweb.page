@@ -19,19 +19,22 @@ const REPLAY_PREFIX = STATIC_PREFIX + "wabac/";
 
 const STATIC_PATHS = {
   'index.html': 'text/html',
-  'dist/frontend.js': 'application/javascript',
-  'dist/sw.js': 'application/javascript',
+  'frontend.js': 'application/javascript',
   'sw.js': 'application/javascript'
 };
 
 const URL_RX = /([^\/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
 const appPath = app.getAppPath();
+
 const projPath = path.join(appPath, "../");
+
+const staticContentPath = path.join(__dirname, "../", "docs");
 
 const pluginPath = path.join(projPath, "plugins", "PepperFlashPlayer.plugin");
 
 console.log('app path', appPath);
+console.log('dir name', __dirname);
 console.log('proj path', projPath);
 console.log('plugin path', pluginPath);
 
@@ -72,7 +75,7 @@ async function doIntercept(request, callback) {
     const type = STATIC_PATHS[filename];
 
     if (type) {
-      const fullPath = path.join(__dirname, "../", filename);
+      const fullPath = path.join(staticContentPath, filename);
 
       console.log("fullPath: " + fullPath);
 
