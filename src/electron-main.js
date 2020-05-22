@@ -1,27 +1,28 @@
 "use strict";
 
-const {app, session, BrowserWindow, protocol, ipcMain} = require('electron');
-const path = require('path');
-const fs = require('fs');
-const qs = require('querystring');
+import fetch from 'node-fetch';
+import { Headers } from 'node-fetch';
 
-const { ArchiveResponse, Rewriter } = require('wabac/src/rewrite');
+import {app, session, BrowserWindow, ipcMain} from 'electron';
 
-const { Headers } = require('node-fetch');
+import path from 'path';
+import fs from 'fs';
+import qs from 'querystring';
+
+import { ArchiveResponse, Rewriter } from 'wabac/src/rewrite';
+
+import { PassThrough } from 'stream';
+
+import mime from 'mime-types';
 
 global.Headers = Headers;
 
-const { PassThrough } = require('stream');
-
-const STATIC_PREFIX = `https://replayweb.page/`;
+const STATIC_PREFIX = "http://localhost:5471/";
 
 const REPLAY_PREFIX = STATIC_PREFIX + "wabac/";
 
-const STATIC_PATHS = {
-  'index.html': 'text/html',
-  'frontend.js': 'application/javascript',
-  'sw.js': 'application/javascript'
-};
+const HTML_TYPE = 'text/html; charset="utf-8"';
+const JS_TYPE = 'application/javascript; charset="utf-8"';
 
 const URL_RX = /([^\/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
@@ -29,7 +30,7 @@ const appPath = app.getAppPath();
 
 const projPath = path.join(appPath, "../");
 
-const staticContentPath = path.join(__dirname, "../", "docs");
+const staticContentPath = path.join(__dirname, "../");
 
 const pluginPath = path.join(projPath, "plugins", "PepperFlashPlayer.plugin");
 
@@ -51,7 +52,7 @@ app.commandLine.appendSwitch('ppapi-flash-path', pluginPath);
 var proxyColl;
 var proxyTS;
 
-var mainContents;
+var mainWindow;
 
 
 function bufferToStream(data) {
@@ -65,42 +66,50 @@ function bufferToStream(data) {
 
 
 async function doIntercept(request, callback) {
-  console.log("request", request.url);
+  console.log(`${request.method} ${request.url} from ${request.referrer}`);
 
+  // if local server
   if (request.url.startsWith(STATIC_PREFIX)) {
-    let filename = request.url.slice(STATIC_PREFIX.length).split("?", 1)[0];
-    if (filename === "") {
-      filename = "index.html";
-    }
-    const type = STATIC_PATHS[filename];
-
-    if (type) {
-      const fullPath = path.join(staticContentPath, filename);
-
-      console.log("fullPath: " + fullPath);
-
-      const data = fs.createReadStream(fullPath);
-
-      callback({statusCode: 200, headers: {"content-type": type}, data});
-      return;
-
-    } else if (request.url.startsWith(REPLAY_PREFIX)) {
+    //if replay prefix
+    if (request.url.startsWith(REPLAY_PREFIX)) {
       const m = request.url.slice(REPLAY_PREFIX.length).match(URL_RX);
       if (m) {
         proxyColl = m[1];
         proxyTS = m[2];
 
-        //const data = bufferToStream(`<html><head><script>window.location.href = "${m[3]}";</script></head></html>`);
-        //const statusCode = 200;
-        //const headers =  {"location": m[3], "cache-control": "no-cache"};
-
-        //callback({statusCode, headers, data});
-
         request.url = m[3];
-        await resolveResponse(request, callback);
-        return;
+        return await resolveArchiveResponse(request, callback);
+      }
+    } else {
+
+      // try serve static file from app dir
+      let filename = request.url.slice(STATIC_PREFIX.length).split("?", 1)[0];
+
+      if (filename === "") {
+        filename = "index.html";
+      } else if (filename === "docs") {
+        filename = "docs/index.html";
+      }
+
+      let ext = path.extname(filename);
+      if (!ext) {
+        ext = ".html";
+        filename += ext;
+      }
+
+      const mimeType = mime.contentType(ext);
+
+      if (mimeType) {
+        const fullPath = path.join(staticContentPath, filename);
+
+        console.log("fullPath: " + fullPath);
+
+        const data = fs.createReadStream(fullPath);
+
+        return callback({statusCode: 200, headers: {"content-type": mimeType}, data});
       }
     }
+    
     return notFound(request.url, callback);
   }
 
@@ -122,12 +131,30 @@ async function doIntercept(request, callback) {
 
     const {statusCode, start, end} = parseRange(reqHeaders, headers, size);
 
-    const data = fs.createReadStream(filename, {start, end});
+    const data = request.method === "HEAD" ? null : fs.createReadStream(filename, {start, end});
 
     callback({statusCode, headers, data});
+    return;
   }
 
-  await resolveResponse(request, callback);
+  // possible 'live leak' attempt, just return not found
+  if (request.referrer && request.referrer.startsWith(REPLAY_PREFIX)) {
+    return notFound(request.url, callback);
+  }
+
+  await proxyLive(request, callback);
+}
+
+async function proxyLive(request, callback) {
+  let headers = request.headers;
+
+  const method = request.method;
+  const response = await fetch(request.url, {method, headers});
+  const data = method === "HEAD" ? null : response.body;
+  const statusCode = response.status;
+
+  headers = Object.fromEntries(response.headers.entries());
+  callback({statusCode, headers, data});
 }
 
 function notFound(url, callback) {
@@ -136,9 +163,10 @@ function notFound(url, callback) {
   callback({statusCode: 404, headers: {"Content-Type": 'text/html; charset="utf-8"'}, data});
 }
 
-async function resolveResponse(request, callback) {
-  //mainContents.once("ipc-message", async (event, channel, status, headers, payload) => {
-  ipcMain.once("req:" + request.url, async (event, status, headers, payload) => {
+async function resolveArchiveResponse(request, callback) {
+  const channel = `req:${new Date().getTime()}:${request.url}`;
+
+  ipcMain.once(channel, async (event, status, headers, payload) => {
     const url = request.url;
 
     if (status === 404 && !payload) {
@@ -161,7 +189,6 @@ async function resolveResponse(request, callback) {
       useBaseRules: true
     });
 
-    //const timestamp = proxyTS;
     request.headers = new Headers(request.headers);
 
     try {
@@ -188,7 +215,7 @@ async function resolveResponse(request, callback) {
 
   });
 
-  mainContents.send("getresponse", request, proxyColl, proxyTS);
+  mainWindow.webContents.send("getresponse", request, proxyColl, proxyTS, channel);
 }
 
 function parseRange(reqHeaders, headers, size) {
@@ -215,28 +242,14 @@ function parseRange(reqHeaders, headers, size) {
 
 
 function createWindow () {
-  //createServer();
-
   const sesh = session.defaultSession;
-  protocol.registerStreamProtocol("filex", async (request, callback) => {
-    const filename = qs.unescape(request.url.slice("filex://-".length));
-    console.log("filex", filename);
 
-    if (filename.endsWith("?redir")) {
-      const newLoc = request.url.replace("?redir", "");
-      console.log("redir to: " + newLoc);
-      callback({statusCode: 304, headers: {"Location": newLoc}, data: bufferToStream(NOT_FOUND)});
-      return;
-    }
-
-
-  });
-
+  //sesh.protocol.interceptStreamProtocol("file", doIntercept);
   sesh.protocol.interceptStreamProtocol("http", doIntercept);
-  sesh.protocol.interceptStreamProtocol("https", doIntercept);
+  //sesh.protocol.interceptStreamProtocol("https", doIntercept);
 
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
     isMaximized: true,
@@ -244,6 +257,8 @@ function createWindow () {
     webPreferences: {
       plugins: true,
       preload: path.join(__dirname, 'preload.js'),
+      nativeWindowOpen: true,
+      contextIsolation: true
     }
   }).once('ready-to-show', () => {
 
@@ -289,11 +304,12 @@ app.on('window-all-closed', function () {
   app.quit();
 });
 
-
+/*
 app.on('web-contents-created', (event, contents) => {
   if (contents.getType() === "webview") {
     contents.openDevTools();
   } else if (contents.getType() === "window") {
+    console.log("main contents set")
     mainContents = contents;
   }
-});
+});*/

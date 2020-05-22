@@ -11,10 +11,10 @@
     "bulma": "^0.8.2",
     "lit-element": "^2.3.1",
     "marked": "^1.0.0",
+    "mime-types": "^2.1.27",
     "pretty-bytes": "^5.3.0",
     "register-service-worker": "^1.7.1",
-    "wabac": "github:https://github.com/webrecorder/wabac.js",
-    "wombat": "github:https://github.com/webrecorder/wombat"
+    "wabac": "github:https://github.com/webrecorder/wabac.js"
   },
   "devDependencies": {
     "css-loader": "^3.5.3",
@@ -39,7 +39,9 @@
     "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
     "dist": "electron-builder",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js",
-    "build-electron": "yarn run build && yarn run pack"
+    "build-electron": "yarn run build && yarn run pack",
+    "docs": "bundle exec jekyll build",
+    "all": "yarn run build && yarn run docs && yarn run pack"
   },
   "build": {
     "afterSign": "build/notarize.js",
@@ -48,12 +50,18 @@
     "appId": "net.webrecorder.replaywebpage",
     "artifactName": "${name}-${version}.${ext}",
     "files": [
-      "!**/*",
       "!**/node_modules/**/*",
-      "package.json",
       "dist/*.js",
-      "docs/*.js",
-      "docs/index.html"
+      "*.js",
+      "*.html",
+      {
+        "from": "_site/docs",
+        "to": "docs"
+      },
+      {
+        "from": "_site/assets",
+        "to": "assets"
+      }
     ],
     "extraResources": [
       "plugins"

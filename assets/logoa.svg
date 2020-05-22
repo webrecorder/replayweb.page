@@ -27,11 +27,15 @@
       <stop
          style="stop-color:#4876ff;stop-opacity:1"
          offset="0"
-         id="stop5687" />
+         id="stop5687">
+        <animate attributeName="stop-color" values="#4876ff; #1b0921;  #4876ff; #04cdff; #4876ff; " dur="9s" repeatCount="indefinite" />
+      </stop>
       <stop
          style="stop-color:#04cdff;stop-opacity:1"
          offset="1"
-         id="stop5689" />
+         id="stop5689">
+        <animate attributeName="stop-color" values="#04cdff; #4876ff; #1b0921; #4876ff; #04cdff; " dur="9s" repeatCount="indefinite" />
+      </stop>
     </linearGradient>
   </defs>
   <metadata

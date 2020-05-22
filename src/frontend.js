@@ -11,8 +11,13 @@ import marked from 'marked';
 
 import allCssRaw from '../assets/main.scss';
 import rwpLogo from '../assets/logo.svg';
+import rwpAnimLogo from '../assets/logoa.svg';
 
-import fasArchiveIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
+import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
+import fasArrowRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
+
+import fasInfoIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
+
 import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
 import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
 import fasUnfullscreen from '@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg';
@@ -31,10 +36,7 @@ function wrapCss(custom) {
   return [allCss, custom];
 }
 
-const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.googleusercontent.com";
-
-const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
-
+const IS_APP = window.electron && window.electron.IS_APP;
 
 const dbworker = new Worker(__SW_PATH__);
 
@@ -87,9 +89,32 @@ class AppMain extends LitElement
     .navbar {
       padding: 0 0.5em;
     }
-    .info-menu {
-      padding: 0 1.0em;
+
+    div.navbar-menu fa-icon {
+      vertical-align: sub;
     }
+    
+    @media screen and (min-width: 800px) {
+      .menu-only {
+        display: none;
+      }
+
+      a.arrow-button {
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+
+      .info-menu {
+        padding: 0 1.0em;
+      }
+    }
+
+    @media screen and (max-width: 800px) {
+      .wide-only {
+        display: none;
+      }
+    }
+
     `);
   }
 
@@ -111,11 +136,21 @@ class AppMain extends LitElement
       </div>
       <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
       <div class="navbar-start">
+      ${IS_APP ? html`
+        <a class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}">
+          <fa-icon .svg="${fasArrowLeft}"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
+        </a>
+        <a class="navbar-item arrow-button" title="Go Forward" @click="${(e) => window.history.forward()}">
+          <fa-icon .svg="${fasArrowRight}"></fa-icon><span class="menu-only">&nbsp;Go Forward</span>
+        </a>
+      ` : ``}
       ${this.sourceUrl && this.collInfo ? html`
         <div class="navbar-item has-dropdown is-hoverable">
-          <a class="info-menu navbar-link is-arrowless"><fa-icon size="1.2em" .svg="${fasArchiveIcon}"></fa-icon></a>
+          <a class="info-menu navbar-link is-arrowless"><fa-icon size="1.2em" .svg="${fasInfoIcon}"></fa-icon>
+          <span class="menu-only">About this Archive</span>
+          </a>
           <div class="navbar-dropdown">
-            <div class="navbar-item"><i>About this Archive</i></div>
+            <div class="navbar-item wide-only"><i>About this Archive</i></div>
             <hr class="navbar-divider">
             <div class="navbar-item">
               Source:&nbsp;<b>${this.sourceUrl}</b>
@@ -138,7 +173,7 @@ class AppMain extends LitElement
       </div>
       <div class="navbar-end">
         <a href="/docs" target="_blank" class="navbar-item">
-          <fa-icon .svg="${fasHelp}"></fa-icon>&nbsp;How it Works
+          <fa-icon .svg="${fasHelp}"></fa-icon><span>&nbsp;How it Works</span>
         </a>
         <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
       </div>
@@ -193,6 +228,9 @@ class AppMain extends LitElement
 
   firstUpdated() {
     this.initRoute();
+    window.addEventListener("popstate", (event) => {
+      this.initRoute();
+    });
   }
 
   updated(changedProperties) {
@@ -268,10 +306,15 @@ class AppMain extends LitElement
 
   onStartLoad(event) {
     // just redirect right away?
+    this.pageParams.set("source", event.detail.sourceUrl);
+
     if (!event.detail.isFile) {
-      this.pageParams.set("source", event.detail.sourceUrl);
       window.location.search = this.pageParams.toString();
       return;
+    } else {
+      const url = new URL(window.location.href);
+      url.search = this.pageParams.toString();
+      window.history.pushState({}, "", url.toString());
     }
 
     this.sourceUrl = event.detail.sourceUrl;
@@ -289,7 +332,7 @@ class AppMain extends LitElement
       return;
     }
 
-    this.initRoute();
+    //this.initRoute();
 
     if (event.detail.sourceUrl !== this.sourceUrl) {
       this.pageParams.set("source", event.detail.sourceUrl);
@@ -468,7 +511,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
     return html`
     <section class="container">
     <div class="has-text-centered is-flex">
-    <fa-icon class="logo" size="96px" .svg=${rwpLogo}></fa-icon>
+    <fa-icon class="logo" size="96px" .svg=${rwpAnimLogo}></fa-icon>
   </div>
       <div class="level">
         <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
@@ -620,6 +663,9 @@ class WrIndex extends LitElement
     div.field.has-addons {
       flex: auto;
     }
+    form {
+      flex-grow: 1;
+    }
     button.is-loading {
       line-height: 1.5em;
       height: 1.5em;
@@ -645,46 +691,48 @@ class WrIndex extends LitElement
   render() {
     return html`
     <section class="section no-top-padding">
-      <div class="container">
-        <nav class="panel is-warning">
-          <p class="panel-heading">Load Web Archive</p>
-          <div class="extra-padding panel-block file has-name">
-            <form class="container is-flex" @submit="${this.onStartLoad}">
-              <label class="file-label">
-                <input class="file-input"
-                  @click="${(e) => e.currentTarget.value = null}"
-                  @change=${this.onChooseFile} type="file" id="fileupload" name="fileupload">
-                <span class="file-cta">
-                  <span class="file-icon">
-                    <fa-icon size="0.9em" .svg=${fasUpload}></fa-icon>
-                  </span>
-                  <span class="file-label">
-                    Choose File...
-                  </span>
+      ${!IS_APP ? html`
+      <p class="subtitle has-text-centered">Explore and Replay Interactive Archived Webpages Directly in your Browser.</p>
+      ` : ``}
+      <nav class="panel is-warning">
+        <p class="panel-heading">Load Web Archive</p>
+        <div class="extra-padding panel-block file has-name">
+          <form class="content is-flex" @submit="${this.onStartLoad}">
+            <label class="file-label">
+              <input class="file-input"
+                @click="${(e) => e.currentTarget.value = null}"
+                @change=${this.onChooseFile} type="file" id="fileupload" name="fileupload">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <fa-icon size="0.9em" .svg=${fasUpload}></fa-icon>
                 </span>
-              </label>
+                <span class="file-label">
+                  Choose File...
+                </span>
+              </span>
+            </label>
 
-              <div class="field has-addons">
-                <p class="control is-expanded">
-                  <input class="file-name input" type="text"
-                  name="filename" id="filename"
-                  pattern="^((file|http|https|s3):\/\/.*\.(warc|warc.gz|har|zip|waz))|(googledrive:\/\/[^\/\s]+)$"
-                  .value="${this.fileDisplayName}"
-                  @input="${this.onInput}"
-                  autocomplete="off"
-                  placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or ZIP) archive">
-                </p>
-                <div class="control">
-                  <button type="submit" class="button is-primary">Load</button>
-                </div>
+            <div class="field has-addons">
+              <p class="control is-expanded">
+                <input class="file-name input" type="text"
+                name="filename" id="filename"
+                pattern="((file|http|https|s3):\/\/.*\.(warc|warc.gz|har|zip|wacz))|(googledrive:\/\/.+)"
+                .value="${this.fileDisplayName}"
+                @input="${this.onInput}"
+                autocomplete="off"
+                placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or WACZ) archive">
+              </p>
+              <div class="control">
+                <button type="submit" class="button is-primary">Load</button>
               </div>
+            </div>
 
-            </form>
-          </div>
-        </nav>
-      </div>
+          </form>
+        </div>
+      </nav>
     </section>
-    <section class="container">
+
+    <section class="section no-top-padding">
       <nav class="panel is-light">
         <p class="panel-heading">Loaded Archives</p>
         <div class="coll-list">
@@ -789,7 +837,7 @@ class WrColl extends LitElement
       const newHash = "#" + new URLSearchParams(this.tabData).toString();
       if (newHash !== this._locationHash) {
         this._locationHash = newHash;
-        if (this._replaceLoc) {
+        if (this._replaceLoc || Object.keys(changedProperties.get("tabData")).length === 0) {
           const newLoc = new URL(window.location.href);
           newLoc.hash = this._locationHash;
           window.history.replaceState({}, "", newLoc.href);
@@ -900,13 +948,13 @@ class WrColl extends LitElement
       display: none;
     }
 
-    @media screen and (min-width: 1024px) {
+    @media screen and (min-width: ${!IS_APP ? css`1024px` : css`1134px`}) {
       .tab-label {
         display: inline;
       }
     }
 
-    @media screen and (min-width: 680px) {
+    @media screen and (min-width: ${!IS_APP ? css`680px` : css`850px`}) {
       .main.tabs {
         position: absolute;
         top: 0px;
@@ -997,7 +1045,7 @@ class WrColl extends LitElement
     <wr-coll-resources .collInfo="${this.collInfo}"
     urlSearch="${this.tabData.urlSearch || ""}"
     urlSearchType="${this.tabData.urlSearchType || ""}"
-    .currMime="${this.tabData.currMime}"
+    .currMime="${this.tabData.currMime || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
     class="is-paddingless ${this.tabData.view === 'resources' ? '' : 'is-hidden'}">
     </wr-coll-resources>
@@ -1250,7 +1298,7 @@ class WrResources extends LitElement
 {
   static get filters() {
     return [
-      {name: "HTML", filter: "text/html,text/xhtml"},
+      {name: "HTML", filter: ""}, //default
       {name: "Images", filter: "image/"},
       {name: "Audio/Video", filter: "audio/,video/"},
       {name: "PDF", filter: "application/pdf"},
@@ -1306,10 +1354,6 @@ class WrResources extends LitElement
         changedProperties.has("urlSearchType") ||
         changedProperties.has("currMime")) {
 
-      if (!this.currMime) {
-        this.currMime = "text/html,text/xhtml";
-      }
-
       this.doLoadResources();
       const data = {
         urlSearch: this.urlSearch,
@@ -1345,7 +1389,20 @@ class WrResources extends LitElement
       url = "https://" + url;
     }
 
-    const mime = this.currMime === "all" ? "" : this.currMime;
+    let mime;
+
+    switch (this.currMime) {
+      case "all":
+        mime = "";
+        break;
+
+      case "":
+        mime = "text/html,text/xhtml";
+        break;
+
+      default:
+        mime = this.currMime;
+    }
 
     const params = new URLSearchParams({
       mime,
@@ -1753,6 +1810,21 @@ class WrReplayPage extends LitElement
         border-radius: 4px;
       }
 
+      .intro-panel {
+        min-width: 40%;
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+      }
+
+      .intro-panel .panel-heading {
+        font-size: 1.0em;
+      }
+
+      .intro-panel .panel-block {
+        padding: 1.0em;
+      }
+
       #datetime {
         position: absolute;
         right: 1em;
@@ -1776,7 +1848,7 @@ class WrReplayPage extends LitElement
   render() {
     return html`
     ${this.embed !== "replayonly" ? html`
-    <div class="container replay-bar">
+    <div class="replay-bar">
       <form @submit="${this.onSubmit}">
         <div class="field has-addons">
           <a id="fullscreen" class="button is-borderless" @click="${this.onFullscreenToggle}">
@@ -1803,7 +1875,12 @@ class WrReplayPage extends LitElement
     ${this.iframeUrl ? html`
     <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen"
     src="${this.iframeUrl}"></iframe>
-    ` : ``}
+    ` : html`
+      <nav class="panel intro-panel">
+        <p class="panel-heading">Replay Web Page</p>
+        <p class="panel-block">Enter a URL above to replay it from the web archive!</p>
+      </nav>
+    `}
 
     ${this.isAuthable ? html`
     <div class="modal ${this.showAuth ? 'is-active' : ''}">
@@ -1878,7 +1955,7 @@ class WrGdrive extends LitElement
     try {
       const sourceUrl = this.sourceUrl;
       const fileId = sourceUrl.slice("googledrive://".length);
-      const publicCheckUrl = `${HELPER_PROXY}/g/${fileId}`;
+      const publicCheckUrl = `${__HELPER_PROXY__}/g/${fileId}`;
 
       let resp = null;
       try {
@@ -2007,7 +2084,7 @@ class WrGdrive extends LitElement
   gauth(prompt, callback) {
     gapi.load('auth2', () => {
       gapi.auth2.authorize({
-          client_id: GDRIVE_CLIENT_ID,
+          client_id: __GDRIVE_CLIENT_ID__,
           scope: "https://www.googleapis.com/auth/drive.file",
           response_type: "token",
           prompt

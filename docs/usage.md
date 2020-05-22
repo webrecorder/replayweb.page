@@ -4,7 +4,7 @@ title: Usage
 nav_order: 1
 description: 'Usage'
 has_children: true
-permalink: /docs
+permalink: /docs/index.html
 ---
 
 # ReplayWeb.Page

@@ -4,12 +4,18 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // fake url used in app to serve files
 // can not use custom scheme due to service worker issues
-const APP_FILE_SERVE_PREFIX = "https://files.replayweb.page";
+const APP_FILE_SERVE_PREFIX = "http://files.replayweb.page";
+//const APP_FILE_SERVE_PREFIX = "file://files.replayweb.page";
 
 
-// if running in dev-server, build sw.js in dist/sw.js
-// to support hot-reloading, otherwise, build sw.js in root
-const IS_DEV_SERVER = process.env.WEBPACK_DEV_SERVER;
+// helper proxy URL, run locally for app
+const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
+
+// GDrive client-id
+const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.googleusercontent.com";
+
+
+
 
 
 const electronMainConfig = (env, argv) => {
@@ -30,6 +36,7 @@ const electronMainConfig = (env, argv) => {
     plugins: [
       new webpack.DefinePlugin({
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
+        __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY)
       })
     ]
   }
@@ -63,7 +70,7 @@ const browserConfig = (env, argv) => {
     },
 
     output: {
-      path: path.join(__dirname, 'docs'),
+      path: path.join(__dirname),
       filename: '[name].js',
       libraryTarget: 'self',
       globalObject: 'self',
@@ -78,7 +85,7 @@ const browserConfig = (env, argv) => {
       compress: true,
       port: 9990,
       open: false,
-      contentBase:  path.join(__dirname, 'docs'),
+      contentBase:  path.join(__dirname),
       publicPath: '/'
     },
 
@@ -87,6 +94,8 @@ const browserConfig = (env, argv) => {
       new webpack.DefinePlugin({
         __SW_PATH__: JSON.stringify('./sw.js'),
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
+        __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
+        __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID)
       }),
     ],
 

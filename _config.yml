@@ -15,10 +15,28 @@ heading_anchors: true
 # Aux links for the upper right navigation
 aux_links:
   "Back to ReplayWeb.page":
-    - "https://replayweb.page/"
+    - "/"
 
 logo: "/assets/logo.svg"
 
 plugins:
   - jekyll-remote-theme
+
+
+baseUrl: '/'
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - package.json
+  - run.sh
+  - webpack.config.js
+  - yarn-error.log
+  - yarn.lock
+  - local-examples/
+  - build/
+  - src/
+  - dist/
+  - node_modules/
+  - plugins/
 

@@ -2,7 +2,9 @@
 
 import { CollectionLoader } from 'wabac/src/loaders';
 
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, contextBridge } = require('electron');
+
+contextBridge.exposeInMainWorld('electron', {'IS_APP': true});
 
 const dbs = {};
 
@@ -17,15 +19,13 @@ async function getDB(name) {
   return dbs[name].store;
 }
 
-async function getResponse(event, request, coll, ts) {
+async function getResponse(event, request, coll, ts, channel) {
   const db = await getDB(coll);
   await db.initing;
 
   const req = {request, url: request.url, timestamp: ts};
 
   const result = await db.getResource(req, "", {request});
-
-  const channel = "req:" + request.url;
 
   if (!result) {
     ipcRenderer.send(channel, 404);

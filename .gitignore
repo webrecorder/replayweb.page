@@ -1,12 +1,12 @@
 *.har
 *.warc
 *.warc.gz
-!docs/examples/*.warc
+!examples/*.warc
 **/node_modules
 yarn-error.log
 coverage/
 **/local-examples/
 **/.DS_Store
 **/.sass-cache/
-docs/_site/
+_site/
 dist/
