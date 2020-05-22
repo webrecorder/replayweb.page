@@ -23,7 +23,7 @@ plugins:
   - jekyll-remote-theme
 
 
-baseUrl: '/'
+#baseUrl: '/'
 
 exclude:
   - Gemfile
