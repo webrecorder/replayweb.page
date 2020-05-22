@@ -3,7 +3,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { styleMap } from 'lit-html/directives/style-map';
 
-import { digestMessage, getTS, tsToDate, sourceToId, parseURLSchemeHostPath } from './pageutils';
+import { getTS, tsToDate, sourceToId, parseURLSchemeHostPath } from './pageutils';
 import { register } from 'register-service-worker';
 
 import prettyBytes from 'pretty-bytes';
@@ -11,10 +11,11 @@ import marked from 'marked';
 
 import allCssRaw from '../assets/main.scss';
 import rwpLogo from '../assets/logo.svg';
-import rwpAnimLogo from '../assets/logoa.svg';
 
 import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
 import fasArrowRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
+
+import fasCopy from '@fortawesome/fontawesome-free/svgs/regular/copy.svg';
 
 import fasInfoIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
 
@@ -69,7 +70,9 @@ class AppMain extends LitElement
     return wrapCss(css`
     #wrlogo {
       max-height: 2.5rem;
-      margin-right: 8px;
+    }
+    .wr-logo-item {
+      padding-right: 8px;
     }
     .has-allcaps {
       font-variant-caps: small-caps;
@@ -107,6 +110,14 @@ class AppMain extends LitElement
       .info-menu {
         padding: 0 1.0em;
       }
+
+      .logo-text {
+        padding-left: 0px;
+      }
+
+      .logo-text:hover {
+        background-color: unset;
+      }
     }
 
     @media screen and (max-width: 800px) {
@@ -123,12 +134,11 @@ class AppMain extends LitElement
     ${!this.embed ? html`
       <nav class="navbar has-background-info" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item has-text-weight-bold is-size-5 has-allcaps" href="/">
+        <a class="navbar-item wr-logo-item" title="ReplayWeb.page" href="/">
           <fa-icon id="wrlogo" size="2.5rem" .svg=${rwpLogo}></fa-icon>
-          <span class="has-text-primary">replay</span>
-          <span class="has-text-link">web.page</span>
         </a>
-        <a role="button" @click="${this.onNavMenu}" class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <a role="button" @click="${this.onNavMenu}"
+        class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-expanded="false">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -136,6 +146,10 @@ class AppMain extends LitElement
       </div>
       <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
       <div class="navbar-start">
+      <a class="navbar-item logo-text has-text-weight-bold is-size-5 has-allcaps" href="/">
+      <span class="has-text-primary">replay</span>
+      <span class="has-text-link">web.page</span>
+      </a>
       ${IS_APP ? html`
         <a class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}">
           <fa-icon .svg="${fasArrowLeft}"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
@@ -511,7 +525,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
     return html`
     <section class="container">
     <div class="has-text-centered is-flex">
-    <fa-icon class="logo" size="96px" .svg=${rwpAnimLogo}></fa-icon>
+    <wr-anim-logo class="logo" size="96px" .svg=${rwpLogo}/>
   </div>
       <div class="level">
         <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
@@ -561,6 +575,10 @@ class WrIndex extends LitElement
     super();
     this.colls = [];
 
+    this.sortedColls = [];
+    this.sortKey = "title";
+    this.sortDesc = false;
+
     this.fileDisplayName = "";
     this.file = null;
 
@@ -570,6 +588,11 @@ class WrIndex extends LitElement
   static get properties() {
     return {
       colls: { type: Array },
+
+      sortedColls: { type: Array },
+      sortKey: { type: String },
+      sortDesc: { type: Boolean },
+
       fileDisplayName: { type: String },
       _deleting: { type: Object }
     }
@@ -577,6 +600,31 @@ class WrIndex extends LitElement
 
   firstUpdated() {
     this.loadColls();
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("colls") || 
+        changedProperties.has("sortKey") ||
+        changedProperties.has("sortDesc")) {
+      this.sortColls();
+    }
+  }
+
+  sortColls() {
+    this.sortedColls = [];
+
+    this.colls.forEach((coll) => {
+      coll.title = coll.title || coll.filename;
+      this.sortedColls.push(coll);
+    });
+
+    this.sortedColls.sort((first, second) => {
+      if (first[this.sortKey] === second[this.sortKey]) {
+        return 0;
+      }
+
+      return (this.sortDesc == (first[this.sortKey] < second[this.sortKey])) ? 1 : -1;
+    });
   }
 
   async loadColls() {
@@ -593,9 +641,11 @@ class WrIndex extends LitElement
 
   async onDeleteColl(event) {
     event.preventDefault();
+    event.stopPropagation();
 
     const index = Number(event.currentTarget.getAttribute("data-coll-index"));
-    const coll = this.colls[index];
+    const coll = this.sortedColls[index];
+
     if (!coll || this._deleting[coll.sourceUrl]) {
       return;
     }
@@ -603,7 +653,7 @@ class WrIndex extends LitElement
     this._deleting[coll.sourceUrl] = true;
     this.requestUpdate();
 
-    const resp = await fetch(`/wabac/api/${coll.id}`, {method: 'DELETE'});
+    const resp = await fetch(`./wabac/api/${coll.id}`, {method: 'DELETE'});
     if (resp.status === 200) {
       const json = await resp.json();
       this.colls = json.colls;
@@ -663,7 +713,7 @@ class WrIndex extends LitElement
     div.field.has-addons {
       flex: auto;
     }
-    form {
+    form, .level {
       flex-grow: 1;
     }
     button.is-loading {
@@ -685,6 +735,39 @@ class WrIndex extends LitElement
       margin-left: -1px;
     }
 
+
+    table tr {
+      cursor: pointer;
+    }
+    tbody tr:hover {
+      background-color: aliceblue;
+    }
+    fa-icon {
+      vertical-align: middle;
+    }
+    .asc:after {
+      content: "▼";
+      font-size: 0.75em;
+    }
+    .desc:after {
+      content: "▲";
+      font-size: 0.75em;
+    }
+    .copy {
+      color: black;
+      margin: 0px;
+      margin: 0;
+      line-height: 0.4em;
+      padding: 6px;
+      border-radius: 10px;
+      display: none;
+    }
+    .copy:active {
+      background-color: lightgray;
+    }
+    .col-source:hover > .copy, .source-text:hover + .copy, .copy:hover {
+      display: initial;
+    }
     `);
   }
 
@@ -720,7 +803,7 @@ class WrIndex extends LitElement
                 .value="${this.fileDisplayName}"
                 @input="${this.onInput}"
                 autocomplete="off"
-                placeholder="Choose a local file or enter a URL for a (WARC, HAR, WBN, or WACZ) archive">
+                placeholder="Enter a URL or click 'Choose File' to select a (WARC, HAR, WBN, or WACZ) archive source">
               </p>
               <div class="control">
                 <button type="submit" class="button is-primary">Load</button>
@@ -736,26 +819,54 @@ class WrIndex extends LitElement
       <nav class="panel is-light">
         <p class="panel-heading">Loaded Archives</p>
         <div class="coll-list">
-        ${this.colls.length ? this.colls.map((coll, i) => html`
+        ${this.sortedColls.length ? html`
           <div class="panel-block">
-            <div class="level" style="width: 100%">
-              <div class="level-left">
-                <div>
-                  <span class="subtitle"><a href="?source=${coll.sourceUrl}">${coll.title || coll.filename}</a></span>
-                  <p><i>Source: ${coll.sourceUrl}</i></p>
-                  ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://") ? html`
-                  <p><i>Filename: ${coll.filename}</i></p>` : ''}
-                </div>
-              </div>
-              <div class="level-right">
-                <span class="size">Size: ${prettyBytes(Number(coll.size || 0))}</span>
-                ${!this._deleting[coll.sourceUrl] ? html`
-                <button data-coll-index="${i}" @click="${this.onDeleteColl}" class="delete"></button>
-                ` : html`
-                <button class="button is-loading is-static"></button>`}
-              </div>
-          </div>
-        `) : html`
+            <table class="table is-fullwidth">
+              <thead>
+                <tr>
+                  <th @click="${this.onSort}" data-key="title"
+                  class="${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''} col-title">
+                  Title</th>
+
+                  <th @click="${this.onSort}" data-key="sourceUrl"
+                  class="${this.sortKey === "sourceUrl" ? (this.sortDesc ? "desc" : "asc") : ''} col-source">
+                  Source URL (or Filename)</th>
+
+                  <th @click="${this.onSort}" data-key="ctime"
+                  class="${this.sortKey === "ctime" ? (this.sortDesc ? "desc" : "asc") : ''} col-ctime">
+                  Date Loaded</th>
+
+                  <th @click="${this.onSort}" data-key="size"
+                  class="${this.sortKey === "size" ? (this.sortDesc ? "desc" : "asc") : ''} col-size">
+                  Total Size</th>
+
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                ${this.sortedColls.map((coll, i) => html`
+                  <tr @click=${(e) => window.location.href = "?source=" + coll.sourceUrl}>
+                    <td class="col-title"><span class="subtitle has-text-weight-bold">
+                      <a href="?source=${coll.sourceUrl}">${coll.title || coll.filename}</a>
+                    </td>
+                    <td class="col-source"><span class="source-text">${coll.sourceUrl}&nbsp;</span>
+                    <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy"><fa-icon .svg="${fasCopy}"/></a>
+                    ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://") ? html`
+                      <p><i>(${coll.filename})</i></p>` : ''}
+                    </td>
+                    <td class="col-date">${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}</td>
+                    <td class="col-size">${prettyBytes(Number(coll.size || 0))}</td>
+                    <td class="col-delete">
+                      ${!this._deleting[coll.sourceUrl] ? html`
+                      <button data-coll-index="${i}" @click="${this.onDeleteColl}" class="delete"></button>
+                      ` : html`
+                      <button class="button is-loading is-static"></button>`}
+                    </td>
+                  </tr>
+                `)}
+              </tbody>
+            </table>
+          </div>` : html`
           <div class="panel-block extra-padding">
             <i>No Archives so far! Archives loaded in the section above will appear here.</i>
           </div>
@@ -764,6 +875,23 @@ class WrIndex extends LitElement
       </nav>
     </section>
     `;
+  }
+
+  onCopy(event, sourceUrl) {
+    event.preventDefault();
+    event.stopPropagation();
+    navigator.clipboard.writeText(sourceUrl);
+    return false;
+  }
+
+  onSort(event) {
+    const key = event.currentTarget.getAttribute("data-key");
+    if (key === this.sortKey) {
+      this.sortDesc = !this.sortDesc;
+    } else {
+      this.sortDesc = false;
+      this.sortKey = key;
+    }
   }
 }
 
@@ -954,7 +1082,7 @@ class WrColl extends LitElement
       }
     }
 
-    @media screen and (min-width: ${!IS_APP ? css`680px` : css`850px`}) {
+    @media screen and (min-width: 320px) {
       .main.tabs {
         position: absolute;
         top: 0px;
@@ -2137,6 +2265,39 @@ class WrFaIcon extends LitElement
 
 
 // ===========================================================================
+class WrAnimLogo extends WrFaIcon
+{
+  static get styles() {
+    return css`
+    #wrlogo #stop5687 {
+      animation: animLeft 7s linear infinite;
+    }
+
+    #wrlogo #stop5689 {
+      animation: animRight 7s linear infinite;
+    }
+
+    @keyframes animLeft {
+      0% {stop-color: #4876ff}
+      25% {stop-color: #1b0921}
+      50% {stop-color: #4876ff}
+      75% {stop-color: #04cdff}
+      100% {stop-color: #4876ff}
+    }
+
+    @keyframes animRight {
+      0% {stop-color: #04cdff}
+      25% {stop-color: #4876ff}
+      50% {stop-color: #1b0921}
+      75% {stop-color: #4876ff}
+      100% {stop-color: #04cdff}
+    }
+    `;
+  }
+}
+
+
+// ===========================================================================
 // ===========================================================================
 
 function registerSW(url) {
@@ -2171,6 +2332,7 @@ async function main() {
   customElements.define("wr-replay-page", WrReplayPage);
   customElements.define("wr-gdrive", WrGdrive);
   customElements.define("fa-icon", WrFaIcon);
+  customElements.define("wr-anim-logo", WrAnimLogo);
 }
 
 main();
