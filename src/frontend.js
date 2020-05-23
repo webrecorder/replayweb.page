@@ -4,6 +4,7 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { styleMap } from 'lit-html/directives/style-map';
 
 import { getTS, tsToDate, sourceToId, parseURLSchemeHostPath } from './pageutils';
+
 import { register } from 'register-service-worker';
 
 import prettyBytes from 'pretty-bytes';
@@ -24,6 +25,7 @@ import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg'
 import fasUnfullscreen from '@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg';
 import fasHelp from '@fortawesome/fontawesome-free/svgs/solid/question-circle.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
+import fasPage from '@fortawesome/fontawesome-free/svgs/solid/file-alt.svg';
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
 
@@ -37,7 +39,7 @@ function wrapCss(custom) {
   return [allCss, custom];
 }
 
-const IS_APP = window.electron && window.electron.IS_APP;
+const IS_APP = window.electron && window.electron.IS_APP || window.matchMedia('(display-mode: standalone)').matches;
 
 const dbworker = new Worker(__SW_PATH__);
 
@@ -97,7 +99,7 @@ class AppMain extends LitElement
       vertical-align: sub;
     }
     
-    @media screen and (min-width: 800px) {
+    @media screen and (min-width: 840px) {
       .menu-only {
         display: none;
       }
@@ -120,7 +122,7 @@ class AppMain extends LitElement
       }
     }
 
-    @media screen and (max-width: 800px) {
+    @media screen and (max-width: 840px) {
       .wide-only {
         display: none;
       }
@@ -761,12 +763,17 @@ class WrIndex extends LitElement
       padding: 6px;
       border-radius: 10px;
       display: none;
+      position: absolute;
     }
     .copy:active {
       background-color: lightgray;
     }
+    .col-source {
+      word-break: break-word;
+      position: relative;
+    }
     .col-source:hover > .copy, .source-text:hover + .copy, .copy:hover {
-      display: initial;
+      display: inline;
     }
     `);
   }
@@ -789,7 +796,7 @@ class WrIndex extends LitElement
                 <span class="file-icon">
                   <fa-icon size="0.9em" .svg=${fasUpload}></fa-icon>
                 </span>
-                <span class="file-label">
+                <span class="file-label is-hidden-touch">
                   Choose File...
                 </span>
               </span>
@@ -806,7 +813,7 @@ class WrIndex extends LitElement
                 placeholder="Enter a URL or click 'Choose File' to select a (WARC, HAR, WBN, or WACZ) archive source">
               </p>
               <div class="control">
-                <button type="submit" class="button is-primary">Load</button>
+                <button type="submit" class="button is-hidden-mobile is-primary">Load</button>
               </div>
             </div>
 
@@ -1111,7 +1118,7 @@ class WrColl extends LitElement
       flex-direction: column;
     }
 
-    wr-replay-page, wr-coll-resources, wr-coll-curated {
+    wr-replay-page, wr-coll-resources, wr-coll-curated, wr-coll-pages {
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -1135,10 +1142,17 @@ class WrColl extends LitElement
             <li class="${this.tabData.view === 'curated' ? 'is-active' : ''}">
               <a @click="${this.onTabClick}" href="#curated" class="is-size-6">
                 <span class="icon"><fa-icon .svg="${farListAlt}"></fa-icon></span>
-                <span class="tab-label" title="Curated Pages">Curated Pages</span>
+                <span class="tab-label" title="Curated Lists">Curated Lists</span>
               </a>
             </li>
           ` : ``}
+
+            <li class="${this.tabData.view === 'pages' ? 'is-active' : ''}">
+              <a @click="${this.onTabClick}" href="#pages" class="is-size-6">
+                <span class="icon"><fa-icon .svg="${fasPage}"></fa-icon></span>
+                <span class="tab-label" title="Pages">Pages</span>
+              </a>
+            </li>
 
             <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
               <a @click="${this.onTabClick}" href="#resources" class="is-size-6">
@@ -1170,6 +1184,11 @@ class WrColl extends LitElement
     class="${this.tabData.view === 'curated' ? '' : 'is-hidden'}">
     </wr-coll-curated>
 
+    <wr-coll-pages .collInfo="${this.collInfo}"
+    @coll-tab-nav="${this.onCollTabNav}" id="pages"
+    class="${this.tabData.view === 'pages' ? '' : 'is-hidden'}">
+    </wr-coll-pages>
+
     <wr-coll-resources .collInfo="${this.collInfo}"
     urlSearch="${this.tabData.urlSearch || ""}"
     urlSearchType="${this.tabData.urlSearchType || ""}"
@@ -1194,7 +1213,77 @@ class WrColl extends LitElement
 
 
 // ===========================================================================
-class WrCuratedPages extends LitElement
+class WrPages extends LitElement
+{
+  constructor() {
+    super();
+    this.pages = [];
+  }
+
+  static get properties() {
+    return {
+      collInfo: { type: Object },
+      pages: { type: Array }
+    }
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("collInfo")) {
+      this.doUpdate();
+    }
+  }
+
+  async doUpdate() {
+    const result = await fetch(`${this.collInfo.apiPrefix}/pages`);
+    const json = await result.json();
+    console.log(json);
+    this.pages = json.pages || [];
+  }
+
+  static get styles() {
+    return wrapCss(css`
+      .main.section {
+        overflow-y: auto;
+        padding: 3em;
+      }
+    `);
+  }
+
+  render() {
+    return html`
+      <div class="main section">
+        ${this.pages.map((p) => html`
+        <div class="columns">
+          <div class="column is-one-fifth">
+          ${new Date(p.date).toLocaleString()}
+          </div>
+          <div class="column">
+            <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(p.date)}" href="#">
+              <p class="is-size-6 has-text-weight-bold has-text-link">${p.title || p.url}</p>
+              <p class="has-text-dark">${p.url}</p>
+            </a>
+          </div>
+        </div>`
+        )}
+      </div>
+    `;
+  }
+
+  onReplay(event) {
+    event.preventDefault();
+    const data = {
+      url: event.currentTarget.getAttribute("data-url"),
+      ts: event.currentTarget.getAttribute("data-ts"),
+      view: "replay"
+    };
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
+    return false;
+  }
+}
+
+
+// ===========================================================================
+class WrCuratedLists extends LitElement
 {
   constructor() {
     super();
@@ -2328,7 +2417,8 @@ async function main() {
   customElements.define("wr-loader", WrLoader);
   customElements.define("wr-coll", WrColl);
   customElements.define("wr-coll-resources", WrResources);
-  customElements.define("wr-coll-curated", WrCuratedPages);
+  customElements.define("wr-coll-pages", WrPages);
+  customElements.define("wr-coll-curated", WrCuratedLists);
   customElements.define("wr-replay-page", WrReplayPage);
   customElements.define("wr-gdrive", WrGdrive);
   customElements.define("fa-icon", WrFaIcon);
