@@ -64,7 +64,7 @@ const browserConfig = (env, argv) => {
     target: 'web',
     mode: 'production',
     entry: {
-      'frontend': './src/frontend.js',
+      'ui': './src/ui.js',
       'embed': './src/embed.js',
       'sw': 'wabac/src/sw.js'
     },
