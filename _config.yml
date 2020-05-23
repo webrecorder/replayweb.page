@@ -34,7 +34,8 @@ exclude:
   - yarn-error.log
   - yarn.lock
   - local-examples/
-  - build/
+  - build/*.js
+  - build/*.plist
   - src/
   - dist/
   - node_modules/
