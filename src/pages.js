@@ -168,7 +168,7 @@ class Pages extends LitElement
         box-shadow: none;
         display: flex;
         flex-direction: column;
-        flex: 1;
+        flex: auto;
         height: 100%;
       }
       .light-blue {

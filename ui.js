@@ -966,7 +966,7 @@ const Je=new WeakMap,Qe=v(e=>t=>{if(!(t instanceof L))throw new Error("unsafeHTM
         box-shadow: none;
         display: flex;
         flex-direction: column;
-        flex: 1;
+        flex: auto;
         height: 100%;
       }
       .light-blue {
