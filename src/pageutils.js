@@ -1,5 +1,7 @@
 import { register } from 'register-service-worker';
 
+
+// ===========================================================================
 async function registerSW(name = "sw.js", scope = "./") {
   let resolve, reject;
   
@@ -24,6 +26,18 @@ async function registerSW(name = "sw.js", scope = "./") {
   await p;
 }
 
+// ===========================================================================
+let dbworker = null;
+
+function initDBWorker() {
+  if (dbworker === null) {
+    dbworker = new Worker(__SW_NAME__);
+  }
+  return dbworker;
+}
+
+
+// ===========================================================================
 async function digestMessage(message, hashtype) {
   const msgUint8 = new TextEncoder().encode(message);                           // encode as (utf-8) Uint8Array
   const hashBuffer = await crypto.subtle.digest(hashtype, msgUint8);           // hash the message
@@ -32,6 +46,8 @@ async function digestMessage(message, hashtype) {
   return hashHex;
 }
 
+
+// ===========================================================================
 function tsToDate(ts) {
   if (!ts) {
     return "";
@@ -51,10 +67,14 @@ function tsToDate(ts) {
   return new Date(datestr);
 };
 
+
+// ===========================================================================
 function getTS(iso) {
   return iso.replace(/[-:T]/g, '').slice(0, 14);
 }
 
+
+// ===========================================================================
 async function sourceToId(url) {
   try {
     url = new URL(url, window.location.origin).href;
@@ -65,6 +85,8 @@ async function sourceToId(url) {
   return {url, coll};
 }
 
+
+// ===========================================================================
 // simple parse of scheme, host, rest of path
 // not using URL due to different browser behavior
 function parseURLSchemeHostPath(url) {
@@ -97,4 +119,5 @@ function parseURLSchemeHostPath(url) {
 }
 
 
-export { digestMessage, tsToDate, getTS, sourceToId, parseURLSchemeHostPath, registerSW };
+export { digestMessage, tsToDate, getTS, sourceToId, parseURLSchemeHostPath,
+         registerSW, initDBWorker };

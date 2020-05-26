@@ -17,8 +17,6 @@ class CollIndex extends LitElement
 
     this.colls = [];
     this.sortedColls = [];
-    //this.sortKey = localStorage.getItem("index:sortKey") || "title";
-    //this.sortDesc = localStorage.getItem("index:sortDesc") === "1";
 
     this.hideHeader = localStorage.getItem("index:hideHeader") === "1";
 
@@ -34,7 +32,7 @@ class CollIndex extends LitElement
        name: "Source"},
 
       {key: "ctime",
-       name: "Date Created"},
+       name: "Date Loaded"},
 
       {key: "size",
        name: "Total Size"}
@@ -213,6 +211,7 @@ class CollIndex extends LitElement
           <span>${this.hideHeader ? 'Expand' : 'Collapse'}</span>
         </a>
         <wr-sorter id="index"
+        defaultKey="title"
         .sortKeys="${CollIndex.sortKeys}"
         .data="${this.colls}"
         @sort-changed="${(e) => this.sortedColls = e.detail.sortedData}">

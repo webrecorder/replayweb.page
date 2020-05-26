@@ -1,20 +1,12 @@
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss } from './misc';
 
-import { parseURLSchemeHostPath } from './pageutils';
-
-let dbworker = null;
+import { parseURLSchemeHostPath, initDBWorker } from './pageutils';
 
 
 // ===========================================================================
 class Loader extends LitElement
 {
-  static initDBWorker() {
-    if (dbworker === null) {
-      dbworker = new Worker(__SW_NAME__);
-    }
-  }
-
   constructor() {
     super();
     this.progress = 0;
@@ -24,7 +16,7 @@ class Loader extends LitElement
     this.state = "waiting";
     this.loadInfo = null;
 
-    Loader.initDBWorker();
+    this.dbworker = initDBWorker();
   }
 
   static get properties() {
@@ -47,7 +39,7 @@ class Loader extends LitElement
   }
 
   initMessages() {
-    dbworker.addEventListener("message", (event) => {
+    this.dbworker.addEventListener("message", (event) => {
       switch (event.data.msg_type) {
         case "collProgress":
           if (event.data.name === this.coll) {
@@ -119,7 +111,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
       msg.extraConfig = this.loadInfo.extraConfig;
     }
 
-    dbworker.postMessage(msg);
+    this.dbworker.postMessage(msg);
   }
 
   googledriveInit() {
@@ -137,7 +129,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
   }
 
   onCancel() {
-    dbworker.postMessage({"msg_type": "cancelLoad", "name": this.coll});
+    this.dbworker.postMessage({"msg_type": "cancelLoad", "name": this.coll});
   }
 
   updated(changedProperties) {

@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss, rwpLogo, IS_APP } from './misc';
 
-import { registerSW } from './pageutils';
+import { registerSW, initDBWorker } from './pageutils';
 
 import prettyBytes from 'pretty-bytes';
 
@@ -25,6 +25,7 @@ class App extends LitElement
     this.inited = false;
 
     registerSW(__SW_NAME__);
+    initDBWorker();
   }
 
   static get properties() {

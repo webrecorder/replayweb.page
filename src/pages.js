@@ -191,6 +191,7 @@ class Pages extends LitElement
       <div class="panel-block status">
         <span class="num-results">${this.formatResults()}</span>
         <wr-sorter id="pages"
+        defaultKey="title"
         .sortKeys="${Pages.sortKeys}"
         .data="${this.filteredPages}"
         @sort-changed="${(e) => this.sortedPages = e.detail.sortedData}"
@@ -286,13 +287,16 @@ class PageEntry extends LitElement
 
   render() {
     const p = this.page;
-    const date = new Date(p.ts);
+    let date = null;
+    try {
+      date = new Date(p.ts);
+    } catch (e) { }
 
     return html`
     <div class="columns">
       <div class="column col-date is-one-fifth">
-      <div>${date.toLocaleDateString()}</div>
-      <div>${date.toLocaleTimeString()}</div>
+      <div>${date ? date.toLocaleDateString() : ""}</div>
+      <div>${date ? date.toLocaleTimeString() : ""}</div>
       </div>
       <div class="column">
         <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(date.toISOString())}" href="#">
