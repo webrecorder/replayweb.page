@@ -1,12 +1,18 @@
 import { LitElement, html, css } from 'lit-element';
 
+import { registerSW } from './pageutils';
+
+
+var scriptSrc = document.currentScript && document.currentScript.src;
+
 
 // ===========================================================================
-class EmbedRWP extends LitElement
+class Embed extends LitElement
 {
   constructor() {
     super();
-    this.replayBase = "http://localhost:9990/";
+    this.replayBase = window.location.origin + "/replay/";
+    this.swName = __SW_NAME__;
     this.view = "replay";
     this.ts = "";
     this.url = "";
@@ -14,6 +20,9 @@ class EmbedRWP extends LitElement
     this.coll = "";
     this.paramString = null;
     this.deepLink = false;
+    this.swInited = false;
+
+    this.doRegister();
   }
 
   static get properties() {
@@ -21,18 +30,28 @@ class EmbedRWP extends LitElement
       url: { type: String },
       ts: { type: String },
       source: { type: String },
+
       replayBase: { type: String },
+      swName: { type: String },
 
       title: { type: String },
 
       coll: { type: String },
       config: { type: String },
 
+      swInited: { type: Boolean },
+
       paramString: { type: String },
       hashString: { type: String },
 
       deepLink: { type: Boolean }
     }
+  }
+
+  async doRegister() {
+    await registerSW(this.swName, this.replayBase);
+
+    this.swInited = true;
   }
 
   firstUpdated() {
@@ -115,16 +134,30 @@ class EmbedRWP extends LitElement
 
   render() {
     return html`
-    ${this.paramString && this.hashString ? html`
-      <iframe src="${this.replayBase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
+    ${this.paramString && this.hashString && this.swInited ? html`
+      <iframe @load="${this.onLoad}" src="${this.replayBase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
       ` : html``}
     `;
+  }
+
+  onLoad(event) {
+    if (this.injected) {
+      return;
+    }
+    if (event.target.contentWindow.customElements.get("replay-app-main")) {
+      return;
+    }
+    const script = event.target.contentDocument.createElement("script");
+    //const script = event.target.contentDocument.querySelector("script");
+    script.src = scriptSrc;
+    event.target.contentDocument.head.appendChild(script);
+    this.injected = true;
   }
 }
 
 // ===========================================================================
 async function main() {
-  customElements.define("replay-web-page", EmbedRWP);
+  customElements.define("replay-web-page", Embed);
 }
 
 

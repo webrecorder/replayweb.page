@@ -14,23 +14,38 @@ class CuratedLists extends LitElement
   constructor() {
     super();
 
+    this.active = false;
+
     this.collInfo = null;
 
-    this.currList = 0;
+    this.query = "";
 
+    this.currList = "pages";
+
+    this.lists = [];
     this.curatedPages = {};
 
     this.offset = 0;
     this.lastST = 0;
     this.clickTime = 0;
+
+    this.hasNarrative = false;
   }
 
   static get properties() {
     return {
+      active: { type: Boolean },
+
       collInfo: { type: Object },
 
+      query: { type: String },
+
+      lists: { type: Array },
       curatedPages: { type: Object },
-      currList: { type: Number },
+
+      currList: { type: String },
+
+      hasNarrative: { type: Boolean },
     }
   }
 
@@ -42,15 +57,33 @@ class CuratedLists extends LitElement
     if (changedProperties.has("collInfo")) {
       this.doLoadCurated();
     }
+
+    if (changedProperties.has("currList") || changedProperties.has("query")) {
+      this.sendChangeEvent({
+        currList: this.currList,
+        query: this.query
+      });
+    }
   }
 
   async doLoadCurated() {
-    const resp = await fetch(`${this.collInfo.apiPrefix}/curatedPages?offset=${this.offset}&count=1000`);
+    this.hasNarrative = this.collInfo.desc || this.collInfo.numLists;
+
+    if (!this.collInfo.numLists) {
+      this.total = 0;
+      this.curatedPages = {};
+      this.lists = [];
+      this.currList = "pages";
+      return;
+    }
+
+    const resp = await fetch(`${this.collInfo.apiPrefix}/curatedPages?offset=${this.offset}&count=10000`);
     const json = await resp.json();
 
     this.total = json.total;
 
     this.curatedPages = {};
+    this.lists = json.lists;
 
     for (const curated of json.curatedPages) {
       if (!this.curatedPages[curated.list]) {
@@ -59,80 +92,150 @@ class CuratedLists extends LitElement
       this.curatedPages[curated.list].push(curated);
     }
 
-    if (this.currList) {
-      this.scrollToList(this.currList);
-    }
+    this.scrollToList();
   }
 
   static get styles() {
     return wrapCss(css`
+    :host {
+      justify-content: flex-start;
+      align-items: center;
+    }
+
     .columns {
-      width: 100vw;
-      display: flex;
-      flex-direction: row;
-      max-height: 100%
-      align-items: flex-start;
-      height: 100%;
+      width: 100%;
+      justify-self: stretch;
     }
 
-    .column {
-      max-height: calc(100% - 70px);
-    }
-
-    #content {
-      margin-top: 10px;
-      max-height: calc(100% - 90px);
+    .column.main-content {
+      margin: 12px 0px 0px 0px;
+      padding: 0px;
+      max-height: calc(100% - 0.75em);
       display: flex;
       flex-direction: column;
       height: min-content;
+      padding-left: 0.75em;
+    }
+
+    .column.main-content.main-scroll {
+      padding-right: 0.75em;
+      word-break: break-all;
+    }
+    .column.main-content.pages {
+      height: calc(100% - 1.2em);
     }
 
     ul.menu-list a.is-active {
       background-color: #55be6f;
     }
 
-    :host {
-      justify-content: flex-start;
-      align-items: center;
-      margin-top: 1em;
+    @media screen and (min-width: 768px) {
+      .columns {
+        max-height: 100%;
+        height: 100%;
+        margin-top: 0.75em;
+      }
+
+      .column.sidebar {
+        max-height: 100%;
+        overflow-y: auto;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      .columns {
+        position: relative;
+        max-height: 100%;
+        height: 100%;
+      }
+
+      .column.sidebar {
+        max-height: 150px;
+        overflow-y: auto;
+        margin-top: 0.75em;
+      }
+
+      .column.main-content {
+        position: relative;
+        overflow-y: auto;
+
+        border-top: 1px solid black;
+        width: 100%;
+        height: 100%;
+        max-height: calc(100% - 150px - 0.75em);
+      }
+
+      .menu {
+        font-size: 0.80rem;
+      }
     }
     `);
   }
 
   render() {
+    const currListNum = Number(this.currList);
+
     return html`
+
     <div class="columns">
-      <div class="column is-one-third">
-        <div class="menu" style="overflow-y: auto; height: 100%;">
+      <div class="column sidebar is-one-fifth">
+        <aside class="menu">
+          <p class="menu-label">${this.collInfo.title}</p>
           <ul class="menu-list">
-            <li>
-              <a href="#list-0" data-list="0" class="${!this.currList ? 'is-active' : ''}"
-                @click=${this.onClickScroll}>${this.collInfo.title}</a>
-              <ul class="menu-list">${this.collInfo.lists.map(list => html`
-                <li>
-                  <a @click=${this.onClickScroll} href="#list-${list.id}"
-                  data-list="${list.id}" 
-                  class="${this.currList === list.id ? 'is-active' : ''}">${list.title}</a>
-                </li>`)}
-              </ul>
-            </li>
+            <li><a class="${this.currList === 'pages' ? 'is-active' : ''}" data-list="all-pages" @click=${this.onClickPages}>Page Search</a></li>
           </ul>
-        </div>
+          ${this.hasNarrative ? html`
+            <ul class="menu-list">
+              <li>
+                <a href="#list-0" data-list="0" class="${currListNum === 0 ? 'is-active' : ''}"
+                  @click=${this.onClickScroll}>Narrative</a>
+                <ul class="menu-list">${this.lists.map(list => html`
+                  <li>
+                    <a @click=${this.onClickScroll} href="#list-${list.id}"
+                    data-list="${list.id}" 
+                    class="${currListNum === list.id ? 'is-active' : ''}">${list.title}</a>
+                  </li>`)}
+                </ul>
+              </li>
+            </ul>` : ``}
+        </aside>
       </div>
-      <div id="content" @scroll=${this.onScroll} class="is-two-thirds column main-scroll">
-        <section id="list-0" class="container">
-          <h2 class="title is-3">${this.collInfo.title}</h2>
-          ${this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ''}
-        </section>
-        ${this.renderContent()}
-      </div>
+      ${this.renderPages()}
+      ${this.renderLists()}
     </div>
   `;
   }
 
-  renderContent() {
+  renderPages() {
     return html`
-    ${this.collInfo.lists.map((list, i) => html`
+    <div class="column main-content pages ${this.currList === "pages" ? '' : 'is-hidden'}">
+      <wr-page-view
+      .active="${this.active && this.currList === "pages"}" 
+      query="${this.query}" .collInfo="${this.collInfo}"
+      @coll-tab-nav="${this.onCollTabNav}">
+      </wr-page-view>
+    </div>
+    `;
+  }
+
+  onCollTabNav(event) {
+    if (event.detail.data && event.detail.data.query !== undefined) {
+      this.query = event.detail.data.query;
+    }
+  }
+
+  renderLists() {
+    if (!this.hasNarrative) {
+      return;
+    }
+
+    return html`
+    <div @scroll=${this.onScroll} class="${this.currList !== "pages" ? '' : 'is-hidden'} column main-content main-scroll">
+      <section id="list-0" class="">
+        <h2 class="has-text-centered title is-3">${this.collInfo.title}</h2>
+        ${this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ''}
+      </section>
+      ${this.lists.map((list, i) => html`
       <article id="list-${list.id}">
         <div class="content">
           <hr/>
@@ -156,6 +259,7 @@ class CuratedLists extends LitElement
         </div>
       </article>
       `)}
+    </div>
     `;
   }
 
@@ -174,25 +278,37 @@ class CuratedLists extends LitElement
     this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
   }
 
-  onClickScroll(event) {
+  onClickPages(event) {
     event.preventDefault();
-    this.scrollToList(event.currentTarget.getAttribute("data-list"));
+    //this.pageView = true;
+    this.currList = "pages";
     return false;
   }
 
-  scrollToList(id) {
-    this.currList = Number(id);
+  onClickScroll(event) {
+    event.preventDefault();
+    //this.pageView = false;
+    this.currList = event.currentTarget.getAttribute("data-list");
+    this.scrollToList();
+    return false;
+  }
+
+  scrollToList() {
+    if (this.currList === "pages") {
+      return;
+    }
 
     // lists are 1 based, 0 is header, 1 is first list
-    if (this.currList > this.collInfo.lists.length) {
-      this.currList = 0;
+    if (Number(this.currList) > this.lists.length) {
+      this.currList = "0";
     }
-    
-    this.sendChangeEvent({currList: this.currList || undefined});
 
     const opts = {behavior: "smooth", block: "nearest", inline: "nearest"};
     this.clickTime = new Date().getTime();
-    this.renderRoot.getElementById("list-" + this.currList).scrollIntoView(opts);
+    const curr = this.renderRoot.getElementById("list-" + this.currList);
+    if (curr) {
+      curr.scrollIntoView(opts);
+    }
   }
 
   onScroll(event) {
@@ -219,8 +335,7 @@ class CuratedLists extends LitElement
     this.lastST = currST;
     if (next && next != curr) {
       if (next.id.startsWith("list-")) {
-        this.currList = Number(next.id.slice(5));
-        this.sendChangeEvent({currList: this.currList});
+        this.currList = next.id.slice(5);
       }
     }
 

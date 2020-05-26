@@ -1,3 +1,29 @@
+import { register } from 'register-service-worker';
+
+async function registerSW(name = "sw.js", scope = "./") {
+  let resolve, reject;
+  
+  const p = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  
+  register(scope + name, {
+    registrationOptions: { scope },
+    registered (reg) {
+      console.log('Service worker is registered');
+      resolve();
+    },
+
+    error (error) {
+      console.error('Error during service worker registration:', error);
+      reject();
+    }
+  });
+
+  await p;
+}
+
 async function digestMessage(message, hashtype) {
   const msgUint8 = new TextEncoder().encode(message);                           // encode as (utf-8) Uint8Array
   const hashBuffer = await crypto.subtle.digest(hashtype, msgUint8);           // hash the message
@@ -71,7 +97,4 @@ function parseURLSchemeHostPath(url) {
 }
 
 
-
-
-
-export { digestMessage, tsToDate, getTS, sourceToId, parseURLSchemeHostPath };
+export { digestMessage, tsToDate, getTS, sourceToId, parseURLSchemeHostPath, registerSW };

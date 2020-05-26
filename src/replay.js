@@ -94,7 +94,7 @@ class Replay extends LitElement
     }
 
     if (this.iframeUrl && changedProperties.has("iframeUrl")) {
-      this.isLoading = true;
+      this.waitForLoad();
     }
 
     if (this.replayUrl && changedProperties.has("replayUrl")) {
@@ -123,7 +123,7 @@ class Replay extends LitElement
         this.replayTS = event.data.ts;
         this.replayUrl = event.data.url;
         this.title = event.data.title || this.title;
-        this.isLoading = false;
+        this.clearLoading();
 
         if (event.data.icons) {
           const icons = event.data.icons;
@@ -155,8 +155,27 @@ class Replay extends LitElement
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe) {
-      this.isLoading = true;
+      this.waitForLoad();
       iframe.contentWindow.location.reload();
+    }
+  }
+
+  waitForLoad() {
+    this.isLoading = true;
+    this._loadPoll = window.setInterval(() => {
+      const iframe = this.renderRoot.querySelector("iframe");
+      if (!iframe || !iframe.contentDocument || !iframe.contentWindow || 
+        (iframe.contentDocument.readyState === "complete" && !iframe.contentWindow._WBWombat)) {
+          this.clearLoading();
+      }
+    }, 5000);
+  }
+
+  clearLoading() {
+    this.isLoading = false;
+    if (this._loadPoll) {
+      window.clearInterval(this._loadPoll);
+      this._loadPoll = null;
     }
   }
 
@@ -206,6 +225,7 @@ class Replay extends LitElement
 
       .intro-panel .panel-block {
         padding: 1.0em;
+        flex-direction: column;
       }
 
       #datetime {
@@ -239,13 +259,13 @@ class Replay extends LitElement
               <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
             </span>
           </a>
-          <a id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
+          <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
             <span class="icon is-small">
               ${!this.isLoading ? html`
               <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
               ` : ``}
             </span>
-          </a>
+          </button>
           <p class="control is-expanded">
             <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here">
           </p>
@@ -261,7 +281,10 @@ class Replay extends LitElement
     ` : html`
       <nav class="panel intro-panel">
         <p class="panel-heading">Replay Web Page</p>
-        <p class="panel-block">Enter a URL above to replay it from the web archive!</p>
+        <div class="panel-block">
+          <p>Enter a URL above to replay it from the web archive!</p>
+          <p>(Check out the <a href="#view=pages">Pages</a> or <a href="#view=resources">Page Resources</a> to find URLs in this archive.)</p>
+        </div>
       </nav>
     `}
 

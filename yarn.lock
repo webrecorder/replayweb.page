@@ -2130,6 +2130,11 @@ flatpickr@^4.6.1:
   resolved "https://registry.yarnpkg.com/flatpickr/-/flatpickr-4.6.3.tgz#15a8b76b6e34e3a072861250503a5995b9d3bc60"
   integrity sha512-007VucCkqNOMMb9ggRLNuJowwaJcyOh4sKAFcdGfahfGc7JQbf94zSzjdBq/wVyHWUEs5o3+idhFZ0wbZMRmVQ==
 
+flexsearch@^0.6.32:
+  version "0.6.32"
+  resolved "https://registry.yarnpkg.com/flexsearch/-/flexsearch-0.6.32.tgz#1e20684d317af65baa445cdd9864a5f5b320f510"
+  integrity sha512-EF1BWkhwoeLtbIlDbY/vDSLBen/E5l/f1Vg7iX5CDymQCamcx1vhlc3tIZxIDplPjgi0jhG37c67idFbjg+v+Q==
+
 flush-write-stream@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/flush-write-stream/-/flush-write-stream-1.1.1.tgz#8dd7d873a1babc207d94ead0c2e0e44276ebf2e8"
@@ -3197,6 +3202,11 @@ keyv@^3.0.0:
   integrity sha512-9ykJ/46SN/9KPM/sichzQ7OvXyGDYKGTaDlKMGCAlg2UK8KRy4jb0d8sFc+0Tt0YYnThq8X2RZgCg74RPxgcVA==
   dependencies:
     json-buffer "3.0.0"
+
+keyword-mark-element@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/keyword-mark-element/-/keyword-mark-element-0.1.2.tgz#b57e025bde18b0ab1d3872d5c06ed2ec6eca4fd4"
+  integrity sha512-kU+wMFIczvsmMg9QXi1rJ1VLYK4IpI+Jud9vBMzo7Zt9Nvx9nTsZJFHuH9xvlQxqHAcyQvQyv0j6kfRAlSn0oA==
 
 killable@^1.0.1:
   version "1.0.1"

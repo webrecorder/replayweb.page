@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss } from './misc';
 
+import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
+
 
 // ===========================================================================
 class URLResources extends LitElement
@@ -26,12 +28,14 @@ class URLResources extends LitElement
     this.collInfo = null;
 
     this.currMime = "";
-    this.urlSearch = "";
+    this.query = "";
     this.urlSearchType = "";
 
     this.filteredResults = [];
 
     this.results = [];
+
+    this.newQuery = null;
 
     this.tryMore = false;
     this.loading = false;
@@ -44,7 +48,7 @@ class URLResources extends LitElement
     return {
       collInfo: { type: Object },
       currMime: { type: String },
-      urlSearch: { type: String },
+      query: { type: String },
       urlSearchType: { type: String },
       filteredResults: { type: Array },
       loading: { type: Boolean },
@@ -58,14 +62,21 @@ class URLResources extends LitElement
     //this.doLoadResources();
   }
 
+  _timedUpdate() {
+    if (this.newQuery !== null) {
+      this.query = this.newQuery;
+      this.newQuery = null;
+    }
+  }
+
   updated(changedProperties) {
-    if (changedProperties.has("urlSearch") || 
+    if (changedProperties.has("query") || 
         changedProperties.has("urlSearchType") ||
         changedProperties.has("currMime")) {
 
       this.doLoadResources();
       const data = {
-        urlSearch: this.urlSearch,
+        query: this.query,
         urlSearchType: this.urlSearchType,
         currMime: this.currMime
       };
@@ -90,7 +101,7 @@ class URLResources extends LitElement
     }
 
     this.loading = true;
-    let url = (this.urlSearchType !== "" ? this.urlSearch : "");
+    let url = (this.urlSearchType !== "" ? this.query : "");
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
 
     // optimization: if not starting with http, likely won't have a match here, so just add https://
@@ -139,22 +150,23 @@ class URLResources extends LitElement
 
   onChangeTypeSearch(event) {
     this.currMime = event.currentTarget.value;
-    //this.doLoadResources();
   }
 
-  onChangeUrlSearch(event) {
-    this.urlSearch = event.currentTarget.value;
-    //this.doLoadResources();
+  onChangeQuery(event) {
+    this.newQuery = event.currentTarget.value;
+    if (this._ival) {
+      window.clearTimeout(this._ival);
+    }
+    this._ival = window.setTimeout(() => this._timedUpdate(), 250);
   }
 
   onClickUrlType(event) {
     this.urlSearchType = event.currentTarget.value;
-    //this.doLoadResources();
   }
 
   filter() {
     const filteredResults = [];
-    const filterText = (this.urlSearchType === "" ? this.urlSearch : "");
+    const filterText = (this.urlSearchType === "" ? this.query : "");
     for (const result of this.results) {
       if (!filterText || result.url.indexOf(filterText) >= 0) {
         filteredResults.push(result);
@@ -270,8 +282,9 @@ class URLResources extends LitElement
             </select>
           </div>
           <div class="field flex-auto">
-            <div class="control ${this.loading ? 'is-loading' : ''}">
-              <input type="text" class="input" @input="${this.onChangeUrlSearch}" value="${this.urlSearch}" type="text" placeholder="Enter URL search here">
+            <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
+              <input type="text" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text" placeholder="Enter URL to Search">
+              <span class="icon is-left"><fa-icon .svg="${fasSearch}"/></span>
             </div>
           </div>
         </div>

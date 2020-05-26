@@ -1,3 +1,5 @@
+"use strict";
+
 import { LitElement, html, css, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { styleMap } from 'lit-html/directives/style-map';
@@ -14,8 +16,6 @@ function wrapCss(custom) {
 }
 
 const IS_APP = window.electron && window.electron.IS_APP || window.matchMedia('(display-mode: standalone)').matches;
-
-const dbworker = new Worker(__SW_PATH__);
 
 
 // ===========================================================================
@@ -101,4 +101,4 @@ class AnimLogo extends FaIcon
 customElements.define("fa-icon",  FaIcon);
 customElements.define("wr-anim-logo", AnimLogo);
 
-export { wrapCss, IS_APP, dbworker, rwpLogo, FaIcon, AnimLogo };
+export { wrapCss, IS_APP, rwpLogo, FaIcon, AnimLogo };

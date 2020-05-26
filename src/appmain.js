@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss, rwpLogo, IS_APP } from './misc';
 
+import { registerSW } from './pageutils';
+
 import prettyBytes from 'pretty-bytes';
 
 import fasHelp from '@fortawesome/fontawesome-free/svgs/solid/question-circle.svg';
@@ -19,10 +21,15 @@ class App extends LitElement
     this.collInfo = null;
     this.showTerms = false;
     this.pageParams = {};
+
+    this.inited = false;
+
+    registerSW(__SW_NAME__);
   }
 
   static get properties() {
     return {
+      inited: { type: Boolean },
       pageParams: { type: Object },
       sourceUrl: { type: String },
       navMenuShown: { type: Boolean },
@@ -63,6 +70,9 @@ class App extends LitElement
     div.navbar-menu fa-icon {
       vertical-align: sub;
     }
+    .tagline {
+      margin-top: 1.0rem;
+    }
     
     @media screen and (min-width: 840px) {
       .menu-only {
@@ -82,8 +92,8 @@ class App extends LitElement
         padding-left: 0px;
       }
 
-      .logo-text:hover {
-        background-color: unset;
+      a.navbar-item.logo-text:hover {
+        background-color: initial;
       }
     }
 
@@ -97,6 +107,9 @@ class App extends LitElement
   }
 
   render() {
+    if (!this.inited) {
+      return html``;
+    }
     return html`
     ${!this.embed ? html`
       <nav class="navbar has-background-info" role="navigation" aria-label="main navigation">
@@ -162,14 +175,22 @@ class App extends LitElement
   ` : ''}
   
   ${this.sourceUrl ? html`
+
   <wr-coll .loadInfo="${this.loadInfo}"
   sourceUrl="${this.sourceUrl}"
   embed="${this.embed}"
   @replay-favicons=${this.onFavIcons}
   @coll-loaded=${this.onCollLoaded}></wr-coll>
   ` : html`
-  <wr-coll-index @load-start=${this.onStartLoad}></wr-coll-index>
+
+  <wr-coll-index>
+  ${!IS_APP ? html`
+  <p slot="header" class="tagline is-size-5 has-text-centered">Explore and Replay Interactive Archived Webpages Directly in your Browser.</p>
+  ` : ``}
+    <wr-chooser slot="header" @load-start=${this.onStartLoad}></wr-chooser>
+  </wr-coll-index>
   `}
+
   ${this.showTerms ? html`
   <div class="modal is-active">
     <div class="modal-background" @click="${(e) => this.showTerms = false}"></div>
@@ -241,6 +262,7 @@ class App extends LitElement
   }
 
   initRoute() {
+    this.inited = true;
     this.pageParams = new URLSearchParams(window.location.search);
 
     // Google Drive

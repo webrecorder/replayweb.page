@@ -15,9 +15,6 @@ const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
 const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.googleusercontent.com";
 
 
-
-
-
 const electronMainConfig = (env, argv) => {
   return {
     target: 'electron-main',
@@ -65,8 +62,7 @@ const browserConfig = (env, argv) => {
     mode: 'production',
     entry: {
       'ui': './src/ui.js',
-      'embed': './src/embed.js',
-      'sw': 'wabac/src/sw.js'
+      'sw': './src/sw.js'
     },
 
     output: {
@@ -92,7 +88,7 @@ const browserConfig = (env, argv) => {
     plugins: [
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({
-        __SW_PATH__: JSON.stringify('./sw.js'),
+        __SW_NAME__: JSON.stringify('sw.js'),
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
         __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID)
@@ -114,7 +110,7 @@ const browserConfig = (env, argv) => {
         loaders: ['to-string-loader', 'css-loader', 'sass-loader']
       },
       {
-        test: /wombat.js|wombatWorkers.js$/i,
+        test: /wombat.js|wombatWorkers.js|index.html$/i,
         loaders: ['raw-loader'],
       }
       ]

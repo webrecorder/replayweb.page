@@ -1,12 +1,20 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss, dbworker } from './misc';
+import { wrapCss } from './misc';
 
 import { parseURLSchemeHostPath } from './pageutils';
+
+let dbworker = null;
 
 
 // ===========================================================================
 class Loader extends LitElement
 {
+  static initDBWorker() {
+    if (dbworker === null) {
+      dbworker = new Worker(__SW_NAME__);
+    }
+  }
+
   constructor() {
     super();
     this.progress = 0;
@@ -15,6 +23,8 @@ class Loader extends LitElement
     this.coll = "";
     this.state = "waiting";
     this.loadInfo = null;
+
+    Loader.initDBWorker();
   }
 
   static get properties() {
@@ -92,11 +102,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
             return;
           }
 
-          source = {
-            sourceUrl: this.loadInfo.sourceUrl,
-            loadUrl: this.loadInfo.loadUrl,
-            name: this.loadInfo.name
-          }
+          source = this.loadInfo;
           break;
       }
     } catch (e) {}

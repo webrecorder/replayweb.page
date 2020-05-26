@@ -3,9 +3,8 @@ import { wrapCss, IS_APP } from './misc';
 
 import { sourceToId } from './pageutils';
 
-import farListAlt from '@fortawesome/fontawesome-free/svgs/solid/list-alt.svg';
-import fasPage from '@fortawesome/fontawesome-free/svgs/solid/file-alt.svg';
-import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
+import farListAlt from '@fortawesome/fontawesome-free/svgs/regular/list-alt.svg';
+import fasResources from '@fortawesome/fontawesome-free/svgs/regular/file-code.svg';
 import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
 
 
@@ -15,6 +14,7 @@ class Coll extends LitElement
   constructor() {
     super();
     this.sourceUrl = null;
+    this.inited = false;
 
     this.baseApiPrefix = "./wabac/api";
     this.baseReplayPrefix = "./wabac";
@@ -25,27 +25,27 @@ class Coll extends LitElement
 
     this.collInfo = null;
 
-    this.hasCurated = false;
-
     this._replaceLoc = false;
     this._locUpdateNeeded = false;
 
     this._locationHash = "";
 
     this.tabData = {};
+
+    this.tabNames = ["pages", "resources", "replay"];
   }
 
   static get properties() {
     return {
-      sourceUrl: { type: String },
-      loadInfo: { type: Object },
+      inited: { type: Boolean },
 
-      collInfo: { type: Object },
+      sourceUrl: { type: String },
+      loadInfo: { type: Object, attribute: false },
+
+      collInfo: { type: Object, attribute: false },
       coll: { type: String },
 
-      hasCurated: { type: Boolean },
-
-      tabData: { type: Object },
+      tabData: { type: Object, attribute: false },
 
       replayUrl: { type: String },
       replayTS: { type: String },
@@ -56,6 +56,7 @@ class Coll extends LitElement
 
   firstUpdated() {
     //this.doUpdateInfo();
+    this.inited = true;
     window.addEventListener("hashchange", (event) => this.onHashChange(event));
   }
 
@@ -109,7 +110,6 @@ class Coll extends LitElement
 
     if (resp.status != 200) {
       this.collInfo = {};
-      this.hasCurated = false;
       return;
     }
 
@@ -121,21 +121,12 @@ class Coll extends LitElement
       this.collInfo.title = this.collInfo.filename;
     }
 
-    this.hasCurated = (this.collInfo.lists && this.collInfo.lists.length);
     this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {
       collInfo: this.collInfo,
       alreadyLoaded: true
     }}));
 
-    const hash = window.location.hash;
-    if (hash) {
-      this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
-    }
-
-    if (this.collInfo.coll && !this.tabData.view) {
-      this.tabData = {...this.tabData, view: this.hasCurated ? "curated" : "resources"};
-      //this.replaceLoc = true;
-    }
+    this.onHashChange();
   }
 
   onCollLoaded(event) {
@@ -152,6 +143,13 @@ class Coll extends LitElement
     if (hash && hash !== this._locationHash) {
       this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
       this._locationHash = hash;
+    }
+
+    if (this.collInfo.coll && !this.tabNames.includes(this.tabData.view)) {
+      this.tabData = {
+        ...this.tabData,
+        view: this.collInfo.numPages ||  this.collInfo.numLists ? "pages" : "resources"
+      };
     }
   }
 
@@ -196,26 +194,32 @@ class Coll extends LitElement
       }
     }
 
-    @media screen and (min-width: 320px) {
-      .main.tabs {
-        position: absolute;
-        top: 0px;
-        left: 50%;
-        -webkit-transform: translateX(-50%);
-        transform: translateX(-50%);
-        z-index: 35;
-        display: flex;
-        flex-direction: row;
-      }
-  
-      .main.tabs li {
-        line-height: 1.5;
-        padding-top: 0.5em;
-      }
+    .main.tabs {
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      min-height: 41px;
+      -webkit-transform: translateX(-50%);
+      transform: translateX(-50%);
+      z-index: 35;
+      display: flex;
+      flex-direction: row;
     }
 
-    .main.tabs {
-      min-height: 41px;
+    .main.tabs li {
+      line-height: 1.5;
+      padding-top: 0.5em;
+    }
+
+    @media screen and (max-width: 319px) {
+      .main.tabs li a {
+        padding-right: 4px;
+        padding-left: 4px;
+      }
+
+      .tabs span.icon {
+        margin: 0px !important;
+      }
     }
 
     #contents {
@@ -234,6 +238,8 @@ class Coll extends LitElement
   }
 
   render() {
+    if (!this.inited) return html``;
+
     if (this.collInfo && !this.collInfo.coll) {
       return html`
       <wr-loader .loadInfo="${this.loadInfo}" 
@@ -244,26 +250,17 @@ class Coll extends LitElement
       ${!this.embed ? html`
         <div class="main tabs has-background-info is-centered">
           <ul>
-          ${this.hasCurated ? html`
-            <li class="${this.tabData.view === 'curated' ? 'is-active' : ''}">
-              <a @click="${this.onTabClick}" href="#curated" class="is-size-6">
-                <span class="icon"><fa-icon .svg="${farListAlt}"></fa-icon></span>
-                <span class="tab-label" title="Curated Lists">Curated Lists</span>
-              </a>
-            </li>
-          ` : ``}
-
             <li class="${this.tabData.view === 'pages' ? 'is-active' : ''}">
               <a @click="${this.onTabClick}" href="#pages" class="is-size-6">
-                <span class="icon"><fa-icon .svg="${fasPage}"></fa-icon></span>
+                <span class="icon"><fa-icon .svg="${farListAlt}"></fa-icon></span>
                 <span class="tab-label" title="Pages">Pages</span>
               </a>
             </li>
 
             <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
               <a @click="${this.onTabClick}" href="#resources" class="is-size-6">
-                <span class="icon"><fa-icon .svg="${fasSearch}"></fa-icon></span>
-                <span class="tab-label" title="URL Resources">URL Resources</span>
+                <span class="icon"><fa-icon .svg="${fasResources}"></fa-icon></span>
+                <span class="tab-label" title="URL Resources">Page Resources</span>
               </a>
             </li>
 
@@ -283,34 +280,36 @@ class Coll extends LitElement
   }
 
   renderCollTabs() {
+    const isPages = this.tabData.view === 'pages';
+    const isResources = this.tabData.view === 'resources';
+    const isReplay = this.tabData.view === 'replay';
+
     return html`
     <wr-coll-curated .collInfo="${this.collInfo}"
-    currList="${this.tabData.currList || 0}"
-    @coll-tab-nav="${this.onCollTabNav}" id="curated"
-    class="${this.tabData.view === 'curated' ? '' : 'is-hidden'}">
+    .active="${isPages}"
+    currList="${this.tabData.currList === undefined ? "pages" : this.tabData.currList}"
+    query="${this.tabData.query || ""}"
+    @coll-tab-nav="${this.onCollTabNav}" id="pages"
+    class="${isPages ? '' : 'is-hidden'}">
     </wr-coll-curated>
 
-    <wr-coll-pages .collInfo="${this.collInfo}"
-    @coll-tab-nav="${this.onCollTabNav}" id="pages"
-    class="${this.tabData.view === 'pages' ? '' : 'is-hidden'}">
-    </wr-coll-pages>
-
     <wr-coll-resources .collInfo="${this.collInfo}"
-    urlSearch="${this.tabData.urlSearch || ""}"
+    .active="${isResources}"
+    query="${this.tabData.query || ""}"
     urlSearchType="${this.tabData.urlSearchType || ""}"
     .currMime="${this.tabData.currMime || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
-    class="is-paddingless ${this.tabData.view === 'resources' ? '' : 'is-hidden'}">
+    class="is-paddingless ${isResources ? '' : 'is-hidden'}">
     </wr-coll-resources>
 
-    ${this.tabData.view === 'replay' ? html`
+    ${isReplay ? html`
     <wr-coll-replay .collInfo="${this.collInfo}"
     sourceUrl="${this.sourceUrl}"
     embed="${this.embed}"
     url="${this.tabData.url || ""}"
     ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="replay"
-    class="${this.tabData.view === 'replay' ? '' : 'is-hidden'}">
+    class="${isReplay ? '' : 'is-hidden'}">
     </wr-coll-replay>
     ` : ``}
     `;
