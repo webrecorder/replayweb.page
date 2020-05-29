@@ -212,7 +212,7 @@ class Replay extends LitElement
         border-radius: 4px;
       }
 
-      .intro-panel {
+      nav.intro-panel.panel {
         min-width: 40%;
         display: flex;
         flex-direction: column;

@@ -1066,7 +1066,7 @@ const Je=new WeakMap,Qe=v(e=>t=>{if(!(t instanceof L))throw new Error("unsafeHTM
         border-radius: 4px;
       }
 
-      .intro-panel {
+      nav.intro-panel.panel {
         min-width: 40%;
         display: flex;
         flex-direction: column;
