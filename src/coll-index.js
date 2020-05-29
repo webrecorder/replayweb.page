@@ -8,6 +8,8 @@ import fasCopy from '@fortawesome/fontawesome-free/svgs/regular/copy.svg';
 import fasArrowUp from '@fortawesome/fontawesome-free/svgs/solid/angle-double-up.svg';
 import fasArrowDown from '@fortawesome/fontawesome-free/svgs/solid/angle-double-down.svg';
 
+import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
+
 
 // ===========================================================================
 class CollIndex extends LitElement
@@ -16,7 +18,10 @@ class CollIndex extends LitElement
     super();
 
     this.colls = [];
+    this.filteredColls = [];
     this.sortedColls = [];
+
+    this.query = "";
 
     this.hideHeader = localStorage.getItem("index:hideHeader") === "1";
 
@@ -43,6 +48,10 @@ class CollIndex extends LitElement
     return {
       colls: { type: Array },
 
+      query: { type: String },
+
+      filteredColls: { type: Array },
+
       sortedColls: { type: Array },
 
       hideHeader: { type: Boolean },
@@ -58,6 +67,26 @@ class CollIndex extends LitElement
   updated(changedProperties) {
     if (changedProperties.has("hideHeader")) {
       localStorage.setItem("index:hideHeader", this.hideHeader ? "1" : "0");
+    }
+    if (changedProperties.has("colls") || changedProperties.has("query")) {
+      this.filter();
+    }
+  }
+
+  filter() {
+    if (!this.query) {
+      this.filteredColls = this.colls;
+      return;
+    }
+
+    this.filteredColls = [];
+
+    for (const coll of this.colls) {
+      if (coll.sourceUrl.indexOf(this.query) >= 0 ||
+          coll.filename.indexOf(this.query) >= 0 ||
+          (coll.title && coll.title.indexOf(this.query) >= 0)) {
+            this.filteredColls.push(coll);
+      }
     }
   }
 
@@ -144,11 +173,26 @@ class CollIndex extends LitElement
     .copy:active {
       background-color: lightgray;
     }
-    .sort-header{
-      padding-bottom: 0.3rem;
+    .sort-header {
+      padding: 0.3rem 0.3rem 0.3rem 0;
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
+      flex-flow: row wrap;
+    }
+    .sort-header .control {
+      flex: auto;
+
+      padding-left: 0.3rem;
+      width: initial;
+    }
+    wr-sorter {
+      padding: 0.3rem;
+    }
+    a.button.is-small.collapse {
+      border-radius: 6px;
+    }
+    .icon.is-left {
+      margin-left: 0.5rem;
     }
     .columns {
       width: 100vw;
@@ -206,22 +250,31 @@ class CollIndex extends LitElement
     </header>
     <section class="section no-top-padding">
       <div class="sort-header is-small">
-        <a @click=${(e) => this.hideHeader = !this.hideHeader} class="button is-small">
+        <a @click=${(e) => this.hideHeader = !this.hideHeader} class="collapse button is-small">
           <span class="icon"><fa-icon .svg=${this.hideHeader ? fasArrowDown : fasArrowUp}></span>
           <span>${this.hideHeader ? 'Expand' : 'Collapse'}</span>
         </a>
-        <wr-sorter id="index"
-        defaultKey="title"
-        .sortKeys="${CollIndex.sortKeys}"
-        .data="${this.colls}"
-        @sort-changed="${(e) => this.sortedColls = e.detail.sortedData}">
-        </wr-sorter>
       </div>
       <nav class="panel is-light">
         <div class="panel-heading"><span>Loaded Archives</span>
         </div>
+
+        ${this.colls.length ? html`
+        <div class="panel-block sort-header is-small">
+          <div class="control has-icons-left">
+            <input type="text" class="input is-small" @input="${(e) => this.query = e.currentTarget.value}" .value="${this.query}" type="text"
+            placeholder="Search by Archive Title or Source">
+            <span class="icon is-left is-small"><fa-icon .svg="${fasSearch}"/></span>
+          </div>
+          <wr-sorter id="index"
+          defaultKey="title"
+          .sortKeys="${CollIndex.sortKeys}"
+          .data="${this.filteredColls}"
+          @sort-changed="${(e) => this.sortedColls = e.detail.sortedData}">
+          </wr-sorter>
+        </div>
+
         <div class="coll-list">
-          ${this.sortedColls.length ? html`
           ${this.sortedColls.map((coll, i) => html`
             <div class="coll-block panel-block">
               <div class="columns">
@@ -248,12 +301,13 @@ class CollIndex extends LitElement
             </div>
           `)}
         </div>
-          ` : html`
-          <div class="panel-block extra-padding">
-            <i>No Archives so far! Archives loaded in the section above will appear here.</i>
-          </div>
-        `}
+
+        ` : html`
+
+        <div class="panel-block extra-padding">
+          <i>No Archives so far! Archives loaded in the section above will appear here.</i>
         </div>
+        `}
       </nav>
     </section>
     `;

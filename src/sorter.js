@@ -94,6 +94,9 @@ class Sorter extends LitElement
       :host {
         min-width: 100px;
       }
+      button.button.is-small {
+        border-radius: 4px;
+      }
     `);
   }
 

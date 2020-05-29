@@ -66,6 +66,7 @@ class Chooser extends LitElement
     }
     form {
       flex-grow: 1;
+      flex-shrink: 0;
     }
     input.input.file-name:invalid {
       border: 1px dashed red;
