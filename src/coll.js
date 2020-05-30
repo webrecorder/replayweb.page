@@ -3,8 +3,10 @@ import { wrapCss, IS_APP } from './misc';
 
 import { sourceToId } from './pageutils';
 
+import fasBook from '@fortawesome/fontawesome-free/svgs/solid/book.svg';
+
 import farListAlt from '@fortawesome/fontawesome-free/svgs/regular/list-alt.svg';
-import fasResources from '@fortawesome/fontawesome-free/svgs/regular/file-code.svg';
+import farResources from '@fortawesome/fontawesome-free/svgs/regular/file-code.svg';
 import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
 
 
@@ -32,7 +34,9 @@ class Coll extends LitElement
 
     this.tabData = {};
 
-    this.tabNames = ["pages", "resources", "replay"];
+    this.tabNames = ["pages", "story", "resources", "replay"];
+
+    this.hasStory = false;
   }
 
   static get properties() {
@@ -44,6 +48,7 @@ class Coll extends LitElement
 
       collInfo: { type: Object, attribute: false },
       coll: { type: String },
+      hasStory: { type: Boolean },
 
       tabData: { type: Object, attribute: false },
 
@@ -106,7 +111,7 @@ class Coll extends LitElement
     const apiPrefix = this.baseApiPrefix + "/" + coll;
     const replayPrefix = this.baseReplayPrefix + "/" + coll;
 
-    const resp = await fetch(apiPrefix);
+    const resp = await fetch(apiPrefix + "?all=1");
 
     if (resp.status != 200) {
       this.collInfo = {};
@@ -120,6 +125,8 @@ class Coll extends LitElement
     if (!this.collInfo.title) {
       this.collInfo.title = this.collInfo.filename;
     }
+
+    this.hasStory = this.collInfo.desc || this.collInfo.lists.length;
 
     this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {
       collInfo: this.collInfo,
@@ -146,9 +153,10 @@ class Coll extends LitElement
     }
 
     if (this.collInfo.coll && !this.tabNames.includes(this.tabData.view)) {
+      const view = this.hasStory ? "story" : (this.collInfo.pages.length ? "pages" : "resources");
+
       this.tabData = {
-        ...this.tabData,
-        view: this.collInfo.numPages ||  this.collInfo.numLists ? "pages" : "resources"
+        ...this.tabData, view
       };
     }
   }
@@ -165,6 +173,7 @@ class Coll extends LitElement
       this.tabData = {view: this.tabData.view, ...event.detail.data};
       this._replaceLoc = !this._locUpdateNeeded && event.detail.replaceLoc;
       this._locUpdateNeeded = true;
+      console.log(this.tabData);
     }
   }
 
@@ -228,12 +237,6 @@ class Coll extends LitElement
       display: flex;
       flex-direction: column;
     }
-
-    wr-coll-replay, wr-coll-resources, wr-coll-curated, wr-coll-pages {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
     `);
   }
 
@@ -250,6 +253,14 @@ class Coll extends LitElement
       ${!this.embed ? html`
         <div class="main tabs has-background-info is-centered">
           <ul>
+            ${this.hasStory ? html`
+            <li class="${this.tabData.view === 'story' ? 'is-active' : ''}">
+              <a @click="${this.onTabClick}" href="#story" class="is-size-6">
+                <span class="icon"><fa-icon .svg="${fasBook}"></fa-icon></span>
+                <span class="tab-label" title="Story">Story View</span>
+              </a>
+            </li>` : ``}
+
             <li class="${this.tabData.view === 'pages' ? 'is-active' : ''}">
               <a @click="${this.onTabClick}" href="#pages" class="is-size-6">
                 <span class="icon"><fa-icon .svg="${farListAlt}"></fa-icon></span>
@@ -259,7 +270,7 @@ class Coll extends LitElement
 
             <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
               <a @click="${this.onTabClick}" href="#resources" class="is-size-6">
-                <span class="icon"><fa-icon .svg="${fasResources}"></fa-icon></span>
+                <span class="icon"><fa-icon .svg="${farResources}"></fa-icon></span>
                 <span class="tab-label" title="URL Resources">Page Resources</span>
               </a>
             </li>
@@ -280,18 +291,27 @@ class Coll extends LitElement
   }
 
   renderCollTabs() {
+    const isStory = this.tabData.view === 'story';
     const isPages = this.tabData.view === 'pages';
     const isResources = this.tabData.view === 'resources';
     const isReplay = this.tabData.view === 'replay';
 
     return html`
-    <wr-coll-curated .collInfo="${this.collInfo}"
+    ${this.hasStory ? html`
+    <wr-coll-story .collInfo="${this.collInfo}"
+    .active="${isStory}"
+    currList="${this.tabData.currList || 0}"
+    @coll-tab-nav="${this.onCollTabNav}" id="story"
+    class="${isStory ? '' : 'is-hidden'}">
+    </wr-coll-story>` : ''}
+
+    <wr-page-view .collInfo="${this.collInfo}"
     .active="${isPages}"
-    currList="${this.tabData.currList === undefined ? "pages" : this.tabData.currList}"
+    currList="${this.tabData.currList || 0}"
     query="${this.tabData.query || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"
     class="${isPages ? '' : 'is-hidden'}">
-    </wr-coll-curated>
+    </wr-page-view>
 
     <wr-coll-resources .collInfo="${this.collInfo}"
     .active="${isResources}"

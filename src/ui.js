@@ -2,7 +2,7 @@ import { App } from './appmain';
 import { Chooser } from './chooser';
 import { CollIndex } from './coll-index';
 import { Coll } from './coll';
-import { CuratedList } from './curated-lists';
+import { Story } from './story';
 import { GDrive } from './gdrive';
 import { Loader } from './loader';
 import { Pages } from './pages';

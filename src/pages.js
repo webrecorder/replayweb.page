@@ -7,7 +7,6 @@ import { getTS } from './pageutils';
 
 import FlexSearch from 'flexsearch';
 import "keyword-mark-element/lib/keyword-mark.js";
-//const FlexSearch = Object;
 
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 
@@ -17,13 +16,14 @@ class Pages extends LitElement
 {
   constructor() {
     super();
-    this.pages = [];
     this.filteredPages = [];
     this.sortedPages = [];
     this.query = "";
     this.flex = null;
     this.newQuery = null;
     this.loading = false;
+
+    this.currList = 0;
 
     this.active = false;
     this.changeNeeded = false;
@@ -47,18 +47,15 @@ class Pages extends LitElement
       active: { type: Boolean},
 
       collInfo: { type: Object },
-      pages: { type: Array },
+      currList: { type: Number },
+
       filteredPages: { type: Array },
       sortedPages: { type: Array },
+
       query: { type: String },
+
       loading: { type: Boolean },
     }
-  }
-
-  firstUpdated() {
-    //this._ival = window.setInterval(() => {
-
-    //}, 10000);
   }
 
   _timedUpdate() {
@@ -71,8 +68,9 @@ class Pages extends LitElement
 
   updated(changedProperties) {
     if (changedProperties.has("collInfo")) {
-      this.doUpdate();
-    } else if (changedProperties.has("query")) {
+      this.updateTextSearch();
+      this.filter();
+    } else if (changedProperties.has("query") || changedProperties.has("currList")) {
       this.filter();
     }
     if (changedProperties.has("active") && this.active) {
@@ -80,15 +78,6 @@ class Pages extends LitElement
         this.filter();
       }
     }
-  }
-
-  async doUpdate() {
-    const result = await fetch(`${this.collInfo.apiPrefix}/pages`);
-    const json = await result.json();
-    this.pages = json.pages || [];
-
-    this.updateTextSearch();
-    this.filter();
   }
 
   onChangeQuery(event) {
@@ -112,12 +101,33 @@ class Pages extends LitElement
       const result = await this.flex.search(this.query);
       this.filteredPages = result;
     } else {
-      this.filteredPages = this.pages;
+      this.filteredPages = this.collInfo.pages;
     }
+
+    if (this.currList !== 0) {
+      await this.filterCurated();
+    }
+
     this.loading = false;
     this.changeNeeded = false;
-    const data = {query: this.query};
+    const data = {query: this.query, currList: this.currList};
     this.sendChangeEvent(data);
+  }
+
+  async filterCurated() {
+    const resp = await fetch(`${this.collInfo.apiPrefix}/curated/${this.currList}`);
+    const json = await resp.json();
+
+    this.sortedPages = [];
+
+    for (const c of json.curated) {
+      for (const p of this.filteredPages) {
+        if (p.id === c.page) {
+          this.sortedPages.push(p);
+          break;
+        }
+      }
+    }
   }
 
   sendChangeEvent(data) {
@@ -133,7 +143,7 @@ class Pages extends LitElement
       async: true
     });
 
-    this.flex.add(this.pages);
+    this.flex.add(this.collInfo.pages);
   }
 
   static get styles() {
@@ -143,7 +153,63 @@ class Pages extends LitElement
         height: 100%;
         display: flex;
         flex-direction: column;
-        padding: 0 0.75rem 0.75rem 0;
+      }
+
+      .columns {
+        width: 100%;
+        justify-self: stretch;
+        margin-left: 0;
+      }
+  
+      .column.main-content {
+        margin: 12px 0px 0px 0px;
+        padding: 0 0.75em 0 0.75em;
+        max-height: calc(100% - 0.75em);
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - 1.2em);
+      }
+
+      @media screen and (min-width: 768px) {
+        .columns {
+          max-height: 100%;
+          height: 100%;
+          margin-top: 0.75em;
+        }
+  
+        .column.sidebar {
+          max-height: 100%;
+          overflow-y: auto;
+        }
+      }
+  
+      @media screen and (max-width: 767px) {
+        .columns {
+          position: relative;
+          max-height: 100%;
+          height: 100%;
+        }
+  
+        .column.sidebar {
+          max-height: 150px;
+          overflow-y: auto;
+          margin-top: 0.75em;
+        }
+  
+        .column.main-content {
+          position: relative;
+          overflow-y: auto;
+  
+          border-top: 1px solid black;
+          width: 100%;
+          height: 100%;
+          max-height: calc(100% - 150px - 0.75em);
+          padding: 0px;
+        }
+  
+        .menu {
+          font-size: 0.80rem;
+        }
       }
 
       .scroller {
@@ -177,10 +243,47 @@ class Pages extends LitElement
     `);
   }
 
+  onSelectList(event) {
+    event.preventDefault();
+    this.currList = Number(event.currentTarget.getAttribute("data-list"));
+  }
+
   render() {
+    const currList = this.currList;
+
+    return html`
+    <div class="columns">
+      <div class="column sidebar is-one-fifth">
+        <aside class="menu">
+          <ul class="menu-list">
+            <li>
+              <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
+                @click=${this.onSelectList}>All Pages</a>
+              ${this.collInfo.lists.length ? html`
+              <p class="menu-label">Page Lists</p>
+              <ul class="menu-list">${this.collInfo.lists.map(list => html`
+                <li>
+                  <a @click=${this.onSelectList} href="#list-${list.id}"
+                  data-list="${list.id}" 
+                  class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
+                </li>`)}
+              </ul>` : ``}
+            </li>
+          </ul>
+        </aside>
+      </div>
+      <div class="column main-content">
+        ${this.renderPages()}
+      </div>
+    </div>`
+  }
+
+  renderPages() {
+    const name = this.currList === 0 ? "All Pages" : this.collInfo.lists[this.currList - 1].title;
+
     return html`
     <nav class="panel">
-      <div class="panel-heading light-blue">Pages for: ${this.collInfo.title}</div>
+      <div class="panel-heading light-blue">${this.collInfo.title} - ${name}</div>
       <div class="panel-block">
         <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
           <input type="text" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
@@ -190,13 +293,16 @@ class Pages extends LitElement
       </div>
       <div class="panel-block status">
         <span class="num-results">${this.formatResults()}</span>
+
+        ${this.currList === 0 ? html`
         <wr-sorter id="pages"
         defaultKey="title"
         .sortKeys="${Pages.sortKeys}"
         .data="${this.filteredPages}"
         @sort-changed="${(e) => this.sortedPages = e.detail.sortedData}"
         class="${this.filteredPages.length ? '' : 'is-hidden'}">
-        </wr-sorter>
+        </wr-sorter>` : ``}
+
       </div>
       <div class="scroller" @scroll="${this.onScroll}">
       ${this.sortedPages.map((p) => html`
@@ -207,7 +313,7 @@ class Pages extends LitElement
   }
 
   formatResults() {
-    if (!this.collInfo || !this.collInfo.numPages) {
+    if (!this.collInfo || !this.collInfo.pages.length) {
       return html`No Pages defined this archive. Check out <a href="#view=resources">Page Resources</a> to search by URL.`;
     }
 
@@ -216,7 +322,7 @@ class Pages extends LitElement
     }
 
     if (!this.sortedPages.length) {
-      return "No Pages Found."
+      return this.query ? "No Pages Found. Try changing the search query." : "No Pages Found";
     } else if (this.sortedPages.length === 1) {
       return "1 Page";
     } else {

@@ -181,8 +181,10 @@ class Replay extends LitElement
 
   static get styles() {
     return wrapCss(css`
-      host: {
+      :host {
         display: flex;
+        flex-direction: column;
+        height: 100%;
       }
 
       iframe {
