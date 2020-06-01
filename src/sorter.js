@@ -15,12 +15,15 @@ class Sorter extends LitElement
     this.data = [];
 
     this.numResults = DEFAULT_RESULTS;
+    this.defaultDesc = false;
   }
 
   static get properties() {
     return {
       id: { type: String },
+
       defaultKey: {type: String },
+      defaultDesc: { type: Boolean },
 
       //numResults: {type: Number},
 
@@ -34,7 +37,8 @@ class Sorter extends LitElement
 
   firstUpdated() {
     this.sortKey = localStorage.getItem(`${this.id}:sortKey`) || this.defaultKey;
-    this.sortDesc = localStorage.getItem(`${this.id}:sortDesc`) === "1";
+    const sortDesc = localStorage.getItem(`${this.id}:sortDesc`);
+    this.sortDesc = !sortDesc ? this.defaultDesc : sortDesc === "1";
   }
 
   updated(changedProperties) {

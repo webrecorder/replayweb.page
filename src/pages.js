@@ -3,10 +3,12 @@
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss } from './misc';
 
-import { getTS } from './pageutils';
+import prettyBytes from 'pretty-bytes';
 
 import FlexSearch from 'flexsearch';
 import "keyword-mark-element/lib/keyword-mark.js";
+
+import { getTS } from './pageutils';
 
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 
@@ -44,11 +46,9 @@ class Pages extends LitElement
 
   static get properties() {
     return {
-      active: { type: Boolean},
-
+      active: { type: Boolean },
       collInfo: { type: Object },
       currList: { type: Number },
-
       filteredPages: { type: Array },
       sortedPages: { type: Array },
 
@@ -101,7 +101,7 @@ class Pages extends LitElement
       const result = await this.flex.search(this.query);
       this.filteredPages = result;
     } else {
-      this.filteredPages = this.collInfo.pages;
+      this.filteredPages = [...this.collInfo.pages];
     }
 
     if (this.currList !== 0) {
@@ -238,7 +238,7 @@ class Pages extends LitElement
         height: 100%;
       }
       .light-blue {
-        background-color:  #43daff;
+        background-color:  #97e7ff;
       }
     `);
   }
@@ -296,7 +296,8 @@ class Pages extends LitElement
 
         ${this.currList === 0 ? html`
         <wr-sorter id="pages"
-        defaultKey="title"
+        defaultKey="ts"
+        ?defaultDesc="true"
         .sortKeys="${Pages.sortKeys}"
         .data="${this.filteredPages}"
         @sort-changed="${(e) => this.sortedPages = e.detail.sortedData}"
@@ -305,11 +306,35 @@ class Pages extends LitElement
 
       </div>
       <div class="scroller" @scroll="${this.onScroll}">
-      ${this.sortedPages.map((p) => html`
-      <div class="panel-block"><wr-page-entry query="${this.query}" .page="${p}"></wr-page-entry></div>`)}
+        ${this.sortedPages.map((p) => html`
+        <div class="panel-block">
+          <wr-page-entry @delete-page="${this.onDeletePage}" replayPrefix="${this.collInfo.replayPrefix}" query="${this.query}" .page="${p}">
+          </wr-page-entry>
+        </div>`)}
       </div>
     </nav>
     `;
+  }
+
+  async onDeletePage(event) {
+    const page = event.currentTarget.page;
+    const resp = await fetch(`${this.collInfo.apiPrefix}/page/${page.id}`, {method: 'DELETE'});
+    const json = await resp.json();
+
+    const inx = this.collInfo.pages.indexOf(page);
+    if (inx < 0) {
+      return;
+    }
+
+    //todo: full update?
+    this.collInfo.pages.splice(inx, 1);
+    //if (!this.query){
+    //  this.filteredPages = [...this.collInfo.pages];
+    //}
+
+    this.updateTextSearch();
+    this.filter();
+    this.requestUpdate();
   }
 
   formatResults() {
@@ -350,13 +375,17 @@ class PageEntry extends LitElement
     this.query = "";
     this.textSnippet = "";
     this.page = null;
+    this.replayPrefix = "";
+    this.deleting = false;
   }
 
   static get properties() {
     return {
       query: { type: String },
       textSnippet: { type: String },
-      page: { type: Object }
+      page: { type: Object },
+      replayPrefix: { type: String },
+      deleting: { type: Boolean }
     }
   }
 
@@ -366,10 +395,31 @@ class PageEntry extends LitElement
         min-height: min-content;
         width: 100%;
         word-break: break-all;
+        position: relative;
       }
 
-      a {
-        word-break: break-all;
+      .favicon {
+        width: 24px !important;
+        height: 24px !important;
+        display: inline-block;
+        vertical-align: text-bottom;
+      }
+      img.favicon {
+        filter: drop-shadow(1px 1px 2px grey);
+      }
+
+      .media-left {
+        align-self: center;
+      }
+
+      .delete {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+      }
+
+      .delete:hover {
+        background-color: rgb(241, 70, 104);
       }
 
       @media screen and (max-width: 767px) {
@@ -388,33 +438,60 @@ class PageEntry extends LitElement
   updated(changedProperties) {
     if (changedProperties.has("page") || changedProperties.has("query")) {
       this.updateSnippet();
+      this.deleting = false;
     }
   }
 
   render() {
     const p = this.page;
     let date = null;
+    let ts = p.ts;
     try {
-      date = new Date(p.ts);
-    } catch (e) { }
+      date = new Date(p.ts || p.date);
+    } catch (e) { 
+
+    }
+
+    const timestamp = (date && !isNaN(date)) ? getTS(date.toISOString()) : "";
+    const hasSize = typeof(p.size) === "number";
 
     return html`
     <div class="columns">
-      <div class="column col-date is-one-fifth">
+      <div class="column col-date is-2">
       <div>${date ? date.toLocaleDateString() : ""}</div>
       <div>${date ? date.toLocaleTimeString() : ""}</div>
       </div>
-      <div class="column">
-        <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(date.toISOString())}" href="#">
-          <p class="is-size-6 has-text-weight-bold has-text-link text">
-          <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
-          </p>
-          <p class="has-text-dark text"><keyword-mark keywords="${this.query}">${p.url}</keyword-mark></p>
-        </a>
-        ${this.textSnippet ? html`
-          <div class="text"><keyword-mark keywords="${this.query}">${this.textSnippet}</keyword-mark></div>` : html``}
+      <div class="column is-9">
+        <article class="media">
+          <figure class="media-left">
+            <p class="">
+            ${p.favIconUrl ? html`
+              <img class="favicon" src="${this.replayPrefix}/id_/${p.favIconUrl}"/>` : html`
+              <span class="favicon"></span>`}
+            </p>
+          </figure>
+          <div class="media-content">
+            <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${timestamp}" href="#">
+              <p class="is-size-6 has-text-weight-bold has-text-link text">
+              <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
+              </p>
+              <p class="has-text-dark text"><keyword-mark keywords="${this.query}">${p.url}</keyword-mark></p>
+            </a>
+            ${this.textSnippet ? html`
+              <div class="text"><keyword-mark keywords="${this.query}">${this.textSnippet}</keyword-mark></div>` : html``}
+          </div>
+          ${hasSize ? html`
+          <div class="media-right" style="margin-right: 2em">
+            ${prettyBytes(p.size)}
+          </div>` : ``}
+        </article>
       </div>
-    </div>`;
+    </div>
+    ${hasSize ? html`
+    ${!this.deleting ? html`
+    <button @click="${this.onSendDeletePage}" class="delete"></button>` : html`
+    <button class="button delete is-loading is-static"></button>
+    `}` : ''}`;
   }
 
   updateSnippet() {
@@ -474,6 +551,12 @@ class PageEntry extends LitElement
 
   sendChangeEvent(data) {
     this.dispatchEvent(new CustomEvent("coll-tab-nav", {bubbles: true, composed: true, detail: {data}}));
+  }
+
+  onSendDeletePage(event) {
+    const page = this.page.id;
+    this.deleting = true;
+    this.dispatchEvent(new CustomEvent("delete-page", {detail: {page}}));
   }
 }
 

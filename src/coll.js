@@ -197,7 +197,7 @@ class Coll extends LitElement
       display: none;
     }
 
-    @media screen and (min-width: ${!IS_APP ? css`1024px` : css`1134px`}) {
+    @media screen and (min-width: ${!IS_APP ? css`1054px` : css`1164px`}) {
       .tab-label {
         display: inline;
       }
@@ -257,7 +257,7 @@ class Coll extends LitElement
             <li class="${this.tabData.view === 'story' ? 'is-active' : ''}">
               <a @click="${this.onTabClick}" href="#story" class="is-size-6">
                 <span class="icon"><fa-icon .svg="${fasBook}"></fa-icon></span>
-                <span class="tab-label" title="Story">Story View</span>
+                <span class="tab-label" title="Story">Story</span>
               </a>
             </li>` : ``}
 

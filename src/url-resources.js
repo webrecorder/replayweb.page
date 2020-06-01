@@ -199,6 +199,7 @@ class URLResources extends LitElement
     :host {
       display: flex;
       flex-direction: column;
+      height: 100%;
     }
     .notification {
       width: 100%;
