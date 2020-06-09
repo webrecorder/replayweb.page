@@ -18,13 +18,13 @@
     "mime-types": "^2.1.27",
     "pretty-bytes": "^5.3.0",
     "register-service-worker": "^1.7.1",
-    "wabac": "github:https://github.com/webrecorder/wabac.js"
+    "wabac": "github:https://github.com/webrecorder/wabac.js#develop"
   },
   "devDependencies": {
     "css-loader": "^3.5.3",
-    "electron": "^9.0.0",
+    "electron": "9.0.3",
     "electron-builder": "^22.7.0",
-    "electron-notarize": "^0.3.0",
+    "electron-notarize": "^1.0.0",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.14.0",
     "raw-loader": "^4.0.1",
@@ -41,13 +41,14 @@
     "build-dev": "webpack --mode development",
     "start-dev": "webpack-dev-server --mode development",
     "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
-    "dist": "electron-builder",
+    "pack-signed": "electron-builder",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js",
     "build-electron": "yarn run build && yarn run docs && yarn run pack",
-    "docs": "bundle exec jekyll build",
-    "all": "yarn run build && yarn run docs && yarn run pack"
+    "docs": "bundle install; bundle exec jekyll build",
+    "dist": "yarn run build && electron-builder --publish always"
   },
   "build": {
+    "afterSign": "build/notarize.js",
     "productName": "ReplayWeb.page",
     "asar": true,
     "appId": "net.webrecorder.replaywebpage",
@@ -66,9 +67,6 @@
         "to": "assets"
       }
     ],
-    "extraResources": [
-      "plugins"
-    ],
     "dmg": {
       "title": "ReplayWeb.page"
     },
@@ -81,16 +79,25 @@
       "entitlementsInherit": "build/entitlements.mac.plist",
       "electronLanguages": [
         "en"
+      ],
+      "extraResources": [
+        "plugins-mac"
       ]
     },
     "linux": {
       "category": "Archiving;Utility;",
       "target": [
         "AppImage"
+      ],
+      "extraResources": [
+        "plugins-linux"
       ]
     },
     "win": {
-      "target": "portable"
+      "target": "portable",
+      "extraResources": [
+        "plugins-win"
+      ]
     },
     "directories": {
       "buildResources": "build",

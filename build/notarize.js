@@ -11,17 +11,20 @@ exports.default = async function notarizing(context) {
     return;
   }
 
+  if (!process.env.APPLE_ID || !process.env.APPLE_ID_PASSWORD) {
+    console.log('Notarize credentials missing, skipping');
+    return;
+  }
+
   console.log('Notarizing...');
 
   const appName = context.packager.appInfo.productFilename;
 
-  const password = `@keychain:WR Notarize`;
-
   return await notarize({
     appBundleId: 'net.webrecorder.replayweb.page',
     appPath: `${appOutDir}/${appName}.app`,
-    appleId: 'ikreymer@gmail.com',
-    appleIdPassword: password,
+    appleId: process.env.APPLE_ID,
+    appleIdPassword: process.env.APPLE_ID_PASSWORD,
   });
 };
 

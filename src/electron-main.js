@@ -32,7 +32,26 @@ const projPath = path.join(appPath, "../");
 
 const staticContentPath = path.join(__dirname, "../");
 
-const pluginPath = path.join(projPath, "plugins", "PepperFlashPlayer.plugin");
+let pluginPath = "";
+
+switch (process.platform) {
+  case 'win32':
+    pluginPath = path.join(projPath, "plugins-win", "pepflashplayer-x86_64.dll");
+    break;
+
+  case 'darwin':
+    pluginPath = path.join(projPath, "plugins-mac", "PepperFlashPlayer.plugin");
+    break;
+
+  case 'linux':
+    pluginPath = path.join(projPath, "plugins-mac", "libpepflashplayer.so");
+    break;
+
+  default:
+    console.log('platform unsupported: ' + process.platform);
+    break;
+}
+
 
 console.log('app path', appPath);
 console.log('dir name', __dirname);
