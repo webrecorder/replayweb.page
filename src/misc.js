@@ -15,7 +15,7 @@ function wrapCss(custom) {
   return [allCss, custom];
 }
 
-const IS_APP = window.electron && window.electron.IS_APP || window.matchMedia('(display-mode: standalone)').matches;
+const IS_APP = window.IS_APP || window.electron && window.electron.IS_APP || window.matchMedia('(display-mode: standalone)').matches;
 
 
 // ===========================================================================
@@ -24,12 +24,16 @@ class FaIcon extends LitElement
   constructor() {
     super();
     this.size = "1.1em";
+    this.width = null;
+    this.height = null;
   }
 
   static get properties() {
     return {
       svg: { type: String },
-      size: { type: String }
+      size: { type: String },
+      width: { type: String },
+      height: { type: String }
     }
   }
 
@@ -54,7 +58,19 @@ class FaIcon extends LitElement
       return html``;
     }
 
-    const styles = {width: this.size, height: this.size};
+    const styles = {};
+
+    if (this.size) {
+      styles.width = this.size;
+      styles.height = this.size;
+    } else {
+      if (this.width) {
+        styles.width = this.width;
+      }
+      if (this.height) {
+        styles.height = this.height;
+      }
+    }
 
     return html`<svg style="${styleMap(styles)}"><g>${unsafeSVG(this.svg)}</g></svg>`;
   }

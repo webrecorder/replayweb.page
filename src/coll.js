@@ -56,6 +56,7 @@ class Coll extends LitElement
       replayTS: { type: String },
 
       embed: { type: String },
+      editable: { type: Boolean }
     }
   }
 
@@ -173,7 +174,6 @@ class Coll extends LitElement
       this.tabData = {view: this.tabData.view, ...event.detail.data};
       this._replaceLoc = !this._locUpdateNeeded && event.detail.replaceLoc;
       this._locUpdateNeeded = true;
-      console.log(this.tabData);
     }
   }
 
@@ -307,6 +307,7 @@ class Coll extends LitElement
 
     <wr-page-view .collInfo="${this.collInfo}"
     .active="${isPages}"
+    .editable="${this.editable}"
     currList="${this.tabData.currList || 0}"
     query="${this.tabData.query || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"

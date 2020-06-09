@@ -64,6 +64,9 @@ class Chooser extends LitElement
     div.field.has-addons {
       flex: auto;
     }
+    .panel-heading {
+      background-color: #cff3ff;
+    }
     form {
       flex-grow: 1;
       flex-shrink: 0;
@@ -94,7 +97,7 @@ class Chooser extends LitElement
   render() {
     return html`
     <section class="section less-padding">
-      <nav class="panel is-warning">
+      <nav class="panel">
         <p class="panel-heading">Load Web Archive</p>
         <div class="extra-padding panel-block file has-name">
           <form class="content is-flex" @submit="${this.onStartLoad}">

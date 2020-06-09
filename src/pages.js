@@ -11,6 +11,7 @@ import "keyword-mark-element/lib/keyword-mark.js";
 import { getTS } from './pageutils';
 
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
+import fasAngleDown from '@fortawesome/fontawesome-free/svgs/solid/angle-down.svg';
 
 
 // ===========================================================================
@@ -28,7 +29,10 @@ class Pages extends LitElement
     this.currList = 0;
 
     this.active = false;
+    this.editable = false;
     this.changeNeeded = false;
+    
+    this.selectedPages = new Set();
   }
 
   static get sortKeys() {
@@ -55,6 +59,10 @@ class Pages extends LitElement
       query: { type: String },
 
       loading: { type: Boolean },
+      editable: { type: Boolean },
+
+      selectedPages: { type: Set },
+      allSelected: { type: Boolean }
     }
   }
 
@@ -219,7 +227,9 @@ class Pages extends LitElement
         flex: auto;
         height: 100%;
       }
-
+      .selected {
+        background-color: ghostwhite;
+      }
       .panel-block:last-child {
         border-bottom: 1px solid rgb(237, 237, 237);
       }
@@ -227,8 +237,8 @@ class Pages extends LitElement
         border-left: 1px solid rgb(237, 237, 237);
         border-right: 1px solid rgb(237, 237, 237);
       }
-      .panel-block.status {
-        justify-content: space-between;
+      .status.level {
+        width: 100%;
       }
       nav.panel {
         box-shadow: none;
@@ -291,29 +301,110 @@ class Pages extends LitElement
           <span class="icon is-left"><fa-icon .svg="${fasSearch}"/></span>
         </div>
       </div>
-      <div class="panel-block status">
-        <span class="num-results">${this.formatResults()}</span>
+      <div class="panel-block">
+        <div class="status level is-mobile">
+          <div class="level-left">
+            ${this.editable ? html`
+            <div class="check-select level-item">
+              <label class="checkbox">
+              <input @change=${this.onSelectAll} type="checkbox" .checked="${this.allSelected}">
+              </label>
+            </div>` : ``}
 
-        ${this.currList === 0 ? html`
-        <wr-sorter id="pages"
-        defaultKey="ts"
-        ?defaultDesc="true"
-        .sortKeys="${Pages.sortKeys}"
-        .data="${this.filteredPages}"
-        @sort-changed="${(e) => this.sortedPages = e.detail.sortedData}"
-        class="${this.filteredPages.length ? '' : 'is-hidden'}">
-        </wr-sorter>` : ``}
+            <span class="num-results level-item">${this.formatResults()}</span>
 
+            <div class="level-item dropdown is-hoverable">
+              <div class="dropdown-trigger">
+                <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
+                  <span>Download</span>
+                  <span class="icon is-small">
+                    <fa-icon .svg="${fasAngleDown}"/>
+                  </span>
+                </button>
+              </div>
+              <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                ${this.editable ? html`
+                  <a @click="${(e) => this.onDownload(e, "wacz", true)}" class="dropdown-item">
+                    Download Selected as WACZ (Web Archive Collection)
+                  </a>
+                  <a @click="${(e) => this.onDownload(e, "warc", true)}" class="dropdown-item">
+                    Download Selected as WARC Only
+                  </a>
+                  <hr class="dropdown-divider">
+                  ` : ``}
+                  <a @click="${(e) => this.onDownload(e, "wacz", false)}" class="dropdown-item">
+                    Download All as WACZ (Web Archive Collection)
+                  </a>
+                  <a @click="${(e) => this.onDownload(e, "warc", false)}" class="dropdown-item">
+                    Download All as WARC Only
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          ${this.currList === 0 ? html`
+          <div class="level-right">
+            <wr-sorter id="pages"
+            defaultKey="ts"
+            ?defaultDesc="true"
+            .sortKeys="${Pages.sortKeys}"
+            .data="${this.filteredPages}"
+            @sort-changed="${(e) => this.sortedPages = e.detail.sortedData}"
+            class="${this.filteredPages.length ? '' : 'is-hidden'} level-item">
+            </wr-sorter>` : ``}
+          </div>
+        </div>
       </div>
       <div class="scroller" @scroll="${this.onScroll}">
         ${this.sortedPages.map((p) => html`
-        <div class="panel-block">
-          <wr-page-entry @delete-page="${this.onDeletePage}" replayPrefix="${this.collInfo.replayPrefix}" query="${this.query}" .page="${p}">
+        <div class="panel-block ${this.selectedPages.has(p.id) ? 'selected' : ''}">
+          <wr-page-entry .editable="${this.editable}" .selected="${this.selectedPages.has(p.id)}" @sel-page="${this.onSelectToggle}" @delete-page="${this.onDeletePage}" replayPrefix="${this.collInfo.replayPrefix}" query="${this.query}" .page="${p}">
           </wr-page-entry>
         </div>`)}
       </div>
     </nav>
     `;
+  }
+
+  onSelectToggle(event) {
+    const {page, selected} = event.detail;
+    if (selected) {
+      this.selectedPages.add(page);
+    } else {
+      this.selectedPages.delete(page);
+    }
+    this.allSelected = (this.selectedPages.size === this.sortedPages.length);
+    this.requestUpdate();
+  }
+
+  onSelectAll(event) {
+    this.allSelected = event.currentTarget.checked;
+    if (!this.allSelected) {
+      this.selectedPages.clear();
+    } else {
+      //this.selectedPages = new Set();
+      this.sortedPages.forEach(p => {
+        this.selectedPages.add(p.id);
+      });
+    }
+    //this.allSelected = (this.selectedPages.size === this.sortedPages.length);
+    this.requestUpdate();
+  }
+
+  async onDownload(event, format, selected) {
+    event.preventDefault();
+
+    const params = new URLSearchParams();
+    params.set("pages", selected ? Array.from(this.selectedPages.keys()).join(",") : "all");
+    params.set("format", format);
+    if (this.collInfo.filename) {
+      params.set("filename", this.collInfo.filename);
+    }
+
+    window.location.href = `${this.collInfo.apiPrefix}/dl?` + params.toString();
   }
 
   async onDeletePage(event) {
@@ -339,7 +430,7 @@ class Pages extends LitElement
 
   formatResults() {
     if (!this.collInfo || !this.collInfo.pages.length) {
-      return html`No Pages defined this archive. Check out <a href="#view=resources">Page Resources</a> to search by URL.`;
+      return html`No Pages defined this archive. Check out&nbsp;<a href="#view=resources">Page Resources</a>&nbsp;to search by URL.`;
     }
 
     if (this.loading) {
@@ -377,6 +468,8 @@ class PageEntry extends LitElement
     this.page = null;
     this.replayPrefix = "";
     this.deleting = false;
+    this.editable = false;
+    this.iconValid = false;
   }
 
   static get properties() {
@@ -385,7 +478,10 @@ class PageEntry extends LitElement
       textSnippet: { type: String },
       page: { type: Object },
       replayPrefix: { type: String },
-      deleting: { type: Boolean }
+      deleting: { type: Boolean },
+      selected: { type: Boolean },
+      editable: { type: Boolean },
+      iconValid: { type: Boolean }
     }
   }
 
@@ -396,6 +492,19 @@ class PageEntry extends LitElement
         width: 100%;
         word-break: break-all;
         position: relative;
+        display: flex;
+        flex-direction: row;
+        background: transparent;
+      }
+
+      .check-select {
+        padding-right: 1.0em;
+        height: 100%;
+        margin: auto 0 auto 0;
+      }
+
+      .columns {
+        width: 100%;
       }
 
       .favicon {
@@ -423,10 +532,12 @@ class PageEntry extends LitElement
       }
 
       @media screen and (max-width: 767px) {
+        .col-date {
+          margin-left: calc(24px + 1rem);
+        }
         .col-date div {
           display: inline;
         }
-
         .columns {
           display: flex;
           flex-direction: column-reverse;
@@ -438,24 +549,39 @@ class PageEntry extends LitElement
   updated(changedProperties) {
     if (changedProperties.has("page") || changedProperties.has("query")) {
       this.updateSnippet();
+      this.iconValid = !!this.page.favIconUrl;
+      //this.updateFavIcon();
       this.deleting = false;
     }
   }
 
-  render() {
-    const p = this.page;
+  getDateTS() {
     let date = null;
-    let ts = p.ts;
+    let ts = this.page.ts;
     try {
-      date = new Date(p.ts || p.date);
+      date = new Date(this.page.ts || this.page.date);
     } catch (e) { 
 
     }
 
     const timestamp = (date && !isNaN(date)) ? getTS(date.toISOString()) : "";
+    return {date, timestamp};
+  }
+
+  render() {
+    const p = this.page;
+    const {date, timestamp} = this.getDateTS();
+
     const hasSize = typeof(p.size) === "number";
 
     return html`
+    ${this.editable ? html`
+    <div class="check-select">
+      <label class="checkbox">
+      <input @change=${this.onSendSelToggle} type="checkbox" .checked="${this.selected}">
+      </label>
+    </div>` : ``}
+
     <div class="columns">
       <div class="column col-date is-2">
       <div>${date ? date.toLocaleDateString() : ""}</div>
@@ -465,8 +591,8 @@ class PageEntry extends LitElement
         <article class="media">
           <figure class="media-left">
             <p class="">
-            ${p.favIconUrl ? html`
-              <img class="favicon" src="${this.replayPrefix}/id_/${p.favIconUrl}"/>` : html`
+            ${this.iconValid ? html`
+              <img class="favicon" @error="${(e) => this.iconValid = false}" src="${this.replayPrefix}/${timestamp}id_/${p.favIconUrl}"/>` : html`
               <span class="favicon"></span>`}
             </p>
           </figure>
@@ -487,11 +613,39 @@ class PageEntry extends LitElement
         </article>
       </div>
     </div>
-    ${hasSize ? html`
-    ${!this.deleting ? html`
-    <button @click="${this.onSendDeletePage}" class="delete"></button>` : html`
-    <button class="button delete is-loading is-static"></button>
-    `}` : ''}`;
+    
+    ${this.editable ? html`
+      ${!this.deleting ? html`
+      <button @click="${this.onSendDeletePage}" class="delete"></button>` : html`
+      <button class="button delete is-loading is-static"></button>
+      `}` : ''}
+    `;
+  }
+
+  async updateFavIcon() {
+    if (!this.page.favIconUrl)  {
+      this.favIconData = null;
+      return;
+    }
+
+    const {timestamp} = this.getDateTS();
+
+    const resp = await fetch(`${this.replayPrefix}/${timestamp}id_/${this.page.favIconUrl}`);
+
+    if (resp.status != 200) {
+      this.favIconData = null;
+      return;
+    }
+
+    const payload = await resp.arrayBuffer();
+    const mime = resp.headers.get("content-type");
+
+    try {
+      this.favIconData = `data:${mime};base64,${btoa(String.fromCharCode.apply(null, payload))}`;
+    } catch (e) {
+      console.log(e);
+      this.favIconData = null;
+    }
   }
 
   updateSnippet() {
@@ -557,6 +711,12 @@ class PageEntry extends LitElement
     const page = this.page.id;
     this.deleting = true;
     this.dispatchEvent(new CustomEvent("delete-page", {detail: {page}}));
+  }
+
+  onSendSelToggle(event) {
+    const page = this.page.id;
+    const selected = event.currentTarget.checked;
+    this.dispatchEvent(new CustomEvent("sel-page", {detail: {page, selected}}));
   }
 }
 

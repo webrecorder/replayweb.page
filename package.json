@@ -48,7 +48,6 @@
     "all": "yarn run build && yarn run docs && yarn run pack"
   },
   "build": {
-    "afterSign": "build/notarize.js",
     "productName": "ReplayWeb.page",
     "asar": true,
     "appId": "net.webrecorder.replaywebpage",
