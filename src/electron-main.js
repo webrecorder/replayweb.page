@@ -72,6 +72,19 @@ var proxyTS;
 
 var mainWindow;
 
+// Single instance lock
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  console.log("App already running, opening new window in first instance and quitting");
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Just create a new window in case of second instance request
+    createWindow();
+  });
+}
+
 
 function bufferToStream(data) {
   const rv = new PassThrough();

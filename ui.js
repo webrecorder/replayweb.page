@@ -563,7 +563,7 @@ const ae=new WeakMap,oe=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeSVG
       <div class="sort-header is-small">
         <a @click=${e=>this.hideHeader=!this.hideHeader} class="collapse button is-small">
           <span class="icon"><fa-icon .svg=${this.hideHeader?Be.a:Me.a}></span>
-          <span>${this.hideHeader?"Collapse List":"Expand List"}</span>
+          <span>${this.hideHeader?"Show":"Hide"}</span>
         </a>
       </div>
       <nav class="panel is-light">

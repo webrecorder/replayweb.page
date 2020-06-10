@@ -252,7 +252,7 @@ class CollIndex extends LitElement
       <div class="sort-header is-small">
         <a @click=${(e) => this.hideHeader = !this.hideHeader} class="collapse button is-small">
           <span class="icon"><fa-icon .svg=${this.hideHeader ? fasArrowDown : fasArrowUp}></span>
-          <span>${this.hideHeader ? 'Collapse List' : 'Expand List'}</span>
+          <span>${this.hideHeader ? 'Show' : 'Hide'}</span>
         </a>
       </div>
       <nav class="panel is-light">
