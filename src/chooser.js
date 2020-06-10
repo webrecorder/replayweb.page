@@ -33,7 +33,13 @@ class Chooser extends LitElement
     if (this.file) {
       loadInfo.isFile = true;
       // file.path only available in electron app
-      loadInfo.loadUrl = this.file.path ? __APP_FILE_SERVE_PREFIX__ + this.file.path : URL.createObjectURL(this.file);
+      if (this.file.path) {
+        const url = new URL(__APP_FILE_SERVE_PREFIX__);
+        url.searchParams.set("filename", this.file.path);
+        loadInfo.loadUrl = url.href;
+      } else {
+        loadInfo.loadUrl = URL.createObjectURL(this.file);
+      }
       loadInfo.noCache = this.file.path !== undefined;
       loadInfo.name = this.fileDisplayName;
     }

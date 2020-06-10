@@ -7,7 +7,6 @@ import {app, session, BrowserWindow, ipcMain} from 'electron';
 
 import path from 'path';
 import fs from 'fs';
-import qs from 'querystring';
 
 import { ArchiveResponse, Rewriter } from 'wabac/src/rewrite';
 
@@ -133,7 +132,8 @@ async function doIntercept(request, callback) {
   }
 
   if (request.url.startsWith(__APP_FILE_SERVE_PREFIX__)) {
-    const filename = qs.unescape(request.url.slice(__APP_FILE_SERVE_PREFIX__.length));
+    const parsedUrl = new URL(request.url);
+    const filename = parsedUrl.searchParams.get("filename");
     console.log("file serve:", filename);
 
     const stat = await fs.promises.lstat(filename);

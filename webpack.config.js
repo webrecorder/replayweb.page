@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // fake url used in app to serve files
 // can not use custom scheme due to service worker issues
-const APP_FILE_SERVE_PREFIX = "http://files.replayweb.page";
+const APP_FILE_SERVE_PREFIX = "http://files.replayweb.page/";
 //const APP_FILE_SERVE_PREFIX = "file://files.replayweb.page";
 
 
