@@ -45,7 +45,8 @@
     "start-electron": "NODE_ENV=development electron ./dist/electron.js",
     "build-electron": "yarn run build && yarn run docs && yarn run pack",
     "docs": "bundle install; bundle exec jekyll build",
-    "dist": "yarn run build && electron-builder --publish always"
+    "dist": "yarn run build && electron-builder",
+    "release": "yarn run build && electron-builder"
   },
   "build": {
     "afterSign": "build/notarize.js",

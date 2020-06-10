@@ -35,6 +35,8 @@ script:
 
       docker run --rm \
         -e GH_TOKEN=${GH_TOKEN} \
+        -e WIN_CSC_LINK=${WIN_CSC_LINK} \
+        -e WIN_CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD} \
         -v ${PWD}:/project \
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
