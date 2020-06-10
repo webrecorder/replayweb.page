@@ -76,10 +76,6 @@ function getTS(iso) {
 
 // ===========================================================================
 async function sourceToId(url) {
-  try {
-    url = new URL(url, window.location.origin).href;
-  } catch(e) {}
-
   const digest = await digestMessage(url, 'SHA-256');
   const coll = "id-" + digest.slice(0, 12);
   return {url, coll};

@@ -88,7 +88,7 @@ class GDrive extends LitElement
   onLoad() {
     this.scriptLoaded = true;
     this.gauth('none', (response) => {
-      if (response.error === "immediate_failed") {
+      if (response.error) {
         if (this.state !== "implicitonly") {
           this.state = "trymanual";
         }

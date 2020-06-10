@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss } from './misc';
 
+import prettyBytes from 'pretty-bytes';
+
 import { parseURLSchemeHostPath, initDBWorker } from './pageutils';
 
 
@@ -16,6 +18,9 @@ class Loader extends LitElement
     this.state = "waiting";
     this.loadInfo = null;
 
+    this.currentSize = 0;
+    this.totalSize = 0;
+
     this.dbworker = initDBWorker();
   }
 
@@ -26,6 +31,8 @@ class Loader extends LitElement
       state: { type: String },
       progress: { type: Number },
       percent: { type: Number },
+      currentSize: { type: Number },
+      totalSize: { type: Number },
       error: { type: String},
       total: { type: Number },
       status: { type: String },
@@ -48,6 +55,10 @@ class Loader extends LitElement
               this.error = event.data.error;
               this.state = "errored";
             }
+            if (event.data.currentSize && event.data.totalSize) {
+              this.currentSize = event.data.currentSize;
+              this.totalSize = event.data.totalSize;
+            }
           }
           break;
 
@@ -68,6 +79,8 @@ class Loader extends LitElement
   async doLoad() {
     let sourceUrl = this.sourceUrl;
     let source = null;
+
+    this.percent = this.currentSize = this.totalSize = 0;
 
     // custom protocol handlers here...
     try {
@@ -161,6 +174,10 @@ You can select a file to upload from the main page by clicking the \'Choose File
         line-height: 1.5rem;
       }
 
+      .loaded-prog {
+        margin-bottom: 1em;
+      }
+
       .error {
         white-space: pre-wrap;
         margin-bottom: 2em;
@@ -197,6 +214,9 @@ You can select a file to upload from the main page by clicking the \'Choose File
             <progress id="progress" class="progress is-primary is-large" 
             value="${this.percent}" max="100"></progress>
             <label class="progress-label" for="progress">${this.percent}%</label>
+            ${this.currentSize && this.totalSize ? html`
+              <p class="loaded-prog">Loaded <b>${prettyBytes(this.currentSize)}</b> of <b>${prettyBytes(this.totalSize)}</b></p>` : html``}
+
             <button @click="${this.onCancel}" class="button is-danger">Cancel</button>
           </div>`;
 

@@ -6006,7 +6006,7 @@ vm-browserify@^1.0.1:
 
 "wabac@github:https://github.com/webrecorder/wabac.js#develop":
   version "2.0.0"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/43a612b488b665ca385512955cd007a162d6ce31"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/ebb69d2e03d1fbbbd0e1e8a6650cf6d7eb41f68b"
   dependencies:
     brotli "github:foliojs/brotli.js"
     fast-xml-parser "^3.15.1"

@@ -39,7 +39,9 @@ class Chooser extends LitElement
         loadInfo.loadUrl = url.href;
       } else {
         loadInfo.loadUrl = URL.createObjectURL(this.file);
+        loadInfo.blob = this.file;
       }
+      loadInfo.size = this.file.size;
       loadInfo.noCache = this.file.path !== undefined;
       loadInfo.name = this.fileDisplayName;
     }
@@ -125,11 +127,11 @@ class Chooser extends LitElement
               <p class="control is-expanded">
                 <input class="file-name input" type="text"
                 name="filename" id="filename"
-                pattern="((file|http|https|s3):\/\/.*\.(warc|warc.gz|har|zip|wacz))|(googledrive:\/\/.+)"
+                pattern="((file|http|https|s3):\/\/.*\.(warc|warc.gz|zip|wacz))|(googledrive:\/\/.+)"
                 .value="${this.fileDisplayName}"
                 @input="${this.onInput}"
                 autocomplete="off"
-                placeholder="Enter a URL or click 'Choose File' to select a (WARC, HAR, WBN, or WACZ) archive source">
+                placeholder="Enter a URL or click 'Choose File' to select a WARC or WACZ archive source">
               </p>
               <div class="control">
                 <button type="submit" class="button is-hidden-mobile is-primary">Load</button>
