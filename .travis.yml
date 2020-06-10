@@ -41,7 +41,7 @@ script:
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run dist --linux --win"
+        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run release --linux --win"
     else
       mkdir -p plugins-mac;
       pushd plugins-mac;
@@ -50,7 +50,7 @@ script:
       unzip PepperFlashPlayer.plugin.zip;
       rm PepperFlashPlayer.plugin.zip;
       popd;
-      yarn run dist
+      yarn run release
     fi
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
