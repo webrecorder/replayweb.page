@@ -35,7 +35,7 @@ let pluginPath = "";
 
 switch (process.platform) {
   case 'win32':
-    pluginPath = path.join(projPath, "plugins-win", "pepflashplayer-x86_64.dll");
+    pluginPath = path.join(projPath, "plugins-win", `pepflashplayer-x86${process.arch === 'x64' ? '_64' : ''}.dll`);
     break;
 
   case 'darwin':

@@ -20,37 +20,42 @@ cache:
 
 script:
   - |
+    if [ "$TRAVIS_BRANCH" == "master" ]; then
+      export YARN_BUILD_CMD="release"
+    else
+      export YARN_BUILD_CMD="dist"
+    fi
+
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
       mkdir -p plugins-linux;
       pushd plugins-linux;
-      FLASH_PLUGIN="https://s3.amazonaws.com/webrecorder-builds/flashplugin/libpepflashplayer.so";
-      wget $FLASH_PLUGIN;
+      wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/libpepflashplayer.so";
       popd;
 
       mkdir -p plugins-win;
       pushd plugins-win;
-      FLASH_PLUGIN="https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86_64.dll";
-      wget $FLASH_PLUGIN;
+      wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86_64.dll";
+      wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86.dll";
       popd;
 
       docker run --rm \
         -e GH_TOKEN=${GH_TOKEN} \
         -e WIN_CSC_LINK=${WIN_CSC_LINK} \
         -e WIN_CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD} \
+        -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
         -v ${PWD}:/project \
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run release --linux --win"
+        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run $YARN_BUILD_CMD --linux --win --x64 --ia32"
     else
       mkdir -p plugins-mac;
       pushd plugins-mac;
-      FLASH_PLUGIN="https://s3.amazonaws.com/webrecorder-builds/flashplugin/PepperFlashPlayer.plugin.zip";
-      wget $FLASH_PLUGIN;
+      wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/PepperFlashPlayer.plugin.zip";
       unzip PepperFlashPlayer.plugin.zip;
       rm PepperFlashPlayer.plugin.zip;
       popd;
-      yarn run release
+      yarn run $YARN_BUILD_CMD
     fi
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
