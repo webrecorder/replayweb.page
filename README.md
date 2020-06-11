@@ -5,14 +5,18 @@
 ## Serverless Web Archive Replay
 
 ReplayWeb.page provides a full web archive replay system running directly in the browser, 
-available at: https://replayweb.page/
+available at: [https://replayweb.page/](https://replayweb.page)
 
-For full user docs, see: https://replayweb.page/docs
+For full user docs, see: [https://replayweb.page/docs](https://replayweb.page/docs)
 
-The ReplayWeb.page App can be downloaded from: https://replayweb.page/releases
+The ReplayWeb.page App can be downloaded from the [Releases](https://replayweb.page/releases) page.
+
+### Embedding Guide
+
+See the [Embedding Guide](https://replayweb.page/docs/embedding) for more info on embedding web archives in other sites.
 
 
-## Architecture / What's in this repo
+## What's in this repo
 
 ReplayWeb.page is a static web site / offline web app + Electron app.
 
@@ -59,11 +63,11 @@ For service workers to work, they must be served from either localhost or an HTT
 
 See the [user docs](https://replayweb.page/docs/) for additional info about using ReplayWeb.page
 
+
+
 ## LICENSE
 
 ReplayWeb.page is made available under the AGPLv3 License.
-
-[Embedding ReplayWeb.page](https://replayweb.page/docs/embedding) from published releases is encouraged.
 
 If you would like to use it under a different license or have a question, please reach out as that may be a possibility.
 

@@ -44,7 +44,7 @@ To load a remote archive, simply enter the URL of the archive and click `Load`.
 {: .fs-3 .pad .bg-grey-lt-100}
 See [Supported Locations](locations) for details on where archives can be loaded from.
 
-The archive will be downloaded, either fully or [only as needed (if possible)](streaming-archives.md) and presented on the archive page.
+The archive will be downloaded, either fully or on-demand (if possible) and presented on the archive page.
 
 The system supports WARC files, as well as several other formats
 
@@ -74,7 +74,7 @@ Due to the nature of the WARC format, the entire file must be read on first use 
 For WARC files **>25MB**, only the index is initially stored in the browser, and the actual content is loaded 'on-demand',
 when the content is first accessed. This leads to faster loading and saves memory when dealing with large archives.
 
-[Web Archive Collection (WACZ)](web-archive-collection-format) are always loaded on-demand, as no indexing is required.
+[Web Archive Collection (WACZ)](wacz-format) are always loaded on-demand, as no indexing is required.
 The initial archive view should load almost instantly as a result.
 
 If an archive could not be loaded, an error will be displayed instead of the progress.

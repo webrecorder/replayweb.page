@@ -24,12 +24,12 @@ The archive view presents several tabs:
 - **Story** - This Story view presents lists of curated pages, as developed by the creator of the web archive. 
 This option is only shown if there is a curated story. As curated lists are not a standard part of WARC, only WARCs exported from Webrecorder.io/Conifer can have this option.
 
-The new [Web Archive Collection (WACZ)](web-archive-collection-format) can also include curated lists.
+The new [Web Archive Collection (WACZ)](wacz-format) can also include curated lists.
 
 - **Pages** - The Pages view presents all pages in the web archive. As pages are not a standard part of WARC format,
 generally only WARCs from Webrecorder.io/Conifer will have pages.
 
-The new [Web Archive Collection (WACZ)](web-archive-collection-format) can also store pages.
+The new [Web Archive Collection (WACZ)](wacz-format) can also store pages.
 
 
 - **Page Resources** - This view allows searching the archive by URLs, as well as by common MIME type.

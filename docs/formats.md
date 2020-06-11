@@ -12,7 +12,7 @@ parent: Reference
 ReplayWeb.Page supports the archive formats listed below.
 Format is currently determined based on the file extension.
 
-The `.wacz` refers to the newly proposed [Web Archive Collection Zip Format](web-archive-collection).
+The `.wacz` refers to the newly proposed [Web Archive Collection Zip Format](wacz-format).
 
 
 | Format  | Extensions          | Status        |     
