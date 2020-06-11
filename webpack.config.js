@@ -91,8 +91,10 @@ const browserConfig = (env, argv) => {
         __SW_NAME__: JSON.stringify('sw.js'),
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
-        __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID)
+        __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID),
+        __VERSION__: JSON.stringify(require("./package.json").version)
       }),
+      new webpack.BannerPlugin('[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020, Webrecorder Software. Licensed under the Affero General Public License v3.')
     ],
 
     module: {
@@ -114,7 +116,7 @@ const browserConfig = (env, argv) => {
         loaders: ['raw-loader'],
       }
       ]
-    }
+    },
   }
 };
 

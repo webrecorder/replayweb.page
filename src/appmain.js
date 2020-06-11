@@ -162,6 +162,10 @@ class App extends LitElement
             <div class="navbar-item">
               Collection Id:&nbsp;<b>${this.collInfo.coll}</b>
             </div>
+            <hr class="navbar-divider">
+            <div class="navbar-item">
+              ReplayWeb.page Version: ${__VERSION__}
+            </div>
           </div>
         </div>
         ` : ``}

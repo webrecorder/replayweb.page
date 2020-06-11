@@ -1,7 +1,7 @@
 ---
 layout: default
 title: 'Supported Locations'
-nav_order: 1
+nav_order: 2
 description: 'Supported Locations'
 parent: Reference
 permalink: /docs/locations
@@ -24,9 +24,9 @@ The following is a list of currently supported URL schemes and details below:
 | `http://`        | <span class="d-inline-block p-2 mr-1 v-align-middle bg-green-000"> Supported   |
 | `file://`        | <span class="d-inline-block p-2 mr-1 v-align-middle bg-green-000"> Supported   |
 | `s3://`          | <span class="d-inline-block p-2 mr-1 v-align-middle bg-green-000"> Supported   |
-| `googledrive://` | <span class="d-inline-block p-2 mr-1 v-align-middle bg-yellow-000"> In progress |
-| `ipfs://`        | <span class="d-inline-block p-2 mr-1 v-align-middle bg-yellow-000"> Partial     |
-| `dat://`         | <span class="d-inline-block p-2 mr-1 v-align-middle text-grey-lt-000 bg-purple-000"> Planned     |
+| `googledrive://` | <span class="d-inline-block p-2 mr-1 v-align-middle bg-green-000"> Supported   |
+| `ipfs://`        | <span class="d-inline-block p-2 mr-1 v-align-middle bg-purple-000"> Planned    |
+| `hyper://`       | <span class="d-inline-block p-2 mr-1 v-align-middle text-grey-lt-000 bg-purple-000"> Planned     |
 
 
 ### HTTP and HTTPS
@@ -67,11 +67,11 @@ The `ipfs://` url scheme is provide as a convenience and resolves to using the C
 A better implementation with IPFS directly is also possible.
 
 
-### DAT
+### DAT/Hyper
 {: .d-inline-block }
 
 Help Wanted
 {: .label .label-yellow }
 
-Support for `dat://` is planned to allow true peer-to-peer transfer of web archives.
+Support for `hyper://` is planned to allow true peer-to-peer transfer of web archives.
 

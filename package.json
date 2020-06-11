@@ -3,7 +3,6 @@
   "productName": "ReplayWeb.page",
   "version": "1.0.0",
   "description": "Serverless Web Archive Replay",
-  "main": "dist/electron.js",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
   "author": "Ilya Kreymer <ikreymer@gmail.com>",
@@ -25,6 +24,7 @@
     "electron": "9.0.3",
     "electron-builder": "^22.7.0",
     "electron-notarize": "^1.0.0",
+    "http-server": "^0.12.3",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.14.0",
     "raw-loader": "^4.0.1",
@@ -36,15 +36,21 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
   },
+  "files": [
+    "/src",
+    "sw.js",
+    "ui.js"
+  ],
   "scripts": {
     "build": "webpack --mode production",
     "build-dev": "webpack --mode development",
+    "build-docs": "bundle install; bundle exec jekyll build",
     "start-dev": "webpack-dev-server --mode development",
+    "start-prod": "http-server -p 9990",
     "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
     "pack-signed": "electron-builder",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js",
-    "build-electron": "yarn run build && yarn run docs && yarn run pack",
-    "docs": "bundle install; bundle exec jekyll build",
+    "start-jekyll": "yarn run build-docs && bundle exec jekyll serve",
     "dist": "yarn run build && yarn run pack",
     "release": "yarn run build && electron-builder"
   },
@@ -54,15 +60,14 @@
     "asar": true,
     "appId": "net.webrecorder.replaywebpage",
     "artifactName": "${productName}-${version}.${ext}",
+    "extraMetadata": {
+      "main": "dist/electron.js"
+    },
     "files": [
       "!**/node_modules/**/*",
       "dist/*.js",
       "*.js",
       "*.html",
-      {
-        "from": "_site/docs",
-        "to": "docs"
-      },
       {
         "from": "_site/assets",
         "to": "assets"

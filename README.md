@@ -23,11 +23,12 @@ The frontend is loaded from `ui.js`, while the backend service/web worker is loa
 
 This repository contains:
 - The built assets for the site hosted at https://replayweb.page/ via GitHub Pages
+- The package for npm module: https://www.npmjs.com/package/replaywebpage
 - A build system for https://replayweb.page and ReplayWeb.page App.
 - Docs hosted at: https://replayweb.page/docs
 - App releases at: https://github.com/webrecorder/replayweb.page/releases
 
-## How to Use
+## How to Use This Repo
 
 ReplayWeb.page is built as a Node package can be installed using yarn:
 
@@ -56,11 +57,15 @@ The static assets are placed in the root `index.html`, `sw.js` and `ui.js`, and 
 
 For service workers to work, they must be served from either localhost or an HTTPS endpoint.
 
+See the [user docs](https://replayweb.page/docs/) for additional info about using ReplayWeb.page
+
 ## LICENSE
 
 ReplayWeb.page is made available under the AGPLv3 License.
 
-If you would like to use it under a different license, please reach out as that may be a possibility.
+[Embedding ReplayWeb.page](https://replayweb.page/docs/embedding) from published releases is encouraged.
+
+If you would like to use it under a different license or have a question, please reach out as that may be a possibility.
 
 
 ## Contributing and Bug Reports

@@ -3,7 +3,7 @@
 import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
 
-import {app, session, BrowserWindow, ipcMain} from 'electron';
+import {app, session, BrowserWindow, ipcMain, shell} from 'electron';
 
 import path from 'path';
 import fs from 'fs';
@@ -19,9 +19,6 @@ global.Headers = Headers;
 const STATIC_PREFIX = "http://localhost:5471/";
 
 const REPLAY_PREFIX = STATIC_PREFIX + "wabac/";
-
-const HTML_TYPE = 'text/html; charset="utf-8"';
-const JS_TYPE = 'application/javascript; charset="utf-8"';
 
 const URL_RX = /([^\/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
@@ -290,7 +287,8 @@ function createWindow () {
       plugins: true,
       preload: path.join(__dirname, 'preload.js'),
       nativeWindowOpen: true,
-      contextIsolation: true
+      contextIsolation: true,
+      enableRemoteModule: false
     }
   }).once('ready-to-show', () => {
 
@@ -314,6 +312,17 @@ function createWindow () {
     mainWindow.webContents.openDevTools();
   }
 }
+
+app.on('web-contents-created', (event, contents) => {
+  contents.on('new-window', async (event, navigationUrl) => {
+    
+    // load docs in native browser for now
+    if (navigationUrl === STATIC_PREFIX + "docs") {
+      event.preventDefault();
+      await shell.openExternal("https://replayweb.page/docs/");
+    }
+  });
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

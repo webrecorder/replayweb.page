@@ -21,6 +21,7 @@ class Embed extends LitElement
     this.paramString = null;
     this.deepLink = false;
     this.swInited = false;
+    this.embed = null;
 
     this.doRegister();
   }
@@ -30,6 +31,8 @@ class Embed extends LitElement
       url: { type: String },
       ts: { type: String },
       source: { type: String },
+      view: { type: String },
+      embed: { type: String },
 
       replayBase: { type: String },
       swName: { type: String },
@@ -101,11 +104,15 @@ class Embed extends LitElement
         changedProperties.has("ts") ||
         changedProperties.has("source")) {
 
+      if (this.embed === null) {
+        this.embed = this.url ? "replayonly" : "";
+      }
+
       this.paramString = new URLSearchParams({
         source: this.source,
         customColl: this.coll,
         config: this.config,
-        embed: "true"
+        embed: this.embed,
       }).toString();
   
       this.hashString = new URLSearchParams({
