@@ -319,7 +319,7 @@ const ae=new WeakMap,oe=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeSVG
       </div>
       <div class="navbar-end">
         <a href="/docs" target="_blank" class="navbar-item">
-          <fa-icon .svg="${Te.a}"></fa-icon><span>&nbsp;How it Works</span>
+          <fa-icon .svg="${Te.a}"></fa-icon><span>&nbsp;User Docs</span>
         </a>
         <a href="?terms" @click="${e=>{e.preventDefault(),this.showTerms=!0}}"class="navbar-item">Terms</a>
       </div>
@@ -1110,6 +1110,7 @@ const tt=new WeakMap,it=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeHTM
 
             <span class="num-results level-item">${this.formatResults()}</span>
 
+            ${this.editable?O`
             <div class="level-item dropdown is-hoverable">
               <div class="dropdown-trigger">
                 <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -1121,7 +1122,6 @@ const tt=new WeakMap,it=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeHTM
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                ${this.editable?O`
                   <a @click="${e=>this.onDownload(e,"wacz",!0)}" class="dropdown-item">
                     Download Selected as WACZ (Web Archive Collection)
                   </a>
@@ -1129,7 +1129,6 @@ const tt=new WeakMap,it=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeHTM
                     Download Selected as WARC Only
                   </a>
                   <hr class="dropdown-divider">
-                  `:""}
                   <a @click="${e=>this.onDownload(e,"wacz",!1)}" class="dropdown-item">
                     Download All as WACZ (Web Archive Collection)
                   </a>
@@ -1139,6 +1138,7 @@ const tt=new WeakMap,it=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeHTM
                 </div>
               </div>
             </div>
+            `:""}
 
           </div>
 

@@ -172,7 +172,7 @@ class App extends LitElement
       </div>
       <div class="navbar-end">
         <a href="/docs" target="_blank" class="navbar-item">
-          <fa-icon .svg="${fasHelp}"></fa-icon><span>&nbsp;How it Works</span>
+          <fa-icon .svg="${fasHelp}"></fa-icon><span>&nbsp;User Docs</span>
         </a>
         <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
       </div>

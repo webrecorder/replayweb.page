@@ -313,6 +313,7 @@ class Pages extends LitElement
 
             <span class="num-results level-item">${this.formatResults()}</span>
 
+            ${this.editable ? html`
             <div class="level-item dropdown is-hoverable">
               <div class="dropdown-trigger">
                 <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -324,7 +325,6 @@ class Pages extends LitElement
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                ${this.editable ? html`
                   <a @click="${(e) => this.onDownload(e, "wacz", true)}" class="dropdown-item">
                     Download Selected as WACZ (Web Archive Collection)
                   </a>
@@ -332,7 +332,6 @@ class Pages extends LitElement
                     Download Selected as WARC Only
                   </a>
                   <hr class="dropdown-divider">
-                  ` : ``}
                   <a @click="${(e) => this.onDownload(e, "wacz", false)}" class="dropdown-item">
                     Download All as WACZ (Web Archive Collection)
                   </a>
@@ -342,6 +341,7 @@ class Pages extends LitElement
                 </div>
               </div>
             </div>
+            ` : ``}
 
           </div>
 
