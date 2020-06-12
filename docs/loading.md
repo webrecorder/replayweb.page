@@ -28,7 +28,7 @@ Archives loaded by ReplayWeb.page are identified by their unique URL, which can 
 Using the `Choose File...` button, you can pick any local archive file to load for replay. 
 The click `Load` to load the file. 
 
-The archive is laoded in the browser directly and *not* uploaded anywhere -- it never leaves your computer!
+The archive is loaded in the browser directly and *not* uploaded anywhere -- it never leaves your computer!
 
 The archive will be identified by a `file://` URL and is not accessible outside your browser. As expected,
 this URL is not shareable.
@@ -56,7 +56,7 @@ See: [Supported Formats](formats) for more details on supported formats.
 
 ReplayWeb.page also supports loading archives directly from Google Drive.
 
-ReplayWeb.page can be used to open .warc, .warc.gz files directly from google drive using the following steps.
+ReplayWeb.page can be used to open .warc, .warc.gz files directly from Google Drive using the following steps.
 
 1. Install [ReplayWeb.page Google Drive Integration](https://gsuite.google.com/u/2/marketplace/app/replaywebpage/160798412227)
 

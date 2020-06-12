@@ -9,7 +9,7 @@ permalink: /docs/locations
 
 ## Supported Location URLs
 
-ReplayWeb.Page uses URLs to uniquely indentify web archives.
+ReplayWeb.Page uses URLs to uniquely identify web archives.
 
 In addition HTTP/S, the system supports loading from additional cloud providers
 and via peer-to-peer decentralized services. The goal is to support loading
@@ -31,7 +31,7 @@ The following is a list of currently supported URL schemes and details below:
 
 ### HTTP and HTTPS
 
-While `https://replayweb.page` can load from any url, a site must allow access by enabling [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+While `https://replayweb.page` can load from any URL, a site must allow access by enabling [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
 for the web archive. HTTP URLs may not be accessible from `https://replayweb.page` since it requires HTTPS.
 
 If you need to provide access to web archives stored on your own domain or over HTTP, consider
@@ -45,15 +45,15 @@ Unlike other web archive URLs, file URLs can not be shared with others.
 
 ### Amazon S3
 
-The `s3://` url scheme is provided as a convenience to reference S3 URLs. The URL is converted to an HTTPS URL for access.
+The `s3://` URL scheme is provided as a convenience to reference S3 URLs. The URL is converted to an HTTPS URL for access.
 The S3 Bucket must be public and also provide access to `https://replayweb.page` via CORS.
 Downloading via S3 credentials is not currently supported.
 
 
 ### Google Drive 
 
-The `googledrive://` url scheme is used when accessing a web archive shared over google drive. It provides a unique identifier
-provided via Google Drive. When accessing a google drive URL, the user will be asked to authenticate to be able to access the file.
+The `googledrive://` URL scheme is used when accessing a web archive shared over Google Drive. It provides a unique identifier
+provided via Google Drive. When accessing a Google Drive URL, the user will be asked to authenticate to be able to access the file.
 
 
 ### IPFS
@@ -63,7 +63,7 @@ Help Wanted
 {: .label .label-yellow }
 
 
-The `ipfs://` url scheme is provide as a convenience and resolves to using the Cloudflare IPFS Gateway to download archives from IPFS.
+The `ipfs://` URL scheme is provide as a convenience and resolves to using the Cloudflare IPFS Gateway to download archives from IPFS.
 A better implementation with IPFS directly is also possible.
 
 
