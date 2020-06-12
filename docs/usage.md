@@ -21,7 +21,7 @@ ReplayWeb.page provides the following features:
 
 - High-Fidelity replay of web archives in [several formats](formats) and from [various locations](locations) directly in the browser.
 
-- Several way to [explore web archives](explore): story view, page search and url search.
+- Several way to [explore web archives](explore): story view, page search and URL search.
 
 - On-demand, incremental [loading of large archives](loading#loading-large-files-full-vs-on-demand-loading/).
 

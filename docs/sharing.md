@@ -10,11 +10,11 @@ permalink: /docs/sharing
 
 ReplayWeb.page links are designed to be shareable with others, as long as they have access.
 
-You can share links to any view, including Page or Page Resoures search, or Replay view.
+You can share links to any view, including Page or Page Resources search, or Replay view.
 
 ReplayWeb.page encodes the web archive source and view parameters in the URL query and hash string.
 
-Simply copy the entire location url, and you can share with others!
+Simply copy the entire location URL, and you can share with others!
 
 ReplayWeb.page will parse the URL, load the source web archive, then load the view or replay from that archive.
 
@@ -44,7 +44,7 @@ A future goal is to provide an option to share local web archives peer-to-peer v
 
 ### Sharing Google Drive Archives
 
-An archive loaded from google drive can be shared with others, as long as they have access.
+An archive loaded from Google Drive can be shared with others, as long as they have access.
 
 Google Drive Archive will have a `source=googledrive://...`.
 

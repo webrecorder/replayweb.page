@@ -45,7 +45,7 @@ importScripts("https://unpkg.com/replaywebpage@1.0.0/sw.js");
 Thus, if the HTML snippet was added to `https://my-site.example.com/path/my-web-archive-embed.html`
 then the sw.js should be added such that it is at: `https://my-site.example.com/path/replay/sw.js`.
 
-That's it! Loading `https://my-site.example.com/path/my-web-archive-embed.html` should now load the web arhive.
+That's it! Loading `https://my-site.example.com/path/my-web-archive-embed.html` should now load the web archive.
 
 (Be sure to add sizes to the `<replay-web-page>` tag as needed to size the embed).
 
@@ -70,7 +70,7 @@ Another alternative would be:
 
 These URLs point to a specific version of ReplayWeb.page software released on NPM, eg. `1.0.0`, meaning that your replay should stay stable, even if ReplayWeb.page is updated.
 
-You can choose another of ReplayWeb.page (or even try different versions) to ensure that you have tbest available replay.
+You can choose another of ReplayWeb.page (or even try different versions) to ensure that you have the best available replay.
 
 This addresses the potential issue of older sites breaking when web archive replay software is updated.
 
