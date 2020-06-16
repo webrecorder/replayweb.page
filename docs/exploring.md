@@ -2,7 +2,7 @@
 layout: default
 title: Exploring Web Archives
 nav_order: 2
-parent: Usage
+parent: About
 permalink: /docs/exploring
 ---
 

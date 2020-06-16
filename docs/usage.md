@@ -1,13 +1,13 @@
 ---
 layout: default
 title: Usage
-nav_order: 1
-description: 'Usage'
+nav_order: 2
+description: About ReplayWeb.page
 has_children: true
 permalink: /docs/index.html
 ---
 
-# ReplayWeb.Page
+# Using ReplayWeb.Page
 ## Serverless / Client-Side Web Archive Replay
 
 {: .fs-6 .fw-300 }

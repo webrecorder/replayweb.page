@@ -190,7 +190,7 @@ class App extends LitElement
 
   <wr-coll-index>
   ${!IS_APP ? html`
-  <p slot="header" class="tagline is-size-5 has-text-centered">Explore and Replay Interactive Archived Webpages Directly in your Browser.</p>
+  <p slot="header" class="tagline is-size-5 has-text-centered">Explore and Replay Interactive Archived Webpages Directly in your Browser. <i><a target="_blank" href="./docs/examples">(See Examples)</a></i></p>
   ` : ``}
     <wr-chooser slot="header" @load-start=${this.onStartLoad}></wr-chooser>
   </wr-coll-index>
@@ -210,7 +210,7 @@ class App extends LitElement
             <p>This site is a static browser-based application that loads web archive files provided by the user
             and renders them for replay in the browser.</p>
             <p>The site is operated by the <a href="https://webrecorder.net/">Webrecorder Project</a></p>
-            <p>See the <a target="_blank" href="/docs">Docs</a> for more info on how it works.</p>
+            <p>See the <a target="_blank" href="./docs">Docs</a> for more info on how it works.</p>
         
             <h3>Privacy</h3>
             <p><b>No data is uploaded anywhere and no information is collected.</b></p>

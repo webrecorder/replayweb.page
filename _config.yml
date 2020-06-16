@@ -39,5 +39,7 @@ exclude:
   - src/
   - dist/
   - node_modules/
-  - plugins/
+  - plugins-win/
+  - plugins-mac/
+  - plugins-linux/
 

@@ -291,6 +291,26 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
+"@webrecorder/wabac@github:https://github.com/webrecorder/wabac.js#master", "wabac@github:https://github.com/webrecorder/wabac.js#master":
+  version "2.0.1"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/605711975257735d8de1cfde6b054c274bceb376"
+  dependencies:
+    brotli "github:foliojs/brotli.js"
+    fast-xml-parser "^3.15.1"
+    http-status-codes "^1.4.0"
+    idb "^5.0.1"
+    js-yaml "^3.13.1"
+    json-2-csv "^3.7.1"
+    jszip "^3.4.0"
+    pako "^1.0.10"
+    parse5-html-rewriting-stream "^6.0.0"
+    parse5-sax-parser "^6.0.0"
+    path-parser "^6.1.0"
+    unescape-js "^1.1.4"
+    warcio "^1.2.0"
+    wbn "^0.0.3"
+    wombat "github:webrecorder/wombat"
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@xtuc/ieee754/-/ieee754-1.2.0.tgz#eef014a3145ae477a1cbc00cd1e552336dceb790"
@@ -6085,26 +6105,6 @@ vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
-
-"wabac@github:https://github.com/webrecorder/wabac.js#develop":
-  version "2.0.0"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/ebb69d2e03d1fbbbd0e1e8a6650cf6d7eb41f68b"
-  dependencies:
-    brotli "github:foliojs/brotli.js"
-    fast-xml-parser "^3.15.1"
-    http-status-codes "^1.4.0"
-    idb "^5.0.1"
-    js-yaml "^3.13.1"
-    json-2-csv "^3.7.1"
-    jszip "^3.4.0"
-    pako "^1.0.10"
-    parse5-html-rewriting-stream "^6.0.0"
-    parse5-sax-parser "^6.0.0"
-    path-parser "^6.1.0"
-    unescape-js "^1.1.4"
-    warcio "^1.2.0"
-    wbn "^0.0.3"
-    wombat "github:webrecorder/wombat"
 
 warcio@^1.2.0:
   version "1.2.0"

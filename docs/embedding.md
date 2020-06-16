@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Embedding ReplayWeb.page
-nav_order: 2
+nav_order: 3
 permalink: /docs/embedding
 ---
 

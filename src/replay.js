@@ -278,7 +278,7 @@ class Replay extends LitElement
     `}
 
     ${this.iframeUrl ? html`
-    <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen"
+    <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
     src="${this.iframeUrl}"></iframe>
     ` : html`
       <nav class="panel intro-panel">
