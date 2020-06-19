@@ -247,6 +247,10 @@ class Replay extends LitElement
         top: 174px;
       }
 
+      form {
+        width: 100%;
+      }
+
     `);
   }
 
@@ -254,26 +258,26 @@ class Replay extends LitElement
     return html`
     ${this.embed !== "replayonly" ? html`
     <div class="replay-bar">
-      <form @submit="${this.onSubmit}">
-        <div class="field has-addons">
-          <a id="fullscreen" class="button is-borderless" @click="${this.onFullscreenToggle}">
-            <span class="icon is-small">
-              <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
-            </span>
-          </a>
-          <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
-            <span class="icon is-small">
-              ${!this.isLoading ? html`
-              <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
-              ` : ``}
-            </span>
-          </button>
+      <div class="field has-addons">
+        <a id="fullscreen" class="button is-borderless" @click="${this.onFullscreenToggle}">
+          <span class="icon is-small">
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+          </span>
+        </a>
+        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
+          <span class="icon is-small">
+            ${!this.isLoading ? html`
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
+            ` : ``}
+          </span>
+        </button>
+        <form @submit="${this.onSubmit}">
           <p class="control is-expanded">
             <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here">
           </p>
-          <p id="datetime" class="control is-hidden-mobile">${tsToDate(this.replayTS).toLocaleString()}</p>
-        </div>
-      </form>
+        </form>
+        <p id="datetime" class="control is-hidden-mobile">${tsToDate(this.replayTS).toLocaleString()}</p>
+      </div>
     </div>` : html`
     `}
 

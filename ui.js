@@ -1332,29 +1332,33 @@ const tt=new WeakMap,it=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeHTM
         top: 174px;
       }
 
+      form {
+        width: 100%;
+      }
+
     `)}render(){return O`
     ${"replayonly"!==this.embed?O`
     <div class="replay-bar">
-      <form @submit="${this.onSubmit}">
-        <div class="field has-addons">
-          <a id="fullscreen" class="button is-borderless" @click="${this.onFullscreenToggle}">
-            <span class="icon is-small">
-              <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen?wt.a:vt.a}"></fa-icon>
-            </span>
-          </a>
-          <button id="refresh" class="button is-borderless ${this.isLoading?"is-loading":""}" @click="${this.onRefresh}">
-            <span class="icon is-small">
-              ${this.isLoading?"":O`
-              <fa-icon size="1.0em" class="has-text-grey" .svg="${mt.a}"></fa-icon>
-              `}
-            </span>
-          </button>
+      <div class="field has-addons">
+        <a id="fullscreen" class="button is-borderless" @click="${this.onFullscreenToggle}">
+          <span class="icon is-small">
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen?wt.a:vt.a}"></fa-icon>
+          </span>
+        </a>
+        <button id="refresh" class="button is-borderless ${this.isLoading?"is-loading":""}" @click="${this.onRefresh}">
+          <span class="icon is-small">
+            ${this.isLoading?"":O`
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${mt.a}"></fa-icon>
+            `}
+          </span>
+        </button>
+        <form @submit="${this.onSubmit}">
           <p class="control is-expanded">
             <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here">
           </p>
-          <p id="datetime" class="control is-hidden-mobile">${function(e){if(!e)return"";e.length<14&&(e+="00000000000000".substr(e.length));const t=e.substring(0,4)+"-"+e.substring(4,6)+"-"+e.substring(6,8)+"T"+e.substring(8,10)+":"+e.substring(10,12)+":"+e.substring(12,14)+"-00:00";return new Date(t)}(this.replayTS).toLocaleString()}</p>
-        </div>
-      </form>
+        </form>
+        <p id="datetime" class="control is-hidden-mobile">${function(e){if(!e)return"";e.length<14&&(e+="00000000000000".substr(e.length));const t=e.substring(0,4)+"-"+e.substring(4,6)+"-"+e.substring(6,8)+"T"+e.substring(8,10)+":"+e.substring(10,12)+":"+e.substring(12,14)+"-00:00";return new Date(t)}(this.replayTS).toLocaleString()}</p>
+      </div>
     </div>`:O`
     `}
 
