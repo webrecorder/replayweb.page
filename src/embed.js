@@ -112,6 +112,7 @@ class Embed extends LitElement
         source: this.source,
         customColl: this.coll,
         config: this.config,
+        basePageUrl: window.location.href.split("#")[0],
         embed: this.embed,
       }).toString();
   

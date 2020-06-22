@@ -1,6 +1,6 @@
 "use strict";
 
-import { CollectionLoader } from 'wabac/src/loaders';
+import { CollectionLoader } from '@webrecorder/wabac/src/loaders';
 
 const { ipcRenderer, contextBridge } = require('electron');
 

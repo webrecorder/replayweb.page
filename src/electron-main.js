@@ -8,7 +8,7 @@ import {app, session, BrowserWindow, ipcMain, shell} from 'electron';
 import path from 'path';
 import fs from 'fs';
 
-import { ArchiveResponse, Rewriter } from 'wabac/src/rewrite';
+import { ArchiveResponse, Rewriter } from '@webrecorder/wabac/src/rewrite';
 
 import { PassThrough } from 'stream';
 

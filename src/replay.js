@@ -123,7 +123,7 @@ class Replay extends LitElement
         this.replayTS = event.data.ts;
         this.replayUrl = event.data.url;
         this.title = event.data.title || this.title;
-        this.clearLoading();
+        this.clearLoading(iframe.contentWindow);
 
         if (event.data.icons) {
           const icons = event.data.icons;
@@ -166,16 +166,22 @@ class Replay extends LitElement
       const iframe = this.renderRoot.querySelector("iframe");
       if (!iframe || !iframe.contentDocument || !iframe.contentWindow || 
         (iframe.contentDocument.readyState === "complete" && !iframe.contentWindow._WBWombat)) {
-          this.clearLoading();
+          this.clearLoading(iframe && iframe.contentWindow);
       }
     }, 5000);
   }
 
-  clearLoading() {
+  clearLoading(iframeWin) {
     this.isLoading = false;
     if (this._loadPoll) {
       window.clearInterval(this._loadPoll);
       this._loadPoll = null;
+    }
+
+    if (iframeWin) {
+      iframeWin.addEventListener("beforeunload", () => {
+        this.isLoading = true;
+      });
     }
   }
 

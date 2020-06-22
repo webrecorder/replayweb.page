@@ -304,6 +304,16 @@ class App extends LitElement
       }
     }
 
+    if (this.pageParams.get("basePageUrl")) {
+      if (!this.loadInfo) {
+        this.loadInfo = {extraConfig: {}}
+      }
+      if (!this.loadInfo.extraConfig) {
+        this.loadInfo.extraConfig = {};
+      }
+      this.loadInfo.extraConfig.baseUrl = this.pageParams.get("basePageUrl");
+    }
+
     if (this.pageParams.get("customColl")) {
       if (!this.loadInfo) {
         this.loadInfo = {}
