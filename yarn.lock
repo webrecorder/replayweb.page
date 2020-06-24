@@ -291,9 +291,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webrecorder/wabac@github:https://github.com/webrecorder/wabac.js":
+"@webrecorder/wabac@^2.0.1":
   version "2.0.1"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/72128c30f07c5685b13b6cb7b7503a4986fdbe03"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.0.1.tgz#0482593ea79799680890665b738911246f938954"
+  integrity sha512-KgI4UI3eYN2x3Z6G0lHKCZvoi2dV4rTPFDL0JJAQluw39/K6jezrGz0NRMoP/AbV3Yb/R64P6Xhu2PAdSuBZ8w==
   dependencies:
     brotli "github:foliojs/brotli.js"
     fast-xml-parser "^3.15.1"
