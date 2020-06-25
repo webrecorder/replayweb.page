@@ -9,7 +9,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@webrecorder/wabac": "^2.0.1",
+    "@webrecorder/wabac": "github:webrecorder/wabac.js",
     "bulma": "^0.8.2",
     "flexsearch": "^0.6.32",
     "keyword-mark-element": "^0.1.2",
