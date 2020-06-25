@@ -241,8 +241,16 @@ class Replay extends LitElement
         right: 1em;
         z-index: 10;
         background: linear-gradient(90deg, rgba(255, 255, 255, 0), #FFF 15%, #FFF);
-        margin: 5px 0.75em 5px 0;
+        margin: -35px 0 0 0px;
         line-height: 2;
+      }
+
+      input:focus + #datetime {
+        display: none;
+      }
+
+      .replay-bar .button:focus {
+        border: none;
       }
 
       .is-borderless {
@@ -278,11 +286,11 @@ class Replay extends LitElement
           </span>
         </button>
         <form @submit="${this.onSubmit}">
-          <p class="control is-expanded">
-            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here">
-          </p>
+          <div class="control is-expanded">
+            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here"/>
+            <p id="datetime" class="control is-hidden-mobile">${tsToDate(this.replayTS).toLocaleString()}</p>
+          </div>
         </form>
-        <p id="datetime" class="control is-hidden-mobile">${tsToDate(this.replayTS).toLocaleString()}</p>
       </div>
     </div>` : html`
     `}

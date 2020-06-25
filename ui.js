@@ -1320,8 +1320,16 @@ const tt=new WeakMap,it=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeHTM
         right: 1em;
         z-index: 10;
         background: linear-gradient(90deg, rgba(255, 255, 255, 0), #FFF 15%, #FFF);
-        margin: 5px 0.75em 5px 0;
+        margin: -35px 0 0 0px;
         line-height: 2;
+      }
+
+      input:focus + #datetime {
+        display: none;
+      }
+
+      .replay-bar .button:focus {
+        border: none;
       }
 
       .is-borderless {
@@ -1353,11 +1361,11 @@ const tt=new WeakMap,it=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeHTM
           </span>
         </button>
         <form @submit="${this.onSubmit}">
-          <p class="control is-expanded">
-            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here">
-          </p>
+          <div class="control is-expanded">
+            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here"/>
+            <p id="datetime" class="control is-hidden-mobile">${function(e){if(!e)return"";e.length<14&&(e+="00000000000000".substr(e.length));const t=e.substring(0,4)+"-"+e.substring(4,6)+"-"+e.substring(6,8)+"T"+e.substring(8,10)+":"+e.substring(10,12)+":"+e.substring(12,14)+"-00:00";return new Date(t)}(this.replayTS).toLocaleString()}</p>
+          </div>
         </form>
-        <p id="datetime" class="control is-hidden-mobile">${function(e){if(!e)return"";e.length<14&&(e+="00000000000000".substr(e.length));const t=e.substring(0,4)+"-"+e.substring(4,6)+"-"+e.substring(6,8)+"T"+e.substring(8,10)+":"+e.substring(10,12)+":"+e.substring(12,14)+"-00:00";return new Date(t)}(this.replayTS).toLocaleString()}</p>
       </div>
     </div>`:O`
     `}
