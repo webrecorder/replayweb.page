@@ -250,7 +250,7 @@ class Coll extends LitElement
     } else if (this.collInfo) {
       return html`
       <nav id="contents" class="is-light">
-      ${!this.embed ? html`
+      ${!this.embed || this.embed === "full" ? html`
         <div class="main tabs has-background-info is-centered">
           <ul>
             ${this.hasStory ? html`

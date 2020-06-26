@@ -105,7 +105,7 @@ class Embed extends LitElement
         changedProperties.has("source")) {
 
       if (this.embed === null) {
-        this.embed = this.url ? "replayonly" : "";
+        this.embed = this.url ? "replay" : "full";
       }
 
       this.paramString = new URLSearchParams({

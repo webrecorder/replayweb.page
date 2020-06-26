@@ -7,6 +7,11 @@ import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
 import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
 import fasUnfullscreen from '@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg';
 
+import fasLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
+import fasRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
+import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
+
+
 // ===========================================================================
 class Replay extends LitElement
 {
@@ -18,6 +23,8 @@ class Replay extends LitElement
     this.url = "";
     this.ts = "";
     this.title = "";
+
+    this.menuActive = false;
 
     this.showAuth = false;
     this.reauthWait = null;
@@ -43,7 +50,8 @@ class Replay extends LitElement
       showAuth: { type: Boolean },
 
       embed: { type: String },
-      isFullscreen: { type: Boolean }
+      isFullscreen: { type: Boolean },
+      menuActive: { type: Boolean }
     }
   }
 
@@ -65,6 +73,7 @@ class Replay extends LitElement
   }
 
   onFullscreenToggle() {
+    this.menuActive = false;
     if (!this.isFullscreen) {
       this.requestFullscreen();
     } else {
@@ -151,6 +160,8 @@ class Replay extends LitElement
     if (this.isLoading && !forceReload) {
       return;
     }
+
+    this.menuActive = false;
 
     const iframe = this.renderRoot.querySelector("iframe");
 
@@ -250,7 +261,11 @@ class Replay extends LitElement
       }
 
       .replay-bar .button:focus {
-        border: none;
+        box-shadow: none;
+      }
+
+      .dropdown .button {
+        padding-right: 0px;
       }
 
       .is-borderless {
@@ -273,12 +288,24 @@ class Replay extends LitElement
     ${this.embed !== "replayonly" ? html`
     <div class="replay-bar">
       <div class="field has-addons">
-        <a id="fullscreen" class="button is-borderless" @click="${this.onFullscreenToggle}">
+        <button id="fullscreen" class="button is-borderless is-hidden-mobile" @click="${this.onFullscreenToggle}">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
           </span>
-        </a>
-        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
+        </button>
+        ${this.embed ? html`
+        <button class="button is-borderless is-hidden-touch" @click="${this.onGoBack}">
+          <span class="icon is-small">
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
+          </span>
+        </button>
+        <button class="button is-borderless is-hidden-touch" @click="${this.onGoForward}">
+          <span class="icon is-small">
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
+          </span>
+        </button>
+        ` : ``}
+        <button id="refresh" class="button is-hidden-mobile is-borderless ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
           <span class="icon is-small">
             ${!this.isLoading ? html`
             <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
@@ -291,6 +318,54 @@ class Replay extends LitElement
             <p id="datetime" class="control is-hidden-mobile">${tsToDate(this.replayTS).toLocaleString()}</p>
           </div>
         </form>
+
+        <div class="dropdown is-right ${this.menuActive ? 'is-active' : ''}" @click="${(e) => this.menuActive = false}">
+          <div class="dropdown-trigger">
+            <button class="${this.embed ? '' : 'is-hidden-tablet'} button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" @click="${this.onMenu}">
+              <span class="icon is-small">
+                <fa-icon size="1.0em" class="has-text-grey" .svg="${fasMenuV}"></fa-icon>
+              </span>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="menu-dropdown" role="menu">
+            <div class="dropdown-content">
+              <a class="dropdown-item is-hidden-tablet" @click="${this.onFullscreenToggle}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+                </span>
+                <span>Full Screen</span>
+              </a>
+              ${this.embed ? html`
+              <a class="dropdown-item is-hidden-desktop" @click="${this.onGoBack}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
+                </span>
+                <span>Back</span>
+              </a>
+              <a class="dropdown-item is-hidden-desktop" @click="${this.onGoForward}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
+                </span>
+                <span>Forward</span>
+              </a>` : ``}
+              <a class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}">
+                <span class="icon is-small">
+                ${!this.isLoading ? html`
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
+                  ` : ``}
+                </span>
+                <span>Reload</span>
+              </a>
+              ${this.embed ? html`
+              <hr class="dropdown-divider is-hidden-desktop">
+              <a class="dropdown-item" @click="${this.onPurgeCache}">
+                Purge Cache + Full Reload
+              </a>` : ``}
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>` : html`
     `}
@@ -314,7 +389,7 @@ class Replay extends LitElement
         <div class="modal-card">
           <header class="modal-card-head">
           <p class="modal-card-title">Auth Needed</p>
-            <button class="delete" aria-label="close" @click="${(e) => this.showAuth = false}"></button>
+            <button class="delete" aria-label="close"></button>
           </header>
           <section class="modal-card-body">
             <div class="container has-text-centered">
@@ -327,11 +402,32 @@ class Replay extends LitElement
     `;
   }
 
+  onMenu(event) {
+    event.stopPropagation();
+    this.menuActive = !this.menuActive;
+
+    if (this.menuActive) {
+      document.addEventListener("click", () => {
+        this.menuActive = false;
+      }, {once: true});
+    }
+  }
+
+  onGoBack() {
+    this.menuActive = false;
+    window.history.back();
+  }
+
+  onGoForward() {
+    this.menuActive = false;
+    window.history.forward();
+  }
+
   onReAuthed(event) {
     this.reauthWait = (async () => {
       const headers = event.detail.headers;
 
-      const resp = await fetch(`/wabac/api/${this.collInfo.coll}/updateAuth`, { 
+      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, { 
         method: 'POST',
         body: JSON.stringify({headers})
       });
@@ -341,6 +437,20 @@ class Replay extends LitElement
         this.showAuth = false;
       }
     })();
+  }
+
+  async onPurgeCache(event) {
+    event.preventDefault();
+
+    const resp = await fetch(`${this.collInfo.apiPrefix}`, {
+      method: 'DELETE',
+    });
+
+    if (resp.status === 200 && window.parent) {
+      window.parent.location.reload();
+    } else {
+      console.warn("purge failed: " + resp.status);
+    }
   }
 }
 

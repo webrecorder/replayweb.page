@@ -112,12 +112,18 @@ class App extends LitElement
       return html``;
     }
     return html`
-    ${!this.embed ? html`
+    ${!this.embed || this.embed === "full" ? html`
       <nav class="navbar has-background-info" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
+        ${!this.embed ? html`
         <a class="navbar-item wr-logo-item" title="ReplayWeb.page" href="/">
           <fa-icon id="wrlogo" size="2.5rem" .svg=${rwpLogo}></fa-icon>
+        </a>` : html`
+        <a class="navbar-item wr-logo-item" title="ReplayWeb.page">
+          <fa-icon id="wrlogo" size="2.5rem" .svg=${rwpLogo}></fa-icon>
         </a>
+        `}
+
         <a role="button" @click="${this.onNavMenu}"
         class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-expanded="false">
           <span aria-hidden="true"></span>
@@ -127,10 +133,12 @@ class App extends LitElement
       </div>
       <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
       <div class="navbar-start">
-      <a class="navbar-item logo-text has-text-weight-bold is-size-5 has-allcaps" href="/">
-      <span class="has-text-primary">replay</span>
-      <span class="has-text-link">web.page</span>
-      </a>
+      ${!this.embed ? html`
+        <a class="navbar-item logo-text has-text-weight-bold is-size-5 has-allcaps" href="/">
+          <span class="has-text-primary">replay</span>
+          <span class="has-text-link">web.page</span>
+        </a>` : ``}
+
       ${IS_APP ? html`
         <a class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}">
           <fa-icon .svg="${fasArrowLeft}"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
@@ -170,12 +178,13 @@ class App extends LitElement
         </div>
         ` : ``}
       </div>
-      <div class="navbar-end">
-        <a href="/docs" target="_blank" class="navbar-item">
-          <fa-icon .svg="${fasHelp}"></fa-icon><span>&nbsp;User Docs</span>
-        </a>
-        <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
-      </div>
+      ${!this.embed ? html`
+        <div class="navbar-end">
+          <a href="/docs" target="_blank" class="navbar-item">
+            <fa-icon .svg="${fasHelp}"></fa-icon><span>&nbsp;User Docs</span>
+          </a>
+          <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
+        </div>` : html``}
     </nav>
   ` : ''}
   
@@ -262,8 +271,15 @@ class App extends LitElement
     }
   }
 
-  onNavMenu() {
+  onNavMenu(event) {
+    event.stopPropagation();
     this.navMenuShown = !this.navMenuShown;
+
+    if (this.navMenuShown) {
+      document.addEventListener("click", () => {
+        this.navMenuShown = false;
+      }, {once: true});
+    }
   }
 
   initRoute() {
