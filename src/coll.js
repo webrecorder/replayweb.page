@@ -245,7 +245,7 @@ class Coll extends LitElement
 
     if (this.collInfo && !this.collInfo.coll) {
       return html`
-      <wr-loader .loadInfo="${this.loadInfo}" 
+      <wr-loader .loadInfo="${this.loadInfo}" embed="${this.embed}"
       .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
     } else if (this.collInfo) {
       return html`

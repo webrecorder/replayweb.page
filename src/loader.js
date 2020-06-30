@@ -37,6 +37,7 @@ class Loader extends LitElement
       total: { type: Number },
       status: { type: String },
       coll: { type: String },
+      embed: { type: String }
     }
   }
 
@@ -224,7 +225,10 @@ You can select a file to upload from the main page by clicking the \'Choose File
         return html`
           <div class="has-text-left">
           <div class="error  has-text-danger">${this.error}</div>
-          <div><a href="/" class="button is-warning">Back</a></div>
+          <div>
+          ${this.embed ? html`
+          <a class="button is-warning" @click=${(e) => window.parent.location.reload()}>Try Again</a>` : html`
+          <a href="/" class="button is-warning">Back</a>`}
           </div>`;
 
       case "waiting":
