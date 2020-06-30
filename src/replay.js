@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss } from './misc';
+import { wrapCss, rwpLogo } from './misc';
 
 import { tsToDate } from './pageutils';
 
@@ -253,7 +253,23 @@ class Replay extends LitElement
         z-index: 10;
         background: linear-gradient(90deg, rgba(255, 255, 255, 0), #FFF 15%, #FFF);
         margin: -35px 0 0 0px;
+        padding-left: 3em;
         line-height: 2;
+      }
+
+      .menu-head {
+        font-size: 10px;
+        font-weight: bold;
+        display: block;
+      }
+      .menu-logo {
+        vertical-align: middle;
+      }
+      .menu-version {
+        font-size: 10px;
+      }
+      .dropdown-item.info {
+        font-style: italic;
       }
 
       input:focus + #datetime {
@@ -284,6 +300,8 @@ class Replay extends LitElement
   }
 
   render() {
+    const dateStr = tsToDate(this.replayTS).toLocaleString();
+
     return html`
     ${this.embed !== "replayonly" ? html`
     <div class="replay-bar">
@@ -305,7 +323,7 @@ class Replay extends LitElement
           </span>
         </button>
         ` : ``}
-        <button id="refresh" class="button is-hidden-mobile is-borderless ${this.isLoading ? 'is-loading' : ''}" @click="${this.onRefresh}">
+        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
           <span class="icon is-small">
             ${!this.isLoading ? html`
             <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
@@ -314,8 +332,8 @@ class Replay extends LitElement
         </button>
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded">
-            <input id="url" class="input" type="text" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here"/>
-            <p id="datetime" class="control is-hidden-mobile">${tsToDate(this.replayTS).toLocaleString()}</p>
+            <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here"/>
+            <p id="datetime" class="control is-hidden-mobile">${dateStr}</p>
           </div>
         </form>
 
@@ -350,9 +368,7 @@ class Replay extends LitElement
               </a>` : ``}
               <a class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}">
                 <span class="icon is-small">
-                ${!this.isLoading ? html`
                   <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
-                  ` : ``}
                 </span>
                 <span>Reload</span>
               </a>
@@ -361,6 +377,18 @@ class Replay extends LitElement
               <a class="dropdown-item" @click="${this.onPurgeCache}">
                 Purge Cache + Full Reload
               </a>` : ``}
+              <hr class="dropdown-divider is-hidden-desktop">
+              <div class="dropdown-item info is-hidden-desktop">
+                <span class="menu-head">Capture Date</span>${dateStr}
+              </div>
+              ${this.embed ? html`
+              <hr class="dropdown-divider">
+              <a href="https://replayweb.page/" target="_blank" class="dropdown-item info">
+                <fa-icon class="menu-logo" size="1.0rem" .svg=${rwpLogo}></fa-icon>
+                <span>&nbsp;About ReplayWeb.page</span>
+                <span class="menu-version">(${__VERSION__})</span>
+              </a>
+              ` : ``}
             </div>
           </div>
         </div>
@@ -400,6 +428,12 @@ class Replay extends LitElement
     </div>
     ` : ``}
     `;
+  }
+
+  onKeyDown(event) {
+    if (event.key === "Esc" || event.key === "Escape") {
+      event.target.value = this.replayUrl;
+    }
   }
 
   onMenu(event) {
