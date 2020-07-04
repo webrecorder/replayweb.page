@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "css-loader": "^3.5.3",
-    "electron": "9.0.3",
+    "electron": "^9.0.5",
     "electron-builder": "^22.7.0",
     "electron-notarize": "^1.0.0",
     "http-server": "^0.12.3",

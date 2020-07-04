@@ -291,27 +291,6 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webrecorder/wabac@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.0.1.tgz#0482593ea79799680890665b738911246f938954"
-  integrity sha512-KgI4UI3eYN2x3Z6G0lHKCZvoi2dV4rTPFDL0JJAQluw39/K6jezrGz0NRMoP/AbV3Yb/R64P6Xhu2PAdSuBZ8w==
-  dependencies:
-    brotli "github:foliojs/brotli.js"
-    fast-xml-parser "^3.15.1"
-    http-status-codes "^1.4.0"
-    idb "^5.0.1"
-    js-yaml "^3.13.1"
-    json-2-csv "^3.7.1"
-    jszip "^3.4.0"
-    pako "^1.0.10"
-    parse5-html-rewriting-stream "^6.0.0"
-    parse5-sax-parser "^6.0.0"
-    path-parser "^6.1.0"
-    unescape-js "^1.1.4"
-    warcio "^1.2.0"
-    wbn "^0.0.3"
-    wombat "github:webrecorder/wombat"
-
 "@webrecorder/wabac@github:webrecorder/wabac.js":
   version "2.0.2"
   resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/1368c64010fc451fac9f532d53f3ebd5ffda2569"
@@ -1812,10 +1791,10 @@ electron-publish@22.7.0:
     lazy-val "^1.0.4"
     mime "^2.4.5"
 
-electron@9.0.3:
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-9.0.3.tgz#72a7ea08abadd494794735d90666d1b95fc90d28"
-  integrity sha512-rY59wy50z0oWp/q69zq0UIzvtcM5j2BJbLAwEoLfVNS3DLt9wDZqRqSIBvLEBl+xWbafCnRA9haEqi7ssM94GA==
+electron@^9.0.5:
+  version "9.0.5"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-9.0.5.tgz#189ee117cc2a2777cccf40fae0766acec5faae57"
+  integrity sha512-bnL9H48LuQ250DML8xUscsKiuSu+xv5umXbpBXYJ0BfvYVmFfNbG3jCfhrsH7aP6UcQKVxOG1R/oQExd0EFneQ==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
