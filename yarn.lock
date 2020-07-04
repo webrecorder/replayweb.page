@@ -292,8 +292,8 @@
     "@xtuc/long" "4.2.2"
 
 "@webrecorder/wabac@github:webrecorder/wabac.js":
-  version "2.0.2-beta.0"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/fcbf28686cdbbb0b4b563da11e239373fb619ec5"
+  version "2.0.2"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/f84a2013c408fb6627e92e9365dae4e1b954fbb9"
   dependencies:
     brotli "github:foliojs/brotli.js"
     fast-xml-parser "^3.15.1"

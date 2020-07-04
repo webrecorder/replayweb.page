@@ -377,10 +377,11 @@ class Replay extends LitElement
               <a class="dropdown-item" @click="${this.onPurgeCache}">
                 Purge Cache + Full Reload
               </a>` : ``}
+              ${dateStr ? html`
               <hr class="dropdown-divider is-hidden-desktop">
               <div class="dropdown-item info is-hidden-desktop">
                 <span class="menu-head">Capture Date</span>${dateStr}
-              </div>
+              </div>` : ``}
               ${this.embed ? html`
               <hr class="dropdown-divider">
               <a href="https://replayweb.page/" target="_blank" class="dropdown-item info">
