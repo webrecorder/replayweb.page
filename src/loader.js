@@ -228,6 +228,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
           <div>
           ${this.embed ? html`
           <a class="button is-warning" @click=${(e) => window.parent.location.reload()}>Try Again</a>` : html`
+          <a class="button is-warning" @click=${(e) => window.location.reload()}>Try Again</a>
           <a href="/" class="button is-warning">Back</a>`}
           </div>`;
 
