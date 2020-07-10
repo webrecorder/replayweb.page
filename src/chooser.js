@@ -127,11 +127,11 @@ class Chooser extends LitElement
               <p class="control is-expanded">
                 <input class="file-name input" type="text"
                 name="filename" id="filename"
-                pattern="((file|http|https|s3):\/\/.*\.(warc|warc.gz|zip|wacz))|(googledrive:\/\/.+)"
+                pattern="((file|http|https|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn))|(googledrive:\/\/.+)"
                 .value="${this.fileDisplayName}"
                 @input="${this.onInput}"
                 autocomplete="off"
-                placeholder="Enter a URL or click 'Choose File' to select a WARC or WACZ archive source">
+                placeholder="Enter a URL or click 'Choose File' to select a WARC, WACZ, HAR or WBN archive source">
               </p>
               <div class="control">
                 <button type="submit" class="button is-hidden-mobile is-primary">Load</button>
