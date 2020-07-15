@@ -9,6 +9,11 @@ async function registerSW(name = "sw.js", scope = "./") {
     resolve = res;
     reject = rej;
   });
+
+  if (!navigator.serviceWorker) {
+    console.error("Service Workers not supported");
+    reject();
+  }
   
   register(scope + name, {
     registrationOptions: { scope },

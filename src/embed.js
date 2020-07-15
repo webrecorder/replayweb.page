@@ -2,6 +2,8 @@ import { LitElement, html, css } from 'lit-element';
 
 import { registerSW } from './pageutils';
 
+import { wrapCss, rwpLogo } from './misc';
+
 
 var scriptSrc = document.currentScript && document.currentScript.src;
 
@@ -22,8 +24,6 @@ class Embed extends LitElement
     this.deepLink = false;
     this.swInited = false;
     this.embed = null;
-
-    this.doRegister();
   }
 
   static get properties() {
@@ -47,17 +47,25 @@ class Embed extends LitElement
       paramString: { type: String },
       hashString: { type: String },
 
-      deepLink: { type: Boolean }
+      deepLink: { type: Boolean },
+      noSW: { type: Boolean },
     }
   }
 
   async doRegister() {
-    await registerSW(this.swName, this.replayBase);
-
-    this.swInited = true;
+    try {
+      await registerSW(this.swName, this.replayBase);
+      console.log("done");
+      this.swInited = true;
+    } catch (e) {
+      console.log(e);
+      this.noSW = true;
+    }
   }
 
   firstUpdated() {
+    this.doRegister();
+
     window.addEventListener("message", (event) => {
       const iframe = this.renderRoot.querySelector("iframe");
 
@@ -125,7 +133,16 @@ class Embed extends LitElement
   }
 
   static get styles() {
-    return css`
+    return wrapCss(css`
+      .logo {
+        margin: 1em;
+        flex-grow: 1;
+      }
+      .error {
+        white-space: pre-wrap;
+        text-align: center;
+      }
+
       iframe {
         width: 100%;
         height: 100%;
@@ -137,7 +154,7 @@ class Embed extends LitElement
         width: 100%;
         height: 100%;
       }
-    `;
+    `);
   }
 
   render() {
@@ -145,7 +162,18 @@ class Embed extends LitElement
     ${this.paramString && this.hashString && this.swInited ? html`
       <iframe @load="${this.onLoad}" src="${this.replayBase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
       ` : html``}
-    `;
+
+    ${this.noSW ? html`
+      <section class="">
+        <div class="has-text-centered">
+          <fa-icon class="logo" id="wrlogo" size="2.5rem" .svg=${rwpLogo}></fa-icon>
+        </div>
+        <div class="error">
+Sorry, ReplayWeb.page won't work in this browser as Service Workers are not supported.
+Please try a different browser. (If Using Private Mode in Firefox, try regular mode).
+        </div>
+      </section>
+    `: ``}`;
   }
 
   onLoad(event) {

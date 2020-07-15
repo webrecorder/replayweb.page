@@ -83,6 +83,12 @@ class Loader extends LitElement
 
     this.percent = this.currentSize = this.totalSize = 0;
 
+    if (!navigator.serviceWorker) {
+      this.state = "errored";
+      this.error = "Sorry, this browser is not supported. Please try a different browser\n(If you're using Firefox, try without Private Mode)";
+      return;
+    }
+
     // custom protocol handlers here...
     try {
       const {scheme, host, path} = parseURLSchemeHostPath(sourceUrl);
@@ -189,9 +195,9 @@ You can select a file to upload from the main page by clicking the \'Choose File
   render() {
     return html`
     <section class="container">
-    <div class="has-text-centered is-flex">
-    <wr-anim-logo class="logo" size="96px"/>
-  </div>
+      <div class="has-text-centered is-flex">
+        <wr-anim-logo class="logo" size="96px"/>
+      </div>
       <div class="level">
         <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
       </div>

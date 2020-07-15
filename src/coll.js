@@ -309,14 +309,14 @@ class Coll extends LitElement
     .active="${isPages}"
     .editable="${this.editable}"
     currList="${this.tabData.currList || 0}"
-    query="${this.tabData.query || ""}"
+    query="${this.tabData.query || this.tabData.url || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"
     class="${isPages ? '' : 'is-hidden'}">
     </wr-page-view>
 
     <wr-coll-resources .collInfo="${this.collInfo}"
     .active="${isResources}"
-    query="${this.tabData.query || ""}"
+    query="${this.tabData.query || this.tabData.url || ""}"
     urlSearchType="${this.tabData.urlSearchType || ""}"
     .currMime="${this.tabData.currMime || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
