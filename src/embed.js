@@ -142,7 +142,9 @@ class Embed extends LitElement
         white-space: pre-wrap;
         text-align: center;
       }
-
+      .full-width {
+        width: 100%;
+      }
       iframe {
         width: 100%;
         height: 100%;
@@ -164,13 +166,14 @@ class Embed extends LitElement
       ` : html``}
 
     ${this.noSW ? html`
-      <section class="">
+      <section class="full-width">
         <div class="has-text-centered">
           <fa-icon class="logo" id="wrlogo" size="2.5rem" .svg=${rwpLogo}></fa-icon>
         </div>
         <div class="error">
 Sorry, ReplayWeb.page won't work in this browser as Service Workers are not supported.
-Please try a different browser. (If Using Private Mode in Firefox, try regular mode).
+Please try a different browser.\n
+(Service Workers are disabled in Firefox in Private Mode. If Using Private Mode in Firefox, try regular mode).
         </div>
       </section>
     `: ``}`;
