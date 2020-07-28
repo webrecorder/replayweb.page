@@ -183,13 +183,22 @@ Please try a different browser.\n
     if (this.injected) {
       return;
     }
-    if (event.target.contentWindow.customElements.get("replay-app-main")) {
+    const win = event.target.contentWindow;
+    const doc = event.target.contentDocument;
+
+    if (win.navigator.serviceWorker && !win.navigator.serviceWorker.controller) {
+      setTimeout(() => window.location.reload(), 100);
       return;
     }
-    const script = event.target.contentDocument.createElement("script");
+
+    if (win.customElements.get("replay-app-main")) {
+      return;
+    }
+
+    const script = doc.createElement("script");
     //const script = event.target.contentDocument.querySelector("script");
     script.src = scriptSrc;
-    event.target.contentDocument.head.appendChild(script);
+    doc.head.appendChild(script);
     this.injected = true;
   }
 }
