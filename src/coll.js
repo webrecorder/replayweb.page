@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss, IS_APP } from './misc';
+import { wrapCss, rwpLogo, IS_APP } from './misc';
 
 import { sourceToId } from './pageutils';
 
@@ -8,6 +8,21 @@ import fasBook from '@fortawesome/fontawesome-free/svgs/solid/book.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/regular/list-alt.svg';
 import farResources from '@fortawesome/fontawesome-free/svgs/regular/file-code.svg';
 import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
+
+
+import { tsToDate } from './pageutils';
+
+import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
+import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
+import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
+import fasUnfullscreen from '@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg';
+
+import fasLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
+import fasRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
+import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
+
+
+const RWP_SCHEME = "rwp://";
 
 
 // ===========================================================================
@@ -33,8 +48,12 @@ class Coll extends LitElement
     this._locationHash = "";
 
     this.tabData = {};
+    this.url = "";
+    this.ts = "";
 
     this.tabNames = ["pages", "story", "resources", "replay"];
+
+    this.menuActive = false;
 
     this.hasStory = false;
   }
@@ -52,8 +71,11 @@ class Coll extends LitElement
 
       tabData: { type: Object, attribute: false },
 
-      replayUrl: { type: String },
-      replayTS: { type: String },
+      url: { type: String },
+      ts: { type: String },
+      
+      isFullscreen: { type: Boolean },
+      menuActive: { type: Boolean },
 
       embed: { type: String },
       editable: { type: Boolean }
@@ -64,12 +86,20 @@ class Coll extends LitElement
     //this.doUpdateInfo();
     this.inited = true;
     window.addEventListener("hashchange", (event) => this.onHashChange(event));
+
+    this.addEventListener("fullscreenchange", (event) => {
+      this.isFullscreen = !!document.fullscreenElement;
+    });
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("replayUrl") || changedProperties.has("replayTS")) {
-      this.tabData = {view: "replay", url: this.replayUrl, ts: this.replayTS};
-    }
+    // if (changedProperties.has("url") || changedProperties.has("ts")) {
+    //   if (this.url.startsWith("rwp?")) {
+    //     this.tabData = Object.fromEntries(new URLSearchParams(this.url.slice(4)).entries());
+    //   } else {
+    //     this.tabData = {view: "replay", url: this.url, ts: this.ts};
+    //   }
+    // }
 
     if (changedProperties.has("sourceUrl")) {
       this.doUpdateInfo();
@@ -84,6 +114,10 @@ class Coll extends LitElement
         forEach(key => !this.tabData[key] && delete this.tabData[key]);
 
       const newHash = "#" + new URLSearchParams(this.tabData).toString();
+
+      if (this.tabData.view !== "replay") {
+        this.url = RWP_SCHEME + decodeURIComponent(this._paramsToString(this.tabData));
+      }
       if (newHash !== this._locationHash) {
         this._locationHash = newHash;
         if (this._replaceLoc || Object.keys(changedProperties.get("tabData")).length === 0) {
@@ -166,15 +200,26 @@ class Coll extends LitElement
     event.preventDefault();
     const hash = event.currentTarget.getAttribute("href");
     this.tabData = {...this.tabData, view: hash.slice(1)};
+    //this.tabData = {view: hash.slice(1)};
     return false;
   }
 
   onCollTabNav(event) {
     if (event.target.id === this.tabData.view) {
-      this.tabData = {view: this.tabData.view, ...event.detail.data};
-      this._replaceLoc = !this._locUpdateNeeded && event.detail.replaceLoc;
-      this._locUpdateNeeded = true;
+      this.updateTabData(event.detail.data, event.detail.replaceLoc);
     }
+  }
+
+  updateTabData(data, replaceLoc = false) {
+    this.tabData = {view: this.tabData.view, ...data};
+    if (this.tabData.url) {
+      this.url = this.tabData.url || "";
+    }
+    if (this.tabData.ts) {
+      this.ts = this.tabData.ts || "";
+    }
+    this._replaceLoc = !this._locUpdateNeeded && replaceLoc;
+    this._locUpdateNeeded = true;
   }
 
   static get styles() {
@@ -189,7 +234,7 @@ class Coll extends LitElement
       line-height: 0.5em;
     }
 
-    .is-active {
+    li.is-active {
       font-weight: bold;
     }
 
@@ -237,7 +282,74 @@ class Coll extends LitElement
       display: flex;
       flex-direction: column;
     }
+
+    ${Coll.replayBarStyles}
     `);
+  }
+
+  static get replayBarStyles() {
+    return css`
+    .replay-bar {
+      padding: 1em;
+      max-width: none;
+      border-bottom: solid .1rem #97989A;
+      width: 100%;
+      background-color: white;
+    }
+
+    input#url {
+      border-radius: 4px;
+    }
+
+    #datetime {
+      position: absolute;
+      right: 1em;
+      z-index: 10;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), #FFF 15%, #FFF);
+      margin: -35px 0 0 0px;
+      padding-left: 3em;
+      line-height: 2;
+    }
+
+    .menu-head {
+      font-size: 10px;
+      font-weight: bold;
+      display: block;
+    }
+    .menu-logo {
+      vertical-align: middle;
+    }
+    .menu-version {
+      font-size: 10px;
+    }
+    .dropdown-item.info {
+      font-style: italic;
+    }
+
+    input:focus + #datetime {
+      display: none;
+    }
+
+    .replay-bar .button:focus {
+      box-shadow: none;
+    }
+
+    .dropdown .button {
+      padding-right: 0px;
+    }
+
+    .is-borderless {
+      border: 0px;
+    }
+
+    .modal {
+      top: 174px;
+    }
+
+    form {
+      width: 100%;
+    }
+    `;
   }
 
   render() {
@@ -283,11 +395,112 @@ class Coll extends LitElement
             </li>
           </ul>
         </div>` : ``}
+        ${this.renderLocationBar()}
         ${this.renderCollTabs()}
       </nav>`;
     } else {
       return html``;
     }
+  }
+
+  renderLocationBar() {
+    const dateStr = tsToDate(this.ts).toLocaleString();
+
+    return html`
+    <div class="replay-bar">
+      <div class="field has-addons">
+        <button id="fullscreen" class="button is-borderless is-hidden-mobile" @click="${this.onFullscreenToggle}">
+          <span class="icon is-small">
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+          </span>
+        </button>
+        <button class="button is-borderless is-hidden-touch" @click="${this.onGoBack}">
+          <span class="icon is-small">
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
+          </span>
+        </button>
+        <button class="button is-borderless is-hidden-touch" @click="${this.onGoForward}">
+          <span class="icon is-small">
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
+          </span>
+        </button>
+        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
+          <span class="icon is-small">
+            ${!this.isLoading ? html`
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
+            ` : ``}
+          </span>
+        </button>
+        <button class="button is-borderless is-hidden-touch" @click="${this.onGoPages}">
+          <span class="icon is-small">
+            <fa-icon size="1.0em" class="has-text-grey" .svg="${farListAlt}"></fa-icon>
+          </span>
+        </button>
+        <form @submit="${this.onSubmit}">
+          <div class="control is-expanded">
+            <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="https://... Enter a URL to replay from the archive here"/>
+            ${this.tabData.view === "replay" ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
+          </div>
+        </form>
+
+        <div class="dropdown is-right ${this.menuActive ? 'is-active' : ''}" @click="${(e) => this.menuActive = false}">
+          <div class="dropdown-trigger">
+            <button class="${this.embed ? '' : 'is-hidden-tablet'} button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" @click="${this.onMenu}">
+              <span class="icon is-small">
+                <fa-icon size="1.0em" class="has-text-grey" .svg="${fasMenuV}"></fa-icon>
+              </span>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="menu-dropdown" role="menu">
+            <div class="dropdown-content">
+              <a class="dropdown-item is-hidden-tablet" @click="${this.onFullscreenToggle}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+                </span>
+                <span>Full Screen</span>
+              </a>
+              <a class="dropdown-item is-hidden-desktop" @click="${this.onGoBack}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
+                </span>
+                <span>Back</span>
+              </a>
+              <a class="dropdown-item is-hidden-desktop" @click="${this.onGoForward}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
+                </span>
+                <span>Forward</span>
+              </a>
+              <a class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
+                </span>
+                <span>Reload</span>
+              </a>
+              <hr class="dropdown-divider is-hidden-desktop">
+              <a class="dropdown-item" @click="${this.onPurgeCache}">
+                Purge Cache + Full Reload
+              </a>
+              ${dateStr ? html`
+              <hr class="dropdown-divider is-hidden-desktop">
+              <div class="dropdown-item info is-hidden-desktop">
+                <span class="menu-head">Capture Date</span>${dateStr}
+              </div>` : ``}
+              ${this.embed ? html`
+              <hr class="dropdown-divider">
+              <a href="https://replayweb.page/" target="_blank" class="dropdown-item info">
+                <fa-icon class="menu-logo" size="1.0rem" .svg=${rwpLogo}></fa-icon>
+                <span>&nbsp;About ReplayWeb.page</span>
+                <span class="menu-version">(${__VERSION__})</span>
+              </a>
+              ` : ``}
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>`;
   }
 
   renderCollTabs() {
@@ -309,14 +522,14 @@ class Coll extends LitElement
     .active="${isPages}"
     .editable="${this.editable}"
     currList="${this.tabData.currList || 0}"
-    query="${this.tabData.query || this.tabData.url || ""}"
+    query="${this.tabData.query || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"
     class="${isPages ? '' : 'is-hidden'}">
     </wr-page-view>
 
     <wr-coll-resources .collInfo="${this.collInfo}"
     .active="${isResources}"
-    query="${this.tabData.query || this.tabData.url || ""}"
+    query="${this.tabData.query || ""}"
     urlSearchType="${this.tabData.urlSearchType || ""}"
     .currMime="${this.tabData.currMime || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
@@ -334,6 +547,141 @@ class Coll extends LitElement
     </wr-coll-replay>
     ` : ``}
     `;
+  }
+
+  onKeyDown(event) {
+    if (event.key === "Esc" || event.key === "Escape") {
+      event.target.value = this.replayUrl;
+    }
+  }
+
+  onMenu(event) {
+    event.stopPropagation();
+    this.menuActive = !this.menuActive;
+
+    if (this.menuActive) {
+      document.addEventListener("click", () => {
+        this.menuActive = false;
+      }, {once: true});
+    }
+  }
+
+  onFullscreenToggle() {
+    this.menuActive = false;
+    if (!this.isFullscreen) {
+      this.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  onGoBack() {
+    this.menuActive = false;
+    window.history.back();
+  }
+
+  onGoForward() {
+    this.menuActive = false;
+    window.history.forward();
+  }
+
+  onGoPages() {
+    this.navigateTo(RWP_SCHEME + "view=pages");
+  }
+
+  onReAuthed(event) {
+    this.reauthWait = (async () => {
+      const headers = event.detail.headers;
+
+      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, { 
+        method: 'POST',
+        body: JSON.stringify({headers})
+      });
+
+      if (this.showAuth) {
+        this.onRefresh(null, true);
+        this.showAuth = false;
+      }
+    })();
+  }
+
+  async onPurgeCache(event) {
+    event.preventDefault();
+
+    const resp = await fetch(`${this.collInfo.apiPrefix}`, {
+      method: 'DELETE',
+    });
+
+    if (resp.status === 200 && window.parent) {
+      window.parent.location.reload();
+    } else {
+      console.warn("purge failed: " + resp.status);
+    }
+  }
+
+  onSubmit(event) {
+    event.preventDefault();
+    const value = this.renderRoot.querySelector("input").value;
+    this.navigateTo(value);
+    return false;
+  }
+
+  navigateTo(value) {
+    if (value.startsWith("http://") || value.startsWith("https://")) {
+      this.url = value;
+      this._replaceLoc = !this._locUpdateNeeded;
+      this._locUpdateNeeded = true;
+
+    } else {
+      let data;
+      if (!value.startsWith(RWP_SCHEME)) {
+        data = {query: value, view: "pages"};
+      } else {
+        data = this._stringToParams(value);
+      }
+      //this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: false, data}}));
+      this.updateTabData(data);
+    }
+  }
+
+  _stringToParams(value) {
+    const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
+    const data = {};
+
+    for (const param of ["query", "view", "currList", "currMime", "urlSearchType"]) {
+      if (q.has(param)) {
+        data[param] = q.get(param);
+      }
+    }
+
+    return data;
+  }
+
+  _paramsToString(value) {
+    const q = new URLSearchParams();
+
+    for (const param of ["query", "view", "currList", "currMime", "urlSearchType"]) {
+      if (param in value) {
+        q.set(param, value[param]);
+      }
+    }
+
+    return q.toString();
+  }
+
+  onRefresh(event, forceReload) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    this.menuActive = false;
+
+    if (this.tabData.view === "replay") {
+      const replay = this.renderRoot.querySelector("wr-coll-replay");
+      if (replay) {
+        replay.refresh();
+      }
+    }
   }
 }
 

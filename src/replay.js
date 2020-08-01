@@ -1,15 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss, rwpLogo } from './misc';
+import { wrapCss } from './misc';
 
-import { tsToDate } from './pageutils';
-
-import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
-import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
-import fasUnfullscreen from '@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg';
-
-import fasLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
-import fasRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
-import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
 
 
 // ===========================================================================
@@ -24,8 +15,6 @@ class Replay extends LitElement
     this.ts = "";
     this.title = "";
 
-    this.menuActive = false;
-
     this.showAuth = false;
     this.reauthWait = null;
   }
@@ -35,7 +24,7 @@ class Replay extends LitElement
       collInfo: {type: Object },
       sourceUrl: { type: String },
 
-      // external url set by parent
+      // external url set from parent
       url: { type: String },
       ts: { type: String },
 
@@ -48,10 +37,6 @@ class Replay extends LitElement
       isLoading: { type: Boolean },
 
       showAuth: { type: Boolean },
-
-      embed: { type: String },
-      isFullscreen: { type: Boolean },
-      menuActive: { type: Boolean }
     }
   }
 
@@ -66,19 +51,6 @@ class Replay extends LitElement
         }
       }
     });
-
-    this.addEventListener("fullscreenchange", (event) => {
-      this.isFullscreen = !!document.fullscreenElement;
-    });
-  }
-
-  onFullscreenToggle() {
-    this.menuActive = false;
-    if (!this.isFullscreen) {
-      this.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
   }
 
   doSetIframeUrl() {
@@ -144,33 +116,6 @@ class Replay extends LitElement
     }
   }
 
-  onSubmit(event) {
-    event.preventDefault();
-    const value = this.renderRoot.querySelector("input").value;
-    //this.replayUrl = value;
-    this.url = value;
-    return false;
-  }
-
-  onRefresh(event, forceReload) {
-    if (event) {
-      event.preventDefault();
-    }
-    
-    if (this.isLoading && !forceReload) {
-      return;
-    }
-
-    this.menuActive = false;
-
-    const iframe = this.renderRoot.querySelector("iframe");
-
-    if (iframe) {
-      this.waitForLoad();
-      iframe.contentWindow.location.reload();
-    }
-  }
-
   waitForLoad() {
     this.isLoading = true;
     this._loadPoll = window.setInterval(() => {
@@ -196,6 +141,19 @@ class Replay extends LitElement
     }
   }
 
+  refresh() {
+    if (this.isLoading && !forceReload) {
+      return;
+    }
+
+    const iframe = this.renderRoot.querySelector("iframe");
+
+    if (iframe) {
+      this.waitForLoad();
+      iframe.contentWindow.location.reload();
+    }
+  }
+
   static get styles() {
     return wrapCss(css`
       :host {
@@ -211,33 +169,6 @@ class Replay extends LitElement
         border: 0px;
       }
 
-      .replay-bar {
-        padding: 1em;
-        max-width: none;
-        border-bottom: solid .1rem #97989A;
-        width: 100%;
-        background-color: white;
-      }
-
-      .embed-bar {
-        padding: 0.25em;
-        max-width: none;
-        border-bottom: solid .1rem #97989A;
-        text-align: center;
-        height: 44px;
-      }
-
-      input#url {
-        border-radius: 4px;
-      }
-
-      nav.intro-panel.panel {
-        min-width: 40%;
-        display: flex;
-        flex-direction: column;
-        margin: auto;
-      }
-
       .intro-panel .panel-heading {
         font-size: 1.0em;
       }
@@ -247,157 +178,17 @@ class Replay extends LitElement
         flex-direction: column;
       }
 
-      #datetime {
-        position: absolute;
-        right: 1em;
-        z-index: 10;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0), #FFF 15%, #FFF);
-        margin: -35px 0 0 0px;
-        padding-left: 3em;
-        line-height: 2;
+      nav.intro-panel.panel {
+        min-width: 40%;
+        display: flex;
+        flex-direction: column;
+        margin: auto;
       }
-
-      .menu-head {
-        font-size: 10px;
-        font-weight: bold;
-        display: block;
-      }
-      .menu-logo {
-        vertical-align: middle;
-      }
-      .menu-version {
-        font-size: 10px;
-      }
-      .dropdown-item.info {
-        font-style: italic;
-      }
-
-      input:focus + #datetime {
-        display: none;
-      }
-
-      .replay-bar .button:focus {
-        box-shadow: none;
-      }
-
-      .dropdown .button {
-        padding-right: 0px;
-      }
-
-      .is-borderless {
-        border: 0px;
-      }
-
-      .modal {
-        top: 174px;
-      }
-
-      form {
-        width: 100%;
-      }
-
     `);
   }
 
   render() {
-    const dateStr = tsToDate(this.replayTS).toLocaleString();
-
     return html`
-    ${this.embed !== "replayonly" ? html`
-    <div class="replay-bar">
-      <div class="field has-addons">
-        <button id="fullscreen" class="button is-borderless is-hidden-mobile" @click="${this.onFullscreenToggle}">
-          <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
-          </span>
-        </button>
-        ${this.embed ? html`
-        <button class="button is-borderless is-hidden-touch" @click="${this.onGoBack}">
-          <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
-          </span>
-        </button>
-        <button class="button is-borderless is-hidden-touch" @click="${this.onGoForward}">
-          <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
-          </span>
-        </button>
-        ` : ``}
-        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
-          <span class="icon is-small">
-            ${!this.isLoading ? html`
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
-            ` : ``}
-          </span>
-        </button>
-        <form @submit="${this.onSubmit}">
-          <div class="control is-expanded">
-            <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" .value="${this.replayUrl}" placeholder="https://... Enter a URL to replay from the archive here"/>
-            <p id="datetime" class="control is-hidden-mobile">${dateStr}</p>
-          </div>
-        </form>
-
-        <div class="dropdown is-right ${this.menuActive ? 'is-active' : ''}" @click="${(e) => this.menuActive = false}">
-          <div class="dropdown-trigger">
-            <button class="${this.embed ? '' : 'is-hidden-tablet'} button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" @click="${this.onMenu}">
-              <span class="icon is-small">
-                <fa-icon size="1.0em" class="has-text-grey" .svg="${fasMenuV}"></fa-icon>
-              </span>
-            </button>
-          </div>
-          <div class="dropdown-menu" id="menu-dropdown" role="menu">
-            <div class="dropdown-content">
-              <a class="dropdown-item is-hidden-tablet" @click="${this.onFullscreenToggle}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
-                </span>
-                <span>Full Screen</span>
-              </a>
-              ${this.embed ? html`
-              <a class="dropdown-item is-hidden-desktop" @click="${this.onGoBack}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
-                </span>
-                <span>Back</span>
-              </a>
-              <a class="dropdown-item is-hidden-desktop" @click="${this.onGoForward}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
-                </span>
-                <span>Forward</span>
-              </a>` : ``}
-              <a class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
-                </span>
-                <span>Reload</span>
-              </a>
-              ${this.embed ? html`
-              <hr class="dropdown-divider is-hidden-desktop">
-              <a class="dropdown-item" @click="${this.onPurgeCache}">
-                Purge Cache + Full Reload
-              </a>` : ``}
-              ${dateStr ? html`
-              <hr class="dropdown-divider is-hidden-desktop">
-              <div class="dropdown-item info is-hidden-desktop">
-                <span class="menu-head">Capture Date</span>${dateStr}
-              </div>` : ``}
-              ${this.embed ? html`
-              <hr class="dropdown-divider">
-              <a href="https://replayweb.page/" target="_blank" class="dropdown-item info">
-                <fa-icon class="menu-logo" size="1.0rem" .svg=${rwpLogo}></fa-icon>
-                <span>&nbsp;About ReplayWeb.page</span>
-                <span class="menu-version">(${__VERSION__})</span>
-              </a>
-              ` : ``}
-            </div>
-          </div>
-        </div>
-
-
-      </div>
-    </div>` : html`
-    `}
 
     ${this.iframeUrl ? html`
     <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
@@ -429,63 +220,6 @@ class Replay extends LitElement
     </div>
     ` : ``}
     `;
-  }
-
-  onKeyDown(event) {
-    if (event.key === "Esc" || event.key === "Escape") {
-      event.target.value = this.replayUrl;
-    }
-  }
-
-  onMenu(event) {
-    event.stopPropagation();
-    this.menuActive = !this.menuActive;
-
-    if (this.menuActive) {
-      document.addEventListener("click", () => {
-        this.menuActive = false;
-      }, {once: true});
-    }
-  }
-
-  onGoBack() {
-    this.menuActive = false;
-    window.history.back();
-  }
-
-  onGoForward() {
-    this.menuActive = false;
-    window.history.forward();
-  }
-
-  onReAuthed(event) {
-    this.reauthWait = (async () => {
-      const headers = event.detail.headers;
-
-      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, { 
-        method: 'POST',
-        body: JSON.stringify({headers})
-      });
-
-      if (this.showAuth) {
-        this.onRefresh(null, true);
-        this.showAuth = false;
-      }
-    })();
-  }
-
-  async onPurgeCache(event) {
-    event.preventDefault();
-
-    const resp = await fetch(`${this.collInfo.apiPrefix}`, {
-      method: 'DELETE',
-    });
-
-    if (resp.status === 200 && window.parent) {
-      window.parent.location.reload();
-    } else {
-      console.warn("purge failed: " + resp.status);
-    }
   }
 }
 
