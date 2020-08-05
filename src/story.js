@@ -83,6 +83,11 @@ class Story extends LitElement
   static get styles() {
     return wrapCss(css`
     :host {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
       justify-content: flex-start;
       align-items: center;
     }
@@ -90,17 +95,16 @@ class Story extends LitElement
     .columns {
       width: 100%;
       justify-self: stretch;
-      margin-left: 0;
+      margin: 1.0em 0 0 0;
+      min-height: 0;
     }
 
     .column.main-content {
-      margin: 12px 0px 0px 0px;
-      padding: 0px;
-      max-height: calc(100% - 0.75em);
+      min-height: 0;
       display: flex;
       flex-direction: column;
-      height: min-content;
-      padding-left: 0.75em;
+      padding: 0px;
+      margin-left: 0.75em;
     }
 
     .column.main-content.main-scroll {
@@ -111,11 +115,12 @@ class Story extends LitElement
     ul.menu-list a.is-active {
       background-color: #55be6f;
     }
+    ol {
+      margin-left: 30px;
+    }
 
     @media screen and (min-width: 768px) {
       .columns {
-        max-height: 100%;
-        height: 100%;
         margin-top: 0.75em;
       }
 
@@ -128,8 +133,6 @@ class Story extends LitElement
     @media screen and (max-width: 767px) {
       .columns {
         position: relative;
-        max-height: 100%;
-        height: 100%;
       }
 
       .column.sidebar {
@@ -165,7 +168,7 @@ class Story extends LitElement
         <aside class="menu">
           <ul class="menu-list">
             <li>
-              <a href="#list-0" data-list="0" class="${currListNum === 0 ? 'is-active' : ''}"
+              <a href="#list-0" data-list="0" class="${currListNum === 0 ? 'is-active' : ''} menu-label is-size-4"
                 @click=${this.onClickScroll}>${this.collInfo.title}</a>
               <ul class="menu-list">${this.collInfo.lists.map(list => html`
                 <li>
@@ -197,7 +200,7 @@ class Story extends LitElement
         <hr/>
         <h3>${list.title}</h3>
         <p>${list.desc}</p>
-        <ol style="margin-left: 30px">
+        <ol>
           ${this.curatedPageMap[list.id] ? this.curatedPageMap[list.id].map((p) => this.renderCPage(p)) : html``}
         </ol>
       </div>

@@ -197,15 +197,16 @@ class URLResources extends LitElement
   static get styles() {
     return wrapCss(css`
     :host {
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      height: 100%;
     }
     .notification {
       width: 100%;
     }
     .main-scroll {
-      height: calc(100vh - 180px);
+      /*height: calc(100vh - 180px);*/
       flex-grow: 1;
       width: 100vw;
     }
@@ -214,6 +215,12 @@ class URLResources extends LitElement
       word-wrap: break-word;
       text-overflow: ellipsis;
       height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    thead {
+      display: table;
     }
     tr > th {
       cursor: pointer;

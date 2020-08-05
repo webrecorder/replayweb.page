@@ -7,6 +7,7 @@ import fasBook from '@fortawesome/fontawesome-free/svgs/solid/book.svg';
 
 import farListAlt from '@fortawesome/fontawesome-free/svgs/regular/list-alt.svg';
 import farResources from '@fortawesome/fontawesome-free/svgs/regular/file-code.svg';
+import farPages from '@fortawesome/fontawesome-free/svgs/regular/file-image.svg';
 import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
 
 
@@ -239,40 +240,34 @@ class Coll extends LitElement
     }
 
     .tab-label {
-      display: none;
+      display: inline;
     }
 
-    @media screen and (min-width: ${!IS_APP ? css`1054px` : css`1164px`}) {
+    @media screen and (max-width: ${!IS_APP ? css`1053px` : css`1163px`}) {
       .tab-label {
-        display: inline;
+        display: none;
+      }
+
+      .main.tabs span.icon {
+        margin: 0px;
       }
     }
 
     .main.tabs {
-      position: absolute;
-      top: 0px;
-      left: 50%;
-      min-height: 41px;
-      -webkit-transform: translateX(-50%);
-      transform: translateX(-50%);
-      z-index: 35;
       display: flex;
       flex-direction: row;
+      margin-bottom: 0px;
     }
 
     .main.tabs li {
       line-height: 1.5;
-      padding-top: 0.5em;
+      padding: 8px 0 6px 0;
     }
 
     @media screen and (max-width: 319px) {
       .main.tabs li a {
         padding-right: 4px;
         padding-left: 4px;
-      }
-
-      .tabs span.icon {
-        margin: 0px !important;
       }
     }
 
@@ -362,45 +357,46 @@ class Coll extends LitElement
     } else if (this.collInfo) {
       return html`
       <nav id="contents" class="is-light">
-      ${!this.embed || this.embed === "full" ? html`
-        <div class="main tabs has-background-info is-centered">
-          <ul>
-            ${this.hasStory ? html`
-            <li class="${this.tabData.view === 'story' ? 'is-active' : ''}">
-              <a @click="${this.onTabClick}" href="#story" class="is-size-6">
-                <span class="icon"><fa-icon .svg="${fasBook}"></fa-icon></span>
-                <span class="tab-label" title="Story">Story</span>
-              </a>
-            </li>` : ``}
-
-            <li class="${this.tabData.view === 'pages' ? 'is-active' : ''}">
-              <a @click="${this.onTabClick}" href="#pages" class="is-size-6">
-                <span class="icon"><fa-icon .svg="${farListAlt}"></fa-icon></span>
-                <span class="tab-label" title="Pages">Pages</span>
-              </a>
-            </li>
-
-            <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
-              <a @click="${this.onTabClick}" href="#resources" class="is-size-6">
-                <span class="icon"><fa-icon .svg="${farResources}"></fa-icon></span>
-                <span class="tab-label" title="URL Resources">Page Resources</span>
-              </a>
-            </li>
-
-            <li class="${this.tabData.view === 'replay' ? 'is-active' : ''}">
-              <a @click="${this.onTabClick}" href="#replay" class="is-size-6">
-                <span class="icon"><fa-icon .svg="${farPlayCircle}"></fa-icon></span>
-                <span class="tab-label" title="Replay">Replay</span>
-              </a>
-            </li>
-          </ul>
-        </div>` : ``}
         ${this.renderLocationBar()}
+        ${this.renderTabHeader()}
         ${this.renderCollTabs()}
       </nav>`;
     } else {
       return html``;
     }
+  }
+
+  renderTabHeader() {
+    if (this.tabData.view === "replay" || (this.embed && this.embed !== "full")) {
+      return "";
+    }
+
+    return html`
+      <div class="main tabs is-centered">
+        <ul>
+          ${this.hasStory ? html`
+          <li class="${this.tabData.view === 'story' ? 'is-active' : ''}">
+            <a @click="${this.onTabClick}" href="#story" class="is-size-6">
+              <span class="icon"><fa-icon .svg="${fasBook}"></fa-icon></span>
+              <span class="tab-label" title="Story">Story</span>
+            </a>
+          </li>` : ``}
+
+          <li class="${this.tabData.view === 'pages' ? 'is-active' : ''}">
+            <a @click="${this.onTabClick}" href="#pages" class="is-size-6">
+              <span class="icon"><fa-icon .svg="${farPages}"></fa-icon></span>
+              <span class="tab-label" title="Pages">Pages</span>
+            </a>
+          </li>
+
+          <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
+            <a @click="${this.onTabClick}" href="#resources" class="is-size-6">
+              <span class="icon"><fa-icon .svg="${farResources}"></fa-icon></span>
+              <span class="tab-label" title="URL Resources">Page Resources</span>
+            </a>
+          </li>
+        </ul>
+      </div>`;
   }
 
   renderLocationBar() {
@@ -586,7 +582,7 @@ class Coll extends LitElement
   }
 
   onGoPages() {
-    this.navigateTo(RWP_SCHEME + "view=pages");
+    this.updateTabData({view: "pages"});
   }
 
   onReAuthed(event) {

@@ -33,6 +33,8 @@ class Pages extends LitElement
     this.changeNeeded = false;
     
     this.selectedPages = new Set();
+
+    this.menuActive = false;
   }
 
   static get sortKeys() {
@@ -62,7 +64,9 @@ class Pages extends LitElement
       editable: { type: Boolean },
 
       selectedPages: { type: Set },
-      allSelected: { type: Boolean }
+      allSelected: { type: Boolean },
+
+      menuActive: {type: Boolean },
     }
   }
 
@@ -166,23 +170,23 @@ class Pages extends LitElement
       .columns {
         width: 100%;
         justify-self: stretch;
-        margin-left: 0;
+        margin: 1.0em 0 0 0;
+        min-height: 0px;
       }
-  
+
       .column.main-content {
-        margin: 12px 0px 0px 0px;
-        padding: 0 0.75em 0 0.75em;
-        max-height: calc(100% - 0.75em);
+        min-height: 0px;
         display: flex;
         flex-direction: column;
-        height: calc(100% - 1.2em);
+        padding: 0px;
+        margin-top: 0.5em;
+        margin-left: 0.75em;
       }
 
       @media screen and (min-width: 768px) {
         .columns {
           max-height: 100%;
           height: 100%;
-          margin-top: 0.75em;
         }
   
         .column.sidebar {
@@ -226,16 +230,15 @@ class Pages extends LitElement
         flex-direction: column;
         flex: auto;
         height: 100%;
+        margin-bottom: 1.0em;
       }
       .selected {
         background-color: ghostwhite;
       }
-      .panel-block:last-child {
-        border-bottom: 1px solid rgb(237, 237, 237);
-      }
+
       .panel-block {
-        border-left: 1px solid rgb(237, 237, 237);
-        border-right: 1px solid rgb(237, 237, 237);
+        border: 1px solid rgb(237, 237, 237);
+        padding: 0.75em 1.25em;
       }
       .status.level {
         width: 100%;
@@ -247,8 +250,14 @@ class Pages extends LitElement
         flex: auto;
         height: 100%;
       }
-      .light-blue {
-        background-color:  #97e7ff;
+
+      .search-bar {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+      .flex-auto {
+        flex: auto;
       }
     `);
   }
@@ -262,111 +271,125 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
-    <div class="columns">
-      <div class="column sidebar is-one-fifth">
-        <aside class="menu">
-          <ul class="menu-list">
-            <li>
-              <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
-                @click=${this.onSelectList}>All Pages</a>
-              ${this.collInfo.lists.length ? html`
-              <p class="menu-label">Page Lists</p>
-              <ul class="menu-list">${this.collInfo.lists.map(list => html`
-                <li>
-                  <a @click=${this.onSelectList} href="#list-${list.id}"
-                  data-list="${list.id}" 
-                  class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
-                </li>`)}
-              </ul>` : ``}
-            </li>
-          </ul>
-        </aside>
-      </div>
-      <div class="column main-content">
-        ${this.renderPages()}
-      </div>
-    </div>`
-  }
-
-  renderPages() {
-    const name = this.currList === 0 ? "All Pages" : this.collInfo.lists[this.currList - 1].title;
-
-    return html`
-    <nav class="panel">
-      <div class="panel-heading light-blue">${this.collInfo.title} - ${name}</div>
-      <div class="panel-block">
+    <div class="search-bar notification is-marginless">
+      <div class="field flex-auto">
         <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
           <input type="text" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
           placeholder="Search by Page URL, Title or Text">
           <span class="icon is-left"><fa-icon .svg="${fasSearch}"/></span>
         </div>
       </div>
-      <div class="panel-block">
-        <div class="status level is-mobile">
-          <div class="level-left">
-            ${this.editable ? html`
-            <div class="check-select level-item">
-              <label class="checkbox">
-              <input @change=${this.onSelectAll} type="checkbox" .checked="${this.allSelected}">
-              </label>
-            </div>` : ``}
+    </div>
+    ${this.renderPageHeader()}
+    <div class="columns">
+      ${this.collInfo.lists.length ? html`
+      <div class="column sidebar is-one-fifth">
+        <aside class="menu">
+          <p class="menu-label">Filter By List:</p>
+          <ul class="menu-list">
+            <li>
+              <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
+                @click=${this.onSelectList}>All Pages</a>
+              <ul class="menu-list">${this.collInfo.lists.map(list => html`
+                <li>
+                  <a @click=${this.onSelectList} href="#list-${list.id}"
+                  data-list="${list.id}" 
+                  class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
+                </li>`)}
+              </ul>
+            </li>
+          </ul>
+        </aside>
+      </div>` : ``}
+      <div class="column main-content">
+        ${this.renderPages()}
+      </div>
+    </div>`;
+  }
 
-            <span class="num-results level-item">${this.formatResults()}</span>
+  renderPageHeader() {
+    return html`
+    <div class="panel-block page-header">
+      <div class="status level is-mobile">
+        <div class="level-left">
+          ${this.editable ? html`
+          <div class="check-select level-item">
+            <label class="checkbox">
+            <input @change=${this.onSelectAll} type="checkbox" .checked="${this.allSelected}">
+            </label>
+          </div>` : ``}
 
-            ${this.editable ? html`
-            <div class="level-item dropdown is-hoverable">
-              <div class="dropdown-trigger">
-                <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
-                  <span>Download</span>
-                  <span class="icon is-small">
-                    <fa-icon .svg="${fasAngleDown}"/>
-                  </span>
-                </button>
-              </div>
-              <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                <div class="dropdown-content">
-                  <a @click="${(e) => this.onDownload(e, "wacz", true)}" class="dropdown-item">
-                    Download Selected as WACZ (Web Archive Collection)
-                  </a>
-                  <a @click="${(e) => this.onDownload(e, "warc", true)}" class="dropdown-item">
-                    Download Selected as WARC Only
-                  </a>
-                  <hr class="dropdown-divider">
-                  <a @click="${(e) => this.onDownload(e, "wacz", false)}" class="dropdown-item">
-                    Download All as WACZ (Web Archive Collection)
-                  </a>
-                  <a @click="${(e) => this.onDownload(e, "warc", false)}" class="dropdown-item">
-                    Download All as WARC Only
-                  </a>
-                </div>
+          <span class="num-results level-item">${this.formatResults()}</span>
+
+          ${this.editable ? html`
+          <div class="level-item dropdown is-hoverable">
+            <div class="dropdown-trigger">
+              <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
+                <span>Download</span>
+                <span class="icon is-small">
+                  <fa-icon .svg="${fasAngleDown}"/>
+                </span>
+              </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+              <div class="dropdown-content">
+                <a @click="${(e) => this.onDownload(e, "wacz", true)}" class="dropdown-item">
+                  Download Selected as WACZ (Web Archive Collection)
+                </a>
+                <a @click="${(e) => this.onDownload(e, "warc", true)}" class="dropdown-item">
+                  Download Selected as WARC Only
+                </a>
+                <hr class="dropdown-divider">
+                <a @click="${(e) => this.onDownload(e, "wacz", false)}" class="dropdown-item">
+                  Download All as WACZ (Web Archive Collection)
+                </a>
+                <a @click="${(e) => this.onDownload(e, "warc", false)}" class="dropdown-item">
+                  Download All as WARC Only
+                </a>
               </div>
             </div>
-            ` : ``}
-
           </div>
+          ` : ``}
 
-          ${this.currList === 0 ? html`
-          <div class="level-right">
-            <wr-sorter id="pages"
-            defaultKey="ts"
-            ?defaultDesc="true"
-            .sortKeys="${Pages.sortKeys}"
-            .data="${this.filteredPages}"
-            @sort-changed="${(e) => this.sortedPages = e.detail.sortedData}"
-            class="${this.filteredPages.length ? '' : 'is-hidden'} level-item">
-            </wr-sorter>` : ``}
-          </div>
+        </div>
+
+        ${this.currList === 0 ? html`
+        <div class="level-right">
+          <wr-sorter id="pages"
+          defaultKey="ts"
+          ?defaultDesc="true"
+          .sortKeys="${Pages.sortKeys}"
+          .data="${this.filteredPages}"
+          @sort-changed="${(e) => this.sortedPages = e.detail.sortedData}"
+          class="${this.filteredPages.length ? '' : 'is-hidden'} level-item">
+          </wr-sorter>` : ``}
         </div>
       </div>
+    </div>`;
+  }
+
+  renderPages() {
+    //const name = this.currList === 0 ? "All Pages" : this.collInfo.lists[this.currList - 1].title;
+    return html`
       <div class="scroller" @scroll="${this.onScroll}">
         ${this.sortedPages.map((p) => html`
-        <div class="panel-block ${this.selectedPages.has(p.id) ? 'selected' : ''}">
+        <div class="content ${this.selectedPages.has(p.id) ? 'selected' : ''}">
           <wr-page-entry .editable="${this.editable}" .selected="${this.selectedPages.has(p.id)}" @sel-page="${this.onSelectToggle}" @delete-page="${this.onDeletePage}" replayPrefix="${this.collInfo.replayPrefix}" query="${this.query}" .page="${p}">
           </wr-page-entry>
         </div>`)}
       </div>
-    </nav>
     `;
+  }
+
+  onMenu(event) {
+    event.stopPropagation();
+    this.menuActive = !this.menuActive;
+
+    if (this.menuActive) {
+      document.addEventListener("click", () => {
+        this.menuActive = false;
+      }, {once: true});
+    }
   }
 
   onSelectToggle(event) {
