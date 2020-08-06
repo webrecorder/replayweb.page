@@ -23,6 +23,27 @@ class URLResources extends LitElement
     ];
   }
 
+  static get sortKeys() {
+    return [
+      {
+        "key": "url",
+        "name": "URL"
+      },
+      {
+        "key": "ts",
+        "name": "Date"
+      },
+      {
+        "key": "mime",
+        "name": "Mime Type",
+      },
+      {
+        "key": "status",
+        "name": "Status"
+      }
+    ];
+  }
+
   constructor() {
     super();
     this.collInfo = null;
@@ -32,6 +53,7 @@ class URLResources extends LitElement
     this.urlSearchType = "";
 
     this.filteredResults = [];
+    this.sortedResults = [];
 
     this.results = [];
 
@@ -51,8 +73,8 @@ class URLResources extends LitElement
       query: { type: String },
       urlSearchType: { type: String },
       filteredResults: { type: Array },
+      sortedResults: { type: Array },
       loading: { type: Boolean },
-
       sortKey: { type: String },
       sortDesc: { type: Boolean }
     }
@@ -174,16 +196,6 @@ class URLResources extends LitElement
     }
 
     this.filteredResults = filteredResults;
-
-    if (this.sortKey && !(this.sortKey === "url" && !this.sortDesc)) {
-      this.filteredResults.sort((first, second) => {
-        if (first[this.sortKey] === second[this.sortKey]) {
-          return 0;
-        }
-
-        return (this.sortDesc == (first[this.sortKey] < second[this.sortKey])) ? 1 : -1;
-      });
-    }
   }
 
   onScroll(event) {
@@ -205,58 +217,38 @@ class URLResources extends LitElement
     .notification {
       width: 100%;
     }
-    .main-scroll {
-      /*height: calc(100vh - 180px);*/
-      flex-grow: 1;
-      width: 100vw;
-    }
-    table {
-      table-layout: fixed;
-      word-wrap: break-word;
-      text-overflow: ellipsis;
-      height: 100%;
+    .all-results {
+      margin: 0 0 0 0.5em;
       display: flex;
       flex-direction: column;
       min-height: 0;
     }
-    thead {
-      display: table;
+    .main-scroll {
+      flex-grow: 1;
     }
-    tr > th {
-      cursor: pointer;
+    .minihead {
+      font-size: 10px;
+      font-weight: bold;
     }
-    tbody > tr {
-      display: table;
-      width: 100%;
+    .columns {
+      margin: 0px;
+    }   
+    .result {
+      border-bottom: 1px #dbdbdb solid;
     }
-    .col-url {
-      width: 66%;
-      max-width: 66%;
-      min-width: 66%;
+    .results-head {
+      border-bottom: 2px #dbdbdb solid;
+      margin-right: 16px;
+    }
+    .results-head a {
+      color: black;
+    }
+    .all-results .column {
       word-break: break-word;
     }
-    .col-ts {
-      width: 16%;
-      max-width: 16%;
-      min-width: 16%;
-      word-break: break-word;
-    }
-    td.col-mime {
-      width: 10%;
-      word-break: break-word;
-    }
-    td.col-status {
-      text-align: center;
-    }
-    .loading-cog {
-      width: 100vw;
-      display: flex;
-    }
-    .flex-column {
-      display: flex;
-      flex: auto;
-      max-width: 80%;
-      flex-direction: column;
+    div.sort-header {
+      padding: 10px;
+      margin-bottom: 0px !important;
     }
     .flex-auto {
       flex: auto;
@@ -269,7 +261,10 @@ class URLResources extends LitElement
       content: "▲";
       font-size: 0.75em;
     }
-
+    .num-results {
+      margin-left: 1em;
+      font-style: italic;
+    }
     `);
   }
 
@@ -302,36 +297,48 @@ class URLResources extends LitElement
           <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
-          <span class="is-pulled-right" style="margin-left: 1em">(${this.filteredResults.length} Results)</span>
+          <span class="num-results" is-pulled-right">${this.filteredResults.length} Result(s)</span>
         </div>
       </div>
     </div>
+
+    <div class="sort-header is-hidden-tablet">
+      <wr-sorter id="urls"
+        defaultKey="url"
+        .sortKey="${this.sortKey}"
+        .sortDesc="${this.sortDesc}"
+        .sortKeys="${URLResources.sortKeys}"
+        .data="${this.filteredResults}"
+        @sort-changed="${this.onSortChanged}">
+      </wr-sorter>
+    </div>
     
-    <table class="table is-striped is-fullwidth">
-      <thead>
-        <tr>
-          <th @click="${this.onSort}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''} col-url">URL</th>
-          <th @click="${this.onSort}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''} col-ts">Timestamp</th>
-          <th @click="${this.onSort}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''} col-mime">Mime</th>
-          <th @click="${this.onSort}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''} col-status">Status</th>
-        </tr>
-      </thead>
-      <tbody class="main-scroll" @scroll="${this.onScroll}">
-      ${this.filteredResults.length ? 
-        this.filteredResults.map((result) => html`
-          <tr>
-            <td class="col-url"><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></td>
-            <td class="col-ts">${new Date(result.date).toLocaleString()}</td>
-            <td class="col-mime">${result.mime}</td>
-            <td class="col-status">${result.status}</td>
-          </tr>
+    <div class="all-results">
+      <div class="columns results-head has-text-weight-bold">
+        <a @click="${this.onSort}" data-key="url" class="column col-url is-6 is-hidden-mobile ${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a>
+        <a @click="${this.onSort}" data-key="ts" class="column col-ts is-2 is-hidden-mobile ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
+        <a @click="${this.onSort}" data-key="mime" class="column col-mime is-3 is-hidden-mobile ${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a>
+        <a @click="${this.onSort}" data-key="status" class="column col-status is-1 is-hidden-mobile ${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a>
+      </div>
+
+      <div class="main-scroll" @scroll="${this.onScroll}">
+      ${this.sortedResults.length ? 
+        this.sortedResults.map((result) => html`
+          <div class="columns result">
+            <div class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></div>
+            <div class="column col-ts is-2"><p class="minihead is-hidden-tablet">Date</p>${new Date(result.date).toLocaleString()}</div>
+            <div class="column col-mime is-3"><p class="minihead is-hidden-tablet">Mime Type</p>${result.mime}</div>
+            <div class="column col-status is-1"><p class="minihead is-hidden-tablet">Status</p>${result.status}</div>
+          </div>
         `) : html`<div class="section"><i>No Results Found.</i></div>`}
-      </tbody>
-    </table>
+      </div>
+    </div>
     `;
   }
 
   onSort(event) {
+    event.preventDefault();
+
     const key = event.currentTarget.getAttribute("data-key");
     if (key === this.sortKey) {
       this.sortDesc = !this.sortDesc;
@@ -339,6 +346,12 @@ class URLResources extends LitElement
       this.sortDesc = false;
       this.sortKey = key;
     }
+  }
+
+  onSortChanged(event) {
+    this.sortedResults = event.detail.sortedData;
+    this.sortKey = event.detail.sortKey;
+    this.sortDesc = event.detail.sortDesc;
   }
 
   onReplay(event) {

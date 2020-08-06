@@ -80,7 +80,11 @@ class Sorter extends LitElement
   }
 
   sendSortChanged() {
-    const detail = {sortedData: this.sortedData.slice(0, this.numResults)};
+    const detail = {
+      sortKey: this.sortKey,
+      sortDesc: this.sortDesc,
+      sortedData: this.sortedData.slice(0, this.numResults)
+    };
     this.dispatchEvent(new CustomEvent("sort-changed", {detail}));
   }
 

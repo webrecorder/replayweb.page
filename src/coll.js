@@ -6,10 +6,8 @@ import { sourceToId } from './pageutils';
 import fasBook from '@fortawesome/fontawesome-free/svgs/solid/book.svg';
 
 import farListAlt from '@fortawesome/fontawesome-free/svgs/regular/list-alt.svg';
-import farResources from '@fortawesome/fontawesome-free/svgs/regular/file-code.svg';
+import farResources from '@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg';
 import farPages from '@fortawesome/fontawesome-free/svgs/regular/file-image.svg';
-import farPlayCircle from '@fortawesome/fontawesome-free/svgs/regular/play-circle.svg';
-
 
 import { tsToDate } from './pageutils';
 
@@ -57,6 +55,8 @@ class Coll extends LitElement
     this.menuActive = false;
 
     this.hasStory = false;
+
+    this.editable = false;
   }
 
   static get properties() {
@@ -325,6 +325,11 @@ class Coll extends LitElement
       display: none;
     }
 
+    .grey-disabled {
+      --fa-icon-fill-color: lightgrey;
+      color: lightgrey;
+    }
+
     .replay-bar .button:focus {
       box-shadow: none;
     }
@@ -402,32 +407,34 @@ class Coll extends LitElement
   renderLocationBar() {
     const dateStr = tsToDate(this.ts).toLocaleString();
 
+    const isReplay = this.tabData.view === "replay";
+
     return html`
     <div class="replay-bar">
       <div class="field has-addons">
-        <button id="fullscreen" class="button is-borderless is-hidden-mobile" @click="${this.onFullscreenToggle}">
+        <button id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
           </span>
         </button>
-        <button class="button is-borderless is-hidden-touch" @click="${this.onGoBack}">
+        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoBack}">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
           </span>
         </button>
-        <button class="button is-borderless is-hidden-touch" @click="${this.onGoForward}">
+        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoForward}">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
           </span>
         </button>
-        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
+        <button id="refresh" class="button is-borderless ${!isReplay ? 'grey-disabled' : ''} ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
           <span class="icon is-small">
             ${!this.isLoading ? html`
             <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
             ` : ``}
           </span>
         </button>
-        <button class="button is-borderless is-hidden-touch" @click="${this.onGoPages}">
+        <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onGoPages}">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" .svg="${farListAlt}"></fa-icon>
           </span>
@@ -435,13 +442,13 @@ class Coll extends LitElement
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded">
             <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="https://... Enter a URL to replay from the archive here"/>
-            ${this.tabData.view === "replay" ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
+            ${isReplay ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
           </div>
         </form>
 
         <div class="dropdown is-right ${this.menuActive ? 'is-active' : ''}" @click="${(e) => this.menuActive = false}">
           <div class="dropdown-trigger">
-            <button class="${this.embed ? '' : 'is-hidden-tablet'} button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" @click="${this.onMenu}">
+            <button class="button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" @click="${this.onMenu}">
               <span class="icon is-small">
                 <fa-icon size="1.0em" class="has-text-grey" .svg="${fasMenuV}"></fa-icon>
               </span>
@@ -449,29 +456,35 @@ class Coll extends LitElement
           </div>
           <div class="dropdown-menu" id="menu-dropdown" role="menu">
             <div class="dropdown-content">
-              <a class="dropdown-item is-hidden-tablet" @click="${this.onFullscreenToggle}">
+              <a class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
                 </span>
                 <span>Full Screen</span>
               </a>
-              <a class="dropdown-item is-hidden-desktop" @click="${this.onGoBack}">
+              <a class="dropdown-item is-hidden-tablet" @click="${this.onGoBack}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
                 </span>
                 <span>Back</span>
               </a>
-              <a class="dropdown-item is-hidden-desktop" @click="${this.onGoForward}">
+              <a class="dropdown-item is-hidden-tablet" @click="${this.onGoForward}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
                 </span>
                 <span>Forward</span>
               </a>
-              <a class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}">
+              <a class="dropdown-item is-hidden-tablet ${!isReplay ? 'grey-disabled' : 'has-text-grey'}" @click="${this.onRefresh}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
+                  <fa-icon size="1.0em" class="" .svg="${fasRefresh}"></fa-icon>
                 </span>
                 <span>Reload</span>
+              </a>
+              <a class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : 'has-text-grey'}" @click="${this.onGoPages}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="" .svg="${farListAlt}"></fa-icon>
+                </span>
+                <span>Page Search</span>
               </a>
               <hr class="dropdown-divider is-hidden-desktop">
               <a class="dropdown-item" @click="${this.onPurgeCache}">
@@ -581,8 +594,11 @@ class Coll extends LitElement
     window.history.forward();
   }
 
-  onGoPages() {
-    this.updateTabData({view: "pages"});
+  onGoPages(event) {
+    event.preventDefault();
+    if (this.tabData && this.tabData.view === "replay") {
+      this.updateTabData({view: "pages"});
+    }
   }
 
   onReAuthed(event) {

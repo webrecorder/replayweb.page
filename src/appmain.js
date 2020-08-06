@@ -139,7 +139,7 @@ class App extends LitElement
           <span class="has-text-link">web.page</span>
         </a>` : ``}
 
-      ${IS_APP ? html`
+      ${IS_APP && !this.collInfo ? html`
         <a class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}">
           <fa-icon .svg="${fasArrowLeft}"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
         </a>

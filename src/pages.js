@@ -35,6 +35,9 @@ class Pages extends LitElement
     this.selectedPages = new Set();
 
     this.menuActive = false;
+
+    this.sortKey = "ts";
+    this.sortDesc = true;
   }
 
   static get sortKeys() {
@@ -67,6 +70,9 @@ class Pages extends LitElement
       allSelected: { type: Boolean },
 
       menuActive: {type: Boolean },
+
+      sortKey: { type: String },
+      sortDesc: { type: Boolean }
     }
   }
 
@@ -167,11 +173,23 @@ class Pages extends LitElement
         flex-direction: column;
       }
 
-      .columns {
+      .main.columns {
         width: 100%;
         justify-self: stretch;
         margin: 1.0em 0 0 0;
         min-height: 0px;
+      }
+
+      .header.columns {
+        width: 100%;
+        margin-bottom: 0px;
+      }
+      .header a {
+        color: black;
+      }
+
+      .header .column.pagetitle {
+        margin-left: 2.5em;
       }
 
       .column.main-content {
@@ -183,27 +201,73 @@ class Pages extends LitElement
         margin-left: 0.75em;
       }
 
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        border-right: 3px solid rgb(237, 237, 237);
+        background-color: whitesmoke;
+        padding-right: 0px;
+      }
+
+      .sidebar-title {
+        font-size: 1.25rem;
+        text-transform: uppercase;
+        margin-bottom: 1.0rem;
+        word-break: break-word;
+      }
+
+      .sidebar-status {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 0.5rem;
+        padding-right: 0.75em;
+      }
+
+      .sidebar-menu {
+        margin-top: 1.0rem;
+      }
+
+      #filter-label {
+        margin-bottom: 0px;
+      }
+
+      .num-results {
+        position: absolute;
+        right: 16px;
+        font-style: italic;
+        font-weight: normal;
+      }
+
+      .asc:after {
+        content: "▼";
+        font-size: 0.75em;
+      }
+      .desc:after {
+        content: "▲";
+        font-size: 0.75em;
+      }
+
       @media screen and (min-width: 768px) {
-        .columns {
+        .main.columns {
           max-height: 100%;
           height: 100%;
         }
   
-        .column.sidebar {
+        .sidebar-menu {
           max-height: 100%;
           overflow-y: auto;
         }
       }
   
       @media screen and (max-width: 767px) {
-        .columns {
+        .main.columns {
           position: relative;
           max-height: 100%;
           height: 100%;
         }
   
-        .column.sidebar {
-          max-height: 150px;
+        .sidebar-menu {
+          max-height: 75px;
           overflow-y: auto;
           margin-top: 0.75em;
         }
@@ -214,9 +278,21 @@ class Pages extends LitElement
   
           border-top: 1px solid black;
           width: 100%;
+          min-height: 0px;
           height: 100%;
-          max-height: calc(100% - 150px - 0.75em);
           padding: 0px;
+          margin: 0px;
+        }
+
+        .mobile-header {
+          margin: 0.5rem;
+          display: flex;
+          flex-direction: row;
+          min-height: 24px;
+        }
+
+        .num-results {
+          top: 8px;
         }
   
         .menu {
@@ -229,26 +305,25 @@ class Pages extends LitElement
         display: flex;
         flex-direction: column;
         flex: auto;
-        height: 100%;
-        margin-bottom: 1.0em;
+
+        padding-bottom: 1.0em;
+        min-height: 0px;
       }
       .selected {
         background-color: ghostwhite;
       }
 
-      .panel-block {
-        border: 1px solid rgb(237, 237, 237);
-        padding: 0.75em 1.25em;
-      }
-      .status.level {
-        width: 100%;
-      }
-      nav.panel {
-        box-shadow: none;
+      .page-header {
         display: flex;
-        flex-direction: column;
-        flex: auto;
-        height: 100%;
+        flex-direction: row;
+        width: 100%;
+
+        margin-bottom: 1.0em;
+        border-bottom: 3px solid rgb(237, 237, 237);
+      }
+
+      .check-select {
+        padding-right: 1.0em;
       }
 
       .search-bar {
@@ -280,97 +355,106 @@ class Pages extends LitElement
         </div>
       </div>
     </div>
-    ${this.renderPageHeader()}
-    <div class="columns">
-      ${this.collInfo.lists.length ? html`
-      <div class="column sidebar is-one-fifth">
-        <aside class="menu">
-          <p class="menu-label">Filter By List:</p>
+
+    <div class="main columns">
+      <div class="column sidebar is-one-fifth is-hidden-mobile">
+        <div class="sidebar-title">${this.collInfo.title}</div>
+
+        ${this.editable ? html`
+        <div class="sidebar-actions">
+          ${this.renderDownloadMenu()}
+        </div>` : ``}
+
+        ${this.collInfo.lists.length ? html`
+        <p id="filter-label" class="menu-label">Filter By List:</p>
+        <aside class="sidebar-menu menu">
           <ul class="menu-list">
             <li>
               <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
-                @click=${this.onSelectList}>All Pages</a>
-              <ul class="menu-list">${this.collInfo.lists.map(list => html`
-                <li>
-                  <a @click=${this.onSelectList} href="#list-${list.id}"
-                  data-list="${list.id}" 
-                  class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
-                </li>`)}
-              </ul>
+                @click=${this.onSelectList}><i>All Pages</i></a>
             </li>
+            ${this.collInfo.lists.map(list => html`
+              <li>
+                <a @click=${this.onSelectList} href="#list-${list.id}"
+                data-list="${list.id}" 
+                class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
+              </li>`)}
           </ul>
         </aside>
-      </div>` : ``}
+        ` : ``}
+      </div>
       <div class="column main-content">
         ${this.renderPages()}
       </div>
     </div>`;
   }
 
+  renderDownloadMenu() {
+    return html`
+      <div class="dropdown ${this.menuActive ? 'is-active' : ''}">
+        <div class="dropdown-trigger">
+          <button @click="${this.onMenu}" class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
+            <span>Download</span>
+            <span class="icon is-small">
+              <fa-icon .svg="${fasAngleDown}"/>
+            </span>
+          </button>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <a @click="${(e) => this.onDownload(e, "wacz", true)}" class="dropdown-item">
+              Download Selected as WACZ (Web Archive Collection)
+            </a>
+            <a @click="${(e) => this.onDownload(e, "warc", true)}" class="dropdown-item">
+              Download Selected as WARC Only
+            </a>
+            <hr class="dropdown-divider">
+            <a @click="${(e) => this.onDownload(e, "wacz", false)}" class="dropdown-item">
+              Download All as WACZ (Web Archive Collection)
+            </a>
+            <a @click="${(e) => this.onDownload(e, "warc", false)}" class="dropdown-item">
+              Download All as WARC Only
+            </a>
+          </div>
+        </div>
+      </div>`;
+  }
+
   renderPageHeader() {
     return html`
-    <div class="panel-block page-header">
-      <div class="status level is-mobile">
-        <div class="level-left">
-          ${this.editable ? html`
-          <div class="check-select level-item">
-            <label class="checkbox">
-            <input @change=${this.onSelectAll} type="checkbox" .checked="${this.allSelected}">
-            </label>
-          </div>` : ``}
+    ${this.editable ? html`
+    <div class="check-select">
+      <label class="checkbox">
+      <input @change=${this.onSelectAll} type="checkbox" .checked="${this.allSelected}">
+      </label>
+    </div>` : html``}
 
-          <span class="num-results level-item">${this.formatResults()}</span>
+    <div class="header columns is-hidden-mobile">
+      <a @click="${this.onSort}" data-key="title" class="column is-2 ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
+      <a @click="${this.onSort}" data-key="ts" class="column is-8 pagetitle ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
+    </div>
 
-          ${this.editable ? html`
-          <div class="level-item dropdown is-hoverable">
-            <div class="dropdown-trigger">
-              <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
-                <span>Download</span>
-                <span class="icon is-small">
-                  <fa-icon .svg="${fasAngleDown}"/>
-                </span>
-              </button>
-            </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
-              <div class="dropdown-content">
-                <a @click="${(e) => this.onDownload(e, "wacz", true)}" class="dropdown-item">
-                  Download Selected as WACZ (Web Archive Collection)
-                </a>
-                <a @click="${(e) => this.onDownload(e, "warc", true)}" class="dropdown-item">
-                  Download Selected as WARC Only
-                </a>
-                <hr class="dropdown-divider">
-                <a @click="${(e) => this.onDownload(e, "wacz", false)}" class="dropdown-item">
-                  Download All as WACZ (Web Archive Collection)
-                </a>
-                <a @click="${(e) => this.onDownload(e, "warc", false)}" class="dropdown-item">
-                  Download All as WARC Only
-                </a>
-              </div>
-            </div>
-          </div>
-          ` : ``}
-
-        </div>
-
-        ${this.currList === 0 ? html`
-        <div class="level-right">
-          <wr-sorter id="pages"
-          defaultKey="ts"
-          ?defaultDesc="true"
-          .sortKeys="${Pages.sortKeys}"
-          .data="${this.filteredPages}"
-          @sort-changed="${(e) => this.sortedPages = e.detail.sortedData}"
-          class="${this.filteredPages.length ? '' : 'is-hidden'} level-item">
-          </wr-sorter>` : ``}
-        </div>
-      </div>
-    </div>`;
+    <div class="is-hidden-tablet mobile-header">
+      <wr-sorter id="pages"
+      .sortKey="${this.sortKey}"
+      .sortDesc="${this.sortDesc}"
+      .sortKeys="${Pages.sortKeys}"
+      .data="${this.filteredPages}"
+      @sort-changed="${this.onSortChanged}"
+      class="${this.filteredPages.length ? '' : 'is-hidden'}">
+      </wr-sorter>
+    </div>
+    
+    <span class="num-results">${this.formatResults()}</span>
+    `;
   }
 
   renderPages() {
     //const name = this.currList === 0 ? "All Pages" : this.collInfo.lists[this.currList - 1].title;
     return html`
+      <div class="page-header has-text-weight-bold">
+      ${this.renderPageHeader()}
+      </div>
       <div class="scroller" @scroll="${this.onScroll}">
         ${this.sortedPages.map((p) => html`
         <div class="content ${this.selectedPages.has(p.id) ? 'selected' : ''}">
@@ -390,6 +474,24 @@ class Pages extends LitElement
         this.menuActive = false;
       }, {once: true});
     }
+  }
+
+  onSort(event) {
+    event.preventDefault();
+
+    const key = event.currentTarget.getAttribute("data-key");
+    if (key === this.sortKey) {
+      this.sortDesc = !this.sortDesc;
+    } else {
+      this.sortDesc = false;
+      this.sortKey = key;
+    }
+  }
+
+  onSortChanged(event) {
+    this.sortedPages = event.detail.sortedData;
+    this.sortKey = event.detail.sortKey;
+    this.sortDesc = event.detail.sortDesc;
   }
 
   onSelectToggle(event) {
@@ -546,8 +648,8 @@ class PageEntry extends LitElement
 
       .delete {
         position: absolute;
-        top: 0px;
-        right: 0px;
+        top: 8px;
+        right: 8px;
       }
 
       .delete:hover {
