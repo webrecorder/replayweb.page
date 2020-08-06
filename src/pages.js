@@ -232,8 +232,6 @@ class Pages extends LitElement
       }
 
       .num-results {
-        position: absolute;
-        right: 16px;
         font-style: italic;
         font-weight: normal;
       }
@@ -287,14 +285,12 @@ class Pages extends LitElement
         .mobile-header {
           margin: 0.5rem;
           display: flex;
+          justify-content: space-between;
           flex-direction: row;
           min-height: 24px;
+          width: 100%;
         }
 
-        .num-results {
-          top: 8px;
-        }
-  
         .menu {
           font-size: 0.80rem;
         }
@@ -359,6 +355,8 @@ class Pages extends LitElement
     <div class="main columns">
       <div class="column sidebar is-one-fifth is-hidden-mobile">
         <div class="sidebar-title">${this.collInfo.title}</div>
+
+        <span class="num-results">${this.formatResults()}</span>
 
         ${this.editable ? html`
         <div class="sidebar-actions">
@@ -435,6 +433,7 @@ class Pages extends LitElement
     </div>
 
     <div class="is-hidden-tablet mobile-header">
+      <span class="num-results">${this.formatResults()}</span>
       <wr-sorter id="pages"
       .sortKey="${this.sortKey}"
       .sortDesc="${this.sortDesc}"
@@ -444,8 +443,6 @@ class Pages extends LitElement
       class="${this.filteredPages.length ? '' : 'is-hidden'}">
       </wr-sorter>
     </div>
-    
-    <span class="num-results">${this.formatResults()}</span>
     `;
   }
 
@@ -565,9 +562,9 @@ class Pages extends LitElement
     if (!this.sortedPages.length) {
       return this.query ? "No Pages Found. Try changing the search query." : "No Pages Found";
     } else if (this.sortedPages.length === 1) {
-      return "1 Page";
+      return "1 Page Found";
     } else {
-      return `${this.sortedPages.length} Pages`;
+      return `${this.sortedPages.length} Pages Found`;
     }
   }
 

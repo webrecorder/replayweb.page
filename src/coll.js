@@ -427,7 +427,7 @@ class Coll extends LitElement
             <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
           </span>
         </button>
-        <button id="refresh" class="button is-borderless ${!isReplay ? 'grey-disabled' : ''} ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
+        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
           <span class="icon is-small">
             ${!this.isLoading ? html`
             <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
@@ -474,7 +474,7 @@ class Coll extends LitElement
                 </span>
                 <span>Forward</span>
               </a>
-              <a class="dropdown-item is-hidden-tablet ${!isReplay ? 'grey-disabled' : 'has-text-grey'}" @click="${this.onRefresh}">
+              <a class="dropdown-item is-hidden-tablet has-text-grey" @click="${this.onRefresh}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="" .svg="${fasRefresh}"></fa-icon>
                 </span>
@@ -693,6 +693,8 @@ class Coll extends LitElement
       if (replay) {
         replay.refresh();
       }
+    } else {
+      window.location.reload();
     }
   }
 }
