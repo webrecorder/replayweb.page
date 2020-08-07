@@ -11,6 +11,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@webrecorder/wabac": "github:webrecorder/wabac.js",
     "bulma": "^0.8.2",
+    "fetch-ndjson": "^1.1.0",
     "flexsearch": "^0.6.32",
     "keyword-mark-element": "^0.1.2",
     "lit-element": "^2.3.1",

@@ -18,6 +18,7 @@ class Embed extends LitElement
     this.view = "replay";
     this.ts = "";
     this.url = "";
+    this.query = "";
     this.config = "";
     this.coll = "";
     this.paramString = null;
@@ -30,6 +31,8 @@ class Embed extends LitElement
     return {
       url: { type: String },
       ts: { type: String },
+      query: { type: String },
+
       source: { type: String },
       view: { type: String },
       embed: { type: String },
@@ -74,16 +77,11 @@ class Embed extends LitElement
           this.title = event.data.title;
         }
 
-        console.log(event.data);
-
         if (!this.deepLink) {
           return;
         }
 
-        const currHash = new URLSearchParams({
-          url: event.data.url,
-          ts: event.data.ts,
-        });
+        const currHash = new URLSearchParams(event.data);
         const url = new URL(window.location.href);
         url.hash = "#" + currHash.toString();
         window.history.replaceState({}, "", url);
@@ -105,11 +103,19 @@ class Embed extends LitElement
     if (qs.has("ts")) {
       this.ts = qs.get("ts");
     }
+    if (qs.has("query")) {
+      this.query = qs.get("query");
+    }
+    if (qs.has("view")) {
+      this.view = qs.get("view");
+    }
   }
 
   updated(changedProperties) {
     if (changedProperties.has("url") || 
         changedProperties.has("ts") ||
+        changedProperties.has("query") ||
+        changedProperties.has("view") || 
         changedProperties.has("source")) {
 
       if (this.embed === null) {
@@ -127,6 +133,7 @@ class Embed extends LitElement
       this.hashString = new URLSearchParams({
         url: this.url,
         ts: this.ts,
+        query: this.query,
         view: this.view
       }).toString();
     }
@@ -180,9 +187,6 @@ Please try a different browser.\n
   }
 
   onLoad(event) {
-    if (this.injected) {
-      return;
-    }
     const win = event.target.contentWindow;
     const doc = event.target.contentDocument;
 
@@ -199,7 +203,6 @@ Please try a different browser.\n
     //const script = event.target.contentDocument.querySelector("script");
     script.src = scriptSrc;
     doc.head.appendChild(script);
-    this.injected = true;
   }
 }
 

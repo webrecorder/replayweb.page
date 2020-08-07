@@ -8,7 +8,6 @@ class Replay extends LitElement
 {
   constructor() {
     super();
-    this.isLoading = false;
     this.replayUrl = "";
     this.replayTS = "";
     this.url = "";
@@ -34,7 +33,6 @@ class Replay extends LitElement
       title: { type: String },
 
       iframeUrl: { type: String },
-      isLoading: { type: Boolean },
 
       showAuth: { type: Boolean },
     }
@@ -86,14 +84,6 @@ class Replay extends LitElement
   
       this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: true, data}}));
     }
-
-    if (this.embed && window.parent !== window && changedProperties.has("title")) {
-      window.parent.postMessage({
-        title: this.title,
-        url: this.replayUrl,
-        ts: this.replayTS
-      }, '*');
-    }
   }
 
   onReplayMessage(event) {
@@ -117,7 +107,7 @@ class Replay extends LitElement
   }
 
   waitForLoad() {
-    this.isLoading = true;
+    this.setLoading();
     this._loadPoll = window.setInterval(() => {
       const iframe = this.renderRoot.querySelector("iframe");
       if (!iframe || !iframe.contentDocument || !iframe.contentWindow || 
@@ -128,7 +118,8 @@ class Replay extends LitElement
   }
 
   clearLoading(iframeWin) {
-    this.isLoading = false;
+    this.dispatchEvent(new CustomEvent("replay-loading", {detail: {loading: false}}));
+
     if (this._loadPoll) {
       window.clearInterval(this._loadPoll);
       this._loadPoll = null;
@@ -136,16 +127,16 @@ class Replay extends LitElement
 
     if (iframeWin) {
       iframeWin.addEventListener("beforeunload", () => {
-        this.isLoading = true;
+        this.setLoading();
       });
     }
   }
 
-  refresh() {
-    if (this.isLoading && !forceReload) {
-      return;
-    }
+  setLoading() {
+    this.dispatchEvent(new CustomEvent("replay-loading", {detail: {loading: true}}));
+  }
 
+  refresh() {
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe) {

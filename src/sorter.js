@@ -16,6 +16,12 @@ class Sorter extends LitElement
 
     this.numResults = DEFAULT_RESULTS;
     this.defaultDesc = false;
+
+    this.sortKey = "url";
+    this.sortDesc = false;
+
+    this.defaultKey = "";
+    this.defaultDesc = false;
   }
 
   static get properties() {
@@ -68,13 +74,19 @@ class Sorter extends LitElement
     this.sortedData = [...this.data];
     this.numResults = DEFAULT_RESULTS;
 
-    this.sortedData.sort((first, second) => {
-      if (first[this.sortKey] === second[this.sortKey]) {
-        return 0;
+    if (this.sortKey === "") {
+      if (this.sortDesc) {
+        this.sortedData.reverse();
       }
+    } else {
+      this.sortedData.sort((first, second) => {
+        if (first[this.sortKey] === second[this.sortKey]) {
+          return 0;
+        }
 
-      return (this.sortDesc == (first[this.sortKey] < second[this.sortKey])) ? 1 : -1;
-    });
+        return (this.sortDesc == (first[this.sortKey] < second[this.sortKey])) ? 1 : -1;
+      });
+    }
 
     this.sendSortChanged();
   }

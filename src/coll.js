@@ -31,6 +31,7 @@ class Coll extends LitElement
     super();
     this.sourceUrl = null;
     this.inited = false;
+    this.isLoading = false;
 
     this.baseApiPrefix = "./wabac/api";
     this.baseReplayPrefix = "./wabac";
@@ -68,7 +69,9 @@ class Coll extends LitElement
 
       collInfo: { type: Object, attribute: false },
       coll: { type: String },
+
       hasStory: { type: Boolean },
+      isLoading: { type: Boolean },
 
       tabData: { type: Object, attribute: false },
 
@@ -128,6 +131,9 @@ class Coll extends LitElement
           this._replaceLoc = false;
         } else {
           window.location.hash = this._locationHash;
+        }
+        if (this.embed && window.parent !== window) {
+          window.parent.postMessage(this.tabData, '*');
         }
       }
       this._locUpdateNeeded = false;
@@ -372,7 +378,7 @@ class Coll extends LitElement
   }
 
   renderTabHeader() {
-    if (this.tabData.view === "replay" || (this.embed && this.embed !== "full")) {
+    if (this.tabData.view === "replay") {
       return "";
     }
 
@@ -548,10 +554,10 @@ class Coll extends LitElement
     ${isReplay ? html`
     <wr-coll-replay .collInfo="${this.collInfo}"
     sourceUrl="${this.sourceUrl}"
-    embed="${this.embed}"
     url="${this.tabData.url || ""}"
     ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="replay"
+    @replay-loading="${(e) => this.isLoading = e.detail.loading}"
     class="${isReplay ? '' : 'is-hidden'}">
     </wr-coll-replay>
     ` : ``}
@@ -560,7 +566,7 @@ class Coll extends LitElement
 
   onKeyDown(event) {
     if (event.key === "Esc" || event.key === "Escape") {
-      event.target.value = this.replayUrl;
+      event.target.value = this.url;
     }
   }
 

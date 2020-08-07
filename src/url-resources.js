@@ -235,10 +235,12 @@ class URLResources extends LitElement
     }   
     .result {
       border-bottom: 1px #dbdbdb solid;
+      min-height: fit-content;
     }
     .results-head {
       border-bottom: 2px #dbdbdb solid;
       margin-right: 16px;
+      min-height: fit-content;
     }
     .results-head a {
       color: black;

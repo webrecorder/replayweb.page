@@ -2,6 +2,7 @@
 
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss } from './misc';
+import ndjson from 'fetch-ndjson';
 
 import prettyBytes from 'pretty-bytes';
 
@@ -25,6 +26,7 @@ class Pages extends LitElement
     this.flex = null;
     this.newQuery = null;
     this.loading = false;
+    this.updatingSearch = false;
 
     this.currList = 0;
 
@@ -42,6 +44,10 @@ class Pages extends LitElement
 
   static get sortKeys() {
     return [
+      {
+        "key": "",
+        "name": "Score",
+      },
       {
         "key": "title",
         "name": "Title"
@@ -64,6 +70,7 @@ class Pages extends LitElement
       query: { type: String },
 
       loading: { type: Boolean },
+      updatingSearch: { type: Boolean },
       editable: { type: Boolean },
 
       selectedPages: { type: Set },
@@ -87,8 +94,14 @@ class Pages extends LitElement
   updated(changedProperties) {
     if (changedProperties.has("collInfo")) {
       this.updateTextSearch();
+    } else if (changedProperties.has("query")) {
       this.filter();
-    } else if (changedProperties.has("query") || changedProperties.has("currList")) {
+
+      // default sort to score if has query, otherwise timestamp
+      this.sortKey = this.query ? "" : "ts";
+      this.sortDesc = this.query ? false : true;
+
+    } else if (changedProperties.has("currList")) {
       this.filter();
     }
     if (changedProperties.has("active") && this.active) {
@@ -116,7 +129,8 @@ class Pages extends LitElement
     }
     this.loading = true;
     if (this.flex && this.query) {
-      const result = await this.flex.search(this.query);
+      const result = await this.flex.search(this.query, {limit: 25});
+
       this.filteredPages = result;
     } else {
       this.filteredPages = [...this.collInfo.pages];
@@ -152,16 +166,71 @@ class Pages extends LitElement
     this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
   }
 
-  updateTextSearch() {
-    this.flex = new FlexSearch({
-      doc: {
-        id: "id",
-        field: ["url", "title", "text"],
-      },
-      async: true
-    });
+  async updateTextSearch() {
+    if (this.updatingSearch) {
+      return;
+    }
 
-    this.flex.add(this.collInfo.pages);
+    this.updatingSearch = true;
+    let count = 0;
+
+    try {
+      const flex = new FlexSearch({
+        doc: {
+          id: "id",
+          field: ["url", "title", "text"],
+        },
+        async: true
+      });
+
+      this.flex = flex;
+
+      const cache = await caches.open("cache:" + this.collInfo.coll);
+
+      const indexUrl = `${this.collInfo.apiPrefix}/textIndex`;
+
+      let resp = await cache.match(indexUrl);
+
+      if (!resp) {
+        resp = await fetch(`${this.collInfo.apiPrefix}/textIndex`);
+        if (resp.status === 200) {
+          cache.put(indexUrl, resp.clone());
+        }
+      }
+
+      let lines = [];
+
+      async function flush() {
+        let curr = lines;
+        lines = [];
+        await flex.add(curr);
+        console.log("added " + count + " " + curr.length);
+        console.log(flex.info());
+      }
+
+      for await (const line of ndjson(resp.body.getReader())) {
+        if (!line.text) {
+          continue;
+        }
+
+        line.id = ++count;
+        lines.push(line);
+        if ((count % 100) === 0) {
+          await flush();
+        }
+      }
+
+      await flush();
+
+    } finally {
+      if (count === 0) {
+        this.flex.add(this.collInfo.pages);
+      }
+
+      this.updatingSearch = false;
+    }
+
+    await this.filter();
   }
 
   static get styles() {
@@ -313,6 +382,7 @@ class Pages extends LitElement
         display: flex;
         flex-direction: row;
         width: 100%;
+        min-height: fit-content;
 
         margin-bottom: 1.0em;
         border-bottom: 3px solid rgb(237, 237, 237);
@@ -428,8 +498,11 @@ class Pages extends LitElement
     </div>` : html``}
 
     <div class="header columns is-hidden-mobile">
-      <a @click="${this.onSort}" data-key="title" class="column is-2 ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
-      <a @click="${this.onSort}" data-key="ts" class="column is-8 pagetitle ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
+      ${this.query ? html`
+      <a @click="${this.onSort}" data-key="" class="column is-1 ${this.sortKey === "" ? (this.sortDesc ? "desc" : "asc") : ''}">Score</a>` : ``}
+
+      <a @click="${this.onSort}" data-key="ts" class="column is-2 ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
+      <a @click="${this.onSort}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
     </div>
 
     <div class="is-hidden-tablet mobile-header">
@@ -453,9 +526,9 @@ class Pages extends LitElement
       ${this.renderPageHeader()}
       </div>
       <div class="scroller" @scroll="${this.onScroll}">
-        ${this.sortedPages.map((p) => html`
+        ${this.sortedPages.map((p, i) => html`
         <div class="content ${this.selectedPages.has(p.id) ? 'selected' : ''}">
-          <wr-page-entry .editable="${this.editable}" .selected="${this.selectedPages.has(p.id)}" @sel-page="${this.onSelectToggle}" @delete-page="${this.onDeletePage}" replayPrefix="${this.collInfo.replayPrefix}" query="${this.query}" .page="${p}">
+          <wr-page-entry .index="${this.query ? (this.sortDesc ? this.sortedPages.length - i : i + 1) : 0}" .editable="${this.editable}" .selected="${this.selectedPages.has(p.id)}" @sel-page="${this.onSelectToggle}" @delete-page="${this.onDeletePage}" replayPrefix="${this.collInfo.replayPrefix}" query="${this.query}" .page="${p}">
           </wr-page-entry>
         </div>`)}
       </div>
@@ -476,7 +549,7 @@ class Pages extends LitElement
   onSort(event) {
     event.preventDefault();
 
-    const key = event.currentTarget.getAttribute("data-key");
+    const key = event.currentTarget.getAttribute("data-key") || "";
     if (key === this.sortKey) {
       this.sortDesc = !this.sortDesc;
     } else {
@@ -546,13 +619,16 @@ class Pages extends LitElement
     //}
 
     this.updateTextSearch();
-    this.filter();
     this.requestUpdate();
   }
 
   formatResults() {
     if (!this.collInfo || !this.collInfo.pages.length) {
       return html`No Pages defined this archive. Check out&nbsp;<a href="#view=resources">Page Resources</a>&nbsp;to search by URL.`;
+    }
+
+    if (this.updatingSearch) {
+      return "Initializing Search..."
     }
 
     if (this.loading) {
@@ -592,6 +668,7 @@ class PageEntry extends LitElement
     this.deleting = false;
     this.editable = false;
     this.iconValid = false;
+    this.index = 0;
   }
 
   static get properties() {
@@ -603,7 +680,8 @@ class PageEntry extends LitElement
       deleting: { type: Boolean },
       selected: { type: Boolean },
       editable: { type: Boolean },
-      iconValid: { type: Boolean }
+      iconValid: { type: Boolean },
+      index: { type: Number },
     }
   }
 
@@ -705,11 +783,14 @@ class PageEntry extends LitElement
     </div>` : ``}
 
     <div class="columns">
+      ${this.index ? html`
+      <div class="column col-index is-1">${this.index}.</div>
+      ` : ``}
       <div class="column col-date is-2">
-      <div>${date ? date.toLocaleDateString() : ""}</div>
-      <div>${date ? date.toLocaleTimeString() : ""}</div>
+        <div>${date ? date.toLocaleDateString() : ""}</div>
+        <div>${date ? date.toLocaleTimeString() : ""}</div>
       </div>
-      <div class="column is-9">
+      <div class="column">
         <article class="media">
           <figure class="media-left">
             <p class="">

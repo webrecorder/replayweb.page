@@ -292,8 +292,8 @@
     "@xtuc/long" "4.2.2"
 
 "@webrecorder/wabac@github:webrecorder/wabac.js":
-  version "2.0.3"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/39c73bd44a0d0659d0438cb10a29f46c2d58a671"
+  version "2.0.4"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/a286e76e705a8686c124e755cb22fad9618f4f23"
   dependencies:
     brotli "github:foliojs/brotli.js"
     fast-xml-parser "^3.15.1"
@@ -2151,6 +2151,11 @@ fd-slicer@~1.1.0:
   integrity sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=
   dependencies:
     pend "~1.2.0"
+
+fetch-ndjson@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/fetch-ndjson/-/fetch-ndjson-1.1.0.tgz#dff9f70493c2a8a61b46d4c0a6d2c04255c01618"
+  integrity sha512-/2xKQdp7MMPMReDXvWiU5BHsvcBjrGGO8s3jJBfEWL/dJXG3/u++BG1WNBM/AGFNvK/1HdrM6H8jFWFCBa9Mdw==
 
 figgy-pudding@^3.5.1:
   version "3.5.2"
