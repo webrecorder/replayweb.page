@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss, rwpLogo, IS_APP } from './misc';
 
-import { sourceToId } from './pageutils';
+import { sourceToId, tsToDate } from './pageutils';
 
 import fasBook from '@fortawesome/fontawesome-free/svgs/solid/book.svg';
 
@@ -9,10 +9,7 @@ import farListAlt from '@fortawesome/fontawesome-free/svgs/regular/list-alt.svg'
 import farResources from '@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg';
 import farPages from '@fortawesome/fontawesome-free/svgs/regular/file-image.svg';
 
-import { tsToDate } from './pageutils';
-
 import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
-import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
 import fasUnfullscreen from '@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg';
 
@@ -21,7 +18,7 @@ import fasRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
 import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
 
 
-const RWP_SCHEME = "rwp://";
+const RWP_SCHEME = "search://";
 
 
 // ===========================================================================

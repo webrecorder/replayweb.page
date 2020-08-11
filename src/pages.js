@@ -46,7 +46,7 @@ class Pages extends LitElement
     return [
       {
         "key": "",
-        "name": "Score",
+        "name": "Best Match",
       },
       {
         "key": "title",
@@ -191,9 +191,9 @@ class Pages extends LitElement
 
       let resp = await cache.match(indexUrl);
 
-      if (!resp) {
+      if (!resp || !Number(resp.headers.get("Content-Length"))) {
         resp = await fetch(`${this.collInfo.apiPrefix}/textIndex`);
-        if (resp.status === 200) {
+        if (resp.status === 200 && Number(resp.headers.get("Content-Length"))) {
           cache.put(indexUrl, resp.clone());
         }
       }
@@ -353,6 +353,7 @@ class Pages extends LitElement
 
         .mobile-header {
           margin: 0.5rem;
+          margin-left: 1.0rem;
           display: flex;
           justify-content: space-between;
           flex-direction: row;
@@ -499,7 +500,7 @@ class Pages extends LitElement
 
     <div class="header columns is-hidden-mobile">
       ${this.query ? html`
-      <a @click="${this.onSort}" data-key="" class="column is-1 ${this.sortKey === "" ? (this.sortDesc ? "desc" : "asc") : ''}">Score</a>` : ``}
+      <a @click="${this.onSort}" data-key="" class="column is-1 ${this.sortKey === "" ? (this.sortDesc ? "desc" : "asc") : ''}">Match</a>` : ``}
 
       <a @click="${this.onSort}" data-key="ts" class="column is-2 ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
       <a @click="${this.onSort}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
@@ -526,11 +527,12 @@ class Pages extends LitElement
       ${this.renderPageHeader()}
       </div>
       <div class="scroller" @scroll="${this.onScroll}">
-        ${this.sortedPages.map((p, i) => html`
-        <div class="content ${this.selectedPages.has(p.id) ? 'selected' : ''}">
-          <wr-page-entry .index="${this.query ? (this.sortDesc ? this.sortedPages.length - i : i + 1) : 0}" .editable="${this.editable}" .selected="${this.selectedPages.has(p.id)}" @sel-page="${this.onSelectToggle}" @delete-page="${this.onDeletePage}" replayPrefix="${this.collInfo.replayPrefix}" query="${this.query}" .page="${p}">
-          </wr-page-entry>
-        </div>`)}
+        ${this.sortedPages.length ? html`
+          ${this.sortedPages.map((p, i) => html`
+          <div class="content ${this.selectedPages.has(p.id) ? 'selected' : ''}">
+            <wr-page-entry .index="${this.query ? (this.sortDesc ? this.sortedPages.length - i : i + 1) : 0}" .editable="${this.editable}" .selected="${this.selectedPages.has(p.id)}" @sel-page="${this.onSelectToggle}" @delete-page="${this.onDeletePage}" replayPrefix="${this.collInfo.replayPrefix}" query="${this.query}" .page="${p}">
+            </wr-page-entry>
+          </div>`)}` : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
       </div>
     `;
   }
@@ -623,6 +625,14 @@ class Pages extends LitElement
   }
 
   formatResults() {
+    if (this.sortedPages.length === 1) {
+      return "1 Page Found";
+    } else {
+      return `${this.sortedPages.length} Pages Found`;
+    }
+  }
+
+  getNoResultsMessage() {
     if (!this.collInfo || !this.collInfo.pages.length) {
       return html`No Pages defined this archive. Check out&nbsp;<a href="#view=resources">Page Resources</a>&nbsp;to search by URL.`;
     }
@@ -635,13 +645,11 @@ class Pages extends LitElement
       return "Searching...";
     }
 
-    if (!this.sortedPages.length) {
-      return this.query ? "No Pages Found. Try changing the search query." : "No Pages Found";
-    } else if (this.sortedPages.length === 1) {
-      return "1 Page Found";
-    } else {
-      return `${this.sortedPages.length} Pages Found`;
+    if (!this.query) {
+      return "No Pages Found. Try changing the search query.";
     }
+
+    return "No Pages Found";
   }
 
   onScroll(event) {
@@ -737,6 +745,12 @@ class PageEntry extends LitElement
         }
         .col-date div {
           display: inline;
+        }
+        .col-index {
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          margin-top: -0.75em;
         }
         .columns {
           display: flex;
