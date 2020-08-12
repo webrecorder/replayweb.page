@@ -820,7 +820,7 @@ const ae=new WeakMap,oe=v(e=>t=>{if(!(t instanceof T))throw new Error("unsafeSVG
         </button>
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded">
-            <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="https://... Enter a URL to replay from the archive here"/>
+            <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
             ${t?M`<p id="datetime" class="control is-hidden-mobile">${e}</p>`:M``}
           </div>
         </form>
