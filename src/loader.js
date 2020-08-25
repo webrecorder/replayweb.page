@@ -160,6 +160,11 @@ You can select a file to upload from the main page by clicking the \'Choose File
 
   static get styles() {
     return wrapCss(css`
+      :host {
+        height: 100%;
+        display: flex;
+      }
+
       .logo {
         width: 96px;
         height: 96px;
@@ -189,6 +194,10 @@ You can select a file to upload from the main page by clicking the \'Choose File
         white-space: pre-wrap;
         margin-bottom: 2em;
       }
+
+      section.container {
+        margin: auto;
+      }
     `);
   }
 
@@ -198,9 +207,10 @@ You can select a file to upload from the main page by clicking the \'Choose File
       <div class="has-text-centered is-flex">
         <wr-anim-logo class="logo" size="96px"/>
       </div>
+      ${!this.embed ? html`
       <div class="level">
         <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
-      </div>
+      </div>` : ``}
       <div class="level">
         <div class="level-item has-text-centered">
         ${this.renderContent()}
@@ -224,7 +234,8 @@ You can select a file to upload from the main page by clicking the \'Choose File
             ${this.currentSize && this.totalSize ? html`
               <p class="loaded-prog">Loaded <b>${prettyBytes(this.currentSize)}</b> of <b>${prettyBytes(this.totalSize)}</b></p>` : html``}
 
-            <button @click="${this.onCancel}" class="button is-danger">Cancel</button>
+            ${!this.embed ? html`
+            <button @click="${this.onCancel}" class="button is-danger">Cancel</button>` : ``}
           </div>`;
 
       case "errored":

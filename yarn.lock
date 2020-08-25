@@ -293,7 +293,7 @@
 
 "@webrecorder/wabac@github:webrecorder/wabac.js":
   version "2.0.4"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/8d6c556d7993fed466f2914d407687cc55ba7e11"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/cf6728726398ee0bb9c8eda481d50de1b07ae566"
   dependencies:
     brotli "github:foliojs/brotli.js"
     fast-xml-parser "^3.15.1"
@@ -1791,10 +1791,10 @@ electron-publish@22.7.0:
     lazy-val "^1.0.4"
     mime "^2.4.5"
 
-electron@9.1.2:
-  version "9.1.2"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-9.1.2.tgz#bfa26d6b192ea13abb6f1461371fd731a8358988"
-  integrity sha512-xEYadr3XqIqJ4ktBPo0lhzPdovv4jLCpiUUGc2M1frUhFhwqXokwhPaTUcE+zfu5+uf/ONDnQApwjzznBsRrgQ==
+electron@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-10.0.0.tgz#4e777612ead76b39bc7241c7749bf6b0ece47889"
+  integrity sha512-0XX/LqYAHHCSbfLjUk9VRDPOeYjDPEzA9i7F50AqpEpFIWR2bp++0S0beRANUpPdkvtBDp+0R6vHV3iXPvuKyA==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"

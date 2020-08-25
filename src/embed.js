@@ -13,7 +13,7 @@ class Embed extends LitElement
 {
   constructor() {
     super();
-    this.replayBase = window.location.origin + "/replay/";
+    this.replaybase = window.location.origin + "/replay/";
     this.swName = __SW_NAME__;
     this.view = "replay";
     this.ts = "";
@@ -37,7 +37,7 @@ class Embed extends LitElement
       view: { type: String },
       embed: { type: String },
 
-      replayBase: { type: String },
+      replaybase: { type: String },
       swName: { type: String },
 
       title: { type: String },
@@ -57,7 +57,7 @@ class Embed extends LitElement
 
   async doRegister() {
     try {
-      await registerSW(this.swName, this.replayBase);
+      await registerSW(this.swName, this.replaybase);
       console.log("done");
       this.swInited = true;
     } catch (e) {
@@ -119,7 +119,7 @@ class Embed extends LitElement
         changedProperties.has("source")) {
 
       if (this.embed === null) {
-        this.embed = this.url ? "replay" : "full";
+        this.embed = "full";
       }
 
       this.paramString = new URLSearchParams({
@@ -169,7 +169,7 @@ class Embed extends LitElement
   render() {
     return html`
     ${this.paramString && this.hashString && this.swInited ? html`
-      <iframe @load="${this.onLoad}" src="${this.replayBase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
+      <iframe sandbox="allow-downloads allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-scripts allow-same-origin" @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
       ` : html``}
 
     ${this.noSW ? html`

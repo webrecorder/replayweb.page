@@ -104,12 +104,8 @@ const browserConfig = (env, argv) => {
         loader: 'svg-inline-loader'
       },
       {
-        test: /base.scss$/,
-        loaders: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-      },
-      {
         test: /main.scss$/,
-        loaders: ['to-string-loader', 'css-loader', 'sass-loader']
+        loaders: ['css-loader', 'sass-loader']
       },
       {
         test: /wombat.js|wombatWorkers.js|index.html$/i,

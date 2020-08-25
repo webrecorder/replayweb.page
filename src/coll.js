@@ -408,6 +408,10 @@ class Coll extends LitElement
   }
 
   renderLocationBar() {
+    if (this.embed === "replayonly") {
+      return "";
+    }
+
     const dateStr = tsToDate(this.ts).toLocaleString();
 
     const isReplay = this.tabData.view === "replay";
