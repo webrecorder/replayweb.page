@@ -293,7 +293,7 @@
 
 "@webrecorder/wabac@github:webrecorder/wabac.js":
   version "2.0.4"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/cf6728726398ee0bb9c8eda481d50de1b07ae566"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/9c36bd9bf0b95daedf9ad8f8b75dfd44dda403b1"
   dependencies:
     brotli "github:foliojs/brotli.js"
     fast-xml-parser "^3.15.1"

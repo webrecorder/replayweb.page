@@ -118,9 +118,7 @@ class Embed extends LitElement
         changedProperties.has("view") || 
         changedProperties.has("source")) {
 
-      if (this.embed === null) {
-        this.embed = "full";
-      }
+      this.embed = this.embed || "default";
 
       this.paramString = new URLSearchParams({
         source: this.source,
