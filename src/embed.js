@@ -25,6 +25,7 @@ class Embed extends LitElement
     this.deepLink = false;
     this.swInited = false;
     this.embed = null;
+    this.reloadCount = 0;
   }
 
   static get properties() {
@@ -188,10 +189,13 @@ Please try a different browser.\n
     const win = event.target.contentWindow;
     const doc = event.target.contentDocument;
 
-    if (win.navigator.serviceWorker && !win.navigator.serviceWorker.controller) {
-      setTimeout(() => window.location.reload(), 100);
+    if (win.navigator.serviceWorker && !win.navigator.serviceWorker.controller && this.reloadCount <= 2) {
+      this.reloadCount++;
+      setTimeout(() => win.location.reload(), 100);
       return;
     }
+
+    this.reloadCount = 0;
 
     if (win.customElements.get("replay-app-main")) {
       return;
