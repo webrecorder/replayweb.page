@@ -198,6 +198,10 @@ class Coll extends LitElement
         ...this.tabData, view
       };
     }
+
+    if (!this.hasStory && this.tabData.view === "story") {
+      this.tabData.view = "pages";
+    }
   }
 
   onTabClick(event) {
@@ -646,21 +650,19 @@ class Coll extends LitElement
   }
 
   navigateTo(value) {
-    if (value.startsWith("http://") || value.startsWith("https://")) {
-      this.url = value;
-      this._replaceLoc = !this._locUpdateNeeded;
-      this._locUpdateNeeded = true;
+    let data;
 
+    if (value.startsWith("http://") || value.startsWith("https://")) {
+      data = {url: value, view: "replay"};
     } else {
-      let data;
       if (!value.startsWith(RWP_SCHEME)) {
         data = {query: value, view: "pages"};
       } else {
         data = this._stringToParams(value);
       }
       //this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: false, data}}));
-      this.updateTabData(data);
     }
+    this.updateTabData(data);
   }
 
   _stringToParams(value) {
