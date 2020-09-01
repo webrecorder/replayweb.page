@@ -143,6 +143,9 @@ class Coll extends LitElement
       }
       this._locUpdateNeeded = false;
     }
+    if (changedProperties.has("showSidebar")) {
+      localStorage.setItem(`pages:showSidebar`, this.showSidebar ? "1" : "0");
+    }
   }
 
   async doUpdateInfo() {
@@ -706,7 +709,6 @@ class Coll extends LitElement
         this.updateTabData({view: "pages"});
       }
     }
-    localStorage.setItem(`pages:showSidebar`, this.showSidebar ? "1" : "0");
   }
 
   onReAuthed(event) {
