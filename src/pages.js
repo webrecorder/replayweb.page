@@ -822,7 +822,6 @@ class Pages extends LitElement
 }
 
 
-
 customElements.define("wr-page-view", Pages);
 
 export { Pages };

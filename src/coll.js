@@ -620,7 +620,7 @@ class Coll extends LitElement
 
     <split-me n="${isSidebar ? 2 : 1}"
     d="horizontal" 
-    sizes="0.30, 0.70"
+    .sizes=${[0.30, 0.70]}
     .minSizes=${[0.10, 0.50]}
     @dragstart="${this.dragStart}"
     class="${isReplay || isPages ? '' : 'is-hidden'}"
