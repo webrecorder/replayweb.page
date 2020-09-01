@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css, query } from 'lit-element';
 import { wrapCss, rwpLogo, IS_APP } from './misc';
 
 import { sourceToId, tsToDate } from './pageutils';
@@ -16,6 +16,8 @@ import fasUnfullscreen from '@fortawesome/fontawesome-free/svgs/solid/compress-a
 import fasLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
 import fasRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
 import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
+
+import { defineCustomElements as defineSplitMe } from 'split-me/loader';
 
 
 const RWP_SCHEME = "search://";
@@ -55,6 +57,8 @@ class Coll extends LitElement
     this.hasStory = false;
 
     this.editable = false;
+
+    this.showSidebar = localStorage.getItem(`pages:showSidebar`) === "1";
   }
 
   static get properties() {
@@ -63,6 +67,8 @@ class Coll extends LitElement
 
       sourceUrl: { type: String },
       loadInfo: { type: Object, attribute: false },
+
+      showSidebar: { type: Boolean },
 
       collInfo: { type: Object, attribute: false },
       coll: { type: String },
@@ -91,6 +97,8 @@ class Coll extends LitElement
     this.addEventListener("fullscreenchange", (event) => {
       this.isFullscreen = !!document.fullscreenElement;
     });
+
+    defineSplitMe(window);
   }
 
   updated(changedProperties) {
@@ -202,6 +210,10 @@ class Coll extends LitElement
     if (!this.hasStory && this.tabData.view === "story") {
       this.tabData.view = "pages";
     }
+
+    if (this.tabData.view === "replay" && this.tabData.query) {
+      this.showSidebar = true;
+    }
   }
 
   onTabClick(event) {
@@ -214,12 +226,26 @@ class Coll extends LitElement
 
   onCollTabNav(event) {
     if (event.target.id === this.tabData.view) {
-      this.updateTabData(event.detail.data, event.detail.replaceLoc);
+      this.updateTabData(event.detail.data, event.detail.replaceLoc, false);
+    } else if (this.showSidebar && event.target.id === "pages" && this.tabData.view === "replay") {
+      if (event.detail.data.showSidebar === false) {
+        this.showSidebar = false;
+        return;
+      }
+
+      this.updateTabData(event.detail.data, event.detail.replaceLoc, true);
     }
   }
 
-  updateTabData(data, replaceLoc = false) {
-    this.tabData = {view: this.tabData.view, ...data};
+  updateTabData(data, replaceLoc = false, merge = false) {
+    this.tabData = {...this.tabData, ...data};
+    // {
+    //   view: this.tabData.view,
+    //   query: this.tabData.query,
+    //   currList: this.tabData.currList,
+    //   ...data, 
+    // };
+
     if (this.tabData.url) {
       this.url = this.tabData.url || "";
     }
@@ -232,6 +258,12 @@ class Coll extends LitElement
 
   static get styles() {
     return wrapCss(css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
     .icon {
       vertical-align: text-top;
     }
@@ -282,7 +314,9 @@ class Coll extends LitElement
       height: 100%;
       width: 100%;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      min-height: 0px;
+      flex: auto;
     }
 
     ${Coll.replayBarStyles}
@@ -356,6 +390,25 @@ class Coll extends LitElement
     form {
       width: 100%;
     }
+
+    .sidebar {
+      transition: transform 0.5s;
+      opacity: 1.0;
+    }
+
+    split-me {
+      --phantom-divider-thickness: 4px;
+      --divider-thickness: 0.1rem;
+      --divider-color: rgb(151, 152, 154);
+      --divider-shadow: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    wr-page-view, wr-coll-replay {
+      width: 100%;
+    }
     `;
   }
 
@@ -368,9 +421,9 @@ class Coll extends LitElement
       .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
     } else if (this.collInfo) {
       return html`
+      ${this.renderLocationBar()}
+      ${this.renderTabHeader()}
       <nav id="contents" class="is-light">
-        ${this.renderLocationBar()}
-        ${this.renderTabHeader()}
         ${this.renderCollTabs()}
       </nav>`;
     } else {
@@ -445,7 +498,7 @@ class Coll extends LitElement
             ` : ``}
           </span>
         </button>
-        <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onGoPages}">
+        <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" .svg="${farListAlt}"></fa-icon>
           </span>
@@ -491,7 +544,7 @@ class Coll extends LitElement
                 </span>
                 <span>Reload</span>
               </a>
-              <a class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : 'has-text-grey'}" @click="${this.onGoPages}">
+              <a class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="" .svg="${farListAlt}"></fa-icon>
                 </span>
@@ -523,11 +576,29 @@ class Coll extends LitElement
     </div>`;
   }
 
+  dragStart(event) {
+    const replay = this.renderRoot.querySelector("wr-coll-replay");
+    if (replay) {
+      replay.setDisablePointer(true);
+    }
+
+    event.path[0].addEventListener("mouseup", (event) => this.dragEnd(), {once: true});
+  }
+
+  dragEnd() {
+    const replay = this.renderRoot.querySelector("wr-coll-replay");
+    if (replay) {
+      replay.setDisablePointer(false);
+    }
+  }
+
   renderCollTabs() {
     const isStory = this.tabData.view === 'story';
     const isPages = this.tabData.view === 'pages';
     const isResources = this.tabData.view === 'resources';
     const isReplay = this.tabData.view === 'replay';
+
+    const isSidebar = isReplay && this.showSidebar;
 
     return html`
     ${this.hasStory ? html`
@@ -538,15 +609,6 @@ class Coll extends LitElement
     class="${isStory ? '' : 'is-hidden'}">
     </wr-coll-story>` : ''}
 
-    <wr-page-view .collInfo="${this.collInfo}"
-    .active="${isPages}"
-    .editable="${this.editable}"
-    currList="${this.tabData.currList || 0}"
-    query="${this.tabData.query || ""}"
-    @coll-tab-nav="${this.onCollTabNav}" id="pages"
-    class="${isPages ? '' : 'is-hidden'}">
-    </wr-page-view>
-
     <wr-coll-resources .collInfo="${this.collInfo}"
     .active="${isResources}"
     query="${this.tabData.query || ""}"
@@ -556,16 +618,42 @@ class Coll extends LitElement
     class="is-paddingless ${isResources ? '' : 'is-hidden'}">
     </wr-coll-resources>
 
-    ${isReplay ? html`
-    <wr-coll-replay .collInfo="${this.collInfo}"
-    sourceUrl="${this.sourceUrl}"
-    url="${this.tabData.url || ""}"
-    ts="${this.tabData.ts || ""}"
-    @coll-tab-nav="${this.onCollTabNav}" id="replay"
-    @replay-loading="${(e) => this.isLoading = e.detail.loading}"
-    class="${isReplay ? '' : 'is-hidden'}">
-    </wr-coll-replay>
-    ` : ``}
+    <split-me n="${isSidebar ? 2 : 1}"
+    d="horizontal" 
+    sizes="0.30, 0.70"
+    .minSizes=${[0.10, 0.50]}
+    @dragstart="${this.dragStart}"
+    class="${isReplay || isPages ? '' : 'is-hidden'}"
+    >
+      <wr-page-view
+      slot="0"
+      .collInfo="${this.collInfo}"
+      .active="${isPages}"
+      .editable="${this.editable}"
+      .isSidebar="${isSidebar}"
+      currList="${this.tabData.currList || 0}"
+      query="${this.tabData.query || ""}"
+      .url="${this.tabData.url || ""}"
+      .ts="${this.tabData.ts || ""}"
+      @coll-tab-nav="${this.onCollTabNav}" id="pages"
+      class="${isSidebar ? 'sidebar' : (isPages ? '' : 'is-hidden')}">
+      </wr-page-view>
+
+      ${isReplay ? html`
+      <wr-coll-replay
+      slot="${isSidebar ? 1 : 0}"
+      .collInfo="${this.collInfo}"
+      sourceUrl="${this.sourceUrl}"
+      url="${this.tabData.url || ""}"
+      ts="${this.tabData.ts || ""}"
+      @coll-tab-nav="${this.onCollTabNav}" id="replay"
+      @replay-loading="${(e) => this.isLoading = e.detail.loading}"
+      class="${isReplay ? '' : 'is-hidden'}">
+      </wr-coll-replay>
+      ` : ``}
+
+    </split-me>
+
     `;
   }
 
@@ -605,11 +693,20 @@ class Coll extends LitElement
     window.history.forward();
   }
 
-  onGoPages(event) {
+  onShowPages(event) {
     event.preventDefault();
-    if (this.tabData && this.tabData.view === "replay") {
-      this.updateTabData({view: "pages"});
+    // show sidebar if table or greater
+    if (this.showSidebar || (document.documentElement.clientWidth >= 769)) {
+      this.showSidebar = !this.showSidebar;
+      //this.updateTabData({showSidebar: !this.showSidebar});
+    } else {
+    // otherwise, just go to full pages view
+      //this.showSidebar = false;
+      if (this.tabData && this.tabData.view === "replay") {
+        this.updateTabData({view: "pages"});
+      }
     }
+    localStorage.setItem(`pages:showSidebar`, this.showSidebar ? "1" : "0");
   }
 
   onReAuthed(event) {

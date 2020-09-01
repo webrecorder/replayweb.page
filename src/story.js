@@ -94,6 +94,7 @@ class Story extends LitElement
 
     .columns {
       width: 100%;
+      height: 100%;
       justify-self: stretch;
       margin: 1.0em 0 0 0;
       min-height: 0;
@@ -146,7 +147,6 @@ class Story extends LitElement
         overflow-y: auto;
 
         border-top: 1px solid black;
-        width: 100%;
         height: 100%;
         max-height: calc(100% - 150px - 0.75em);
       }

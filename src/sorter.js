@@ -113,6 +113,7 @@ class Sorter extends LitElement
     return wrapCss(css`
       :host {
         min-width: 100px;
+        box-sizing: border-box !important;
       }
       button.button.is-small {
         border-radius: 4px;

@@ -86,6 +86,14 @@ class Replay extends LitElement
     }
   }
 
+  setDisablePointer(disable) {
+    const iframe = this.renderRoot.querySelector("iframe");
+
+    if (iframe) {
+      iframe.style.pointerEvents = disable ? "none" : "all";
+    }
+  }
+
   onReplayMessage(event) {
     const iframe = this.renderRoot.querySelector("iframe");
 
@@ -154,7 +162,7 @@ class Replay extends LitElement
       }
 
       iframe {
-        width: 100vw;
+        width: 100%;
         #height: calc(100vh - 150px);
         height: 100%;
         border: 0px;
