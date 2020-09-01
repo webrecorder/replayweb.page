@@ -6,6 +6,7 @@ import { Story } from './story';
 import { GDrive } from './gdrive';
 import { Loader } from './loader';
 import { Pages } from './pages';
+import { PageEntry } from './pageentry';
 import { Replay } from './replay';
 import { Sorter } from './sorter';
 import { URLResources } from './url-resources';
