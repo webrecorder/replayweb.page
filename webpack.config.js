@@ -86,6 +86,9 @@ const browserConfig = (env, argv) => {
     },
 
     plugins: [
+      new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 1,
+      }),
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({
         __SW_NAME__: JSON.stringify('sw.js'),
