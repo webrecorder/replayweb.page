@@ -129,62 +129,62 @@ class App extends LitElement
           </span>
         `}
         <a href="#" role="button" id="menu-button" @click="${this.onNavMenu}" @keyup="${this.clickOnSpacebarPress}"
-        class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-haspopup="true" aria-expanded="${this.navMenuShown}">
+          class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-haspopup="true" aria-expanded="${this.navMenuShown}">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
       <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
-      <div class="navbar-start">
-      ${!this.embed ? html`
-        <a id="home" class="navbar-item logo-text has-text-weight-bold is-size-5 has-allcaps" href="/">
-          <span class="has-text-primary">replay</span>
-          <span class="has-text-link">web.page</span>
-          <span class="is-sr-only">Home</span>
-        </a>` : ``}
+        <div class="navbar-start">
+          ${!this.embed ? html`
+            <a id="home" class="navbar-item logo-text has-text-weight-bold is-size-5 has-allcaps" href="/">
+              <span class="has-text-primary">replay</span>
+              <span class="has-text-link">web.page</span>
+              <span class="is-sr-only">Home</span>
+            </a>` : ``}
 
-      ${IS_APP && !this.collInfo ? html`
-        <a class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}">
-          <fa-icon .svg="${fasArrowLeft}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
-        </a>
-        <a class="navbar-item arrow-button" title="Go Forward" @click="${(e) => window.history.forward()}">
-          <fa-icon .svg="${fasArrowRight}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Forward</span>
-        </a>
-      ` : ``}
-      ${this.sourceUrl && this.collInfo ? html`
-        <div class="navbar-item has-dropdown is-hoverable">
-          <span tabindex="0" class="info-menu navbar-link is-arrowless" aria-labelledby="about-this-archive">
-            <fa-icon size="1.2em" .svg="${fasInfoIcon}" aria-hidden="true"></fa-icon>
-            <span id="about-this-archive" class="menu-only">About this Archive</span>
-          </span>
-          <div class="navbar-dropdown">
-            <div class="navbar-item wide-only"><i>About this Archive</i></div>
-            <hr class="navbar-divider">
-            <div class="navbar-item">
-              Source:&nbsp;<b>${this.sourceUrl}</b>
+          ${IS_APP && !this.collInfo ? html`
+            <a class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}">
+              <fa-icon .svg="${fasArrowLeft}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
+            </a>
+            <a class="navbar-item arrow-button" title="Go Forward" @click="${(e) => window.history.forward()}">
+              <fa-icon .svg="${fasArrowRight}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Forward</span>
+            </a>
+          ` : ``}
+          ${this.sourceUrl && this.collInfo ? html`
+            <div class="navbar-item has-dropdown is-hoverable">
+              <span tabindex="0" class="info-menu navbar-link is-arrowless" aria-labelledby="about-this-archive">
+                <fa-icon size="1.2em" .svg="${fasInfoIcon}" aria-hidden="true"></fa-icon>
+                <span id="about-this-archive" class="menu-only">About this Archive</span>
+              </span>
+              <div class="navbar-dropdown">
+                <div class="navbar-item wide-only"><i>About this Archive</i></div>
+                <hr class="navbar-divider">
+                <div class="navbar-item">
+                  Source:&nbsp;<b>${this.sourceUrl}</b>
+                </div>
+                <div class="navbar-item">
+                  Filename:&nbsp;<b>${this.collInfo.filename}</b>
+                </div>
+                <div class="navbar-item">
+                  Total Size:&nbsp;<b>${prettyBytes(Number(this.collInfo.size || 0))}</b>
+                </div>
+                <div class="navbar-item">
+                  Loading Mode:&nbsp;<b>${this.collInfo.onDemand ? "Download On-Demand" : "Fully Local"}</b>
+                </div>
+                <div class="navbar-item">
+                  Collection Id:&nbsp;<b>${this.collInfo.coll}</b>
+                </div>
+                <hr class="navbar-divider">
+                <div class="navbar-item">
+                  ReplayWeb.page Version: ${__VERSION__}
+                </div>
+              </div>
             </div>
-            <div class="navbar-item">
-              Filename:&nbsp;<b>${this.collInfo.filename}</b>
-            </div>
-            <div class="navbar-item">
-              Total Size:&nbsp;<b>${prettyBytes(Number(this.collInfo.size || 0))}</b>
-            </div>
-            <div class="navbar-item">
-              Loading Mode:&nbsp;<b>${this.collInfo.onDemand ? "Download On-Demand" : "Fully Local"}</b>
-            </div>
-            <div class="navbar-item">
-              Collection Id:&nbsp;<b>${this.collInfo.coll}</b>
-            </div>
-            <hr class="navbar-divider">
-            <div class="navbar-item">
-              ReplayWeb.page Version: ${__VERSION__}
-            </div>
-          </div>
+            ` : ``}
         </div>
-        ` : ``}
-      </div>
-      ${!this.embed ? html`
+        ${!this.embed ? html`
         <div class="navbar-end">
           <a href="/docs" target="_blank" class="navbar-item">
             <fa-icon .svg="${fasHelp}" aria-hidden="true"></fa-icon><span>&nbsp;User Docs</span>
