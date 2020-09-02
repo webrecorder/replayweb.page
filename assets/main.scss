@@ -3,6 +3,7 @@
 /*$wr-green: #64e986;*/
 $wr-green: #55be6f;
 $wr-yellow:  #ffd975;
+$wr-dark-yellow: #ffc42e;
 $wr-light-blue: #43daff;
 $wr-med-blue: #27a0ff;
 $wr-dark-blue: #4876ff;
@@ -27,6 +28,20 @@ $input-placeholder-color: #757575;
 $input-disabled-placeholder-color: #707070;
 .input::placeholder, .textarea::placeholder, .select select::placeholder {
     opacity: 1;
+}
+
+// focus/hover styles for buttons
+.file-label:focus-within .file-cta {
+    background-color: #e8e8e8;
+    color: #363636;
+}
+.button.is-primary:focus, .button.is-primary:hover, .button.is-primary:active {
+  background-color: $dark !important;
+  color: white !important;
+}
+.button.is-warning:focus, .button.is-warning:hover, .button.is-warning:active {
+  background-color: $wr-dark-yellow !important;
+  color: black !important;
 }
 
 .main-scroll {
