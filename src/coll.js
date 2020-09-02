@@ -18,7 +18,6 @@ import fasRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
 import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
 
 import Split from 'split.js'
-//import { defineCustomElements as defineSplitMe } from 'split-me/loader';
 
 
 const RWP_SCHEME = "search://";
@@ -178,8 +177,10 @@ class Coll extends LitElement
 
         this.splitter = Split([pages, replay], opts);
       }
-    } else {
-      this.splitter.destroy();
+    } else if (this.splitter) {
+      try {
+        this.splitter.destroy();
+      } catch (e) {}
       this.splitter = null;
     }
   }
@@ -445,8 +446,12 @@ class Coll extends LitElement
       cursor: col-resize;
     }
 
-    wr-page-view, wr-coll-replay {
+    wr-coll-replay {
       width: 100%;
+    }
+
+    wr-page-view.full-pages {
+      width: 100% !important;
     }
     `;
   }
@@ -668,7 +673,7 @@ class Coll extends LitElement
     .url="${this.tabData.url || ""}"
     .ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"
-    class="${isSidebar ? 'sidebar' : (isPages ? '' : 'is-hidden')}">
+    class="${isSidebar ? 'sidebar' : (isPages ? 'full-pages' : 'is-hidden')}">
     </wr-page-view>
 
     ${isReplay ? html`
