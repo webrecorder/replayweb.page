@@ -197,60 +197,61 @@ class App extends LitElement
         </div>` : html``}
       </div>
     </nav>
-  ` : ''}
+    ` : ''}
 
-  ${this.sourceUrl ? html`
+    ${this.sourceUrl ? html`
 
-  <wr-coll .loadInfo="${this.loadInfo}"
-  sourceUrl="${this.sourceUrl}"
-  embed="${this.embed}"
-  @replay-favicons=${this.onFavIcons}
-  @coll-loaded=${this.onCollLoaded}></wr-coll>
-  ` : html`
+    <wr-coll .loadInfo="${this.loadInfo}"
+    sourceUrl="${this.sourceUrl}"
+    embed="${this.embed}"
+    @replay-favicons=${this.onFavIcons}
+    @coll-loaded=${this.onCollLoaded}></wr-coll>
+    ` : html`
 
-  <wr-coll-index>
-  ${!IS_APP ? html`
-  <p slot="header" class="tagline is-size-5 has-text-centered">Explore and Replay Interactive Archived Webpages Directly in your Browser. <i><a target="_blank" href="./docs/examples">(See Examples)</a></i></p>
-  ` : ``}
-    <wr-chooser slot="header" @load-start=${this.onStartLoad}></wr-chooser>
-  </wr-coll-index>
-  `}
+    <wr-coll-index>
+      ${!IS_APP ? html`
+      <p slot="header" class="tagline is-size-5 has-text-centered">Explore and Replay Interactive Archived Webpages Directly in your Browser. <i><a target="_blank" href="./docs/examples">(See Examples)</a></i></p>
+      ` : ``}
+      <wr-chooser slot="header" @load-start=${this.onStartLoad}></wr-chooser>
+    </wr-coll-index>
+    `}
 
-  ${this.showTerms ? html`
-  <div class="modal is-active">
-    <div class="modal-background" @click="${(e) => this.showTerms = false}"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-        <p class="modal-card-title">Terms and Privacy</p>
-          <button class="delete" aria-label="close" @click="${(e) => this.showTerms = false}"></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="container">
-            <div class="content">
-            <p>This site is a static browser-based application that loads web archive files provided by the user
-            and renders them for replay in the browser.</p>
-            <p>The site is operated by the <a href="https://webrecorder.net/">Webrecorder Project</a></p>
-            <p>See the <a target="_blank" href="./docs">Docs</a> for more info on how it works.</p>
+    ${this.showTerms ? html`
+    <div class="modal is-active">
+      <div class="modal-background" @click="${(e) => this.showTerms = false}"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Terms and Privacy</p>
+            <button class="delete" aria-label="close" @click="${(e) => this.showTerms = false}"></button>
+          </header>
+          <section class="modal-card-body">
+            <div class="container">
+              <div class="content">
+                <p>This site is a static browser-based application that loads web archive files provided by the user
+                and renders them for replay in the browser.</p>
+                <p>The site is operated by the <a href="https://webrecorder.net/">Webrecorder Project</a></p>
+                <p>See the <a target="_blank" href="./docs">Docs</a> for more info on how it works.</p>
 
-            <h3>Privacy</h3>
-            <p><b>No data is uploaded anywhere and no information is collected.</b></p>
-            <p>All content rendered stays directly in your browser. When loading an archive from Google Drive,
-            the site may ask for account authorization to download the specified file only.</p>
+                <h3>Privacy</h3>
+                <p><b>No data is uploaded anywhere and no information is collected.</b></p>
+                <p>All content rendered stays directly in your browser. When loading an archive from Google Drive,
+                the site may ask for account authorization to download the specified file only.</p>
 
-            <h4>Disclaimer of Warranties</h4>
-            <p>The application may not always be available. No guarantees!</p>
-            <p>Some legalese:</p>
-            <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE"
-            AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
-            INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
-            </p>
-            <a class="button is-warning" href="#" @click="${(e) => this.showTerms = false}">Close</a>
+                <h4>Disclaimer of Warranties</h4>
+                <p>The application may not always be available. No guarantees!</p>
+                <p>Some legalese:</p>
+                <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE"
+                AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
+                INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+                </p>
+                <a class="button is-warning" href="#" @click="${(e) => this.showTerms = false}">Close</a>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
-  </div>
-  ` : ``} `
+    </div>
+    ` : ``} `
   }
 
   firstUpdated() {
