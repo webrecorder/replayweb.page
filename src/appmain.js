@@ -194,6 +194,7 @@ class App extends LitElement
            -->
           <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
         </div>` : html``}
+      </div>
     </nav>
   ` : ''}
 
