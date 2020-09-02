@@ -113,7 +113,7 @@ class App extends LitElement
     }
     return html`
     ${!this.embed || this.embed === "full" ? html`
-      <nav class="navbar has-background-info" role="navigation" aria-label="main navigation">
+    <nav class="navbar has-background-info" aria-label="main">
       <div class="navbar-brand">
         ${!this.embed ? html`
         <a class="navbar-item wr-logo-item" title="ReplayWeb.page" href="/">
