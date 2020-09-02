@@ -153,9 +153,10 @@ class App extends LitElement
       ` : ``}
       ${this.sourceUrl && this.collInfo ? html`
         <div class="navbar-item has-dropdown is-hoverable">
-          <a class="info-menu navbar-link is-arrowless"><fa-icon size="1.2em" .svg="${fasInfoIcon}"></fa-icon>
-          <span class="menu-only">About this Archive</span>
-          </a>
+          <span tabindex="0" class="info-menu navbar-link is-arrowless" aria-labelledby="about-this-archive">
+            <fa-icon size="1.2em" .svg="${fasInfoIcon}" aria-hidden="true"></fa-icon>
+            <span id="about-this-archive" class="menu-only">About this Archive</span>
+          </span>
           <div class="navbar-dropdown">
             <div class="navbar-item wide-only"><i>About this Archive</i></div>
             <hr class="navbar-divider">
