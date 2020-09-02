@@ -94,7 +94,7 @@ class CollIndex extends LitElement
     const resp = await fetch("./wabac/api/index");
     try {
       const json = await resp.json();
-      this.colls = json.colls.map((coll) => { 
+      this.colls = json.colls.map((coll) => {
         coll.title = coll.title || coll.filename;
         return coll;
       });
@@ -292,7 +292,7 @@ class CollIndex extends LitElement
                 </div>
                 <div class="column is-2"><p class="minihead">Date Loaded</p>${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}</div>
                 <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.size || 0))}
-                 
+
                 </div>
               </div>
               ${!this._deleting[coll.sourceUrl] ? html`
