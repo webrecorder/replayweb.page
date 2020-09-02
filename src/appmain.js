@@ -75,7 +75,7 @@ class App extends LitElement
     .tagline {
       margin-top: 1.0rem;
     }
-    
+
     @media screen and (min-width: 840px) {
       .menu-only {
         display: none;
@@ -188,7 +188,7 @@ class App extends LitElement
         </div>` : html``}
     </nav>
   ` : ''}
-  
+
   ${this.sourceUrl ? html`
 
   <wr-coll .loadInfo="${this.loadInfo}"
@@ -221,17 +221,17 @@ class App extends LitElement
             and renders them for replay in the browser.</p>
             <p>The site is operated by the <a href="https://webrecorder.net/">Webrecorder Project</a></p>
             <p>See the <a target="_blank" href="./docs">Docs</a> for more info on how it works.</p>
-        
+
             <h3>Privacy</h3>
             <p><b>No data is uploaded anywhere and no information is collected.</b></p>
-            <p>All content rendered stays directly in your browser. When loading an archive from Google Drive, 
+            <p>All content rendered stays directly in your browser. When loading an archive from Google Drive,
             the site may ask for account authorization to download the specified file only.</p>
-        
+
             <h4>Disclaimer of Warranties</h4>
             <p>The application may not always be available. No guarantees!</p>
             <p>Some legalese:</p>
-            <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE" 
-            AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE, 
+            <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE"
+            AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
             INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
             </p>
             <a class="button is-warning" href="#" @click="${(e) => this.showTerms = false}">Close</a>
@@ -257,18 +257,18 @@ class App extends LitElement
   }
 
   onFavIcons(event) {
-    const head = document.querySelector('head'); 
+    const head = document.querySelector('head');
     const oldLinks = document.querySelectorAll("link[rel*='icon']");
 
-    for (const link of oldLinks) { 
-      head.removeChild(link); 
-    } 
+    for (const link of oldLinks) {
+      head.removeChild(link);
+    }
 
     for (const icon of event.detail.icons) {
-      const link = document.createElement('link'); 
-      link.rel = icon.rel; 
-      link.href = icon.href; 
-      head.appendChild(link);  
+      const link = document.createElement('link');
+      link.rel = icon.rel;
+      link.href = icon.href;
+      head.appendChild(link);
     }
   }
 
