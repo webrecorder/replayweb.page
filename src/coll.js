@@ -17,7 +17,8 @@ import fasLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
 import fasRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
 import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
 
-import { defineCustomElements as defineSplitMe } from 'split-me/loader';
+import Split from 'split.js'
+//import { defineCustomElements as defineSplitMe } from 'split-me/loader';
 
 
 const RWP_SCHEME = "search://";
@@ -59,6 +60,7 @@ class Coll extends LitElement
     this.editable = false;
 
     this.showSidebar = localStorage.getItem(`pages:showSidebar`) === "1";
+    this.splitter = null;
   }
 
   static get properties() {
@@ -98,7 +100,7 @@ class Coll extends LitElement
       this.isFullscreen = !!document.fullscreenElement;
     });
 
-    defineSplitMe(window);
+    //defineSplitMe(window);
   }
 
   updated(changedProperties) {
@@ -145,6 +147,40 @@ class Coll extends LitElement
     }
     if (changedProperties.has("showSidebar")) {
       localStorage.setItem(`pages:showSidebar`, this.showSidebar ? "1" : "0");
+    }
+
+    if (changedProperties.has("tabData") || changedProperties.has("showSidebar")) {
+      this.configureSplitter();
+    }
+  }
+
+  configureSplitter() {
+    if (this.tabData.view === "replay" && this.showSidebar) {
+      const pages = this.renderRoot.querySelector("wr-page-view");
+      const replay = this.renderRoot.querySelector("wr-coll-replay");
+
+      if (pages && replay && !this.splitter) {
+        const opts = {
+          sizes: [30, 70],
+
+          minSize: [300, 300],
+
+          gutterSize: 4,
+
+          onDragStart() {
+            replay.setDisablePointer(true);
+          },
+
+          onDragEnd() {
+            replay.setDisablePointer(false);
+          }
+        }
+
+        this.splitter = Split([pages, replay], opts);
+      }
+    } else {
+      this.splitter.destroy();
+      this.splitter = null;
     }
   }
 
@@ -399,14 +435,14 @@ class Coll extends LitElement
       opacity: 1.0;
     }
 
-    split-me {
-      --phantom-divider-thickness: 4px;
-      --divider-thickness: 0.1rem;
-      --divider-color: rgb(151, 152, 154);
-      --divider-shadow: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
+    .gutter.gutter-horizontal {
+      cursor: col-resize;
+      float: left;
+      background-color: rgb(151, 152, 154);
+    }
+
+    .gutter.gutter-horizontal:hover {
+      cursor: col-resize;
     }
 
     wr-page-view, wr-coll-replay {
@@ -585,7 +621,7 @@ class Coll extends LitElement
       replay.setDisablePointer(true);
     }
 
-    event.path[0].addEventListener("mouseup", (event) => this.dragEnd(), {once: true});
+    //event.path[0].addEventListener("mouseup", (event) => this.dragEnd(), {once: true});
   }
 
   dragEnd() {
@@ -621,41 +657,32 @@ class Coll extends LitElement
     class="is-paddingless ${isResources ? '' : 'is-hidden'}">
     </wr-coll-resources>
 
-    <split-me n="${isSidebar ? 2 : 1}"
-    d="horizontal" 
-    .sizes=${[0.30, 0.70]}
-    .minSizes=${[0.10, 0.50]}
-    @dragstart="${this.dragStart}"
-    class="${isReplay || isPages ? '' : 'is-hidden'}"
-    >
-      <wr-page-view
-      slot="0"
-      .collInfo="${this.collInfo}"
-      .active="${isPages}"
-      .editable="${this.editable}"
-      .isSidebar="${isSidebar}"
-      currList="${this.tabData.currList || 0}"
-      query="${this.tabData.query || ""}"
-      .url="${this.tabData.url || ""}"
-      .ts="${this.tabData.ts || ""}"
-      @coll-tab-nav="${this.onCollTabNav}" id="pages"
-      class="${isSidebar ? 'sidebar' : (isPages ? '' : 'is-hidden')}">
-      </wr-page-view>
+    <wr-page-view
+    slot="0"
+    .collInfo="${this.collInfo}"
+    .active="${isPages}"
+    .editable="${this.editable}"
+    .isSidebar="${isSidebar}"
+    currList="${this.tabData.currList || 0}"
+    query="${this.tabData.query || ""}"
+    .url="${this.tabData.url || ""}"
+    .ts="${this.tabData.ts || ""}"
+    @coll-tab-nav="${this.onCollTabNav}" id="pages"
+    class="${isSidebar ? 'sidebar' : (isPages ? '' : 'is-hidden')}">
+    </wr-page-view>
 
-      ${isReplay ? html`
-      <wr-coll-replay
-      slot="${isSidebar ? 1 : 0}"
-      .collInfo="${this.collInfo}"
-      sourceUrl="${this.sourceUrl}"
-      url="${this.tabData.url || ""}"
-      ts="${this.tabData.ts || ""}"
-      @coll-tab-nav="${this.onCollTabNav}" id="replay"
-      @replay-loading="${(e) => this.isLoading = e.detail.loading}"
-      class="${isReplay ? '' : 'is-hidden'}">
-      </wr-coll-replay>
-      ` : ``}
-
-    </split-me>
+    ${isReplay ? html`
+    <wr-coll-replay
+    slot="${isSidebar ? 1 : 0}"
+    .collInfo="${this.collInfo}"
+    sourceUrl="${this.sourceUrl}"
+    url="${this.tabData.url || ""}"
+    ts="${this.tabData.ts || ""}"
+    @coll-tab-nav="${this.onCollTabNav}" id="replay"
+    @replay-loading="${(e) => this.isLoading = e.detail.loading}"
+    class="${isReplay ? '' : 'is-hidden'}">
+    </wr-coll-replay>
+    ` : ``}
 
     `;
   }
