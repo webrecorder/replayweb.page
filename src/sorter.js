@@ -144,7 +144,8 @@ class Sorter extends LitElement
     </div>
     <button @click=${(e) => this.sortDesc = !this.sortDesc} class="button is-small">
       <span>Order:</span>
-      <span class="icon"><fa-icon .svg=${this.sortDesc ? fasSortUp : fasSortDown}></span>
+      <span class="is-sr-only">${this.sortDesc ? "Ascending" : "Descending"}</span>
+      <span class="icon"><fa-icon aria-hidden="true" .svg=${this.sortDesc ? fasSortUp : fasSortDown}></span>
     </button>`;
   }
 }
