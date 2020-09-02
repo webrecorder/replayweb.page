@@ -146,10 +146,10 @@ class App extends LitElement
 
       ${IS_APP && !this.collInfo ? html`
         <a class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}">
-          <fa-icon .svg="${fasArrowLeft}"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
+          <fa-icon .svg="${fasArrowLeft}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
         </a>
         <a class="navbar-item arrow-button" title="Go Forward" @click="${(e) => window.history.forward()}">
-          <fa-icon .svg="${fasArrowRight}"></fa-icon><span class="menu-only">&nbsp;Go Forward</span>
+          <fa-icon .svg="${fasArrowRight}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Forward</span>
         </a>
       ` : ``}
       ${this.sourceUrl && this.collInfo ? html`
@@ -186,7 +186,7 @@ class App extends LitElement
       ${!this.embed ? html`
         <div class="navbar-end">
           <a href="/docs" target="_blank" class="navbar-item">
-            <fa-icon .svg="${fasHelp}"></fa-icon><span>&nbsp;User Docs</span>
+            <fa-icon .svg="${fasHelp}" aria-hidden="true"></fa-icon><span>&nbsp;User Docs</span>
           </a>
           <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
         </div>` : html``}
