@@ -23,6 +23,7 @@ class App extends LitElement
     this.pageParams = {};
 
     this.inited = false;
+    this.navMenuShown = false;
 
     registerSW(__SW_NAME__);
     initDBWorker();
@@ -127,9 +128,8 @@ class App extends LitElement
             <fa-icon id="wrlogo" size="2.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
           </span>
         `}
-
-        <a role="button" @click="${this.onNavMenu}"
-        class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-expanded="false">
+        <a href="#" role="button" id="menu-button" @click="${this.onNavMenu}" @keyup="${this.clickOnSpacebarPress}"
+        class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-haspopup="true" aria-expanded="${this.navMenuShown}">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -276,13 +276,35 @@ class App extends LitElement
     }
   }
 
+  clickOnSpacebarPress(event) {
+    // Buttons are expected to respond to both enter/return and spacebar.
+    // If using `<a>` with `role='button'`, assign this handler to keyup.
+    if (event.key == " ") {
+      event.preventDefault();
+      event.target.click();
+    }
+  }
+
   onNavMenu(event) {
+    event.preventDefault();
     event.stopPropagation();
     this.navMenuShown = !this.navMenuShown;
 
     if (this.navMenuShown) {
-      document.addEventListener("click", () => {
+      // Since this menu can be large and obscure significant page content,
+      // dismiss like a modal, returning keyboard focus to the
+      // menu button on dismissal.
+      document.addEventListener("click", (event) => {
+        event.preventDefault();
         this.navMenuShown = false;
+        this.renderRoot.querySelector("#menu-button").focus();
+      }, {once: true});
+      document.addEventListener("keypress", (event) => {
+        if (event.key == "Escape") {
+          event.preventDefault();
+          this.navMenuShown = false;
+          this.renderRoot.querySelector("#menu-button").focus();
+        }
       }, {once: true});
     }
   }
