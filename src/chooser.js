@@ -111,8 +111,8 @@ class Chooser extends LitElement
   render() {
     return html`
     <section class="section less-padding">
-      <nav class="panel">
-        <p class="panel-heading">Load Web Archive</p>
+      <div class="panel">
+        <h2 class="panel-heading">Load Web Archive</h2>
         <div class="extra-padding panel-block file has-name">
           <form class="content is-flex" @submit="${this.onStartLoad}">
             <label class="file-label">
@@ -146,7 +146,7 @@ class Chooser extends LitElement
 
           </form>
         </div>
-      </nav>
+      </div>
     </section>`;
   }
 }
