@@ -188,6 +188,10 @@ class App extends LitElement
           <a href="/docs" target="_blank" class="navbar-item">
             <fa-icon .svg="${fasHelp}" aria-hidden="true"></fa-icon><span>&nbsp;User Docs</span>
           </a>
+          <!--
+           -- NB: the Terms modal is currently inaccessible to people using keyboards or screen readers.
+           --  Should all the JS and infrastructure for accessible modals be added, or should Terms be a normal page?
+           -->
           <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
         </div>` : html``}
     </nav>
