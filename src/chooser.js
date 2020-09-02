@@ -115,7 +115,7 @@ class Chooser extends LitElement
                 @change=${this.onChooseFile} type="file" id="fileupload" name="fileupload">
               <span class="file-cta">
                 <span class="file-icon">
-                  <fa-icon size="0.9em" .svg=${fasUpload}></fa-icon>
+                  <fa-icon size="0.9em" .svg=${fasUpload} aria-hidden="true"></fa-icon>
                 </span>
                 <span class="file-label is-hidden-touch">
                   Choose File...
