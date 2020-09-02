@@ -45,9 +45,9 @@ class Chooser extends LitElement
       loadInfo.noCache = this.file.path !== undefined;
       loadInfo.name = this.fileDisplayName;
     }
-                
+
     this.dispatchEvent(new CustomEvent("load-start", {detail: loadInfo}));
-    
+
     return false;
   }
 
