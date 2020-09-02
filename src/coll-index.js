@@ -250,10 +250,10 @@ class CollIndex extends LitElement
     </header>
     <section class="section no-top-padding">
       <div class="sort-header is-small">
-        <a @click=${(e) => this.hideHeader = !this.hideHeader} class="collapse button is-small">
+        <button @click=${(e) => this.hideHeader = !this.hideHeader} class="collapse button is-small">
           <span class="icon"><fa-icon .svg=${this.hideHeader ? fasArrowDown : fasArrowUp}></span>
-          <span>${this.hideHeader ? 'Show' : 'Hide'}</span>
-        </a>
+          <span>${this.hideHeader ? 'Show ' : 'Hide'} <span class="is-sr-only">Header</span></span>
+        </button>
       </div>
       <nav class="panel is-light">
         <div class="panel-heading"><span>Loaded Archives</span>
