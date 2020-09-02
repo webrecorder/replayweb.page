@@ -256,9 +256,9 @@ class CollIndex extends LitElement
           <span>${this.hideHeader ? 'Show ' : 'Hide'} <span class="is-sr-only">Header</span></span>
         </button>
       </div>
-      <nav class="panel is-light">
-        <div class="panel-heading"><span>Loaded Archives</span>
-        </div>
+      <div class="panel is-light">
+        <h2 class="panel-heading"><span>Loaded Archives</span>
+        </h2>
 
         ${this.colls.length ? html`
         <div class="panel-block sort-header is-small">
@@ -309,7 +309,7 @@ class CollIndex extends LitElement
           <i>No Archives so far! Archives loaded in the section above will appear here.</i>
         </div>
         `}
-      </nav>
+      </div>
     </section>
     `;
   }
