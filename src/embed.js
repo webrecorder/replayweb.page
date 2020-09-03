@@ -168,7 +168,7 @@ class Embed extends LitElement
   render() {
     return html`
     ${this.paramString && this.hashString && this.swInited ? html`
-      <iframe sandbox="allow-downloads allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-scripts allow-same-origin" @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
+      <iframe sandbox="allow-downloads allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-scripts allow-same-origin allow-forms" @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
       ` : html``}
 
     ${this.noSW ? html`

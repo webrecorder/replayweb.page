@@ -1936,7 +1936,7 @@ const zt=new WeakMap,$t=w(e=>t=>{if(!(t instanceof T))throw new Error("unsafeHTM
       }
     `)}render(){return O`
     ${this.paramString&&this.hashString&&this.swInited?O`
-      <iframe sandbox="allow-downloads allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-scripts allow-same-origin" @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
+      <iframe sandbox="allow-downloads allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-scripts allow-same-origin allow-forms" @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
       `:O``}
 
     ${this.noSW?O`
