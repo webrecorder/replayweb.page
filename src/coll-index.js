@@ -146,7 +146,7 @@ class CollIndex extends LitElement
     .no-top-padding {
       padding-top: 1.0em;
     }
-    button.is-loading {
+    .is-loading {
       line-height: 1.5em;
       height: 1.5em;
       border: 0px;
@@ -295,9 +295,9 @@ class CollIndex extends LitElement
                 </div>
               </div>
               ${!this._deleting[coll.sourceUrl] ? html`
-              <button class="delete" title="Unload Collection" data-coll-index="${i}" @click="${this.onDeleteColl}"></button>
+              <button class="delete" aria-label="Unload Collection" title="Unload Collection" data-coll-index="${i}" @click="${this.onDeleteColl}"></button>
               ` : html`
-              <button class="button delete is-loading is-static"></button>`}
+              <span class="button delete is-loading is-static">Deleting</span`}
             </div>
           `)}
         </div>
