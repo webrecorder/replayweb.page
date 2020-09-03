@@ -30,7 +30,7 @@ class Pages extends LitElement
     this.active = false;
     this.editable = false;
     this.changeNeeded = false;
-    
+
     this.selectedPages = new Set();
 
     this.menuActive = false;
@@ -343,13 +343,12 @@ class Pages extends LitElement
           max-height: 100%;
           height: 100%;
         }
-  
         .index-bar-menu {
           max-height: 100%;
           overflow-y: auto;
         }
       }
-  
+
       @media screen and (max-width: 768px) {
         ${Pages.sidebarStyles()}
       }
@@ -382,7 +381,7 @@ class Pages extends LitElement
         padding-bottom: 1.0em;
         min-height: 0px;
       }
-      
+
       .current {
         /*background-color: rgb(207, 243, 255);*/
       }
@@ -514,7 +513,7 @@ class Pages extends LitElement
               ${this.collInfo.lists.map(list => html`
                 <li>
                   <a @click=${this.onSelectList} href="#list-${list.id}"
-                  data-list="${list.id}" 
+                  data-list="${list.id}"
                   class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
                 </li>`)}
             </ul>
@@ -576,7 +575,7 @@ class Pages extends LitElement
       <a @click="${this.onSort}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
     </div>
 
-    
+
 
     <div class="is-hidden-tablet mobile-header">
       <div class="num-results">${this.formatResults()}</div>
