@@ -608,7 +608,7 @@ class Coll extends LitElement
     const isReplay = !!this.tabData.url;
 
     return html`
-    <div class="replay-bar">
+    <nav class="replay-bar" aria-label="replay">
       <div class="field has-addons">
         <button id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}">
           <span class="icon is-small">
@@ -707,7 +707,7 @@ class Coll extends LitElement
 
 
       </div>
-    </div>`;
+    </nav>`;
   }
 
   dragStart(event) {
