@@ -612,29 +612,29 @@ class Coll extends LitElement
       <div class="field has-addons">
         <button id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}">
           <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
           </span>
         </button>
         <button class="button is-borderless is-hidden-mobile" @click="${this.onGoBack}">
           <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
           </span>
         </button>
         <button class="button is-borderless is-hidden-mobile" @click="${this.onGoForward}">
           <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
           </span>
         </button>
         <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
           <span class="icon is-small">
             ${!this.isLoading ? html`
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
             ` : ``}
           </span>
         </button>
         <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}">
           <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${farListAlt}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
           </span>
         </button>
         <form @submit="${this.onSubmit}">
@@ -648,7 +648,7 @@ class Coll extends LitElement
           <div class="dropdown-trigger">
             <button class="button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" @click="${this.onMenu}">
               <span class="icon is-small">
-                <fa-icon size="1.0em" class="has-text-grey" .svg="${fasMenuV}"></fa-icon>
+                <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasMenuV}"></fa-icon>
               </span>
             </button>
           </div>
@@ -656,31 +656,31 @@ class Coll extends LitElement
             <div class="dropdown-content">
               <a class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
                 </span>
                 <span>Full Screen</span>
               </a>
               <a class="dropdown-item is-hidden-tablet" @click="${this.onGoBack}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
                 </span>
                 <span>Back</span>
               </a>
               <a class="dropdown-item is-hidden-tablet" @click="${this.onGoForward}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
                 </span>
                 <span>Forward</span>
               </a>
               <a class="dropdown-item is-hidden-tablet has-text-grey" @click="${this.onRefresh}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="" .svg="${fasRefresh}"></fa-icon>
+                  <fa-icon size="1.0em" class="" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
                 </span>
                 <span>Reload</span>
               </a>
               <a class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="" .svg="${farListAlt}"></fa-icon>
+                  <fa-icon size="1.0em" class="" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
                 <span>Page Search</span>
               </a>
@@ -696,7 +696,7 @@ class Coll extends LitElement
               ${this.embed ? html`
               <hr class="dropdown-divider">
               <a href="https://replayweb.page/" target="_blank" class="dropdown-item info">
-                <fa-icon class="menu-logo" size="1.0rem" .svg=${rwpLogo}></fa-icon>
+                <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${rwpLogo}></fa-icon>
                 <span>&nbsp;About ReplayWeb.page</span>
                 <span class="menu-version">(${__VERSION__})</span>
               </a>
