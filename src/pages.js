@@ -496,11 +496,11 @@ class Pages extends LitElement
     return html`
     ${this.isSidebar ? html`
     <div class="sidebar-nav">
-      <a @click="${this.onHideSidebar}" class="is-marginless is-size-6 is-paddingless">
-        <fa-icon .svg="${fasLeft}"></fa-icon><span>Hide</span>
+      <a role="button" href="#" @click="${this.onHideSidebar}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+        <fa-icon .svg="${fasLeft}" aria-hidden="true"></fa-icon><span>Hide</span><span class="is-sr-only"> Sidebar</span>
       </a>
-      <a @click="${this.onFullPageView}" class="is-marginless is-size-6 is-paddingless">
-        <span>Full Page View</span><fa-icon .svg="${fasRight}"></fa-icon>
+      <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+        <span class="is-sr-only">Promote Sidebar to </span><span>Full Page View</span><fa-icon .svg="${fasRight}" aria-hidden="true"></fa-icon>
       </a>
     </div>
   ` : ``}
@@ -509,7 +509,7 @@ class Pages extends LitElement
         <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
           <input type="text" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
           placeholder="Search by Page URL, Title or Text">
-          <span class="icon is-left"><fa-icon .svg="${fasSearch}"/></span>
+          <span class="icon is-left"><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon></span>
         </div>
       </div>
 
@@ -572,23 +572,23 @@ class Pages extends LitElement
           <button @click="${this.onMenu}" class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
             <span>Download</span>
             <span class="icon is-small">
-              <fa-icon .svg="${fasAngleDown}"/>
+              <fa-icon .svg="${fasAngleDown} aria-hidden="true"></fa-icon>
             </span>
           </button>
         </div>
         <div class="dropdown-menu" id="dropdown-menu" role="menu">
           <div class="dropdown-content">
-            <a @click="${(e) => this.onDownload(e, "wacz", true)}" class="dropdown-item">
+            <a role="button" href="#" @click="${(e) => this.onDownload(e, "wacz", true)}" @keyup="${this.clickOnSpacebarPress}" class="dropdown-item">
               Download Selected as WACZ (Web Archive Collection)
             </a>
-            <a @click="${(e) => this.onDownload(e, "warc", true)}" class="dropdown-item">
+            <a role="button" href="#" @click="${(e) => this.onDownload(e, "warc", true)}" @keyup="${this.clickOnSpacebarPress}" class="dropdown-item">
               Download Selected as WARC Only
             </a>
             <hr class="dropdown-divider">
-            <a @click="${(e) => this.onDownload(e, "wacz", false)}" class="dropdown-item">
+            <a role="button" href="#" @click="${(e) => this.onDownload(e, "wacz", false)}" @keyup="${this.clickOnSpacebarPress}" class="dropdown-item">
               Download All as WACZ (Web Archive Collection)
             </a>
-            <a @click="${(e) => this.onDownload(e, "warc", false)}" class="dropdown-item">
+            <a role="button" href="#" @click="${(e) => this.onDownload(e, "warc", false)}" @keyup="${this.clickOnSpacebarPress}" class="dropdown-item">
               Download All as WARC Only
             </a>
           </div>
@@ -607,10 +607,10 @@ class Pages extends LitElement
 
     <div class="header columns is-hidden-mobile">
       ${this.query ? html`
-      <a @click="${this.onSort}" data-key="" class="column is-1 ${this.sortKey === "" ? (this.sortDesc ? "desc" : "asc") : ''}">Match</a>` : ``}
+      <a href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="" class="column is-1 ${this.sortKey === "" ? (this.sortDesc ? "desc" : "asc") : ''}">Match</a>` : ``}
 
-      <a @click="${this.onSort}" data-key="ts" class="column is-2 ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
-      <a @click="${this.onSort}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
+      <a href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="ts" class="column is-2 ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
+      <a href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
     </div>
 
 
@@ -677,6 +677,15 @@ class Pages extends LitElement
           </div>` })}` : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
       </div>
     `;
+  }
+
+  clickOnSpacebarPress(event) {
+    // Buttons are expected to respond to both enter/return and spacebar.
+    // If using `<a>` with `role='button'`, assign this handler to keyup.
+    if (event.key == " ") {
+      event.preventDefault();
+      event.target.click();
+    }
   }
 
   onMenu(event) {
