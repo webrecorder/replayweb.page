@@ -265,6 +265,10 @@ class Pages extends LitElement
         box-sizing: border-box !important;
       }
 
+      div[role="main"], #contents div[role="complementary"] {
+        height: 100%;
+      }
+
       .main.columns {
         width: 100%;
         justify-self: stretch;
@@ -490,40 +494,38 @@ class Pages extends LitElement
 
     </div>
 
+    <div class="main columns">
+      <div class="column index-bar is-one-fifth is-hidden-mobile">
+        <div class="index-bar-title">${this.collInfo.title}</div>
 
-      <div class="main columns">
-        <div class="column index-bar is-one-fifth is-hidden-mobile">
-          <div class="index-bar-title">${this.collInfo.title}</div>
+        <span class="num-results">${this.formatResults()}</span>
 
-          <span class="num-results">${this.formatResults()}</span>
+        ${this.editable ? html`
+        <div class="index-bar-actions">
+          ${this.renderDownloadMenu()}
+        </div>` : ``}
 
-          ${this.editable ? html`
-          <div class="index-bar-actions">
-            ${this.renderDownloadMenu()}
-          </div>` : ``}
-
-          ${this.collInfo.lists.length ? html`
-          <p id="filter-label" class="menu-label">Filter By List:</p>
-          <aside class="index-bar-menu menu">
-            <ul class="menu-list">
+        ${this.collInfo.lists.length ? html`
+        <p id="filter-label" class="menu-label">Filter By List:</p>
+        <aside class="index-bar-menu menu">
+          <ul class="menu-list">
+            <li>
+              <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
+                @click=${this.onSelectList}><i>All Pages</i></a>
+            </li>
+            ${this.collInfo.lists.map(list => html`
               <li>
-                <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
-                  @click=${this.onSelectList}><i>All Pages</i></a>
-              </li>
-              ${this.collInfo.lists.map(list => html`
-                <li>
-                  <a @click=${this.onSelectList} href="#list-${list.id}"
-                  data-list="${list.id}"
-                  class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
-                </li>`)}
-            </ul>
-          </aside>
-          ` : ``}
-        </div>
-        <div class="column main-content">
-          ${this.renderPages()}
-        </div>
-
+                <a @click=${this.onSelectList} href="#list-${list.id}"
+                data-list="${list.id}"
+                class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
+              </li>`)}
+          </ul>
+        </aside>
+        ` : ``}
+      </div>
+      <div class="column main-content">
+        ${this.renderPages()}
+      </div>
     </div>`;
   }
 
