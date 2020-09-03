@@ -529,29 +529,34 @@ class Coll extends LitElement
     return html`
     <nav class="replay-bar" aria-label="replay">
       <div class="field has-addons">
-        <button id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}">
+        <button id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}"
+                title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}" aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
           </span>
         </button>
-        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoBack}">
+        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoBack}"
+                title="Back" aria-label="Back">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
           </span>
         </button>
-        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoForward}">
+        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoForward}"
+                title="Forward" aria-label="Forward">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
           </span>
         </button>
-        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
+        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}"
+                title="Reload" aria-label="Reload">
           <span class="icon is-small">
             ${!this.isLoading ? html`
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
             ` : ``}
           </span>
         </button>
-        <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}">
+        <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}"
+                title="Page Search" aria-label="Page Search">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
           </span>
@@ -565,7 +570,8 @@ class Coll extends LitElement
 
         <div class="dropdown is-right ${this.menuActive ? 'is-active' : ''}" @click="${(e) => this.menuActive = false}">
           <div class="dropdown-trigger">
-            <button class="button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" @click="${this.onMenu}">
+            <button class="button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" aria-expanded="${this.menuActive}" @click="${this.onMenu}"
+                    aria-label="more replay controls">
               <span class="icon is-small">
                 <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasMenuV}"></fa-icon>
               </span>
