@@ -268,6 +268,10 @@ class Pages extends LitElement
         box-sizing: border-box !important;
       }
 
+      div[role="main"], #contents div[role="complementary"] {
+        height: 100%;
+      }
+
       .main.columns {
         width: 100%;
         justify-self: stretch;
@@ -494,6 +498,10 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
+
+    <div role="${this.isSidebar ? "complementary": "main"}" aria-labelledby="page-list-heading">
+      <h2 id="page-list-heading" class="is-sr-only">Page List</h2>
+
     ${this.isSidebar ? html`
     <div class="sidebar-nav">
       <a role="button" href="#" @click="${this.onHideSidebar}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
@@ -562,7 +570,9 @@ class Pages extends LitElement
           ${this.renderPages()}
         </div>
       </div>
-    </div>`;
+    </div>
+    </div>`
+    ;
   }
 
   renderDownloadMenu() {
