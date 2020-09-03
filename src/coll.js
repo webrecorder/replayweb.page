@@ -652,7 +652,7 @@ class Coll extends LitElement
               </span>
             </button>
           </div>
-          <div class="dropdown-menu" id="menu-dropdown" role="menu">
+          <div class="dropdown-menu" id="menu-dropdown">
             <div class="dropdown-content">
               <a class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}">
                 <span class="icon is-small">
