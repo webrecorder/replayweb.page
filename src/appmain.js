@@ -129,7 +129,7 @@ class App extends LitElement
           </span>
         `}
         <a href="#" role="button" id="menu-button" @click="${this.onNavMenu}" @keyup="${this.clickOnSpacebarPress}"
-          class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="menu" aria-haspopup="true" aria-expanded="${this.navMenuShown}">
+          class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="main menu" aria-haspopup="true" aria-expanded="${this.navMenuShown}">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
