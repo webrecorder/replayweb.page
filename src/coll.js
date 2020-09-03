@@ -81,7 +81,7 @@ class Coll extends LitElement
 
       url: { type: String },
       ts: { type: String },
-      
+
       isFullscreen: { type: Boolean },
       menuActive: { type: Boolean },
 
@@ -292,7 +292,7 @@ class Coll extends LitElement
     //   view: this.tabData.view,
     //   query: this.tabData.query,
     //   currList: this.tabData.currList,
-    //   ...data, 
+    //   ...data,
     // };
 
     if (this.tabData.url) {
@@ -756,7 +756,7 @@ class Coll extends LitElement
     this.reauthWait = (async () => {
       const headers = event.detail.headers;
 
-      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, { 
+      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
         method: 'POST',
         body: JSON.stringify({headers})
       });
