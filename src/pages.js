@@ -507,7 +507,7 @@ class Pages extends LitElement
     <div class="search-bar notification is-marginless">
       <div class="field flex-auto">
         <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
-          <input type="text" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
+          <input type="search" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
           placeholder="Search by Page URL, Title or Text">
           <span class="icon is-left"><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon></span>
         </div>
