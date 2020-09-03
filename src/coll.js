@@ -223,6 +223,15 @@ class Coll extends LitElement
     this.onHashChange();
   }
 
+  clickOnSpacebarPress(event) {
+    // Buttons are expected to respond to both enter/return and spacebar.
+    // If using `<a>` with `role='button'`, assign this handler to keyup.
+    if (event.key == " ") {
+      event.preventDefault();
+      event.target.click();
+    }
+  }
+
   onCollLoaded(event) {
     this.doUpdateInfo();
     this.loadInfo = null;
@@ -563,7 +572,7 @@ class Coll extends LitElement
         </button>
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded">
-            <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
+            <input id="url" class="input" type="search" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
             ${isReplay ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
           </div>
         </form>
@@ -579,38 +588,38 @@ class Coll extends LitElement
           </div>
           <div class="dropdown-menu" id="menu-dropdown">
             <div class="dropdown-content">
-              <a class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}">
+              <a href="#" role="button" class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}" @keyup="${this.clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
                 </span>
                 <span>Full Screen</span>
               </a>
-              <a class="dropdown-item is-hidden-tablet" @click="${this.onGoBack}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoBack}" @keyup="${this.clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
                 </span>
                 <span>Back</span>
               </a>
-              <a class="dropdown-item is-hidden-tablet" @click="${this.onGoForward}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoForward}" @keyup="${this.clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
                 </span>
                 <span>Forward</span>
               </a>
-              <a class="dropdown-item is-hidden-tablet has-text-grey" @click="${this.onRefresh}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet has-text-grey" @click="${this.onRefresh}" @keyup="${this.clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
                 </span>
                 <span>Reload</span>
               </a>
-              <a class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}">
+              <a href="#" role="button" class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${this.clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
                 <span>Page Search</span>
               </a>
               <hr class="dropdown-divider is-hidden-desktop">
-              <a class="dropdown-item" @click="${this.onPurgeCache}">
+              <a href="#" role="button" class="dropdown-item" @click="${this.onPurgeCache}" @keyup="${this.clickOnSpacebarPress}">
                 Purge Cache + Full Reload
               </a>
               ${dateStr ? html`
