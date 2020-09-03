@@ -425,6 +425,8 @@ class Pages extends LitElement
         display: flex;
         justify-content: space-between;
         vertical-align: middle;
+        line-height: 1;
+        padding: 5px;
       }
 
       .sidebar-nav span {
