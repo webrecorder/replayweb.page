@@ -191,7 +191,7 @@ class Replay extends LitElement
 
     ${this.iframeUrl ? html`
     <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
-    src="${this.iframeUrl}"></iframe>
+    src="${this.iframeUrl}" title="Replay of ${this.title ? `${this.title}:`: ``} ${this.url}"></iframe>
     ` : html`
       <nav class="panel intro-panel">
         <p class="panel-heading">Replay Web Page</p>
