@@ -498,81 +498,78 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
+      <div role="${this.isSidebar ? "complementary": "main"}" aria-labelledby="page-list-heading">
+        <h2 id="page-list-heading" class="is-sr-only">Page List</h2>
 
-    <div role="${this.isSidebar ? "complementary": "main"}" aria-labelledby="page-list-heading">
-      <h2 id="page-list-heading" class="is-sr-only">Page List</h2>
-
-    ${this.isSidebar ? html`
-    <div class="sidebar-nav">
-      <a role="button" href="#" @click="${this.onHideSidebar}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
-        <fa-icon .svg="${fasLeft}" aria-hidden="true"></fa-icon><span>Hide</span><span class="is-sr-only"> Sidebar</span>
-      </a>
-      <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
-        <span class="is-sr-only">Promote Sidebar to </span><span>Full Page View</span><fa-icon .svg="${fasRight}" aria-hidden="true"></fa-icon>
-      </a>
-    </div>
-  ` : ``}
-    <div class="search-bar notification is-marginless">
-      <div class="field flex-auto">
-        <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
-          <input type="search" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
-          placeholder="Search by Page URL, Title or Text">
-          <span class="icon is-left"><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon></span>
-        </div>
-      </div>
-
-      ${this.isSidebar && this.collInfo.lists.length ? html`
-      <div class="is-hidden-tablet mobile-lists">
-        <span class="is-size-7">Filter By List:</span>
-        <div class="select is-small">
-          <select id="sort-select" @change=${this.onSelectListDrop}>
-          <option value="0" ?selected="${this.currList === 0}">All Pages</option>
-          ${this.collInfo.lists.map(list => html`
-            <option value="${list.id}" ?selected="${this.currList === list.id}">${list.title}</option>
-          `)}
-          </select>
-        </div>
-      </div>` : ``}
-
-    </div>
-
-    <div class="${this.isSidebar ? "sidebar" : "full"}">
-      <div class="main columns">
-        <div class="column index-bar is-one-fifth is-hidden-mobile">
-          <div class="index-bar-title">${this.collInfo.title}</div>
-
-          <span class="num-results">${this.formatResults()}</span>
-
-          ${this.editable ? html`
-          <div class="index-bar-actions">
-            ${this.renderDownloadMenu()}
+        ${this.isSidebar ? html`
+          <div class="sidebar-nav">
+            <a role="button" href="#" @click="${this.onHideSidebar}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+              <fa-icon .svg="${fasLeft}" aria-hidden="true"></fa-icon><span>Hide</span><span class="is-sr-only"> Sidebar</span>
+            </a>
+            <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+              <span class="is-sr-only">Promote Sidebar to </span><span>Full Page View</span><fa-icon .svg="${fasRight}" aria-hidden="true"></fa-icon>
+            </a>
           </div>` : ``}
 
-          ${this.collInfo.lists.length ? html`
-          <p id="filter-label" class="menu-label">Filter By List:</p>
-          <aside class="index-bar-menu menu">
-            <ul class="menu-list">
-              <li>
-                <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
-                  @click=${this.onSelectList}><i>All Pages</i></a>
-              </li>
-              ${this.collInfo.lists.map(list => html`
-                <li>
-                  <a @click=${this.onSelectList} href="#list-${list.id}"
-                  data-list="${list.id}"
-                  class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
-                </li>`)}
-            </ul>
-          </aside>
-          ` : ``}
+        <div class="search-bar notification is-marginless">
+          <div class="field flex-auto">
+            <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
+              <input type="search" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
+              placeholder="Search by Page URL, Title or Text">
+              <span class="icon is-left"><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon></span>
+            </div>
+          </div>
+
+          ${this.isSidebar && this.collInfo.lists.length ? html`
+            <div class="is-hidden-tablet mobile-lists">
+              <span class="is-size-7">Filter By List:</span>
+              <div class="select is-small">
+                <select id="sort-select" @change=${this.onSelectListDrop}>
+                <option value="0" ?selected="${this.currList === 0}">All Pages</option>
+                ${this.collInfo.lists.map(list => html`
+                  <option value="${list.id}" ?selected="${this.currList === list.id}">${list.title}</option>
+                `)}
+                </select>
+              </div>
+            </div>` : ``}
         </div>
-        <div class="column main-content">
-          ${this.renderPages()}
+
+        <div class="${this.isSidebar ? "sidebar" : "full"}">
+          <div class="main columns">
+            <div class="column index-bar is-one-fifth is-hidden-mobile">
+              <div class="index-bar-title">${this.collInfo.title}</div>
+
+              <span class="num-results">${this.formatResults()}</span>
+
+              ${this.editable ? html`
+              <div class="index-bar-actions">
+                ${this.renderDownloadMenu()}
+              </div>` : ``}
+
+              ${this.collInfo.lists.length ? html`
+              <p id="filter-label" class="menu-label">Filter By List:</p>
+              <aside class="index-bar-menu menu">
+                <ul class="menu-list">
+                  <li>
+                    <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
+                      @click=${this.onSelectList}><i>All Pages</i></a>
+                  </li>
+                  ${this.collInfo.lists.map(list => html`
+                    <li>
+                      <a @click=${this.onSelectList} href="#list-${list.id}"
+                      data-list="${list.id}"
+                      class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
+                    </li>`)}
+                </ul>
+              </aside>
+              ` : ``}
+            </div>
+            <div class="column main-content">
+              ${this.renderPages()}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    </div>`
-    ;
+      </div>`;
   }
 
   renderDownloadMenu() {
