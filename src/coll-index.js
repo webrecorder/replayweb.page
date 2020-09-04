@@ -153,7 +153,7 @@ class CollIndex extends LitElement
       background-color: transparent !important;
       width: auto;
     }
-    nav.panel.is-light {
+    div.panel.is-light {
       margin-bottom: 2em;
     }
 

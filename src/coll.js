@@ -485,9 +485,9 @@ class Coll extends LitElement
       return html`
       ${this.renderLocationBar()}
       ${this.renderTabHeader()}
-      <nav id="contents" class="is-light">
+      <div id="contents" class="is-light">
         ${this.renderCollTabs()}
-      </nav>`;
+      </div>`;
     } else {
       return html``;
     }
@@ -499,31 +499,32 @@ class Coll extends LitElement
     }
 
     return html`
-      <div class="main tabs is-centered">
+      <nav class="main tabs is-centered" aria-label="tabs">
         <ul>
           ${this.hasStory ? html`
           <li class="${this.tabData.view === 'story' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#story" class="is-size-6">
-              <span class="icon"><fa-icon .svg="${fasBook}"></fa-icon></span>
-              <span class="tab-label" title="Story">Story</span>
+            <a @click="${this.onTabClick}" href="#story" class="is-size-6" aria-label="Story" aria-current="${this.tabData.view === 'story' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${fasBook}" aria-hidden="true" title="Story"></fa-icon></span>
+              <span class="tab-label">Story</span>
             </a>
           </li>` : ``}
 
           <li class="${this.tabData.view === 'pages' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#pages" class="is-size-6">
-              <span class="icon"><fa-icon .svg="${farPages}"></fa-icon></span>
-              <span class="tab-label" title="Pages">Pages</span>
+            <a @click="${this.onTabClick}" href="#pages" class="is-size-6" aria-label="Pages" aria-current="${this.tabData.view === 'pages' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${farPages}" aria-hidden="true" title="Pages"></fa-icon></span>
+              <span class="tab-label">Pages</span>
             </a>
           </li>
 
           <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#resources" class="is-size-6">
-              <span class="icon"><fa-icon .svg="${farResources}"></fa-icon></span>
-              <span class="tab-label" title="URL Resources">Page Resources</span>
+            <a @click="${this.onTabClick}" href="#resources" class="is-size-6" aria-label="Page Resources" aria-current="${this.tabData.view === 'resources' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${farResources}" aria-hidden="true" title="Page Resources"></fa-icon></span>
+              <span class="tab-label">Page Resources</span>
             </a>
           </li>
+
         </ul>
-      </div>`;
+      </nav>`;
   }
 
   renderLocationBar() {
