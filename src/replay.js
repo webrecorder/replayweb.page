@@ -57,13 +57,13 @@ class Replay extends LitElement
 
   updated(changedProperties) {
     if (changedProperties.has("sourceUrl") || changedProperties.has("collInfo")) {
-      this.isAuthable = (this.sourceUrl.startsWith("googledrive://") && 
+      this.isAuthable = (this.sourceUrl.startsWith("googledrive://") &&
         this.collInfo && this.collInfo.onDemand);
 
       this.reauthWait = null;
     }
 
-    if (this.url && 
+    if (this.url &&
         ((this.replayUrl != this.url) || (this.replayTS != this.ts)) &&
         (changedProperties.has("url") || changedProperties.has("ts"))) {
 
@@ -81,7 +81,7 @@ class Replay extends LitElement
         url: this.replayUrl,
         ts: this.replayTS,
       };
-  
+
       this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: true, data}}));
     }
   }
@@ -118,7 +118,7 @@ class Replay extends LitElement
     this.setLoading();
     this._loadPoll = window.setInterval(() => {
       const iframe = this.renderRoot.querySelector("iframe");
-      if (!iframe || !iframe.contentDocument || !iframe.contentWindow || 
+      if (!iframe || !iframe.contentDocument || !iframe.contentWindow ||
         (iframe.contentDocument.readyState === "complete" && !iframe.contentWindow._WBWombat)) {
           this.clearLoading(iframe && iframe.contentWindow);
       }
