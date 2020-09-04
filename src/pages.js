@@ -583,7 +583,7 @@ class Pages extends LitElement
             </span>
           </button>
         </div>
-        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-menu" id="dropdown-menu">
           <div class="dropdown-content">
             <a role="button" href="#" @click="${(e) => this.onDownload(e, "wacz", true)}" @keyup="${this.clickOnSpacebarPress}" class="dropdown-item">
               Download Selected as WACZ (Web Archive Collection)
