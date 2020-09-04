@@ -207,15 +207,16 @@ class Replay extends LitElement
       <div class="modal-background"></div>
         <div class="modal-card">
           <header class="modal-card-head">
-          <p class="modal-card-title">Auth Needed</p>
+            <p class="modal-card-title">Auth Needed</p>
             <button class="delete" aria-label="close"></button>
           </header>
           <section class="modal-card-body">
             <div class="container has-text-centered">
-            <wr-gdrive .sourceUrl=${this.sourceUrl} .state="${this.showAuth ? 'trymanual' : 'implicitonly'}" .reauth="${true}" @load-ready=${this.onReAuthed}/>
+              <wr-gdrive .sourceUrl=${this.sourceUrl} .state="${this.showAuth ? 'trymanual' : 'implicitonly'}" .reauth="${true}" @load-ready=${this.onReAuthed}/>
             </div>
           </section>
         </div>
+      </div>
     </div>
     ` : ``}
     `;
