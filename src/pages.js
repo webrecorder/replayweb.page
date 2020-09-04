@@ -499,7 +499,7 @@ class Pages extends LitElement
 
     return html`
       <div role="${this.isSidebar ? "complementary": "main"}" aria-labelledby="page-list-heading">
-        <h2 id="page-list-heading" class="is-sr-only">Page List</h2>
+        <div id="page-list-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">Pages in ${this.collInfo.title}</div>
 
         ${this.isSidebar ? html`
           <div class="sidebar-nav">
