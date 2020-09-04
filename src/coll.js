@@ -533,7 +533,6 @@ class Coll extends LitElement
     } else if (this.collInfo) {
       return html`
       ${this.renderLocationBar()}
-
       <div id="tabContents">
         <nav id="contents" class="is-light ${isSidebar ? 'sidebar' : (isReplay ? 'is-hidden' : 'full-pages')}">
           ${this.renderTabHeader(isSidebar)}
@@ -552,7 +551,6 @@ class Coll extends LitElement
         </wr-coll-replay>
         ` : ``}
       </div>
-
       `;
     } else {
       return html``;
@@ -565,7 +563,7 @@ class Coll extends LitElement
     // }
 
     return html`
-      <div class="main tabs is-centered ${isSidebar ? 'sidebar' : ''}">
+      <nav class="main tabs is-centered ${isSidebar ? 'sidebar' : ''}" aria-label="tabs">
         <ul>
           ${isSidebar ? html`
           <li class="sidebar-nav left">
@@ -576,22 +574,22 @@ class Coll extends LitElement
 
           ${this.hasStory ? html`
           <li class="${this.tabData.view === 'story' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#story" class="is-size-6">
-              <span class="icon"><fa-icon .svg="${fasBook}"></fa-icon></span>
+            <a @click="${this.onTabClick}" href="#story" class="is-size-6" aria-label="Story" aria-current="${this.tabData.view === 'story' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${fasBook}" aria-hidden="true" title="Story"></fa-icon></span>
               <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="Story">Story</span>
             </a>
           </li>` : ``}
 
           <li class="${this.tabData.view === 'pages' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#pages" class="is-size-6">
-              <span class="icon"><fa-icon .svg="${farPages}"></fa-icon></span>
+            <a @click="${this.onTabClick}" href="#pages" class="is-size-6" aria-label="Pages" aria-current="${this.tabData.view === 'pages' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${farPages}" aria-hidden="true" title="Pages"></fa-icon></span>
               <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="Pages">Pages</span>
             </a>
           </li>
 
           <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#resources" class="is-size-6">
-              <span class="icon"><fa-icon .svg="${farResources}"></fa-icon></span>
+            <a @click="${this.onTabClick}" href="#resources" class="is-size-6" aria-label="Page Resources" aria-current="${this.tabData.view === 'resources' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${farResources}" aria-hidden="true" title="Page Resources"></fa-icon></span>
               <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="URL Resources">Page Resources</span>
             </a>
           </li>
@@ -602,9 +600,8 @@ class Coll extends LitElement
               <span>Expand</span><fa-icon title="Expand" .svg="${fasAngleRight}"></fa-icon>
             </a>
           </li>` : ``}
-
         </ul>
-      </div>`;
+      </nav>`;
   }
 
   renderLocationBar() {
