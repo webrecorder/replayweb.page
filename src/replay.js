@@ -177,7 +177,7 @@ class Replay extends LitElement
         flex-direction: column;
       }
 
-      nav.intro-panel.panel {
+      div.intro-panel.panel {
         min-width: 40%;
         display: flex;
         flex-direction: column;
@@ -193,13 +193,13 @@ class Replay extends LitElement
     <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
     src="${this.iframeUrl}" title="Replay of ${this.title ? `${this.title}:`: ``} ${this.url}"></iframe>
     ` : html`
-      <nav class="panel intro-panel">
+      <div class="panel intro-panel">
         <p class="panel-heading">Replay Web Page</p>
         <div class="panel-block">
           <p>Enter a URL above to replay it from the web archive!</p>
           <p>(Check out the <a href="#view=pages">Pages</a> or <a href="#view=resources">Page Resources</a> to find URLs in this archive.)</p>
         </div>
-      </nav>
+      </div>
     `}
 
     ${this.isAuthable ? html`
