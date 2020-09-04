@@ -470,6 +470,7 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
+<<<<<<< HEAD
     <div class="search-bar notification is-marginless">
       <div class="field flex-auto">
         <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
