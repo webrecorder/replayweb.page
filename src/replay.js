@@ -197,7 +197,7 @@ class Replay extends LitElement
         <p class="panel-heading">Replay Web Page</p>
         <div class="panel-block">
           <p>Enter a URL above to replay it from the web archive!</p>
-          <p>(Check out the <a href="#view=pages">Pages</a> or <a href="#view=resources">Page Resources</a> to find URLs in this archive.)</p>
+          <p>(Or, check out <a href="#view=pages">Pages</a> or <a href="#view=resources">URLs</a> to explore the contents of this archive.)</p>
         </div>
       </div>
     `}

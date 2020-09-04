@@ -750,7 +750,7 @@ class Pages extends LitElement
 
   getNoResultsMessage() {
     if (!this.collInfo || !this.collInfo.pages.length) {
-      return html`No Pages defined this archive. Check out&nbsp;<a href="#view=resources">Page Resources</a>&nbsp;to search by URL.`;
+      return html`No distinct "pages" are defined in this archive. Check out&nbsp;<a href="#view=resources">URLs</a>&nbsp;to explore the archive's contents.`;
     }
 
     if (this.updatingSearch) {
@@ -761,8 +761,8 @@ class Pages extends LitElement
       return "Searching...";
     }
 
-    if (!this.query) {
-      return "No Pages Found. Try changing the search query.";
+    if (this.query) {
+      return html `No matching pages found. Try changing the search query, or <a href="#view=resources">explore the archive's contents by URL</a>.`;
     }
 
     return "No Pages Found";

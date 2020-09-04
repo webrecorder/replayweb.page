@@ -588,8 +588,8 @@ class Coll extends LitElement
           </li>
 
           <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#resources" class="is-size-6" aria-label="Page Resources" aria-current="${this.tabData.view === 'resources' ? 'location' : ''}">
-              <span class="icon"><fa-icon .svg="${farResources}" aria-hidden="true" title="Page Resources"></fa-icon></span>
+            <a @click="${this.onTabClick}" href="#resources" class="is-size-6" aria-label="URLs" aria-current="${this.tabData.view === 'resources' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${farResources}" aria-hidden="true" title="URLs"></fa-icon></span>
               <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="URL Resources">Page Resources</span>
             </a>
           </li>
