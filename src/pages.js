@@ -533,7 +533,7 @@ class Pages extends LitElement
     return html`
       <div class="dropdown ${this.menuActive ? 'is-active' : ''}">
         <div class="dropdown-trigger">
-          <button @click="${this.onMenu}" class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
+          <button @click="${this.onMenu}" class="button is-small" aria-haspopup="true" aria-expanded="${this.menuActive}" aria-controls="dropdown-menu">
             <span>Download</span>
             <span class="icon is-small">
               <fa-icon .svg="${fasAngleDown} aria-hidden="true"></fa-icon>
