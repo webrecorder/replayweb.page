@@ -92,6 +92,10 @@ class Story extends LitElement
       align-items: center;
     }
 
+    .desc p {
+      margin-bottom: 1.0em;
+    }
+
     .columns {
       width: 100%;
       height: 100%;
@@ -182,7 +186,7 @@ class Story extends LitElement
         </aside>
       </div>
       <div @scroll=${this.onScroll} class="column main-content main-scroll">
-        <section id="list-0" class="">
+        <section id="list-0" class="desc">
           <h2 class="has-text-centered title is-3">${this.collInfo.title}</h2>
           ${this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ''}
         </section>

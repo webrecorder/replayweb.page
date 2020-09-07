@@ -15,10 +15,9 @@ class Sorter extends LitElement
     this.data = [];
 
     this.numResults = DEFAULT_RESULTS;
-    this.defaultDesc = false;
 
-    this.sortKey = "url";
-    this.sortDesc = false;
+    this.sortKey = null;
+    this.sortDesc = null;
 
     this.defaultKey = "";
     this.defaultDesc = false;
@@ -41,17 +40,29 @@ class Sorter extends LitElement
     }
   }
 
-  firstUpdated() {
-    this.sortKey = localStorage.getItem(`${this.id}:sortKey`) || this.defaultKey;
-    const sortDesc = localStorage.getItem(`${this.id}:sortDesc`);
-    this.sortDesc = !sortDesc ? this.defaultDesc : sortDesc === "1";
-  }
+  // firstUpdated() {
+  //   if (this.sortKey === null && this.defaultKey) {
+  //     this.sortKey = localStorage.getItem(`${this.id}:sortKey`) || this.defaultKey;
+  //   }
+  //   const sortDesc = localStorage.getItem(`${this.id}:sortDesc`);
+  //   if (this.sortDesc === null) {
+  //     this.sortDesc = !sortDesc ? this.defaultDesc : sortDesc === "1";
+  //   }
+  // }
 
   updated(changedProperties) {
     const keyChanged = changedProperties.has("sortKey");
     const descChanged = changedProperties.has("sortDesc");
     const dataChanged = changedProperties.has("data");
     const numResultsChanged = changedProperties.has("numResults");
+
+    if (changedProperties.has("defaultKey")) {
+      this.sortKey = this.defaultKey;
+    }
+
+    if (changedProperties.has("defaultDesc")) {
+      this.sortDesc = this.defaultDesc;
+    }
 
     if (keyChanged) {
       localStorage.setItem(`${this.id}:sortKey`, this.sortKey);

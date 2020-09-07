@@ -38,8 +38,8 @@ class Pages extends LitElement
 
     this.menuActive = false;
 
-    this.sortKey = "ts";
-    this.sortDesc = true;
+    this.sortKey = null;
+    this.sortDesc = null;
 
     this.isSidebar = false;
     this.url = "";
@@ -72,6 +72,7 @@ class Pages extends LitElement
       sortedPages: { type: Array },
 
       query: { type: String },
+      defaultKey: { type: String },
 
       loading: { type: Boolean },
       updatingSearch: { type: Boolean },
@@ -102,12 +103,15 @@ class Pages extends LitElement
   async updated(changedProperties) {
     if (changedProperties.has("collInfo")) {
       this.updateTextSearch();
-    } else if (changedProperties.has("query")) {
-      this.filter();
 
-      // default sort to score if has query, otherwise timestamp
-      this.sortKey = this.query ? "" : "ts";
-      this.sortDesc = this.query ? false : true;
+    } else if (changedProperties.has("query")) {
+
+      if (this.query && !changedProperties.get("query")) {
+        this.sortKey = null;
+        this.sortDesc = null;
+      }
+
+      this.filter();
 
     } else if (changedProperties.has("currList")) {
       this.filter();
@@ -610,13 +614,10 @@ class Pages extends LitElement
     
 
     <div class="is-hidden-tablet mobile-header">
-
-
-
       <div class="num-results">${this.formatResults()}</div>
       <wr-sorter id="pages"
-      .sortKey="${this.sortKey}"
-      .sortDesc="${this.sortDesc}"
+      .defaultKey="${this.sortKey ? this.sortKey : (this.query ? '' : 'ts')}"
+      .defaultDesc="${this.sortDesc !== null ? this.sortDesc : (this.query ? false : true)}"
       .sortKeys="${Pages.sortKeys}"
       .data="${this.filteredPages}"
       @sort-changed="${this.onSortChanged}"
