@@ -72,6 +72,19 @@ function tsToDate(ts) {
   return new Date(datestr);
 };
 
+// ===========================================================================
+function getPageDateTS(page) {
+  let date = null;
+  try {
+    date = new Date(page.ts || page.date);
+  } catch (e) { 
+
+  }
+
+  const timestamp = (date && !isNaN(date)) ? getTS(date.toISOString()) : "";
+  return {date, timestamp};
+}
+
 
 // ===========================================================================
 function getTS(iso) {
@@ -120,5 +133,5 @@ function parseURLSchemeHostPath(url) {
 }
 
 
-export { digestMessage, tsToDate, getTS, sourceToId, parseURLSchemeHostPath,
+export { digestMessage, tsToDate, getTS, getPageDateTS, sourceToId, parseURLSchemeHostPath,
          registerSW, initDBWorker };

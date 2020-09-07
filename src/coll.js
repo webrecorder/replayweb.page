@@ -1,7 +1,7 @@
 import { LitElement, html, css, query } from 'lit-element';
 import { wrapCss, rwpLogo, IS_APP } from './misc';
 
-import { sourceToId, tsToDate } from './pageutils';
+import { sourceToId, tsToDate, getPageDateTS } from './pageutils';
 
 import fasBook from '@fortawesome/fontawesome-free/svgs/solid/book.svg';
 
@@ -245,6 +245,15 @@ class Coll extends LitElement
       this.tabData = {
         ...this.tabData, view
       };
+    }
+
+    if (this.tabData.url.startsWith("page:")) {
+      const pageIndex = Number(this.tabData.url.slice("page:".length));
+      if (!isNaN(pageIndex) && pageIndex < this.collInfo.pages.length) {
+        const page = this.collInfo.pages[pageIndex];
+        this.tabData.url = page.url;
+        this.tabData.ts = getPageDateTS(page).timestamp;
+      }
     }
 
     if (!this.hasStory && this.tabData.view === "story") {

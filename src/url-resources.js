@@ -62,8 +62,8 @@ class URLResources extends LitElement
     this.tryMore = false;
     this.loading = false;
 
-    this.sortKey = "url";
-    this.sortDesc = false;
+    this.sortKey = null;
+    this.sortDesc = null;
   }
 
   static get properties() {
@@ -307,8 +307,8 @@ class URLResources extends LitElement
     <div class="sort-header is-hidden-tablet">
       <wr-sorter id="urls"
         defaultKey="url"
-        .sortKey="${this.sortKey}"
-        .sortDesc="${this.sortDesc}"
+        defaultKey="${this.sortKey ? this.sortKey : "url"}"
+        ?defaultDesc="${this.sortDesc !== null ? this.sortDesc : false}"
         .sortKeys="${URLResources.sortKeys}"
         .data="${this.filteredResults}"
         @sort-changed="${this.onSortChanged}">

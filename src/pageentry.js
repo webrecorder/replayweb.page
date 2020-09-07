@@ -4,7 +4,7 @@ import { LitElement, html, css } from 'lit-element';
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
-import { getTS } from './pageutils';
+import { getPageDateTS } from './pageutils';
 
 import { wrapCss } from './misc';
 
@@ -163,23 +163,10 @@ class PageEntry extends LitElement
       //this.updateFavIcon();
       this.deleting = false;
 
-      const res = this.getDateTS();
+      const res = getPageDateTS(this.page);
       this.timestamp = res.timestamp;
       this.date = res.date;
     }
-  }
-
-  getDateTS() {
-    let date = null;
-    let ts = this.page.ts;
-    try {
-      date = new Date(this.page.ts || this.page.date);
-    } catch (e) { 
-
-    }
-
-    const timestamp = (date && !isNaN(date)) ? getTS(date.toISOString()) : "";
-    return {date, timestamp};
   }
 
   render() {
