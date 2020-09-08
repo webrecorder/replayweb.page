@@ -537,6 +537,7 @@ class Coll extends LitElement
     const isReplay = this.tabData.view === "replay";
 
     return html`
+    <a class="skip-link" href="#skip-replay-target" @click="${this.skipMenu}">Skip replay navigation</a>
     <nav class="replay-bar" aria-label="replay">
       <div class="field has-addons">
         <button id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}"
@@ -642,7 +643,7 @@ class Coll extends LitElement
 
 
       </div>
-    </nav>`;
+    </nav><p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
   }
 
   dragStart(event) {
@@ -715,6 +716,13 @@ class Coll extends LitElement
     ` : ``}
 
     `;
+  }
+
+  skipMenu(event){
+    // This is a workaround, since this app's routing doesn't permit normal
+    // following of in-page anchors.
+    event.preventDefault();
+    this.renderRoot.querySelector("#skip-replay-target").focus()
   }
 
   onKeyDown(event) {
