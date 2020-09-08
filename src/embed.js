@@ -113,10 +113,10 @@ class Embed extends LitElement
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("url") || 
+    if (changedProperties.has("url") ||
         changedProperties.has("ts") ||
         changedProperties.has("query") ||
-        changedProperties.has("view") || 
+        changedProperties.has("view") ||
         changedProperties.has("source")) {
 
       this.embed = this.embed || "default";
@@ -128,7 +128,7 @@ class Embed extends LitElement
         basePageUrl: window.location.href.split("#")[0],
         embed: this.embed,
       }).toString();
-  
+
       this.hashString = new URLSearchParams({
         url: this.url,
         ts: this.ts,
@@ -168,13 +168,16 @@ class Embed extends LitElement
   render() {
     return html`
     ${this.paramString && this.hashString && this.swInited ? html`
-      <iframe sandbox="allow-downloads allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-scripts allow-same-origin allow-forms" @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"></iframe>
+      <iframe sandbox="allow-downloads allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-scripts allow-same-origin allow-forms"
+              @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"
+              title="Replay of ${this.title ? `${this.title}:` :``} ${this.url}"></iframe>
+
       ` : html``}
 
     ${this.noSW ? html`
       <section class="full-width">
         <div class="has-text-centered">
-          <fa-icon class="logo" id="wrlogo" size="2.5rem" .svg=${rwpLogo}></fa-icon>
+          <fa-icon class="logo" id="wrlogo" size="2.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
         </div>
         <div class="error">
 Sorry, ReplayWeb.page won't work in this browser as Service Workers are not supported.
