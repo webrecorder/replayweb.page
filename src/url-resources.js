@@ -95,7 +95,7 @@ class URLResources extends LitElement
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("query") || 
+    if (changedProperties.has("query") ||
         changedProperties.has("urlSearchType") ||
         changedProperties.has("currMime")) {
 
