@@ -464,7 +464,7 @@ class Coll extends LitElement
       cursor: col-resize;
     }
 
-    wr-coll-replay {
+    main, wr-coll-replay {
       width: 100%;
     }
 
@@ -703,6 +703,8 @@ class Coll extends LitElement
     </wr-page-view>
 
     ${isReplay ? html`
+    <main aria-labelledby="replay-heading">
+    <h1 id="replay-heading" class="is-sr-only">Replay of ${this.title ? `${this.title}:` :``} ${this.url}</h1>
     <wr-coll-replay
     slot="${isSidebar ? 1 : 0}"
     .collInfo="${this.collInfo}"
@@ -713,6 +715,7 @@ class Coll extends LitElement
     @replay-loading="${(e) => this.isLoading = e.detail.loading}"
     class="${isReplay ? '' : 'is-hidden'}">
     </wr-coll-replay>
+    </main>
     ` : ``}
 
     `;
