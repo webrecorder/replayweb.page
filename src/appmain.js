@@ -115,6 +115,7 @@ class App extends LitElement
     }
     return html`
     ${!this.embed || this.embed === "full" ? html`
+    <a href="#skip-main-target" @click=${this.skipMenu} class="skip-link">Skip main navigation</a>
     <nav class="navbar has-background-info" aria-label="main">
       <div class="navbar-brand">
         ${!this.embed ? html `
@@ -196,7 +197,7 @@ class App extends LitElement
           <a href="?terms" @click="${(e) => { e.preventDefault(); this.showTerms = true} }"class="navbar-item">Terms</a>
         </div>` : html``}
       </div>
-    </nav>
+    </nav><p id="skip-main-target" tabindex="-1" class="is-sr-only">Skipped</p>
     ` : ''}
 
     ${this.sourceUrl ? html`
@@ -281,6 +282,13 @@ class App extends LitElement
       link.href = icon.href;
       head.appendChild(link);
     }
+  }
+
+  skipMenu(event){
+    // This is a workaround, since this app's routing doesn't permit normal
+    // following of in-page anchors.
+    event.preventDefault();
+    this.renderRoot.querySelector("#skip-main-target").focus()
   }
 
   clickOnSpacebarPress(event) {
