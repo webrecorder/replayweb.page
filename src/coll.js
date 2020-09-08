@@ -540,7 +540,7 @@ class Coll extends LitElement
         </nav>
 
         ${isReplay ? html`
-        <main aria-labelledby="replay-heading">
+        <main>
         <h1 id="replay-heading" class="is-sr-only">Replay of ${this.title ? `${this.title}:` :``} ${this.url}</h1>
           <wr-coll-replay
           .collInfo="${this.collInfo}"
