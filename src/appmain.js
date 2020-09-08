@@ -59,6 +59,7 @@ class App extends LitElement
       bottom: 0px;
       right: 0px;
       display: flex;
+      min-width: 0px;
       flex-direction: column;
     }
     wr-coll {

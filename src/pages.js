@@ -1,6 +1,6 @@
 "use strict";
 
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css, unsafeCSS } from 'lit-element';
 import { wrapCss } from './misc';
 import ndjson from 'fetch-ndjson';
 
@@ -10,9 +10,6 @@ import { getTS } from './pageutils';
 
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 import fasAngleDown from '@fortawesome/fontawesome-free/svgs/solid/angle-down.svg';
-
-import fasLeft from '@fortawesome/fontawesome-free/svgs/solid/angle-left.svg';
-import fasRight from '@fortawesome/fontawesome-free/svgs/solid/angle-right.svg';
 
 
 // ===========================================================================
@@ -342,12 +339,12 @@ class Pages extends LitElement
       }
 
       @media screen and (min-width: 769px) {
-        .full .main.columns {
+        .main.columns {
           max-height: 100%;
           height: 100%;
         }
   
-        .full .index-bar-menu {
+        .index-bar-menu {
           max-height: 100%;
           overflow-y: auto;
         }
@@ -357,29 +354,21 @@ class Pages extends LitElement
         ${Pages.sidebarStyles()}
       }
 
-      ${Pages.sidebarStyles(css`.sidebar `)}
-
-      .full, .sidebar {
-        min-height: 0px;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
+      ${Pages.sidebarStyles(unsafeCSS`:host(.sidebar)`)}
 
       .mobile-lists {
         display: block !important;
       }
 
-      .sidebar .columns.is-hidden-mobile, .sidebar .is-hidden-mobile {
+      :host(.sidebar) .columns.is-hidden-mobile, :host(.sidebar) .is-hidden-mobile {
         display: none !important;
       }
 
-      .sidebar .mobile-header {
+      :host(.sidebar) .mobile-header {
         display: flex !important;
       }
 
-      .sidebar .columns {
+      :host(.sidebar) .columns {
         display: flex !important;
       }
 
@@ -419,20 +408,6 @@ class Pages extends LitElement
       }
       .flex-auto {
         flex: auto;
-      }
-
-      .sidebar-nav {
-        display: flex;
-        justify-content: space-between;
-        vertical-align: middle;
-      }
-
-      .sidebar-nav span {
-        vertical-align: baseline;
-      }
-
-      .sidebar-nav fa-icon {
-        vertical-align: middle;
       }
     `);
   }
@@ -492,16 +467,6 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
-    ${this.isSidebar ? html`
-    <div class="sidebar-nav">
-      <a @click="${this.onHideSidebar}" class="is-marginless is-size-6 is-paddingless">
-        <fa-icon .svg="${fasLeft}"></fa-icon><span>Hide</span>
-      </a>
-      <a @click="${this.onFullPageView}" class="is-marginless is-size-6 is-paddingless">
-        <span>Full Page View</span><fa-icon .svg="${fasRight}"></fa-icon>
-      </a>
-    </div>
-  ` : ``}
     <div class="search-bar notification is-marginless">
       <div class="field flex-auto">
         <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
@@ -526,7 +491,7 @@ class Pages extends LitElement
 
     </div>
 
-    <div class="${this.isSidebar ? "sidebar" : "full"}">
+
       <div class="main columns">
         <div class="column index-bar is-one-fifth is-hidden-mobile">
           <div class="index-bar-title">${this.collInfo.title}</div>
@@ -559,7 +524,7 @@ class Pages extends LitElement
         <div class="column main-content">
           ${this.renderPages()}
         </div>
-      </div>
+
     </div>`;
   }
 
@@ -664,13 +629,14 @@ class Pages extends LitElement
             .index="${this.query || this.isSidebar ? i + 1 : 0}"
             .editable="${this.editable}"
             .selected="${this.selectedPages.has(p.id)}"
-            .isSidebar="${this.isSidebar}"
             .isCurrent="${isCurrPage}"
+            .page="${p}"
             @sel-page="${this.onSelectToggle}"
             @delete-page="${this.onDeletePage}"
             replayPrefix="${this.collInfo.replayPrefix}"
             query="${this.query}"
-            .page="${p}">
+            class="${this.isSidebar ? 'sidebar' : ''}"
+            >
             </wr-page-entry>
           </div>` })}` : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
       </div>
@@ -729,24 +695,6 @@ class Pages extends LitElement
     }
     //this.allSelected = (this.selectedPages.size === this.sortedPages.length);
     this.requestUpdate();
-  }
-
-  onFullPageView(event) {
-    event.preventDefault();
-    const data = {
-      view: "pages",
-      url: "",
-      ts: "",
-    };
-    this.sendChangeEvent(data);
-  }
-
-  onHideSidebar(event) {
-    event.preventDefault();
-    const data = {
-      showSidebar: false
-    };
-    this.sendChangeEvent(data);
   }
 
   async onDownload(event, format, selected) {

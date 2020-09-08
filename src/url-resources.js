@@ -82,6 +82,9 @@ class URLResources extends LitElement
 
   firstUpdated() {
     //this.doLoadResources();
+    if (this.urlSearchType === "") {
+      this.urlSearchType = "prefix";
+    }
   }
 
   _timedUpdate() {
@@ -123,7 +126,7 @@ class URLResources extends LitElement
     }
 
     this.loading = true;
-    let url = (this.urlSearchType !== "" ? this.query : "");
+    let url = (this.urlSearchType !== "contains" ? this.query : "");
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
 
     // optimization: if not starting with http, likely won't have a match here, so just add https://
@@ -188,7 +191,7 @@ class URLResources extends LitElement
 
   filter() {
     const filteredResults = [];
-    const filterText = (this.urlSearchType === "" ? this.query : "");
+    const filterText = (this.urlSearchType === "contains" ? this.query : "");
     for (const result of this.results) {
       if (!filterText || result.url.indexOf(filterText) >= 0) {
         filteredResults.push(result);
@@ -212,8 +215,30 @@ class URLResources extends LitElement
       width: 100%;
       height: 100%;
       display: flex;
+      min-width: 0px;
       flex-direction: column;
     }
+    :host(.sidebar) .is-hidden-tablet {
+      display: flex !important;
+    }
+
+    :host(.sidebar) .is-hidden-mobile {
+      display: none !important;
+    }
+
+    :host(.sidebar) .level, :host(.sidebar) .level-left, :host(.sidebar) .level-right {
+      display: block !important;
+    }
+
+    :host(.sidebar) .columns {
+      display: flex !important;
+      flex-direction: column;
+    }
+
+    :host(.sidebar) .column {
+      width: 100% !important;
+    }
+
     .notification {
       width: 100%;
     }
@@ -251,6 +276,7 @@ class URLResources extends LitElement
     div.sort-header {
       padding: 10px;
       margin-bottom: 0px !important;
+      min-height: fit-content;
     }
     .flex-auto {
       flex: auto;
@@ -275,7 +301,7 @@ class URLResources extends LitElement
     <div class="notification level is-marginless">
       <div class="level-left flex-auto">
         <div class="level-item flex-auto">
-          <span>Search:&nbsp;&nbsp;</span>
+          <span class="is-hidden-mobile">Search:&nbsp;&nbsp;</span>
           <div class="select">
             <select @change="${this.onChangeTypeSearch}">
             ${URLResources.filters.map((filter) => html`
@@ -296,7 +322,7 @@ class URLResources extends LitElement
       </div>
       <div class="control level-right">
         <div style="margin-left: 1em" class="control">
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
+          <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === 'contains'}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
           <span class="num-results" is-pulled-right">${this.filteredResults.length} Result(s)</span>
@@ -361,7 +387,6 @@ class URLResources extends LitElement
     const data = {
       url: event.currentTarget.getAttribute("data-url"),
       ts: event.currentTarget.getAttribute("data-ts"),
-      view: "replay"
     };
 
     this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));

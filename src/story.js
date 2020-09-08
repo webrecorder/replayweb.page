@@ -1,10 +1,12 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css, unsafeCSS } from 'lit-element';
 import { wrapCss } from './misc';
 
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import marked from 'marked';
 
 import { getTS } from './pageutils';
+
+import Split from 'split.js'
 
 
 
@@ -24,6 +26,9 @@ class Story extends LitElement
 
     this.lastST = 0;
     this.clickTime = 0;
+
+    this.isSidebar = false;
+    this.splitDirection = false;
   }
 
   static get properties() {
@@ -35,7 +40,24 @@ class Story extends LitElement
       curatedPageMap: { type: Object },
 
       currList: { type: Number },
+
+      isSidebar: { type: Boolean },
+      splitDirection: { type: Boolean }
     }
+  }
+
+  recalcSplitter(width) {
+    this.splitDirection = this.isSidebar || width < 769 ? "vertical" : "horizontal";
+  }
+
+  firstUpdated() {
+    this.recalcSplitter(document.documentElement.clientWidth);
+
+    this.obs = new ResizeObserver((entries, observer) => {
+      this.recalcSplitter(entries[0].contentRect.width);
+    });
+
+    this.obs.observe(this)
   }
 
   updated(changedProperties) {
@@ -43,11 +65,43 @@ class Story extends LitElement
       this.doLoadCurated();
     }
 
+    if (changedProperties.has("collInfo") || changedProperties.has("isSidebar")) {
+      this.recalcSplitter(document.documentElement.clientWidth);
+    }
+
+    if (changedProperties.has("splitDirection")) {
+      this.configureSplitter();
+    }
+
     if (changedProperties.has("currList") && this.active) {
       this.sendChangeEvent({
         currList: this.currList,
       });
     }
+  }
+
+  configureSplitter() {
+    const sidebar = this.renderRoot.querySelector(".sidebar");
+    const content = this.renderRoot.querySelector(".main-content");
+
+    if (this.splitter) {
+      try {
+        this.splitter.destroy();
+      } catch (e) {}
+      this.splitter = null;
+    }
+
+    if (sidebar && content && !this.splitter) {
+      const opts = {
+        sizes: [20, 80],
+
+        gutterSize: 4,
+
+        direction: this.splitDirection
+      }
+
+      this.splitter = Split([sidebar, content], opts);
+    } 
   }
 
   async doLoadCurated() {
@@ -87,10 +141,22 @@ class Story extends LitElement
       height: 100%;
       display: flex;
       flex-direction: column;
+      min-width: 0px;
 
       justify-content: flex-start;
       align-items: center;
     }
+
+    :host(.sidebar) .columns {
+      display: flex !important;
+      flex-direction: column;
+    }
+
+    :host(.sidebar) .column.sidebar.is-one-fifth {
+      width: 100% !important;
+    }
+
+    ${Story.sidebarStyles(unsafeCSS(`:host(.sidebar)`))}
 
     .desc p {
       margin-bottom: 1.0em;
@@ -100,7 +166,7 @@ class Story extends LitElement
       width: 100%;
       height: 100%;
       justify-self: stretch;
-      margin: 1.0em 0 0 0;
+      margin: 1.0em 0 0 0 !important;
       min-height: 0;
     }
 
@@ -124,7 +190,7 @@ class Story extends LitElement
       margin-left: 30px;
     }
 
-    @media screen and (min-width: 768px) {
+    @media screen and (min-width: 769px) {
       .columns {
         margin-top: 0.75em;
       }
@@ -135,31 +201,44 @@ class Story extends LitElement
       }
     }
 
-    @media screen and (max-width: 767px) {
-      .columns {
-        position: relative;
-      }
-
-      .column.sidebar {
-        max-height: 150px;
-        overflow-y: auto;
-        margin-top: 0.75em;
-      }
-
-      .column.main-content {
-        position: relative;
-        overflow-y: auto;
-
-        border-top: 1px solid black;
-        height: 100%;
-        max-height: calc(100% - 150px - 0.75em);
-      }
-
-      .menu {
-        font-size: 0.80rem;
-      }
+    @media screen and (max-width: 768px) {
+      ${Story.sidebarStyles()}
     }
+
+    .gutter.gutter-vertical:hover {
+      cursor: row-resize;
+    }
+
+    .gutter.gutter-horizontal:hover {
+      cursor: col-resize;
+    }
+
     `);
+  }
+
+  static sidebarStyles(prefix = css``) {
+    return css`
+    ${prefix} .columns {
+      position: relative;
+    }
+
+    ${prefix} .column.sidebar {
+      overflow-y: auto;
+      margin-top: 0.75em;
+    }
+
+    ${prefix} .column.main-content {
+      position: relative;
+      overflow-y: auto;
+
+      border-top: 1px solid black;
+
+      height: 100%;
+    }
+
+    ${prefix} .menu {
+      font-size: 0.80rem;
+    }`;
   }
 
   render() {
@@ -234,7 +313,6 @@ class Story extends LitElement
     const data = {
       url: event.currentTarget.getAttribute("data-url"),
       ts: event.currentTarget.getAttribute("data-ts"),
-      view: "replay"
     };
     this.sendChangeEvent(data);
     return false;

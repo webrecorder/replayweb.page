@@ -1,6 +1,6 @@
 import prettyBytes from 'pretty-bytes';
 
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css, unsafeCSS } from 'lit-element';
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
@@ -22,7 +22,6 @@ class PageEntry extends LitElement
     this.editable = false;
     this.iconValid = false;
     this.index = 0;
-    this.isSidebar = false;
     this.isCurrent = false;
 
     this.timestamp = "";
@@ -40,7 +39,6 @@ class PageEntry extends LitElement
       editable: { type: Boolean },
       iconValid: { type: Boolean },
       index: { type: Number },
-      isSidebar: { type: Boolean },
       isCurrent: { type: Boolean },
       timestamp: { type: String },
       date: { type: Object }
@@ -59,6 +57,14 @@ class PageEntry extends LitElement
         background: transparent;
       }
 
+      :host(.sidebar) .column {
+        width: unset !important;
+      }
+
+      :host(.sidebar) {
+        width: 100%;
+      }
+
       .check-select {
         padding-right: 1.0em;
         height: 100%;
@@ -66,19 +72,6 @@ class PageEntry extends LitElement
       }
 
       .columns {
-        width: 100%;
-      }
-
-      .full {
-        flex: auto;
-        min-height: 0px;
-      }
-
-      .sidebar .column {
-        width: unset !important;
-      }
-
-      .sidebar {
         width: 100%;
       }
 
@@ -110,7 +103,7 @@ class PageEntry extends LitElement
         ${PageEntry.sidebarStyles()}
       }
 
-      ${PageEntry.sidebarStyles(css`.sidebar `)}
+      ${PageEntry.sidebarStyles(unsafeCSS`:host(.sidebar)`)}
 
       .current a {
         background-color: rgb(207, 243, 255);
@@ -126,6 +119,10 @@ class PageEntry extends LitElement
 
       .is-inline-date {
         display: none;
+      }
+
+      .media-content a {
+        display: block;
       }
     `);
   }
@@ -183,44 +180,42 @@ class PageEntry extends LitElement
       </label>
     </div>` : ``}
 
-    <div class="${this.isSidebar ? "sidebar" : "full"}" @click="${this.onReplay}">
-      <div class="columns">
-        ${this.index ? html`
-        <div class="column col-index is-1 is-size-7">${this.index}.</div>
-        ` : ``}
-        <div class="column col-date is-2">
-          <div>${date ? date.toLocaleDateString() : ""}</div>
-          <div>${date ? date.toLocaleTimeString() : ""}</div>
-        </div>
-        <div class="column">
-          <article class="media">
-            <figure class="media-left">
-              <p class="">
-              ${this.iconValid ? html`
-                <img class="favicon" @error="${(e) => this.iconValid = false}" src="${this.replayPrefix}/${this.timestamp}id_/${p.favIconUrl}"/>` : html`
-                <span class="favicon"></span>`}
+    <div class="columns">
+      ${this.index ? html`
+      <div class="column col-index is-1 is-size-7">${this.index}.</div>
+      ` : ``}
+      <div class="column col-date is-2">
+        <div>${date ? date.toLocaleDateString() : ""}</div>
+        <div>${date ? date.toLocaleTimeString() : ""}</div>
+      </div>
+      <div class="column">
+        <article class="media">
+          <figure class="media-left">
+            <p class="">
+            ${this.iconValid ? html`
+              <img class="favicon" @error="${(e) => this.iconValid = false}" src="${this.replayPrefix}/${this.timestamp}id_/${p.favIconUrl}"/>` : html`
+              <span class="favicon"></span>`}
+            </p>
+          </figure>
+          <div class="media-content ${this.isCurrent ? 'current' : ''}">
+            <a @click="${this.onReplay}" href="#">
+            ${this.isCurrent ? html`<p class="curr-page is-pulled-right">Current Page</p>` : ``}
+              <p class="is-size-6 has-text-weight-bold has-text-link text">
+              <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
               </p>
-            </figure>
-            <div class="media-content ${this.isCurrent ? 'current' : ''}">
-              <a @click="${this.onReplay}" href="#">
-              ${this.isCurrent ? html`<p class="curr-page is-pulled-right">Current Page</p>` : ``}
-                <p class="is-size-6 has-text-weight-bold has-text-link text">
-                <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
-                </p>
-                <p class="has-text-dark text"><keyword-mark keywords="${this.query}">${p.url}</keyword-mark></p>
-                <p class="has-text-grey-dark text is-inline-date">
-                  ${date ? date.toLocaleString(): ""}
-                </p>
-              </a>
-              ${this.textSnippet ? html`
-                <div class="text"><keyword-mark keywords="${this.query}">${this.textSnippet}</keyword-mark></div>` : html``}
-            </div>
-            ${hasSize ? html`
-            <div class="media-right" style="margin-right: 2em">
-              ${prettyBytes(p.size)}
-            </div>` : ``}
-          </article>
-        </div>
+              <p class="has-text-dark text"><keyword-mark keywords="${this.query}">${p.url}</keyword-mark></p>
+              <p class="has-text-grey-dark text is-inline-date">
+                ${date ? date.toLocaleString(): ""}
+              </p>
+            </a>
+            ${this.textSnippet ? html`
+              <div class="text"><keyword-mark keywords="${this.query}">${this.textSnippet}</keyword-mark></div>` : html``}
+          </div>
+          ${hasSize ? html`
+          <div class="media-right" style="margin-right: 2em">
+            ${prettyBytes(p.size)}
+          </div>` : ``}
+        </article>
       </div>
     </div>
     
@@ -307,7 +302,6 @@ class PageEntry extends LitElement
     const data = {
       url: this.page.url,
       ts: this.timestamp,
-      view: "replay"
     };
     this.sendChangeEvent(data);
     return false;
