@@ -470,7 +470,6 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
-<<<<<<< HEAD
     <div class="search-bar notification is-marginless">
       <div class="field flex-auto">
         <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
@@ -479,20 +478,6 @@ class Pages extends LitElement
           <span class="icon is-left"><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon></span>
         </div>
       </div>
-
-      ${this.isSidebar && this.collInfo.lists.length ? html`
-      <div class="is-hidden-tablet mobile-lists">
-        <span class="is-size-7">Filter By List:</span>
-        <div class="select is-small">
-          <select id="sort-select" @change=${this.onSelectListDrop}>
-          <option value="0" ?selected="${this.currList === 0}">All Pages</option>
-          ${this.collInfo.lists.map(list => html`
-            <option value="${list.id}" ?selected="${this.currList === list.id}">${list.title}</option>
-          `)}
-          </select>
-        </div>
-      </div>` : ``}
-
     </div>
 
     <div class="main columns">
@@ -508,7 +493,7 @@ class Pages extends LitElement
 
         ${this.collInfo.lists.length ? html`
         <p id="filter-label" class="menu-label">Filter By List:</p>
-        <aside class="index-bar-menu menu">
+        <div class="index-bar-menu menu">
           <ul class="menu-list">
             <li>
               <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
@@ -521,7 +506,7 @@ class Pages extends LitElement
                 class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
               </li>`)}
           </ul>
-        </aside>
+        </div>
         ` : ``}
       </div>
       <div class="column main-content">
