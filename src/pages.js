@@ -502,7 +502,7 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
-      <div role="${this.isSidebar ? "complementary": "main"}" aria-labelledby="page-list-heading">
+      <div role="${this.isSidebar ? "complementary": "main"}" aria-labelledby="${this.isSidebar ? 'page-list-heading' : ''}">
         <div id="page-list-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">Pages in ${this.collInfo.title}</div>
 
         ${this.isSidebar ? html`
