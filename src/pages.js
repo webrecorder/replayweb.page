@@ -539,7 +539,7 @@ class Pages extends LitElement
             <div class="column index-bar is-one-fifth is-hidden-mobile">
               <div class="index-bar-title">${this.collInfo.title}</div>
 
-              <span class="num-results">${this.formatResults()}</span>
+              <span class="num-results" aria-live="polite" aria-atomic="true">${this.formatResults()}</span>
 
               ${this.editable ? html`
               <div class="index-bar-actions">
@@ -622,7 +622,7 @@ class Pages extends LitElement
 
 
     <div class="is-hidden-tablet mobile-header">
-      <div class="num-results">${this.formatResults()}</div>
+      <div class="num-results" aria-live="polite" aria-atomic="true">${this.formatResults()}</div>
       <wr-sorter id="pages"
       .defaultKey="${this.sortKey ? this.sortKey : (this.query ? '' : 'ts')}"
       .defaultDesc="${this.sortDesc !== null ? this.sortDesc : (this.query ? false : true)}"
