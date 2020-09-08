@@ -661,13 +661,13 @@ class Pages extends LitElement
       <div class="page-header has-text-weight-bold">
       ${this.renderPageHeader()}
       </div>
-      <div class="scroller" @scroll="${this.onScroll}">
+      <ul class="scroller" @scroll="${this.onScroll}">
         ${this.sortedPages.length ? html`
           ${this.sortedPages.map((p, i) => {
             const isCurrPage = this.isCurrPage(p);
 
             return html`
-          <div class="content ${isCurrPage ? 'current' : ''}">
+          <li class="content ${isCurrPage ? 'current' : ''}">
             <wr-page-entry
             .index="${this.query || this.isSidebar ? i + 1 : 0}"
             .editable="${this.editable}"
@@ -680,8 +680,8 @@ class Pages extends LitElement
             query="${this.query}"
             .page="${p}">
             </wr-page-entry>
-          </div>` })}` : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
-      </div>
+          </li>` })}` : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
+      </ul>
     `;
   }
 
