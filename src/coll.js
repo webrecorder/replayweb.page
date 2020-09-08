@@ -473,7 +473,7 @@ class Coll extends LitElement
       cursor: col-resize;
     }
 
-    wr-coll-replay {
+    main, wr-coll-replay {
       width: 100%;
     }
 
@@ -540,15 +540,18 @@ class Coll extends LitElement
         </nav>
 
         ${isReplay ? html`
-        <wr-coll-replay
-        .collInfo="${this.collInfo}"
-        sourceUrl="${this.sourceUrl}"
-        url="${this.tabData.url || ""}"
-        ts="${this.tabData.ts || ""}"
-        @coll-tab-nav="${this.onCollTabNav}" id="replay"
-        @replay-loading="${(e) => this.isLoading = e.detail.loading}"
-        class="${isReplay ? '' : 'is-hidden'}">
-        </wr-coll-replay>
+        <main aria-labelledby="replay-heading">
+        <h1 id="replay-heading" class="is-sr-only">Replay of ${this.title ? `${this.title}:` :``} ${this.url}</h1>
+          <wr-coll-replay
+          .collInfo="${this.collInfo}"
+          sourceUrl="${this.sourceUrl}"
+          url="${this.tabData.url || ""}"
+          ts="${this.tabData.ts || ""}"
+          @coll-tab-nav="${this.onCollTabNav}" id="replay"
+          @replay-loading="${(e) => this.isLoading = e.detail.loading}"
+          class="${isReplay ? '' : 'is-hidden'}">
+          </wr-coll-replay>
+        </main>
         ` : ``}
       </div>
       `;
