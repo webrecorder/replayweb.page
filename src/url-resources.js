@@ -232,7 +232,13 @@ class URLResources extends LitElement
     }
     .columns {
       margin: 0px;
-    }   
+    }
+    thead {
+      margin-bottom: 24px;
+    }
+    table th:not([align]) {
+      text-align: left;
+    }
     .result {
       border-bottom: 1px #dbdbdb solid;
       min-height: fit-content;
@@ -272,70 +278,85 @@ class URLResources extends LitElement
 
   render() {
     return html`
-    <div class="notification level is-marginless">
-      <div class="level-left flex-auto">
-        <div class="level-item flex-auto">
-          <span>Search:&nbsp;&nbsp;</span>
-          <div class="select">
-            <select @change="${this.onChangeTypeSearch}">
-            ${URLResources.filters.map((filter) => html`
-            <option value="${filter.filter}"
-            ?selected="${filter.filter === this.currMime}">
-            ${filter.name}
-            </option>
-            `)}
-            </select>
-          </div>
-          <div class="field flex-auto">
-            <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
-              <input type="text" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text" placeholder="Enter URL to Search">
-              <span class="icon is-left"><fa-icon .svg="${fasSearch}"/></span>
+    <main>
+      <h1 class="is-sr-only">URLs in ${this.collInfo.title}</h1>
+
+      <div class="notification level is-marginless">
+        <div class="level-left flex-auto">
+          <div class="level-item flex-auto">
+            <span role="heading" aria-level="2">Search:&nbsp;&nbsp;</span>
+            <div class="select">
+              <select @change="${this.onChangeTypeSearch}">
+              ${URLResources.filters.map((filter) => html`
+              <option value="${filter.filter}"
+              ?selected="${filter.filter === this.currMime}">
+              ${filter.name}
+              </option>
+              `)}
+              </select>
+            </div>
+            <div class="field flex-auto">
+              <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
+                <input type="text" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text" aria-label="Enter URL to Search" placeholder="Enter URL to Search">
+                <span class="icon is-left"><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon></span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="control level-right">
-        <div style="margin-left: 1em" class="control">
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
-          <span class="num-results" is-pulled-right">${this.filteredResults.length} Result(s)</span>
+        <div class="control level-right">
+          <div style="margin-left: 1em" class="control">
+            <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === ''}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
+            <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
+            <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
+            <span id="num-results" class="num-results" is-pulled-right" aria-live="polite" aria-atomic="true">${this.filteredResults.length} Result(s)</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="sort-header is-hidden-tablet">
-      <wr-sorter id="urls"
-        defaultKey="url"
-        defaultKey="${this.sortKey ? this.sortKey : "url"}"
-        ?defaultDesc="${this.sortDesc !== null ? this.sortDesc : false}"
-        .sortKeys="${URLResources.sortKeys}"
-        .data="${this.filteredResults}"
-        @sort-changed="${this.onSortChanged}">
-      </wr-sorter>
-    </div>
-    
-    <div class="all-results">
-      <div class="columns results-head has-text-weight-bold">
-        <a @click="${this.onSort}" data-key="url" class="column col-url is-6 is-hidden-mobile ${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a>
-        <a @click="${this.onSort}" data-key="ts" class="column col-ts is-2 is-hidden-mobile ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
-        <a @click="${this.onSort}" data-key="mime" class="column col-mime is-3 is-hidden-mobile ${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a>
-        <a @click="${this.onSort}" data-key="status" class="column col-status is-1 is-hidden-mobile ${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a>
+      <div class="sort-header is-hidden-tablet">
+        <wr-sorter id="urls"
+          defaultKey="${this.sortKey ? this.sortKey : "url"}"
+          ?defaultDesc="${this.sortDesc !== null ? this.sortDesc : false}"
+          .sortKeys="${URLResources.sortKeys}"
+          .data="${this.filteredResults}"
+          @sort-changed="${this.onSortChanged}">
+        </wr-sorter>
       </div>
 
-      <div class="main-scroll" @scroll="${this.onScroll}">
-      ${this.sortedResults.length ? 
-        this.sortedResults.map((result) => html`
-          <div class="columns result">
-            <div class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></div>
-            <div class="column col-ts is-2"><p class="minihead is-hidden-tablet">Date</p>${new Date(result.date).toLocaleString()}</div>
-            <div class="column col-mime is-3"><p class="minihead is-hidden-tablet">Mime Type</p>${result.mime}</div>
-            <div class="column col-status is-1"><p class="minihead is-hidden-tablet">Status</p>${result.status}</div>
-          </div>
-        `) : html`<div class="section"><i>No Results Found.</i></div>`}
-      </div>
-    </div>
-    `;
+      <h2 id="url-heading" class="is-sr-only">Results</h2>
+
+      <table class="all-results" aria-labelledby="url-heading num-results">
+        <thead>
+          <tr class="columns results-head has-text-weight-bold">
+            <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a></th>
+            <th scope="col" class="column col-ts is-2 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a></th>
+            <th scope="col" class="column col-mime is-3 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a></th>
+            <th scope="col" class="column col-status is-1 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a></th>
+          </tr>
+        </thead>
+
+        <tbody class="main-scroll" @scroll="${this.onScroll}">
+        ${this.sortedResults.length ?
+          this.sortedResults.map((result) => html`
+            <tr class="columns result">
+              <td class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></td>
+              <td class="column col-ts is-2"><p class="minihead is-hidden-tablet">Date</p>${new Date(result.date).toLocaleString()}</td>
+              <td class="column col-mime is-3"><p class="minihead is-hidden-tablet">Mime Type</p>${result.mime}</td>
+              <td class="column col-status is-1"><p class="minihead is-hidden-tablet">Status</p>${result.status}</td>
+            </tr>
+          `) : html`<tr class="section"><td colspan="4"><i>No Results Found.</i></td></tr>`}
+        </tbody>
+      </table>
+    </main>`;
+  }
+
+  clickOnSpacebarPress(event) {
+    // Buttons are expected to respond to both enter/return and spacebar.
+    // If using `<a>` with `role='button'`, assign this handler to keyup.
+    if (event.key == " ") {
+      event.preventDefault();
+      event.target.click();
+    }
   }
 
   onSort(event) {
