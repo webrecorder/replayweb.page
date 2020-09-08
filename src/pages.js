@@ -545,10 +545,9 @@ class Pages extends LitElement
               <div class="index-bar-actions">
                 ${this.renderDownloadMenu()}
               </div>` : ``}
-
               ${this.collInfo.lists.length ? html`
               <p id="filter-label" class="menu-label">Filter By List:</p>
-              <aside class="index-bar-menu menu">
+              <div class="index-bar-menu menu">
                 <ul class="menu-list">
                   <li>
                     <a href="#list-0" data-list="0" class="${currList === 0 ? 'is-active' : ''}"
@@ -561,9 +560,9 @@ class Pages extends LitElement
                       class="${currList === list.id ? 'is-active' : ''}">${list.title}</a>
                     </li>`)}
                 </ul>
-              </aside>
+              </div>
               ` : ``}
-            </div>
+            </aside>
             <div class="column main-content">
               ${this.renderPages()}
             </div>
