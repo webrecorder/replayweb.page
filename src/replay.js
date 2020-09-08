@@ -112,6 +112,10 @@ class Replay extends LitElement
         this.title = event.data.title;
       }
     }
+
+    if (this.title){
+      document.title = `Replay of ${this.title} | ReplayWeb.page`;
+    }
   }
 
   waitForLoad() {
