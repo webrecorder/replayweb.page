@@ -470,7 +470,9 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
+    <div id="page-list-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">Pages in ${this.collInfo.title}</div>
     <div class="search-bar notification is-marginless">
+      ${this.isSidebar ? html `<h3 class="is-sr-only">Search and Filter Pages</h3>` : ``}
       <div class="field flex-auto">
         <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
           <input type="search" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
@@ -509,6 +511,7 @@ class Pages extends LitElement
         ` : ``}
       </div>
       <div class="column main-content">
+        <div id="page-list-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "3": "2"}">Page List</div>
         ${this.renderPages()}
       </div>
     </div>`;
@@ -735,7 +738,7 @@ class Pages extends LitElement
 
   getNoResultsMessage() {
     if (!this.collInfo || !this.collInfo.pages.length) {
-      return html`No distinct "pages" are defined in this archive. Check out&nbsp;<a href="#view=resources">URLs</a>&nbsp;to explore the archive's contents.`;
+      return html`<span class="fix-text-wrapping">No "Pages" are defined in this archive. <a href="#view=resources">Browse by URL</a>.</span>`;
     }
 
     if (this.updatingSearch) {
@@ -747,7 +750,7 @@ class Pages extends LitElement
     }
 
     if (this.query) {
-      return html `No matching pages found. Try changing the search query, or <a href="#view=resources">explore the archive's contents by URL</a>.`;
+      return html `<span class="fix-text-wrapping">No matching pages found. Try changing the search query, or <a href="#view=resources">browse by URL</a>.</span>`;
     }
 
     return "No Pages Found";
