@@ -507,11 +507,14 @@ class Pages extends LitElement
               <fa-icon .svg="${fasLeft}" aria-hidden="true"></fa-icon><span>Hide</span><span class="is-sr-only"> Sidebar</span>
             </a>
             <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
-              <span class="is-sr-only">Promote Sidebar to </span><span>Full Page View</span><fa-icon .svg="${fasRight}" aria-hidden="true"></fa-icon>
+              <span class="is-sr-only">Promote Sidebar to Main View</span><span aria-hidden="true">Expand</span><fa-icon .svg="${fasRight}" aria-hidden="true"></fa-icon>
             </a>
           </div>` : ``}
 
         <div class="search-bar notification is-marginless">
+
+          ${this.isSidebar ? html `<h3 class="is-sr-only">Search and Filter Pages</h3>` : ``}
+
           <div class="field flex-auto">
             <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
               <input type="search" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
@@ -536,7 +539,9 @@ class Pages extends LitElement
 
         <div class="${this.isSidebar ? "sidebar" : "full"}">
           <div class="main columns">
-            <div class="column index-bar is-one-fifth is-hidden-mobile">
+
+            <!-- Hidden if the page list is a sidebar on the replay page -->
+            <aside class="column index-bar is-one-fifth is-hidden-mobile" aria-label="Actions">
               <div class="index-bar-title">${this.collInfo.title}</div>
 
               <span class="num-results" aria-live="polite" aria-atomic="true">${this.formatResults()}</span>
@@ -564,6 +569,7 @@ class Pages extends LitElement
               ` : ``}
             </aside>
             <div class="column main-content">
+              <div id="page-list-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "3": "2"}">Page List</div>
               ${this.renderPages()}
             </div>
           </div>
@@ -809,7 +815,7 @@ class Pages extends LitElement
 
   getNoResultsMessage() {
     if (!this.collInfo || !this.collInfo.pages.length) {
-      return html`No distinct "pages" are defined in this archive. Check out&nbsp;<a href="#view=resources">URLs</a>&nbsp;to explore the archive's contents.`;
+      return html`<span class="fix-text-wrapping">No "Pages" are defined in this archive. <a href="#view=resources">Browse by URL</a>.</span>`;
     }
 
     if (this.updatingSearch) {
@@ -821,7 +827,7 @@ class Pages extends LitElement
     }
 
     if (this.query) {
-      return html `No matching pages found. Try changing the search query, or <a href="#view=resources">explore the archive's contents by URL</a>.`;
+      return html `<span class="fix-text-wrapping">No matching pages found. Try changing the search query, or <a href="#view=resources">browse by URL</a>.</span>`;
     }
 
     return "No Pages Found";
