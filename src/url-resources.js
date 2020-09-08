@@ -345,32 +345,33 @@ class URLResources extends LitElement
           @sort-changed="${this.onSortChanged}">
         </wr-sorter>
       </div>
+    </div>
 
-      <h2 id="url-heading" class="is-sr-only">Results</h2>
+    <h2 id="url-heading" class="is-sr-only">Results</h2>
 
-      <table class="all-results" aria-labelledby="url-heading num-results">
-        <thead>
-          <tr class="columns results-head has-text-weight-bold">
-            <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a></th>
-            <th scope="col" class="column col-ts is-2 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a></th>
-            <th scope="col" class="column col-mime is-3 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a></th>
-            <th scope="col" class="column col-status is-1 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a></th>
+    <table class="all-results" aria-labelledby="url-heading num-results">
+      <thead>
+        <tr class="columns results-head has-text-weight-bold">
+          <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a></th>
+          <th scope="col" class="column col-ts is-2 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a></th>
+          <th scope="col" class="column col-mime is-3 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a></th>
+          <th scope="col" class="column col-status is-1 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a></th>
+        </tr>
+      </thead>
+
+      <tbody class="main-scroll" @scroll="${this.onScroll}">
+      ${this.sortedResults.length ?
+        this.sortedResults.map((result) => html`
+          <tr class="columns result">
+            <td class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></td>
+            <td class="column col-ts is-2"><p class="minihead is-hidden-tablet">Date</p>${new Date(result.date).toLocaleString()}</td>
+            <td class="column col-mime is-3"><p class="minihead is-hidden-tablet">Mime Type</p>${result.mime}</td>
+            <td class="column col-status is-1"><p class="minihead is-hidden-tablet">Status</p>${result.status}</td>
           </tr>
-        </thead>
-
-        <tbody class="main-scroll" @scroll="${this.onScroll}">
-        ${this.sortedResults.length ?
-          this.sortedResults.map((result) => html`
-            <tr class="columns result">
-              <td class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></td>
-              <td class="column col-ts is-2"><p class="minihead is-hidden-tablet">Date</p>${new Date(result.date).toLocaleString()}</td>
-              <td class="column col-mime is-3"><p class="minihead is-hidden-tablet">Mime Type</p>${result.mime}</td>
-              <td class="column col-status is-1"><p class="minihead is-hidden-tablet">Status</p>${result.status}</td>
-            </tr>
-          `) : html`<tr class="section"><td colspan="4"><i>No Results Found.</i></td></tr>`}
-        </tbody>
-      </table>
-    </main>`;
+        `) : html`<tr class="section"><td colspan="4"><i>No Results Found.</i></td></tr>`}
+      </tbody>
+    </table>
+      `;
   }
 
   clickOnSpacebarPress(event) {
