@@ -304,7 +304,7 @@ class URLResources extends LitElement
 
   render() {
     return html`
-    <h1 class="is-sr-only">URLs in ${this.collInfo.title}</h1>
+    <h1 role="heading" class="is-sr-only">URLs in ${this.collInfo.title}</h1>
     <div class="notification level is-marginless">
       <div class="level-left flex-auto">
         <div class="level-item flex-auto">

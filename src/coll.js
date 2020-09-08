@@ -540,9 +540,8 @@ class Coll extends LitElement
         </nav>
 
         ${isReplay ? html`
-        <main>
-        <h1 id="replay-heading" class="is-sr-only">Replay of ${this.title ? `${this.title}:` :``} ${this.url}</h1>
           <wr-coll-replay
+          role="main"
           .collInfo="${this.collInfo}"
           sourceUrl="${this.sourceUrl}"
           url="${this.tabData.url || ""}"
@@ -551,7 +550,6 @@ class Coll extends LitElement
           @replay-loading="${(e) => this.isLoading = e.detail.loading}"
           class="${isReplay ? '' : 'is-hidden'}">
           </wr-coll-replay>
-        </main>
         ` : ``}
       </div>
       `;
@@ -752,7 +750,9 @@ class Coll extends LitElement
     currList="${this.tabData.currList || 0}"
     @coll-tab-nav="${this.onCollTabNav}" id="story"
     .isSidebar="${isSidebar}"
-    class="${isStory ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}">
+    class="${isStory ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
+    role="${isSidebar ? 'complementary' : 'main'}"
+    >
     </wr-coll-story>` : ''}
 
     <wr-coll-resources .collInfo="${this.collInfo}"
@@ -762,7 +762,9 @@ class Coll extends LitElement
     .currMime="${this.tabData.currMime || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
     .isSidebar="${isSidebar}"
-    class="is-paddingless ${isResources ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}">
+    class="is-paddingless ${isResources ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
+    role="${isSidebar ? 'complementary' : 'main'}"
+    >
     </wr-coll-resources>
 
     <wr-page-view
@@ -775,7 +777,9 @@ class Coll extends LitElement
     .url="${this.tabData.url || ""}"
     .ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"
-    class="${isPages ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}">
+    class="${isPages ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
+    role="${isSidebar ? 'complementary' : 'main'}"
+    >
     </wr-page-view>
     `;
   }

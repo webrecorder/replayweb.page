@@ -191,11 +191,15 @@ class Replay extends LitElement
   }
 
   render() {
+    const title = `Replay of ${this.title ? `${this.title}:` :``} ${this.url}`;
+
     return html`
+
+    <h1 id="replay-heading" class="is-sr-only">${title}</h1>
 
     ${this.iframeUrl ? html`
     <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
-    src="${this.iframeUrl}" title="Replay of ${this.title ? `${this.title}:`: ``} ${this.url}"></iframe>
+    src="${this.iframeUrl}" title="${title}"></iframe>
     ` : html`
       <div class="panel intro-panel">
         <p class="panel-heading">Replay Web Page</p>

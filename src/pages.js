@@ -474,7 +474,9 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
-    <div id="page-list-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">Pages in ${this.collInfo.title}</div>
+    <div id="page-list-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">
+      Pages in ${this.collInfo.title}
+    </div>
     <div class="search-bar notification is-marginless">
       ${this.isSidebar ? html `<h3 class="is-sr-only">Search and Filter Pages</h3>` : ``}
       <div class="field flex-auto">
