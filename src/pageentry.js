@@ -193,7 +193,7 @@ class PageEntry extends LitElement
           <div>${date ? date.toLocaleTimeString() : ""}</div>
         </div>
         <div class="column">
-          <article class="media">
+          <div class="media">
             <figure class="media-left">
               <p class="">
               ${this.iconValid ? html`
@@ -219,7 +219,7 @@ class PageEntry extends LitElement
             <div class="media-right" style="margin-right: 2em">
               ${prettyBytes(p.size)}
             </div>` : ``}
-          </article>
+          </div>
         </div>
       </div>
     </div>
