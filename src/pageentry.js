@@ -218,7 +218,7 @@ class PageEntry extends LitElement
         </div>
       </div>
     </div>
-    
+
     ${this.editable ? html`
       ${!this.deleting ? html`
       <button @click="${this.onSendDeletePage}" class="delete"></button>` : html`
