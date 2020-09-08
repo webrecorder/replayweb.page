@@ -202,7 +202,7 @@ class PageEntry extends LitElement
               </p>
             </figure>
             <div class="media-content ${this.isCurrent ? 'current' : ''}">
-              <a @click="${this.onReplay}" href="#">
+              <div role="heading" aria-level=${this.isSidebar ? "4": "3"}><a @click="${this.onReplay}" href="#">
               ${this.isCurrent ? html`<p class="curr-page is-pulled-right">Current Page</p>` : ``}
                 <p class="is-size-6 has-text-weight-bold has-text-link text">
                 <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
@@ -211,7 +211,7 @@ class PageEntry extends LitElement
                 <p class="has-text-grey-dark text is-inline-date">
                   ${date ? date.toLocaleString(): ""}
                 </p>
-              </a>
+              </a></div>
               ${this.textSnippet ? html`
                 <div class="text"><keyword-mark keywords="${this.query}">${this.textSnippet}</keyword-mark></div>` : html``}
             </div>
