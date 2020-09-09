@@ -474,7 +474,7 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
-    <div id="page-list-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">
+    <div class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">
       Pages in ${this.collInfo.title}
     </div>
     <div class="search-bar notification is-marginless">
@@ -517,7 +517,7 @@ class Pages extends LitElement
         ` : ``}
       </div>
       <div class="column main-content">
-        <div id="page-list-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "3": "2"}">Page List</div>
+        <div class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "3": "2"}">Page List</div>
         ${this.renderPages()}
       </div>
     </div>`;
@@ -625,6 +625,7 @@ class Pages extends LitElement
             .editable="${this.editable}"
             .selected="${this.selectedPages.has(p.id)}"
             .isCurrent="${isCurrPage}"
+            .isSidebar="${this.isSidebar}"
             .page="${p}"
             @sel-page="${this.onSelectToggle}"
             @delete-page="${this.onDeletePage}"

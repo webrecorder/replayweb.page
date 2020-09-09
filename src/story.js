@@ -245,7 +245,7 @@ class Story extends LitElement
     const currListNum = this.currList;
 
     return html`
-    <div id="story-heading" class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">
+    <div class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">
       Story for ${this.collInfo.title}
     </div>
     <div class="columns">

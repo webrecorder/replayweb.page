@@ -23,6 +23,7 @@ class PageEntry extends LitElement
     this.iconValid = false;
     this.index = 0;
     this.isCurrent = false;
+    this.isSidebar = false;
 
     this.timestamp = "";
     this.date = null;
@@ -40,6 +41,7 @@ class PageEntry extends LitElement
       iconValid: { type: Boolean },
       index: { type: Number },
       isCurrent: { type: Boolean },
+      isSidebar: { type: Boolean },
       timestamp: { type: String },
       date: { type: Object }
     }
@@ -198,7 +200,7 @@ class PageEntry extends LitElement
             </p>
           </figure>
           <div class="media-content ${this.isCurrent ? 'current' : ''}">
-            <div role="heading" aria-level=${this.isSidebar ? "4": "3"}><a @click="${this.onReplay}" href="#">
+            <div role="heading" aria-level="${this.isSidebar ? "4": "3"}"><a @click="${this.onReplay}" href="#">
             ${this.isCurrent ? html`<p class="curr-page is-pulled-right">Current Page</p>` : ``}
               <p class="is-size-6 has-text-weight-bold has-text-link text">
               <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>

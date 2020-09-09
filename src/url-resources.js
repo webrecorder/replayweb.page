@@ -47,6 +47,7 @@ class URLResources extends LitElement
   constructor() {
     super();
     this.collInfo = null;
+    this.isSidebar = false;
 
     this.currMime = "";
     this.query = "";
@@ -69,6 +70,7 @@ class URLResources extends LitElement
   static get properties() {
     return {
       collInfo: { type: Object },
+      isSidebar: { type: Boolean },
       currMime: { type: String },
       query: { type: String },
       urlSearchType: { type: String },
@@ -306,7 +308,9 @@ class URLResources extends LitElement
 
   render() {
     return html`
-    <h1 role="heading" class="is-sr-only">URLs in ${this.collInfo.title}</h1>
+    <div role="heading" aria-level="${this.isSidebar ? "2": "1"}" class="is-sr-only">URLs in ${this.collInfo.title}</div>
+
+    <div role="heading" aria-level="${this.isSidebar ? "3": "2"}" class="is-sr-only">Search and Filter</div>
     <div class="notification level is-marginless">
       <div class="level-left flex-auto">
         <div class="level-item flex-auto">
@@ -339,7 +343,6 @@ class URLResources extends LitElement
       </div>
     </div>
 
-    <h2 id="sort-heading" class="is-sr-only">Set Sort Order</h2>
     <div class="sort-header is-hidden-tablet">
       <wr-sorter id="urls"
         defaultKey="${this.sortKey ? this.sortKey : "url"}"
@@ -350,7 +353,7 @@ class URLResources extends LitElement
       </wr-sorter>
     </div>
 
-    <h2 id="url-heading" class="is-sr-only">Results</h2>
+    <div role="heading" aria-level="${this.isSidebar ? "3": "2"}" id="results-heading" class="is-sr-only">Results</div>
 
     <table class="all-results" aria-labelledby="url-heading num-results">
       <thead>
