@@ -535,10 +535,11 @@ class Coll extends LitElement
       return html`
       ${this.renderLocationBar()}
       <div id="tabContents">
-        <nav id="contents" class="is-light ${isSidebar ? 'sidebar' : (isReplay ? 'is-hidden' : 'full-pages')}">
+        <div id="contents" class="is-light ${isSidebar ? 'sidebar' : (isReplay ? 'is-hidden' : 'full-pages')}"
+             role="${isSidebar ? "complementary" : ""}" aria-label="${isSidebar ? "Browse Contents" : ""}">
           ${this.renderTabHeader(isSidebar)}
           ${this.renderCollTabs(isSidebar)}
-        </nav>
+        </div>
 
         ${isReplay ? html`
           <wr-coll-replay
@@ -756,7 +757,7 @@ class Coll extends LitElement
     @coll-tab-nav="${this.onCollTabNav}" id="story"
     .isSidebar="${isSidebar}"
     class="${isStory ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
-    role="${isSidebar ? 'complementary' : 'main'}"
+    role="${isSidebar ? '' : 'main'}"
     >
     </wr-coll-story>` : ''}
 
@@ -768,7 +769,7 @@ class Coll extends LitElement
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
     .isSidebar="${isSidebar}"
     class="is-paddingless ${isResources ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
-    role="${isSidebar ? 'complementary' : 'main'}"
+    role="${isSidebar ? '' : 'main'}"
     >
     </wr-coll-resources>
 
@@ -783,7 +784,7 @@ class Coll extends LitElement
     .ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"
     class="${isPages ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
-    role="${isSidebar ? 'complementary' : 'main'}"
+    role="${isSidebar ? '' : 'main'}"
     >
     </wr-page-view>
     `;
