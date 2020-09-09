@@ -136,6 +136,7 @@ class CollIndex extends LitElement
     return wrapCss(css`
     :host {
       overflow-y: auto;
+      min-width: 0;
     }
     .size {
       margin-right: 20px;

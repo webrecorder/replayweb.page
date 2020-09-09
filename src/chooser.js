@@ -62,6 +62,9 @@ class Chooser extends LitElement
 
   static get styles() {
     return wrapCss(css`
+    :host {
+      min-width: 0;
+    }
     .extra-padding {
       padding: 2em;
     }
@@ -79,13 +82,16 @@ class Chooser extends LitElement
       flex-grow: 1;
       flex-shrink: 0;
     }
+    p.control.is-expanded {
+      width: min-content;
+    }
     input.input.file-name:invalid {
       border: 1px dashed red;
     }
     input.input.file-name {
-      max-width: 100%;
       border-width: 1px;
       margin-left: -1px;
+      max-width: 100%;
     }
     @media screen and (max-width: 1023px) {
       .file-icon {

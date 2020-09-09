@@ -803,16 +803,13 @@ class Coll extends LitElement
 
   onShowPages(event) {
     event.preventDefault();
-    // show sidebar if table or greater
+    // show sidebar for tablet or wider, or hide sidebar
     if (this.showSidebar || (document.documentElement.clientWidth >= 769)) {
       this.showSidebar = !this.showSidebar;
-      //this.updateTabData({showSidebar: !this.showSidebar});
     } else {
-    // otherwise, just go to full pages view
-      //this.showSidebar = false;
-      // if (this.tabData && this.tabData.view === "replay") {
-      //   this.updateTabData({view: "pages"});
-      // }
+      // otherwise, just go to full pages view
+      this.showSidebar = false;
+      this.updateTabData({url: "", ts: ""});
     }
   }
 
