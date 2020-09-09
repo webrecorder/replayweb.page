@@ -570,10 +570,10 @@ class Coll extends LitElement
         <ul>
           ${isSidebar ? html`
           <li class="sidebar-nav left">
-            <a @click="${this.onHideSidebar}" class="is-marginless is-size-6 is-paddingless">
-              <fa-icon title="Hide" .svg="${fasAngleLeft}"></fa-icon>
+            <a role="button" href="#" @click="${this.onHideSidebar}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+              <fa-icon title="Hide" .svg="${fasAngleLeft}" aria-hidden="true"></fa-icon>
               <span class="nav-hover" aria-hidden="true">Hide</span>
-              <span class="is-sr-only">Hide Sidebar/span>
+              <span class="is-sr-only">Hide Sidebar</span>
             </a>
           </li>` : ``}
 
@@ -601,9 +601,9 @@ class Coll extends LitElement
 
           ${isSidebar ? html`
           <li class="sidebar-nav right">
-            <a @click="${this.onFullPageView}" class="is-marginless is-size-6 is-paddingless">
-              <span class="nav-hover" aria-hidden"true">Expand</span>
-              <span class="is-sr-only">Expand to Full View</span>
+            <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+              <span class="nav-hover" aria-hidden="true">Expand</span>
+              <span class="is-sr-only">Expand Sidebar to Full View</span>
               <fa-icon title="Expand" .svg="${fasAngleRight}" aria-hidden="true"></fa-icon>
             </a>
           </li>` : ``}
