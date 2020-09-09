@@ -146,10 +146,10 @@ class App extends LitElement
             </a>` : ``}
 
           ${IS_APP && !this.collInfo ? html`
-            <a class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}">
+            <a role="button" href="#" class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}" @keyup="${this.clickOnSpacebarPress}">
               <fa-icon .svg="${fasArrowLeft}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
             </a>
-            <a class="navbar-item arrow-button" title="Go Forward" @click="${(e) => window.history.forward()}">
+            <a role="button" href="#" class="navbar-item arrow-button" title="Go Forward" @click="${(e) => window.history.forward()}" @keyup="${this.clickOnSpacebarPress}">
               <fa-icon .svg="${fasArrowRight}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Forward</span>
             </a>
           ` : ``}
