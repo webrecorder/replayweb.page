@@ -650,7 +650,7 @@ class Coll extends LitElement
             ` : ``}
           </span>
         </button>
-        <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}"
+        <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" ?disabled="${!isReplay}"
                 title="Browse Contents" aria-label="Browse Contents" aria-pressed="${isReplay && this.showSidebar}" aria-controls="contents">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
@@ -702,7 +702,7 @@ class Coll extends LitElement
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
-                <span>Page Search</span>
+                <span>Browse Contents</span>
               </a>
               <hr class="dropdown-divider is-hidden-desktop">
               <a href="#" role="button" class="dropdown-item" @click="${this.onPurgeCache}" @keyup="${clickOnSpacebarPress}">
