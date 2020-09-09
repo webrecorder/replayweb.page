@@ -338,7 +338,7 @@ class URLResources extends LitElement
           <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === 'contains'}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
-          <span class="num-results" is-pulled-right">${this.filteredResults.length} Result(s)</span>
+          <span id="num-results" class="num-results" is-pulled-right" aria-live="polite" aria-atomic="true">${this.filteredResults.length} Result(s)</span>
         </div>
       </div>
     </div>
@@ -355,7 +355,7 @@ class URLResources extends LitElement
 
     <div role="heading" aria-level="${this.isSidebar ? "3": "2"}" id="results-heading" class="is-sr-only">Results</div>
 
-    <table class="all-results" aria-labelledby="url-heading num-results">
+    <table class="all-results" aria-labelledby="results-heading num-results">
       <thead>
         <tr class="columns results-head has-text-weight-bold">
           <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a></th>
