@@ -272,6 +272,8 @@ class URLResources extends LitElement
       border-bottom: 2px #dbdbdb solid;
       margin-right: 16px;
       min-height: fit-content;
+      display: block;
+      width: 100%;
     }
     .results-head a {
       color: black;
@@ -335,16 +337,17 @@ class URLResources extends LitElement
           <span class="num-results" is-pulled-right">${this.filteredResults.length} Result(s)</span>
         </div>
       </div>
+    </div>
 
-      <div class="sort-header is-hidden-tablet">
-        <wr-sorter id="urls"
-          defaultKey="${this.sortKey ? this.sortKey : "url"}"
-          ?defaultDesc="${this.sortDesc !== null ? this.sortDesc : false}"
-          .sortKeys="${URLResources.sortKeys}"
-          .data="${this.filteredResults}"
-          @sort-changed="${this.onSortChanged}">
-        </wr-sorter>
-      </div>
+    <h2 id="sort-heading" class="is-sr-only">Set Sort Order</h2>
+    <div class="sort-header is-hidden-tablet">
+      <wr-sorter id="urls"
+        defaultKey="${this.sortKey ? this.sortKey : "url"}"
+        ?defaultDesc="${this.sortDesc !== null ? this.sortDesc : false}"
+        .sortKeys="${URLResources.sortKeys}"
+        .data="${this.filteredResults}"
+        @sort-changed="${this.onSortChanged}">
+      </wr-sorter>
     </div>
 
     <h2 id="url-heading" class="is-sr-only">Results</h2>

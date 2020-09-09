@@ -491,12 +491,12 @@ class Coll extends LitElement
       border-bottom: 0px;
     }
 
-    .sidebar-nav span {
+    .sidebar-nav span.nav-hover {
       font-size: smaller;
       display: none;
     }
 
-    .sidebar-nav:hover span {
+    .sidebar-nav:hover span.nav-hover {
       display: initial;
       color: rgb(72, 118, 255);
     }
@@ -569,7 +569,9 @@ class Coll extends LitElement
           ${isSidebar ? html`
           <li class="sidebar-nav left">
             <a @click="${this.onHideSidebar}" class="is-marginless is-size-6 is-paddingless">
-              <fa-icon title="Hide" .svg="${fasAngleLeft}"></fa-icon><span>Hide</span>
+              <fa-icon title="Hide" .svg="${fasAngleLeft}"></fa-icon>
+              <span class="nav-hover" aria-hidden="true">Hide</span>
+              <span class="is-sr-only">Hide Sidebar/span>
             </a>
           </li>` : ``}
 
@@ -598,7 +600,9 @@ class Coll extends LitElement
           ${isSidebar ? html`
           <li class="sidebar-nav right">
             <a @click="${this.onFullPageView}" class="is-marginless is-size-6 is-paddingless">
-              <span>Expand</span><fa-icon title="Expand" .svg="${fasAngleRight}"></fa-icon>
+              <span class="nav-hover" aria-hidden"true">Expand</span>
+              <span class="is-sr-only">Expand to Full View</span>
+              <fa-icon title="Expand" .svg="${fasAngleRight}" aria-hidden="true"></fa-icon>
             </a>
           </li>` : ``}
         </ul>
