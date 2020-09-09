@@ -119,10 +119,6 @@ class Pages extends LitElement
       }
     }
 
-    if (this.active && !this.isSidebar){
-      document.title = `Browse by Page or URL | ReplayWeb.page`;
-    }
-
     if (changedProperties.has("sortedPages") && this.isSidebar) {
       //if (await this.updateComplete) {
         const selected = this.renderRoot.querySelector(".current");

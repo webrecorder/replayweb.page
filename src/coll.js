@@ -527,6 +527,10 @@ class Coll extends LitElement
     const isReplay = !!this.tabData.url;
     const isSidebar = isReplay && this.showSidebar;
 
+    if (!isReplay){
+      document.title = `Browse Contents | ReplayWeb.page`;
+    }
+
     if (this.collInfo && !this.collInfo.coll) {
       return html`
       <wr-loader .loadInfo="${this.loadInfo}" embed="${this.embed}"
