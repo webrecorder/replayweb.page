@@ -138,6 +138,10 @@ class Coll extends LitElement
           this._replaceLoc = false;
         } else {
           window.location.hash = this._locationHash;
+          const replay = this.renderRoot.querySelector("wr-coll-replay");
+          if (replay) {
+            replay.focus();
+          }
         }
         if (this.embed && window.parent !== window) {
           window.parent.postMessage(this.tabData, '*');
@@ -548,6 +552,7 @@ class Coll extends LitElement
         ${isReplay ? html`
           <wr-coll-replay
           role="main"
+          tabindex="-1"
           .collInfo="${this.collInfo}"
           sourceUrl="${this.sourceUrl}"
           url="${this.tabData.url || ""}"
