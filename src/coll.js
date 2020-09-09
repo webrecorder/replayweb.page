@@ -496,7 +496,8 @@ class Coll extends LitElement
       display: none;
     }
 
-    .sidebar-nav:hover span.nav-hover {
+    .sidebar-nav:hover span.nav-hover,
+    .sidebar-nav:focus-within span.nav-hover {
       display: initial;
       color: rgb(72, 118, 255);
     }
