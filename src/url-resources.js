@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss } from './misc';
+import { wrapCss, clickOnSpacebarPress } from './misc';
 
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 
@@ -358,10 +358,10 @@ class URLResources extends LitElement
     <table class="all-results" aria-labelledby="results-heading num-results">
       <thead>
         <tr class="columns results-head has-text-weight-bold">
-          <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a></th>
-          <th scope="col" class="column col-ts is-2 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a></th>
-          <th scope="col" class="column col-mime is-3 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a></th>
-          <th scope="col" class="column col-status is-1 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a></th>
+          <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a></th>
+          <th scope="col" class="column col-ts is-2 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a></th>
+          <th scope="col" class="column col-mime is-3 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a></th>
+          <th scope="col" class="column col-status is-1 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a></th>
         </tr>
       </thead>
 
@@ -378,15 +378,6 @@ class URLResources extends LitElement
       </tbody>
     </table>
       `;
-  }
-
-  clickOnSpacebarPress(event) {
-    // Buttons are expected to respond to both enter/return and spacebar.
-    // If using `<a>` with `role='button'`, assign this handler to keyup.
-    if (event.key == " ") {
-      event.preventDefault();
-      event.target.click();
-    }
   }
 
   onSort(event) {

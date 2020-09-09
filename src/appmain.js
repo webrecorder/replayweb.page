@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss, rwpLogo, IS_APP } from './misc';
+import { wrapCss, rwpLogo, IS_APP, clickOnSpacebarPress } from './misc';
 
 import { registerSW, initDBWorker } from './pageutils';
 
@@ -129,7 +129,7 @@ class App extends LitElement
             <fa-icon id="wrlogo" size="2.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
           </span>
         `}
-        <a href="#" role="button" id="menu-button" @click="${this.onNavMenu}" @keyup="${this.clickOnSpacebarPress}"
+        <a href="#" role="button" id="menu-button" @click="${this.onNavMenu}" @keyup="${clickOnSpacebarPress}"
           class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="main menu" aria-haspopup="true" aria-expanded="${this.navMenuShown}">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -146,10 +146,10 @@ class App extends LitElement
             </a>` : ``}
 
           ${IS_APP && !this.collInfo ? html`
-            <a role="button" href="#" class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}" @keyup="${this.clickOnSpacebarPress}">
+            <a role="button" href="#" class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}" @keyup="${clickOnSpacebarPress}">
               <fa-icon .svg="${fasArrowLeft}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Back</span>
             </a>
-            <a role="button" href="#" class="navbar-item arrow-button" title="Go Forward" @click="${(e) => window.history.forward()}" @keyup="${this.clickOnSpacebarPress}">
+            <a role="button" href="#" class="navbar-item arrow-button" title="Go Forward" @click="${(e) => window.history.forward()}" @keyup="${clickOnSpacebarPress}">
               <fa-icon .svg="${fasArrowRight}" aria-hidden="true"></fa-icon><span class="menu-only">&nbsp;Go Forward</span>
             </a>
           ` : ``}
@@ -289,15 +289,6 @@ class App extends LitElement
     // following of in-page anchors.
     event.preventDefault();
     this.renderRoot.querySelector("#skip-main-target").focus()
-  }
-
-  clickOnSpacebarPress(event) {
-    // Buttons are expected to respond to both enter/return and spacebar.
-    // If using `<a>` with `role='button'`, assign this handler to keyup.
-    if (event.key == " ") {
-      event.preventDefault();
-      event.target.click();
-    }
   }
 
   onNavMenu(event) {

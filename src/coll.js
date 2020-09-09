@@ -1,5 +1,5 @@
 import { LitElement, html, css, query } from 'lit-element';
-import { wrapCss, rwpLogo, IS_APP } from './misc';
+import { wrapCss, rwpLogo, IS_APP, clickOnSpacebarPress } from './misc';
 
 import { sourceToId, tsToDate, getPageDateTS } from './pageutils';
 
@@ -232,15 +232,6 @@ class Coll extends LitElement
     }}));
 
     this.onHashChange();
-  }
-
-  clickOnSpacebarPress(event) {
-    // Buttons are expected to respond to both enter/return and spacebar.
-    // If using `<a>` with `role='button'`, assign this handler to keyup.
-    if (event.key == " ") {
-      event.preventDefault();
-      event.target.click();
-    }
   }
 
   onCollLoaded(event) {
@@ -579,7 +570,7 @@ class Coll extends LitElement
         <ul>
           ${isSidebar ? html`
           <li class="sidebar-nav left">
-            <a role="button" href="#" @click="${this.onHideSidebar}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+            <a role="button" href="#" @click="${this.onHideSidebar}" @keyup="${clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
               <fa-icon title="Hide" .svg="${fasAngleLeft}" aria-hidden="true"></fa-icon>
               <span class="nav-hover" aria-hidden="true">Hide</span>
               <span class="is-sr-only">Hide Sidebar</span>
@@ -610,7 +601,7 @@ class Coll extends LitElement
 
           ${isSidebar ? html`
           <li class="sidebar-nav right">
-            <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${this.clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+            <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
               <span class="nav-hover" aria-hidden="true">Expand</span>
               <span class="is-sr-only">Expand Sidebar to Full View</span>
               <fa-icon title="Expand" .svg="${fasAngleRight}" aria-hidden="true"></fa-icon>
@@ -683,38 +674,38 @@ class Coll extends LitElement
           </div>
           <div class="dropdown-menu" id="menu-dropdown">
             <div class="dropdown-content">
-              <a href="#" role="button" class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}" @keyup="${this.clickOnSpacebarPress}">
+              <a href="#" role="button" class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
                 </span>
                 <span>Full Screen</span>
               </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoBack}" @keyup="${this.clickOnSpacebarPress}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoBack}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
                 </span>
                 <span>Back</span>
               </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoForward}" @keyup="${this.clickOnSpacebarPress}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoForward}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
                 </span>
                 <span>Forward</span>
               </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-tablet has-text-grey" @click="${this.onRefresh}" @keyup="${this.clickOnSpacebarPress}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet has-text-grey" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
                 </span>
                 <span>Reload</span>
               </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${this.clickOnSpacebarPress}">
+              <a href="#" role="button" class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
                 <span>Page Search</span>
               </a>
               <hr class="dropdown-divider is-hidden-desktop">
-              <a href="#" role="button" class="dropdown-item" @click="${this.onPurgeCache}" @keyup="${this.clickOnSpacebarPress}">
+              <a href="#" role="button" class="dropdown-item" @click="${this.onPurgeCache}" @keyup="${clickOnSpacebarPress}">
                 Purge Cache + Full Reload
               </a>
               ${dateStr ? html`

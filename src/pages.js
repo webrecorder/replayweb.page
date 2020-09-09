@@ -1,7 +1,7 @@
 "use strict";
 
 import { LitElement, html, css, unsafeCSS } from 'lit-element';
-import { wrapCss } from './misc';
+import { wrapCss, clickOnSpacebarPress } from './misc';
 import ndjson from 'fetch-ndjson';
 
 import FlexSearch from 'flexsearch';
@@ -532,17 +532,17 @@ class Pages extends LitElement
         </div>
         <div class="dropdown-menu" id="dropdown-menu">
           <div class="dropdown-content">
-            <a role="button" href="#" @click="${(e) => this.onDownload(e, "wacz", true)}" @keyup="${this.clickOnSpacebarPress}" class="dropdown-item">
+            <a role="button" href="#" @click="${(e) => this.onDownload(e, "wacz", true)}" @keyup="${clickOnSpacebarPress}" class="dropdown-item">
               Download Selected as WACZ (Web Archive Collection)
             </a>
-            <a role="button" href="#" @click="${(e) => this.onDownload(e, "warc", true)}" @keyup="${this.clickOnSpacebarPress}" class="dropdown-item">
+            <a role="button" href="#" @click="${(e) => this.onDownload(e, "warc", true)}" @keyup="${clickOnSpacebarPress}" class="dropdown-item">
               Download Selected as WARC Only
             </a>
             <hr class="dropdown-divider">
-            <a role="button" href="#" @click="${(e) => this.onDownload(e, "wacz", false)}" @keyup="${this.clickOnSpacebarPress}" class="dropdown-item">
+            <a role="button" href="#" @click="${(e) => this.onDownload(e, "wacz", false)}" @keyup="${clickOnSpacebarPress}" class="dropdown-item">
               Download All as WACZ (Web Archive Collection)
             </a>
-            <a role="button" href="#" @click="${(e) => this.onDownload(e, "warc", false)}" @keyup="${this.clickOnSpacebarPress}" class="dropdown-item">
+            <a role="button" href="#" @click="${(e) => this.onDownload(e, "warc", false)}" @keyup="${clickOnSpacebarPress}" class="dropdown-item">
               Download All as WARC Only
             </a>
           </div>
@@ -561,10 +561,10 @@ class Pages extends LitElement
 
     <div class="header columns is-hidden-mobile">
       ${this.query ? html`
-      <a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="" class="column is-1 ${this.sortKey === "" ? (this.sortDesc ? "desc" : "asc") : ''}">Match</a>` : ``}
+      <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="" class="column is-1 ${this.sortKey === "" ? (this.sortDesc ? "desc" : "asc") : ''}">Match</a>` : ``}
 
-      <a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="ts" class="column is-2 ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
-      <a role="button" href="#" @click="${this.onSort}" @keyup="${this.clickOnSpacebarPress}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
+      <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="ts" class="column is-2 ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
+      <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
     </div>
 
 
@@ -633,15 +633,6 @@ class Pages extends LitElement
           </li>` })}` : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
       </ul>
     `;
-  }
-
-  clickOnSpacebarPress(event) {
-    // Buttons are expected to respond to both enter/return and spacebar.
-    // If using `<a>` with `role='button'`, assign this handler to keyup.
-    if (event.key == " ") {
-      event.preventDefault();
-      event.target.click();
-    }
   }
 
   onMenu(event) {
