@@ -651,7 +651,7 @@ class Coll extends LitElement
           </span>
         </button>
         <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}"
-                title="Page Search" aria-label="Page Search">
+                title="Browse Contents" aria-label="Browse Contents" aria-pressed="${isReplay && this.showSidebar}" aria-controls="contents">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
           </span>
