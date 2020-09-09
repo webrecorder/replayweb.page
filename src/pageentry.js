@@ -77,6 +77,15 @@ class PageEntry extends LitElement
         width: 100%;
       }
 
+      /* Overrde Bulma to add the tiniest margin, so the focus indicator isn't obscured */
+      .columns {
+        margin-top: calc(-0.75rem + 2px);
+      }
+      .columns:last-child {
+        margin-bottom: calc(-0.75rem + 2px);
+      }
+
+
       .favicon {
         width: 24px !important;
         height: 24px !important;
