@@ -27,6 +27,8 @@ class App extends LitElement
 
     registerSW(__SW_NAME__);
     initDBWorker();
+
+    this.safariKeyframes();
   }
 
   static get properties() {
@@ -405,6 +407,24 @@ class App extends LitElement
       this.pageParams.set("source", event.detail.sourceUrl);
       window.location.search = this.pageParams.toString();
     }
+  }
+
+  safariKeyframes() {
+    // Safari requires keyframes at the document level, add spinner keyframes here
+    const css = `
+    @keyframes spinAround {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(359deg);
+      }
+    }
+    `;
+
+    const style = document.createElement("style");
+    document.head.appendChild(style);
+    style.appendChild(document.createTextNode(css));
   }
 }
 

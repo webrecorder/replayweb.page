@@ -692,15 +692,15 @@ class Coll extends LitElement
                 </span>
                 <span>Forward</span>
               </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-tablet has-text-grey" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
                 </span>
                 <span>Reload</span>
               </a>
               <a href="#" role="button" class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
                 <span>Browse Contents</span>
               </a>
