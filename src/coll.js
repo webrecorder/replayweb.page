@@ -673,15 +673,15 @@ class Coll extends LitElement
                 </span>
                 <span>Forward</span>
               </a>
-              <a class="dropdown-item is-hidden-tablet has-text-grey" @click="${this.onRefresh}">
+              <a class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="" .svg="${fasRefresh}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
                 </span>
                 <span>Reload</span>
               </a>
               <a class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="" .svg="${farListAlt}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" .svg="${farListAlt}"></fa-icon>
                 </span>
                 <span>Page Search</span>
               </a>
