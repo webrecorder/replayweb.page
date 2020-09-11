@@ -513,6 +513,16 @@ class Coll extends LitElement
       right: 8px;
     }
 
+    /* Since the replay sometimes programmatically receives keyboard focus,
+       and that is visually unexpected for mouse-users, and since this won't
+       particularly trip up keyboard users, just remove the focus style. */
+    wr-coll-replay:focus {
+      outline: none;
+    }
+    /* Some keyboard-users may see this replacement style */
+    wr-coll-replay:focus-visible {
+      outline: 1px solid rgb(72, 118, 255);
+    }
     `;
   }
 

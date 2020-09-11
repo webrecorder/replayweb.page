@@ -858,6 +858,16 @@ const oe=new WeakMap,ne=w(e=>t=>{if(!(t instanceof D))throw new Error("unsafeSVG
       right: 8px;
     }
 
+    /* Since the replay sometimes programmatically receives keyboard focus,
+       and that is visually unexpected for mouse-users, and since this won't
+       particularly trip up keyboard users, just remove the focus style. */
+    wr-coll-replay:focus {
+      outline: none;
+    }
+    /* Some keyboard-users may see this replacement style */
+    wr-coll-replay:focus-visible {
+      outline: 1px solid rgb(72, 118, 255);
+    }
     `}render(){if(!this.inited)return O``;const e=!!this.tabData.url,t=e&&this.showSidebar;return e||(document.title="Browse Contents | ReplayWeb.page"),this.collInfo&&!this.collInfo.coll?O`
       <wr-loader .loadInfo="${this.loadInfo}" embed="${this.embed}"
       .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`:this.collInfo?O`
