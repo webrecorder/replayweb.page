@@ -634,38 +634,38 @@ class Coll extends LitElement
     <a class="skip-link" href="#skip-replay-target" @click="${this.skipMenu}">Skip replay navigation</a>
     <nav class="replay-bar" aria-label="replay">
       <div class="field has-addons">
-        <button id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}"
+        <a href="#" role="button" id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}"
                 title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}" aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
           </span>
-        </button>
-        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoBack}"
+        </a>
+        <a href="#" role="button" class="button is-borderless is-hidden-mobile" @click="${this.onGoBack}" @keyup="${clickOnSpacebarPress}"
                 title="Back" aria-label="Back">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
           </span>
-        </button>
-        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoForward}"
+        </a>
+        <a href="#" role="button" class="button is-borderless is-hidden-mobile" @click="${this.onGoForward}" @keyup="${clickOnSpacebarPress}"
                 title="Forward" aria-label="Forward">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
           </span>
-        </button>
-        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}"
+        </a>
+        <a href="#" role="button" id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}"
                 title="Reload" aria-label="Reload">
           <span class="icon is-small">
             ${!this.isLoading ? html`
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
             ` : ``}
           </span>
-        </button>
-        <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" ?disabled="${!isReplay}"
-                title="Browse Contents" aria-label="Browse Contents" aria-pressed="${isReplay && this.showSidebar}" aria-controls="contents">
+        </a>
+        <a href="#" role="button" class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
+                ?disabled="${!isReplay}" title="Browse Contents" aria-label="Browse Contents" aria-controls="contents">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
           </span>
-        </button>
+        </a>
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded">
             <input id="url" class="input" type="search" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
@@ -824,7 +824,8 @@ class Coll extends LitElement
     }
   }
 
-  onFullscreenToggle() {
+  onFullscreenToggle(event) {
+    event.preventDefault();
     this.menuActive = false;
     if (!this.isFullscreen) {
       this.requestFullscreen();
@@ -833,12 +834,14 @@ class Coll extends LitElement
     }
   }
 
-  onGoBack() {
+  onGoBack(event) {
+    event.preventDefault();
     this.menuActive = false;
     window.history.back();
   }
 
-  onGoForward() {
+  onGoForward(event) {
+    event.preventDefault();
     this.menuActive = false;
     window.history.forward();
   }

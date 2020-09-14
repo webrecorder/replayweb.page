@@ -48,9 +48,15 @@ a:focus {
   background-color: $wr-dark-yellow !important;
   color: black !important;
 }
-.button.is-borderless:focus, .button.is-borderless:hover, .button.is-borderless:active {
-  background-color: #e8e8e8;
-  color: #363636;
+
+.replay-bar .button {
+  margin: 0 1px;
+}
+
+.replay-bar .button:focus {
+  box-shadow: none !important;
+  outline: 1px dotted $wr-dark-blue;
+  outline: -webkit-focus-ring-color auto 1px;
 }
 
 .skip-link {
