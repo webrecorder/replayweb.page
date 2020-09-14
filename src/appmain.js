@@ -95,6 +95,7 @@ class App extends LitElement
 
       .logo-text {
         padding-left: 0px;
+        margin-left: 8px;
       }
 
       a.navbar-item.logo-text:hover {
@@ -121,12 +122,14 @@ class App extends LitElement
     <nav class="navbar has-background-info" aria-label="main">
       <div class="navbar-brand">
         ${!this.embed ? html `
-          <a href="/" class="navbar-item wr-logo-item menu-only" aria-labelledby="home">
+          <a href="/" class="navbar-item wr-logo-item" aria-labelledby="home">
             <fa-icon id="wrlogo" size="2.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
-          </a>
-          <span class="navbar-item wr-logo-item wide-only">
-            <fa-icon id="wrlogo" size="2.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
-          </span>`: html `
+            <span id="home" class="logo-text has-text-weight-bold is-size-5 has-allcaps wide-only">
+              <span class="has-text-primary">replay</span>
+              <span class="has-text-link">web.page</span>
+              <span class="is-sr-only">Home</span>
+            </span>
+          </a>`: html `
           <span class="navbar-item wr-logo-item">
             <fa-icon id="wrlogo" size="2.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
           </span>
@@ -141,7 +144,7 @@ class App extends LitElement
       <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
         <div class="navbar-start">
           ${!this.embed ? html`
-            <a id="home" class="navbar-item logo-text has-text-weight-bold is-size-5 has-allcaps" href="/">
+            <a id="home" class="navbar-item logo-text has-text-weight-bold is-size-5 has-allcaps menu-only" href="/">
               <span class="has-text-primary">replay</span>
               <span class="has-text-link">web.page</span>
               <span class="is-sr-only">Home</span>
