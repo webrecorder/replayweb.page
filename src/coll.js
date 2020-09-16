@@ -138,9 +138,11 @@ class Coll extends LitElement
           this._replaceLoc = false;
         } else {
           window.location.hash = this._locationHash;
-          const replay = this.renderRoot.querySelector("wr-coll-replay");
-          if (replay) {
-            replay.focus();
+          if (!this.showSidebar) {
+            const replay = this.renderRoot.querySelector("wr-coll-replay");
+            if (replay) {
+              replay.focus();
+            }
           }
         }
         if (this.embed && window.parent !== window) {
@@ -393,7 +395,7 @@ class Coll extends LitElement
   static get replayBarStyles() {
     return css`
     .replay-bar {
-      padding: 1em;
+      padding: 1em 0em 1em 1em;
       max-width: none;
       border-bottom: solid .1rem #97989A;
       width: 100%;
@@ -440,10 +442,6 @@ class Coll extends LitElement
 
     .replay-bar .button:focus {
       box-shadow: none;
-    }
-
-    .dropdown .button {
-      padding-right: 0px;
     }
 
     .is-borderless {

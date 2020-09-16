@@ -93,6 +93,16 @@ function getTS(iso) {
 
 
 // ===========================================================================
+function getReplayLink(view, url, ts) {
+  const params = new URLSearchParams();
+  params.set("view", view);
+  params.set("url", url);
+  params.set("ts", ts);
+  return "#" + params.toString();
+}
+
+
+// ===========================================================================
 async function sourceToId(url) {
   const digest = await digestMessage(url, 'SHA-256');
   const coll = "id-" + digest.slice(0, 12);
@@ -133,5 +143,5 @@ function parseURLSchemeHostPath(url) {
 }
 
 
-export { digestMessage, tsToDate, getTS, getPageDateTS, sourceToId, parseURLSchemeHostPath,
+export { digestMessage, tsToDate, getTS, getPageDateTS, getReplayLink, sourceToId, parseURLSchemeHostPath,
          registerSW, initDBWorker };

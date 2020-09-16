@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss, clickOnSpacebarPress } from './misc';
 
+import { getReplayLink } from './pageutils';
+
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 
 
@@ -369,7 +371,7 @@ class URLResources extends LitElement
       ${this.sortedResults.length ?
         this.sortedResults.map((result) => html`
           <tr class="columns result">
-            <td class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></td>
+            <td class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="${getReplayLink("resources", result.url, result.ts)}">${result.url}</a></td>
             <td class="column col-ts is-2"><p class="minihead is-hidden-tablet">Date</p>${new Date(result.date).toLocaleString()}</td>
             <td class="column col-mime is-3"><p class="minihead is-hidden-tablet">Mime Type</p>${result.mime}</td>
             <td class="column col-status is-1"><p class="minihead is-hidden-tablet">Status</p>${result.status}</td>

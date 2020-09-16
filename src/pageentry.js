@@ -4,7 +4,7 @@ import { LitElement, html, css, unsafeCSS } from 'lit-element';
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
-import { getPageDateTS } from './pageutils';
+import { getPageDateTS, getReplayLink } from './pageutils';
 
 import { wrapCss } from './misc';
 
@@ -209,7 +209,8 @@ class PageEntry extends LitElement
             </p>
           </figure>
           <div class="media-content ${this.isCurrent ? 'current' : ''}">
-            <div role="heading" aria-level="${this.isSidebar ? "4": "3"}"><a @click="${this.onReplay}" href="#">
+            <div role="heading" aria-level="${this.isSidebar ? "4": "3"}">
+              <a @click="${this.onReplay}" href="${getReplayLink("pages", this.page.url, this.timestamp)}">
             ${this.isCurrent ? html`<p class="curr-page is-pulled-right">Current Page</p>` : ``}
               <p class="is-size-6 has-text-weight-bold has-text-link text">
               <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>

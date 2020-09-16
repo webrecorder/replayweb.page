@@ -4,7 +4,7 @@ import { wrapCss } from './misc';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import marked from 'marked';
 
-import { getTS } from './pageutils';
+import { getTS, getReplayLink } from './pageutils';
 
 import Split from 'split.js'
 
@@ -296,10 +296,13 @@ class Story extends LitElement
   renderCPage(p) {
     const date = new Date(p.ts);
 
+    const ts = getTS(date.toISOString());
+
     return html`
     <li>
       <div class="content">
-        <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${getTS(date.toISOString())}" href="#">
+        <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${ts}"
+          href="${getReplayLink("story", p.url, ts)}">
           <p class="is-size-6 has-text-weight-bold has-text-link">${p.title}</p>
           <p class="has-text-dark">${p.url}</p>
         </a>
