@@ -7,7 +7,9 @@
 ReplayWeb.page provides a full web archive replay system running directly in the browser, 
 available at: [https://replayweb.page/](https://replayweb.page)
 
-For full user docs, see: [https://replayweb.page/docs](https://replayweb.page/docs)
+For full user docs, see: [https://replayweb.page/docs](https://replayweb.page/docs).
+
+See [CHANGES.md](CHANGES.md) for changes in the latest release.
 
 The ReplayWeb.page App can be downloaded from the [Releases](https://replayweb.page/releases) page.
 
