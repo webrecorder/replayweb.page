@@ -20,7 +20,7 @@ cache:
 
 script:
   - |
-    if [ "$TRAVIS_BRANCH" == "master" ]; then
+    if [ "$TRAVIS_BRANCH" == "main" ]; then
       export YARN_BUILD_CMD="release"
     else
       export YARN_BUILD_CMD="dist"
