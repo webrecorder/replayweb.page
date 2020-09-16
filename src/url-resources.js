@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss } from './misc';
+import { wrapCss, clickOnSpacebarPress } from './misc';
 
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 
@@ -47,6 +47,7 @@ class URLResources extends LitElement
   constructor() {
     super();
     this.collInfo = null;
+    this.isSidebar = false;
 
     this.currMime = "";
     this.query = "";
@@ -69,6 +70,7 @@ class URLResources extends LitElement
   static get properties() {
     return {
       collInfo: { type: Object },
+      isSidebar: { type: Boolean },
       currMime: { type: String },
       query: { type: String },
       urlSearchType: { type: String },
@@ -95,7 +97,7 @@ class URLResources extends LitElement
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("query") || 
+    if (changedProperties.has("query") ||
         changedProperties.has("urlSearchType") ||
         changedProperties.has("currMime")) {
 
@@ -257,7 +259,13 @@ class URLResources extends LitElement
     }
     .columns {
       margin: 0px;
-    }   
+    }
+    thead {
+      margin-bottom: 24px;
+    }
+    table th:not([align]) {
+      text-align: left;
+    }
     .result {
       border-bottom: 1px #dbdbdb solid;
       min-height: fit-content;
@@ -266,6 +274,8 @@ class URLResources extends LitElement
       border-bottom: 2px #dbdbdb solid;
       margin-right: 16px;
       min-height: fit-content;
+      display: block;
+      width: 100%;
     }
     .results-head a {
       color: black;
@@ -298,6 +308,9 @@ class URLResources extends LitElement
 
   render() {
     return html`
+    <div role="heading" aria-level="${this.isSidebar ? "2": "1"}" class="is-sr-only">URLs in ${this.collInfo.title}</div>
+
+    <div role="heading" aria-level="${this.isSidebar ? "3": "2"}" class="is-sr-only">Search and Filter</div>
     <div class="notification level is-marginless">
       <div class="level-left flex-auto">
         <div class="level-item flex-auto">
@@ -325,14 +338,13 @@ class URLResources extends LitElement
           <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === 'contains'}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
-          <span class="num-results" is-pulled-right">${this.filteredResults.length} Result(s)</span>
+          <span id="num-results" class="num-results" is-pulled-right" aria-live="polite" aria-atomic="true">${this.filteredResults.length} Result(s)</span>
         </div>
       </div>
     </div>
 
     <div class="sort-header is-hidden-tablet">
       <wr-sorter id="urls"
-        defaultKey="url"
         defaultKey="${this.sortKey ? this.sortKey : "url"}"
         ?defaultDesc="${this.sortDesc !== null ? this.sortDesc : false}"
         .sortKeys="${URLResources.sortKeys}"
@@ -340,28 +352,32 @@ class URLResources extends LitElement
         @sort-changed="${this.onSortChanged}">
       </wr-sorter>
     </div>
-    
-    <div class="all-results">
-      <div class="columns results-head has-text-weight-bold">
-        <a @click="${this.onSort}" data-key="url" class="column col-url is-6 is-hidden-mobile ${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a>
-        <a @click="${this.onSort}" data-key="ts" class="column col-ts is-2 is-hidden-mobile ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
-        <a @click="${this.onSort}" data-key="mime" class="column col-mime is-3 is-hidden-mobile ${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a>
-        <a @click="${this.onSort}" data-key="status" class="column col-status is-1 is-hidden-mobile ${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a>
-      </div>
 
-      <div class="main-scroll" @scroll="${this.onScroll}">
-      ${this.sortedResults.length ? 
+    <div role="heading" aria-level="${this.isSidebar ? "3": "2"}" id="results-heading" class="is-sr-only">Results</div>
+
+    <table class="all-results" aria-labelledby="results-heading num-results">
+      <thead>
+        <tr class="columns results-head has-text-weight-bold">
+          <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a></th>
+          <th scope="col" class="column col-ts is-2 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a></th>
+          <th scope="col" class="column col-mime is-3 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a></th>
+          <th scope="col" class="column col-status is-1 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a></th>
+        </tr>
+      </thead>
+
+      <tbody class="main-scroll" @scroll="${this.onScroll}">
+      ${this.sortedResults.length ?
         this.sortedResults.map((result) => html`
-          <div class="columns result">
-            <div class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></div>
-            <div class="column col-ts is-2"><p class="minihead is-hidden-tablet">Date</p>${new Date(result.date).toLocaleString()}</div>
-            <div class="column col-mime is-3"><p class="minihead is-hidden-tablet">Mime Type</p>${result.mime}</div>
-            <div class="column col-status is-1"><p class="minihead is-hidden-tablet">Status</p>${result.status}</div>
-          </div>
-        `) : html`<div class="section"><i>No Results Found.</i></div>`}
-      </div>
-    </div>
-    `;
+          <tr class="columns result">
+            <td class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="#">${result.url}</a></td>
+            <td class="column col-ts is-2"><p class="minihead is-hidden-tablet">Date</p>${new Date(result.date).toLocaleString()}</td>
+            <td class="column col-mime is-3"><p class="minihead is-hidden-tablet">Mime Type</p>${result.mime}</td>
+            <td class="column col-status is-1"><p class="minihead is-hidden-tablet">Status</p>${result.status}</td>
+          </tr>
+        `) : html`<tr class="section"><td colspan="4"><i>No Results Found.</i></td></tr>`}
+      </tbody>
+    </table>
+      `;
   }
 
   onSort(event) {

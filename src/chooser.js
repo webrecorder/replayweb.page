@@ -45,9 +45,9 @@ class Chooser extends LitElement
       loadInfo.noCache = this.file.path !== undefined;
       loadInfo.name = this.fileDisplayName;
     }
-                
+
     this.dispatchEvent(new CustomEvent("load-start", {detail: loadInfo}));
-    
+
     return false;
   }
 
@@ -111,8 +111,8 @@ class Chooser extends LitElement
   render() {
     return html`
     <section class="section less-padding">
-      <nav class="panel">
-        <p class="panel-heading">Load Web Archive</p>
+      <div class="panel">
+        <h2 class="panel-heading">Load Web Archive</h2>
         <div class="extra-padding panel-block file has-name">
           <form class="content is-flex" @submit="${this.onStartLoad}">
             <label class="file-label">
@@ -121,7 +121,7 @@ class Chooser extends LitElement
                 @change=${this.onChooseFile} type="file" id="fileupload" name="fileupload">
               <span class="file-cta">
                 <span class="file-icon">
-                  <fa-icon size="0.9em" .svg=${fasUpload}></fa-icon>
+                  <fa-icon size="0.9em" .svg=${fasUpload} aria-hidden="true"></fa-icon>
                 </span>
                 <span class="file-label is-hidden-touch">
                   Choose File...
@@ -146,7 +146,7 @@ class Chooser extends LitElement
 
           </form>
         </div>
-      </nav>
+      </div>
     </section>`;
   }
 }

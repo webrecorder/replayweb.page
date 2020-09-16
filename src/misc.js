@@ -19,6 +19,17 @@ const IS_APP = window.IS_APP || window.electron && window.electron.IS_APP || win
 
 
 // ===========================================================================
+// Buttons are expected to respond to both enter/return and spacebar.
+// If using `<a>` with `role='button'`, assign this handler to keyup.
+function clickOnSpacebarPress(event) {
+  if (event.key == " ") {
+    event.preventDefault();
+    event.target.click();
+  }
+}
+
+
+// ===========================================================================
 class FaIcon extends LitElement
 {
   constructor() {
@@ -117,4 +128,4 @@ class AnimLogo extends FaIcon
 customElements.define("fa-icon",  FaIcon);
 customElements.define("wr-anim-logo", AnimLogo);
 
-export { wrapCss, IS_APP, rwpLogo, FaIcon, AnimLogo };
+export { wrapCss, IS_APP, clickOnSpacebarPress, rwpLogo, FaIcon, AnimLogo };

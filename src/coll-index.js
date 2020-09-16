@@ -94,7 +94,7 @@ class CollIndex extends LitElement
     const resp = await fetch("./wabac/api/index");
     try {
       const json = await resp.json();
-      this.colls = json.colls.map((coll) => { 
+      this.colls = json.colls.map((coll) => {
         coll.title = coll.title || coll.filename;
         return coll;
       });
@@ -147,14 +147,14 @@ class CollIndex extends LitElement
     .no-top-padding {
       padding-top: 1.0em;
     }
-    button.is-loading {
+    .is-loading {
       line-height: 1.5em;
       height: 1.5em;
       border: 0px;
       background-color: transparent !important;
       width: auto;
     }
-    nav.panel.is-light {
+    div.panel.is-light {
       margin-bottom: 2em;
     }
 
@@ -251,14 +251,14 @@ class CollIndex extends LitElement
     </header>
     <section class="section no-top-padding">
       <div class="sort-header is-small">
-        <a @click=${(e) => this.hideHeader = !this.hideHeader} class="collapse button is-small">
+        <button @click=${(e) => this.hideHeader = !this.hideHeader} class="collapse button is-small">
           <span class="icon"><fa-icon .svg=${this.hideHeader ? fasArrowDown : fasArrowUp}></span>
-          <span>${this.hideHeader ? 'Show' : 'Hide'}</span>
-        </a>
+          <span>${this.hideHeader ? 'Show ' : 'Hide'} <span class="is-sr-only">Header</span></span>
+        </button>
       </div>
-      <nav class="panel is-light">
-        <div class="panel-heading"><span>Loaded Archives</span>
-        </div>
+      <div class="panel is-light">
+        <h2 class="panel-heading"><span>Loaded Archives</span>
+        </h2>
 
         ${this.colls.length ? html`
         <div class="panel-block sort-header is-small">
@@ -292,13 +292,13 @@ class CollIndex extends LitElement
                 </div>
                 <div class="column is-2"><p class="minihead">Date Loaded</p>${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}</div>
                 <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.size || 0))}
-                 
+
                 </div>
               </div>
               ${!this._deleting[coll.sourceUrl] ? html`
-              <button class="delete" title="Unload Collection" data-coll-index="${i}" @click="${this.onDeleteColl}"></button>
+              <button class="delete" aria-label="Unload Collection" title="Unload Collection" data-coll-index="${i}" @click="${this.onDeleteColl}"></button>
               ` : html`
-              <button class="button delete is-loading is-static"></button>`}
+              <span class="button delete is-loading is-static">Deleting</span`}
             </div>
           `)}
         </div>
@@ -309,7 +309,7 @@ class CollIndex extends LitElement
           <i>No Archives so far! Archives loaded in the section above will appear here.</i>
         </div>
         `}
-      </nav>
+      </div>
     </section>
     `;
   }

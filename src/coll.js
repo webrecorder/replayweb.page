@@ -1,5 +1,5 @@
 import { LitElement, html, css, query } from 'lit-element';
-import { wrapCss, rwpLogo, IS_APP } from './misc';
+import { wrapCss, rwpLogo, IS_APP, clickOnSpacebarPress } from './misc';
 
 import { sourceToId, tsToDate, getPageDateTS } from './pageutils';
 
@@ -84,7 +84,7 @@ class Coll extends LitElement
 
       url: { type: String },
       ts: { type: String },
-      
+
       isFullscreen: { type: Boolean },
       menuActive: { type: Boolean },
 
@@ -138,6 +138,10 @@ class Coll extends LitElement
           this._replaceLoc = false;
         } else {
           window.location.hash = this._locationHash;
+          const replay = this.renderRoot.querySelector("wr-coll-replay");
+          if (replay) {
+            replay.focus();
+          }
         }
         if (this.embed && window.parent !== window) {
           window.parent.postMessage(this.tabData, '*');
@@ -290,7 +294,6 @@ class Coll extends LitElement
 
   updateTabData(data, replaceLoc = false, merge = false) {
     this.tabData = {...this.tabData, ...data};
-
     if (this.tabData.url) {
       this.url = this.tabData.url || "";
     }
@@ -465,7 +468,7 @@ class Coll extends LitElement
       cursor: col-resize;
     }
 
-    wr-coll-replay {
+    main, wr-coll-replay {
       width: 100%;
     }
 
@@ -483,12 +486,13 @@ class Coll extends LitElement
       border-bottom: 0px;
     }
 
-    .sidebar-nav span {
+    .sidebar-nav span.nav-hover {
       font-size: smaller;
       display: none;
     }
 
-    .sidebar-nav:hover span {
+    .sidebar-nav:hover span.nav-hover,
+    .sidebar-nav:focus-within span.nav-hover {
       display: initial;
       color: rgb(72, 118, 255);
     }
@@ -509,6 +513,16 @@ class Coll extends LitElement
       right: 8px;
     }
 
+    /* Since the replay sometimes programmatically receives keyboard focus,
+       and that is visually unexpected for mouse-users, and since this won't
+       particularly trip up keyboard users, just remove the focus style. */
+    wr-coll-replay:focus {
+      outline: none;
+    }
+    /* Some keyboard-users may see this replacement style */
+    wr-coll-replay:focus-visible {
+      outline: 1px solid rgb(72, 118, 255);
+    }
     `;
   }
 
@@ -518,6 +532,10 @@ class Coll extends LitElement
     const isReplay = !!this.tabData.url;
     const isSidebar = isReplay && this.showSidebar;
 
+    if (!isReplay){
+      document.title = `Browse Contents | ReplayWeb.page`;
+    }
+
     if (this.collInfo && !this.collInfo.coll) {
       return html`
       <wr-loader .loadInfo="${this.loadInfo}" embed="${this.embed}"
@@ -525,26 +543,27 @@ class Coll extends LitElement
     } else if (this.collInfo) {
       return html`
       ${this.renderLocationBar()}
-
       <div id="tabContents">
-        <nav id="contents" class="is-light ${isSidebar ? 'sidebar' : (isReplay ? 'is-hidden' : 'full-pages')}">
+        <div id="contents" class="is-light ${isSidebar ? 'sidebar' : (isReplay ? 'is-hidden' : 'full-pages')}"
+             role="${isSidebar ? "complementary" : ""}" aria-label="${isSidebar ? "Browse Contents" : ""}">
           ${this.renderTabHeader(isSidebar)}
           ${this.renderCollTabs(isSidebar)}
-        </nav>
+        </div>
 
         ${isReplay ? html`
-        <wr-coll-replay
-        .collInfo="${this.collInfo}"
-        sourceUrl="${this.sourceUrl}"
-        url="${this.tabData.url || ""}"
-        ts="${this.tabData.ts || ""}"
-        @coll-tab-nav="${this.onCollTabNav}" id="replay"
-        @replay-loading="${(e) => this.isLoading = e.detail.loading}"
-        class="${isReplay ? '' : 'is-hidden'}">
-        </wr-coll-replay>
+          <wr-coll-replay
+          role="main"
+          tabindex="-1"
+          .collInfo="${this.collInfo}"
+          sourceUrl="${this.sourceUrl}"
+          url="${this.tabData.url || ""}"
+          ts="${this.tabData.ts || ""}"
+          @coll-tab-nav="${this.onCollTabNav}" id="replay"
+          @replay-loading="${(e) => this.isLoading = e.detail.loading}"
+          class="${isReplay ? '' : 'is-hidden'}">
+          </wr-coll-replay>
         ` : ``}
       </div>
-
       `;
     } else {
       return html``;
@@ -557,46 +576,49 @@ class Coll extends LitElement
     // }
 
     return html`
-      <div class="main tabs is-centered ${isSidebar ? 'sidebar' : ''}">
+      <nav class="main tabs is-centered ${isSidebar ? 'sidebar' : ''}" aria-label="tabs">
         <ul>
           ${isSidebar ? html`
           <li class="sidebar-nav left">
-            <a @click="${this.onHideSidebar}" class="is-marginless is-size-6 is-paddingless">
-              <fa-icon title="Hide" .svg="${fasAngleLeft}"></fa-icon><span>Hide</span>
+            <a role="button" href="#" @click="${this.onHideSidebar}" @keyup="${clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+              <fa-icon title="Hide" .svg="${fasAngleLeft}" aria-hidden="true"></fa-icon>
+              <span class="nav-hover" aria-hidden="true">Hide</span>
+              <span class="is-sr-only">Hide Sidebar</span>
             </a>
           </li>` : ``}
 
           ${this.hasStory ? html`
           <li class="${this.tabData.view === 'story' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#story" class="is-size-6">
-              <span class="icon"><fa-icon .svg="${fasBook}"></fa-icon></span>
+            <a @click="${this.onTabClick}" href="#story" class="is-size-6" aria-label="Story" aria-current="${this.tabData.view === 'story' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${fasBook}" aria-hidden="true" title="Story"></fa-icon></span>
               <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="Story">Story</span>
             </a>
           </li>` : ``}
 
           <li class="${this.tabData.view === 'pages' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#pages" class="is-size-6">
-              <span class="icon"><fa-icon .svg="${farPages}"></fa-icon></span>
+            <a @click="${this.onTabClick}" href="#pages" class="is-size-6" aria-label="Pages" aria-current="${this.tabData.view === 'pages' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${farPages}" aria-hidden="true" title="Pages"></fa-icon></span>
               <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="Pages">Pages</span>
             </a>
           </li>
 
           <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#resources" class="is-size-6">
-              <span class="icon"><fa-icon .svg="${farResources}"></fa-icon></span>
-              <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="URL Resources">Page Resources</span>
+            <a @click="${this.onTabClick}" href="#resources" class="is-size-6" aria-label="URLs" aria-current="${this.tabData.view === 'resources' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${farResources}" aria-hidden="true" title="URLs"></fa-icon></span>
+              <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="URLs">URLs</span>
             </a>
           </li>
 
           ${isSidebar ? html`
           <li class="sidebar-nav right">
-            <a @click="${this.onFullPageView}" class="is-marginless is-size-6 is-paddingless">
-              <span>Expand</span><fa-icon title="Expand" .svg="${fasAngleRight}"></fa-icon>
+            <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
+              <span class="nav-hover" aria-hidden="true">Expand</span>
+              <span class="is-sr-only">Expand Sidebar to Full View</span>
+              <fa-icon title="Expand" .svg="${fasAngleRight}" aria-hidden="true"></fa-icon>
             </a>
           </li>` : ``}
-
         </ul>
-      </div>`;
+      </nav>`;
   }
 
   renderLocationBar() {
@@ -609,84 +631,91 @@ class Coll extends LitElement
     const isReplay = !!this.tabData.url;
 
     return html`
-    <div class="replay-bar">
+    <a class="skip-link" href="#skip-replay-target" @click="${this.skipMenu}">Skip replay navigation</a>
+    <nav class="replay-bar" aria-label="replay">
       <div class="field has-addons">
-        <button id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}">
+        <a href="#" role="button" id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}"
+                title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}" aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}">
           <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
           </span>
-        </button>
-        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoBack}">
+        </a>
+        <a href="#" role="button" class="button is-borderless is-hidden-mobile" @click="${this.onGoBack}" @keyup="${clickOnSpacebarPress}"
+                title="Back" aria-label="Back">
           <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
           </span>
-        </button>
-        <button class="button is-borderless is-hidden-mobile" @click="${this.onGoForward}">
+        </a>
+        <a href="#" role="button" class="button is-borderless is-hidden-mobile" @click="${this.onGoForward}" @keyup="${clickOnSpacebarPress}"
+                title="Forward" aria-label="Forward">
           <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
           </span>
-        </button>
-        <button id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}">
+        </a>
+        <a href="#" role="button" id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}"
+                title="Reload" aria-label="Reload">
           <span class="icon is-small">
             ${!this.isLoading ? html`
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
             ` : ``}
           </span>
-        </button>
-        <button class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}">
+        </a>
+        <a href="#" role="button" class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
+                ?disabled="${!isReplay}" title="Browse Contents" aria-label="Browse Contents" aria-controls="contents">
           <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" .svg="${farListAlt}"></fa-icon>
+            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
           </span>
-        </button>
+        </a>
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded">
-            <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
+            <input id="url" class="input" type="search" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
             ${isReplay ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
           </div>
         </form>
 
         <div class="dropdown is-right ${this.menuActive ? 'is-active' : ''}" @click="${(e) => this.menuActive = false}">
           <div class="dropdown-trigger">
-            <button class="button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" @click="${this.onMenu}">
+            <button class="button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" aria-expanded="${this.menuActive}" @click="${this.onMenu}"
+                    aria-label="more replay controls">
               <span class="icon is-small">
-                <fa-icon size="1.0em" class="has-text-grey" .svg="${fasMenuV}"></fa-icon>
+                <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasMenuV}"></fa-icon>
               </span>
             </button>
           </div>
-          <div class="dropdown-menu" id="menu-dropdown" role="menu">
+          <div class="dropdown-menu" id="menu-dropdown">
             <div class="dropdown-content">
-              <a class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}">
+              <a href="#" role="button" class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
                 </span>
                 <span>Full Screen</span>
               </a>
-              <a class="dropdown-item is-hidden-tablet" @click="${this.onGoBack}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoBack}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasLeft}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
                 </span>
                 <span>Back</span>
               </a>
-              <a class="dropdown-item is-hidden-tablet" @click="${this.onGoForward}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoForward}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRight}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
                 </span>
                 <span>Forward</span>
               </a>
-              <a class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${fasRefresh}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
                 </span>
                 <span>Reload</span>
               </a>
-              <a class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}">
+              <a href="#" role="button" class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" .svg="${farListAlt}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
-                <span>Page Search</span>
+                <span>Browse Contents</span>
               </a>
               <hr class="dropdown-divider is-hidden-desktop">
-              <a class="dropdown-item" @click="${this.onPurgeCache}">
+              <a href="#" role="button" class="dropdown-item" @click="${this.onPurgeCache}" @keyup="${clickOnSpacebarPress}">
                 Purge Cache + Full Reload
               </a>
               ${dateStr ? html`
@@ -697,7 +726,7 @@ class Coll extends LitElement
               ${this.embed ? html`
               <hr class="dropdown-divider">
               <a href="https://replayweb.page/" target="_blank" class="dropdown-item info">
-                <fa-icon class="menu-logo" size="1.0rem" .svg=${rwpLogo}></fa-icon>
+                <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${rwpLogo}></fa-icon>
                 <span>&nbsp;About ReplayWeb.page</span>
                 <span class="menu-version">(${__VERSION__})</span>
               </a>
@@ -708,7 +737,7 @@ class Coll extends LitElement
 
 
       </div>
-    </div>`;
+    </nav><p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
   }
 
   dragStart(event) {
@@ -737,7 +766,9 @@ class Coll extends LitElement
     currList="${this.tabData.currList || 0}"
     @coll-tab-nav="${this.onCollTabNav}" id="story"
     .isSidebar="${isSidebar}"
-    class="${isStory ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}">
+    class="${isStory ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
+    role="${isSidebar ? '' : 'main'}"
+    >
     </wr-coll-story>` : ''}
 
     <wr-coll-resources .collInfo="${this.collInfo}"
@@ -747,7 +778,9 @@ class Coll extends LitElement
     .currMime="${this.tabData.currMime || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
     .isSidebar="${isSidebar}"
-    class="is-paddingless ${isResources ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}">
+    class="is-paddingless ${isResources ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
+    role="${isSidebar ? '' : 'main'}"
+    >
     </wr-coll-resources>
 
     <wr-page-view
@@ -760,9 +793,18 @@ class Coll extends LitElement
     .url="${this.tabData.url || ""}"
     .ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"
-    class="${isPages ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}">
+    class="${isPages ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
+    role="${isSidebar ? '' : 'main'}"
+    >
     </wr-page-view>
     `;
+  }
+
+  skipMenu(event){
+    // This is a workaround, since this app's routing doesn't permit normal
+    // following of in-page anchors.
+    event.preventDefault();
+    this.renderRoot.querySelector("#skip-replay-target").focus()
   }
 
   onKeyDown(event) {
@@ -782,7 +824,8 @@ class Coll extends LitElement
     }
   }
 
-  onFullscreenToggle() {
+  onFullscreenToggle(event) {
+    event.preventDefault();
     this.menuActive = false;
     if (!this.isFullscreen) {
       this.requestFullscreen();
@@ -791,12 +834,14 @@ class Coll extends LitElement
     }
   }
 
-  onGoBack() {
+  onGoBack(event) {
+    event.preventDefault();
     this.menuActive = false;
     window.history.back();
   }
 
-  onGoForward() {
+  onGoForward(event) {
+    event.preventDefault();
     this.menuActive = false;
     window.history.forward();
   }
@@ -827,7 +872,7 @@ class Coll extends LitElement
     this.reauthWait = (async () => {
       const headers = event.detail.headers;
 
-      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, { 
+      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
         method: 'POST',
         body: JSON.stringify({headers})
       });

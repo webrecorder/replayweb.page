@@ -23,6 +23,7 @@ class PageEntry extends LitElement
     this.iconValid = false;
     this.index = 0;
     this.isCurrent = false;
+    this.isSidebar = false;
 
     this.timestamp = "";
     this.date = null;
@@ -40,6 +41,7 @@ class PageEntry extends LitElement
       iconValid: { type: Boolean },
       index: { type: Number },
       isCurrent: { type: Boolean },
+      isSidebar: { type: Boolean },
       timestamp: { type: String },
       date: { type: Object }
     }
@@ -74,6 +76,15 @@ class PageEntry extends LitElement
       .columns {
         width: 100%;
       }
+
+      /* Overrde Bulma to add the tiniest margin, so the focus indicator isn't obscured */
+      .columns {
+        margin-top: calc(-0.75rem + 2px);
+      }
+      .columns:last-child {
+        margin-bottom: calc(-0.75rem + 2px);
+      }
+
 
       .favicon {
         width: 24px !important;
@@ -189,7 +200,7 @@ class PageEntry extends LitElement
         <div>${date ? date.toLocaleTimeString() : ""}</div>
       </div>
       <div class="column">
-        <article class="media">
+        <div class="media">
           <figure class="media-left">
             <p class="">
             ${this.iconValid ? html`
@@ -198,7 +209,7 @@ class PageEntry extends LitElement
             </p>
           </figure>
           <div class="media-content ${this.isCurrent ? 'current' : ''}">
-            <a @click="${this.onReplay}" href="#">
+            <div role="heading" aria-level="${this.isSidebar ? "4": "3"}"><a @click="${this.onReplay}" href="#">
             ${this.isCurrent ? html`<p class="curr-page is-pulled-right">Current Page</p>` : ``}
               <p class="is-size-6 has-text-weight-bold has-text-link text">
               <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
@@ -215,10 +226,10 @@ class PageEntry extends LitElement
           <div class="media-right" style="margin-right: 2em">
             ${prettyBytes(p.size)}
           </div>` : ``}
-        </article>
+        </div>
       </div>
     </div>
-    
+
     ${this.editable ? html`
       ${!this.deleting ? html`
       <button @click="${this.onSendDeletePage}" class="delete"></button>` : html`

@@ -57,13 +57,13 @@ class Replay extends LitElement
 
   updated(changedProperties) {
     if (changedProperties.has("sourceUrl") || changedProperties.has("collInfo")) {
-      this.isAuthable = (this.sourceUrl.startsWith("googledrive://") && 
+      this.isAuthable = (this.sourceUrl.startsWith("googledrive://") &&
         this.collInfo && this.collInfo.onDemand);
 
       this.reauthWait = null;
     }
 
-    if (this.url && 
+    if (this.url &&
         ((this.replayUrl != this.url) || (this.replayTS != this.ts)) &&
         (changedProperties.has("url") || changedProperties.has("ts"))) {
 
@@ -81,7 +81,7 @@ class Replay extends LitElement
         url: this.replayUrl,
         ts: this.replayTS,
       };
-  
+
       this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: true, data}}));
     }
   }
@@ -112,13 +112,17 @@ class Replay extends LitElement
         this.title = event.data.title;
       }
     }
+
+    if (this.title){
+      document.title = `Replay of ${this.title} | ReplayWeb.page`;
+    }
   }
 
   waitForLoad() {
     this.setLoading();
     this._loadPoll = window.setInterval(() => {
       const iframe = this.renderRoot.querySelector("iframe");
-      if (!iframe || !iframe.contentDocument || !iframe.contentWindow || 
+      if (!iframe || !iframe.contentDocument || !iframe.contentWindow ||
         (iframe.contentDocument.readyState === "complete" && !iframe.contentWindow._WBWombat)) {
           this.clearLoading(iframe && iframe.contentWindow);
       }
@@ -177,7 +181,7 @@ class Replay extends LitElement
         flex-direction: column;
       }
 
-      nav.intro-panel.panel {
+      div.intro-panel.panel {
         min-width: 40%;
         display: flex;
         flex-direction: column;
@@ -187,19 +191,23 @@ class Replay extends LitElement
   }
 
   render() {
+    const title = `Replay of ${this.title ? `${this.title}:` :``} ${this.url}`;
+
     return html`
+
+    <h1 id="replay-heading" class="is-sr-only">${title}</h1>
 
     ${this.iframeUrl ? html`
     <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
-    src="${this.iframeUrl}"></iframe>
+    src="${this.iframeUrl}" title="${title}"></iframe>
     ` : html`
-      <nav class="panel intro-panel">
+      <div class="panel intro-panel">
         <p class="panel-heading">Replay Web Page</p>
         <div class="panel-block">
           <p>Enter a URL above to replay it from the web archive!</p>
-          <p>(Check out the <a href="#view=pages">Pages</a> or <a href="#view=resources">Page Resources</a> to find URLs in this archive.)</p>
+          <p>(Or, check out <a href="#view=pages">Pages</a> or <a href="#view=resources">URLs</a> to explore the contents of this archive.)</p>
         </div>
-      </nav>
+      </div>
     `}
 
     ${this.isAuthable ? html`
@@ -207,15 +215,16 @@ class Replay extends LitElement
       <div class="modal-background"></div>
         <div class="modal-card">
           <header class="modal-card-head">
-          <p class="modal-card-title">Auth Needed</p>
+            <p class="modal-card-title">Auth Needed</p>
             <button class="delete" aria-label="close"></button>
           </header>
           <section class="modal-card-body">
             <div class="container has-text-centered">
-            <wr-gdrive .sourceUrl=${this.sourceUrl} .state="${this.showAuth ? 'trymanual' : 'implicitonly'}" .reauth="${true}" @load-ready=${this.onReAuthed}/>
+              <wr-gdrive .sourceUrl=${this.sourceUrl} .state="${this.showAuth ? 'trymanual' : 'implicitonly'}" .reauth="${true}" @load-ready=${this.onReAuthed}/>
             </div>
           </section>
         </div>
+      </div>
     </div>
     ` : ``}
     `;
