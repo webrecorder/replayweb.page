@@ -11,6 +11,14 @@ matrix:
     - os: linux
       services: docker
       language: generic
+      env:
+        - TARGET_PLATFORM=win
+
+    - os: linux
+      services: docker
+      language: generic
+      env:
+        - TARGET_PLATFORM=linux
 
 cache:
   directories:
@@ -27,27 +35,38 @@ script:
     fi
 
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      mkdir -p plugins-linux;
-      pushd plugins-linux;
-      wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/libpepflashplayer.so";
-      popd;
+      if [ "$TARGET_PLATFORM" == "linux" ]; then
+        mkdir -p plugins-linux;
+        pushd plugins-linux;
+        wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/libpepflashplayer.so";
+        popd;
 
-      mkdir -p plugins-win;
-      pushd plugins-win;
-      wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86_64.dll";
-      wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86.dll";
-      popd;
+        docker run --rm \
+          -e GH_TOKEN=${GH_TOKEN} \
+          -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
+          -v ${PWD}:/project \
+          -v ~/.cache/electron:/root/.cache/electron \
+          -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+          electronuserland/builder:wine \
+          /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run $YARN_BUILD_CMD --linux --x64"
+      else
+        mkdir -p plugins-win;
+        pushd plugins-win;
+        wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86_64.dll";
+        wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86.dll";
+        popd;
 
-      docker run --rm \
-        -e GH_TOKEN=${GH_TOKEN} \
-        -e WIN_CSC_LINK=${WIN_CSC_LINK} \
-        -e WIN_CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD} \
-        -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
-        -v ${PWD}:/project \
-        -v ~/.cache/electron:/root/.cache/electron \
-        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-        electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run $YARN_BUILD_CMD --linux --win --x64 --ia32"
+        docker run --rm \
+          -e GH_TOKEN=${GH_TOKEN} \
+          -e WIN_CSC_LINK=${WIN_CSC_LINK} \
+          -e WIN_CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD} \
+          -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
+          -v ${PWD}:/project \
+          -v ~/.cache/electron:/root/.cache/electron \
+          -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+          electronuserland/builder:wine \
+          /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run $YARN_BUILD_CMD --win --x64 --ia32"
+      fi
     else
       mkdir -p plugins-mac;
       pushd plugins-mac;
