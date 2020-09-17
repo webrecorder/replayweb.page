@@ -914,7 +914,6 @@ class Coll extends LitElement
       } else {
         data = this._stringToParams(value);
       }
-      //this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: false, data}}));
     }
     this.updateTabData(data);
   }
@@ -922,6 +921,8 @@ class Coll extends LitElement
   _stringToParams(value) {
     const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
     const data = {};
+    data.url = "";
+    data.ts = "";
 
     for (const param of ["query", "view", "currList", "currMime", "urlSearchType"]) {
       if (q.has(param)) {
