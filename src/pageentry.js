@@ -68,7 +68,7 @@ class PageEntry extends LitElement
       }
 
       .check-select {
-        padding-right: 1.0em;
+        padding: 0 1.0em 0 0.5em;
         height: 100%;
         margin: auto 0 auto 0;
       }

@@ -386,13 +386,18 @@ class Pages extends LitElement
         min-height: 0px;
       }
 
-      .current {
-        /*background-color: rgb(207, 243, 255);*/
+      .page-entry {
+        padding-bottom: 1.5rem;
+      }
+
+      .selected {
+        background-color: rgb(207, 243, 255);
       }
 
       .page-header {
         display: flex;
-        flex-flow: row wrap;
+        flex-direction: row;
+        align-items: baseline;
         width: 100%;
         min-height: fit-content;
 
@@ -401,7 +406,7 @@ class Pages extends LitElement
       }
 
       .check-select {
-        padding-right: 1.0em;
+        padding: 0 1.0em 0 0.5em;
       }
 
       .search-bar {
@@ -596,10 +601,6 @@ class Pages extends LitElement
       }
     }
 
-    if (this.editable) {
-      return this.selectedPages.has(p.id);
-    }
-
     return false;
   }
 
@@ -612,15 +613,15 @@ class Pages extends LitElement
       <ul class="scroller" @scroll="${this.onScroll}">
         ${this.sortedPages.length ? html`
           ${this.sortedPages.map((p, i) => {
-            const isCurrPage = this.isCurrPage(p);
+            const selected = this.selectedPages.has(p.id);
 
             return html`
-          <li class="content ${isCurrPage ? 'current' : ''}">
+          <li class="page-entry ${selected ? 'selected' : ''}">
             <wr-page-entry
             .index="${this.query || this.isSidebar ? i + 1 : 0}"
             .editable="${this.editable}"
-            .selected="${this.selectedPages.has(p.id)}"
-            .isCurrent="${isCurrPage}"
+            .selected="${selected}"
+            .isCurrent="${this.isCurrPage(p)}"
             .isSidebar="${this.isSidebar}"
             .page="${p}"
             @sel-page="${this.onSelectToggle}"
