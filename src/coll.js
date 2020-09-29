@@ -63,6 +63,8 @@ class Coll extends LitElement
 
     this.showSidebar = localStorage.getItem(`pages:showSidebar`) === "1";
     this.splitter = null;
+
+    this.isVisible = true;
   }
 
   static get properties() {
@@ -89,7 +91,9 @@ class Coll extends LitElement
       menuActive: { type: Boolean },
 
       embed: { type: String },
-      editable: { type: Boolean }
+      editable: { type: Boolean },
+
+      isVisible: { type: Boolean }
     }
   }
 
@@ -101,6 +105,14 @@ class Coll extends LitElement
     this.addEventListener("fullscreenchange", (event) => {
       this.isFullscreen = !!document.fullscreenElement;
     });
+
+    if (this.embed) {
+      this.observer = new IntersectionObserver((entries, observer) => {
+        this.isVisible = entries[0].isIntersecting;
+      });
+
+      this.observer.observe(this);
+    }
   }
 
   updated(changedProperties) {
@@ -548,7 +560,7 @@ class Coll extends LitElement
           ${this.renderCollTabs(isSidebar)}
         </div>
 
-        ${isReplay ? html`
+        ${isReplay && this.isVisible ? html`
           <wr-coll-replay
           role="main"
           tabindex="-1"
@@ -558,7 +570,7 @@ class Coll extends LitElement
           ts="${this.tabData.ts || ""}"
           @coll-tab-nav="${this.onCollTabNav}" id="replay"
           @replay-loading="${(e) => this.isLoading = e.detail.loading}"
-          class="${isReplay ? '' : 'is-hidden'}">
+          >
           </wr-coll-replay>
         ` : ``}
       </div>
