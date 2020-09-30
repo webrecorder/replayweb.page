@@ -16,21 +16,15 @@ class Sorter extends LitElement
 
     this.numResults = DEFAULT_RESULTS;
 
-    this.sortKey = null;
+    this.sortKey = null
     this.sortDesc = null;
-
-    this.defaultKey = "";
-    this.defaultDesc = false;
   }
 
   static get properties() {
     return {
       id: { type: String },
 
-      defaultKey: {type: String },
-      defaultDesc: { type: Boolean },
-
-      //numResults: {type: Number},
+      numResults: {type: Number},
 
       data: { type: Array },
       sortedData: { type: Array },
@@ -40,45 +34,35 @@ class Sorter extends LitElement
     }
   }
 
-  // firstUpdated() {
-  //   if (this.sortKey === null && this.defaultKey) {
-  //     this.sortKey = localStorage.getItem(`${this.id}:sortKey`) || this.defaultKey;
-  //   }
-  //   const sortDesc = localStorage.getItem(`${this.id}:sortDesc`);
-  //   if (this.sortDesc === null) {
-  //     this.sortDesc = !sortDesc ? this.defaultDesc : sortDesc === "1";
-  //   }
-  // }
+  firstUpdated() {
+    if (this.id) {
+      const sortKey = localStorage.getItem(`${this.id}:sortKey`);
+      if (sortKey !== null) {
+        this.sortKey = sortKey;
+      }
+      const sortDesc = localStorage.getItem(`${this.id}:sortDesc`);
+      if (sortDesc !== null) {
+        this.sortDesc = sortDesc === "1";
+      }
+    }
+  }
 
   updated(changedProperties) {
     const keyChanged = changedProperties.has("sortKey");
     const descChanged = changedProperties.has("sortDesc");
     const dataChanged = changedProperties.has("data");
-    const numResultsChanged = changedProperties.has("numResults");
 
-    if (changedProperties.has("defaultKey")) {
-      this.sortKey = this.defaultKey;
-    }
-
-    if (changedProperties.has("defaultDesc")) {
-      this.sortDesc = this.defaultDesc;
-    }
-
-    if (keyChanged) {
+    if (keyChanged && this.sortKey !== null) {
       localStorage.setItem(`${this.id}:sortKey`, this.sortKey);
     }
-    if (descChanged) {
+
+    if (descChanged && this.sortDesc !== null) {
       localStorage.setItem(`${this.id}:sortDesc`, this.sortDesc ? "1" : "0");
     }
+
     if (keyChanged || descChanged || dataChanged) {
       this.sortData();
     }
-    if (dataChanged) {
-
-    }
-    //if (numResultsChanged && !dataChanged) {
-      //this.sendSortChanged();
-    //}
   }
 
   sortData() {

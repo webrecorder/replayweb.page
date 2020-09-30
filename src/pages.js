@@ -6,7 +6,7 @@ import ndjson from 'fetch-ndjson';
 
 import FlexSearch from 'flexsearch';
 
-import { getTS } from './pageutils';
+import { getTS, getPageDateTS } from './pageutils';
 
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 import fasAngleDown from '@fortawesome/fontawesome-free/svgs/solid/angle-down.svg';
@@ -35,8 +35,8 @@ class Pages extends LitElement
 
     this.menuActive = false;
 
-    this.sortKey = null;
-    this.sortDesc = null;
+    this.sortKey = "date";
+    this.sortDesc = true;
 
     this.isSidebar = false;
     this.url = "";
@@ -54,7 +54,7 @@ class Pages extends LitElement
         "name": "Title"
       },
       {
-        "key": "ts",
+        "key": "date",
         "name": "Date"
       }
     ];
@@ -102,12 +102,6 @@ class Pages extends LitElement
       this.updateTextSearch();
 
     } else if (changedProperties.has("query")) {
-
-      if (this.query && !changedProperties.get("query")) {
-        this.sortKey = null;
-        this.sortDesc = null;
-      }
-
       this.filter();
 
     } else if (changedProperties.has("currList")) {
@@ -116,6 +110,21 @@ class Pages extends LitElement
     if (changedProperties.has("active") && this.active) {
       if (this.changeNeeded) {
         this.filter();
+      }
+    }
+
+    if (changedProperties.has("query")) {
+      if (this.query) {
+        this.sortKey = "";
+        this.sortDesc = false;
+      } else {
+        this.sortKey = "date"
+        this.sortDesc = true;
+      }
+      const sorter = this.renderRoot.querySelector("wr-sorter");
+      if (sorter) {
+        sorter.sortKey = this.sortKey;
+        sorter.sortDesc = this.sortDesc;
       }
     }
 
@@ -159,6 +168,13 @@ class Pages extends LitElement
       await this.filterCurated();
     }
 
+    // normalize the date
+    for (const page of this.filteredPages) {
+      const {timestamp, date} = getPageDateTS(page);
+      page.timestamp = timestamp;
+      page.date = date;
+    }
+
     this.loading = false;
     this.changeNeeded = false;
     const data = {query: this.query, currList: this.currList};
@@ -174,6 +190,9 @@ class Pages extends LitElement
     for (const c of json.curated) {
       for (const p of this.filteredPages) {
         if (p.id === c.page) {
+          if (p.ts) {
+            p.date = new Date(p.ts).toISOString();
+          }
           curated.push(p);
           break;
         }
@@ -568,7 +587,7 @@ class Pages extends LitElement
       ${this.query ? html`
       <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="" class="column is-1 ${this.sortKey === "" ? (this.sortDesc ? "desc" : "asc") : ''}">Match</a>` : ``}
 
-      <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="ts" class="column is-2 ${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
+      <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="date" class="column is-2 ${this.sortKey === "date" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a>
       <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
     </div>
 
@@ -577,8 +596,8 @@ class Pages extends LitElement
     <div class="is-hidden-tablet mobile-header">
       <div class="num-results" aria-live="polite" aria-atomic="true">${this.formatResults()}</div>
       <wr-sorter id="pages"
-      .defaultKey="${this.sortKey ? this.sortKey : (this.query ? '' : 'ts')}"
-      .defaultDesc="${this.sortDesc !== null ? this.sortDesc : (this.query ? false : true)}"
+      .sortKey="${this.sortKey}"
+      .sortDesc="${this.sortDesc}"
       .sortKeys="${Pages.sortKeys}"
       .data="${this.filteredPages}"
       @sort-changed="${this.onSortChanged}"

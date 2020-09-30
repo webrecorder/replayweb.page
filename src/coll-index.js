@@ -268,7 +268,8 @@ class CollIndex extends LitElement
             <span class="icon is-left is-small"><fa-icon .svg="${fasSearch}"/></span>
           </div>
           <wr-sorter id="index"
-          defaultKey="title"
+          sortKey="ctime"
+          ?sortDesc="${true}"
           .sortKeys="${CollIndex.sortKeys}"
           .data="${this.filteredColls}"
           @sort-changed="${(e) => this.sortedColls = e.detail.sortedData}">

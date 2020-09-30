@@ -5,6 +5,8 @@ import { getReplayLink } from './pageutils';
 
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 
+import "keyword-mark-element/lib/keyword-mark.js";
+
 
 // ===========================================================================
 class URLResources extends LitElement
@@ -65,8 +67,8 @@ class URLResources extends LitElement
     this.tryMore = false;
     this.loading = false;
 
-    this.sortKey = null;
-    this.sortDesc = null;
+    this.sortKey = "url";
+    this.sortDesc = false;
   }
 
   static get properties() {
@@ -337,7 +339,7 @@ class URLResources extends LitElement
       </div>
       <div class="control level-right">
         <div style="margin-left: 1em" class="control">
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="" ?checked="${this.urlSearchType === 'contains'}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
+          <label class="radio has-text-left"><input type="radio" name="urltype" value="contains" ?checked="${this.urlSearchType === 'contains'}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
           <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
           <span id="num-results" class="num-results" is-pulled-right" aria-live="polite" aria-atomic="true">${this.filteredResults.length} Result(s)</span>
@@ -347,8 +349,8 @@ class URLResources extends LitElement
 
     <div class="sort-header is-hidden-tablet">
       <wr-sorter id="urls"
-        defaultKey="${this.sortKey ? this.sortKey : "url"}"
-        ?defaultDesc="${this.sortDesc !== null ? this.sortDesc : false}"
+        .sortKey="${this.sortKey}"
+        .sortDesc="${this.sortDesc}"
         .sortKeys="${URLResources.sortKeys}"
         .data="${this.filteredResults}"
         @sort-changed="${this.onSortChanged}">
@@ -371,7 +373,9 @@ class URLResources extends LitElement
       ${this.sortedResults.length ?
         this.sortedResults.map((result) => html`
           <tr class="columns result">
-            <td class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="${getReplayLink("resources", result.url, result.ts)}">${result.url}</a></td>
+            <td class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="${getReplayLink("resources", result.url, result.ts)}">
+            <keyword-mark keywords="${this.query}">${result.url}</keyword-mark>
+            </a></td>
             <td class="column col-ts is-2"><p class="minihead is-hidden-tablet">Date</p>${new Date(result.date).toLocaleString()}</td>
             <td class="column col-mime is-3"><p class="minihead is-hidden-tablet">Mime Type</p>${result.mime}</td>
             <td class="column col-status is-1"><p class="minihead is-hidden-tablet">Status</p>${result.status}</td>
