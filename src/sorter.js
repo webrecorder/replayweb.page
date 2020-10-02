@@ -4,7 +4,6 @@ import { wrapCss } from './misc';
 import fasSortDown from '@fortawesome/fontawesome-free/svgs/solid/sort-down.svg';
 import fasSortUp from '@fortawesome/fontawesome-free/svgs/solid/sort-up.svg';
 
-const DEFAULT_RESULTS = 100;
 
 // ===========================================================================
 class Sorter extends LitElement
@@ -14,7 +13,8 @@ class Sorter extends LitElement
     this.sortedData = [];
     this.data = [];
 
-    this.numResults = DEFAULT_RESULTS;
+    this.pageResults = 0;
+    this.numResults = 0;
 
     this.sortKey = null
     this.sortDesc = null;
@@ -24,7 +24,7 @@ class Sorter extends LitElement
     return {
       id: { type: String },
 
-      numResults: {type: Number},
+      pageResults: {type: Number},
 
       data: { type: Array },
       sortedData: { type: Array },
@@ -67,7 +67,7 @@ class Sorter extends LitElement
 
   sortData() {
     this.sortedData = [...this.data];
-    this.numResults = DEFAULT_RESULTS;
+    this.numResults = this.pageResults;
 
     if (this.sortKey === "") {
       if (this.sortDesc) {
@@ -90,13 +90,13 @@ class Sorter extends LitElement
     const detail = {
       sortKey: this.sortKey,
       sortDesc: this.sortDesc,
-      sortedData: this.sortedData.slice(0, this.numResults)
+      sortedData: this.numResults ? this.sortedData.slice(0, this.numResults) : this.sortedData
     };
     this.dispatchEvent(new CustomEvent("sort-changed", {detail}));
   }
 
   getMore(more = 100) {
-    if (this.numResults >= this.sortedData.length) {
+    if (this.pageResults && this.numResults >= this.sortedData.length) {
       return;
     }
 

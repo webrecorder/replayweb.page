@@ -166,6 +166,7 @@ class URLResources extends LitElement
       const last = this.results[this.results.length - 1];
       params.set("fromMime", last.mime);
       params.set("fromUrl", last.url);
+      params.set("fromStatus", last.status);
       params.set("fromTs", new Date(last.date).getTime());
     }
 

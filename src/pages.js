@@ -600,6 +600,7 @@ class Pages extends LitElement
       .sortDesc="${this.sortDesc}"
       .sortKeys="${Pages.sortKeys}"
       .data="${this.filteredPages}"
+      pageResults="100"
       @sort-changed="${this.onSortChanged}"
       class="${this.filteredPages.length ? '' : 'is-hidden'}">
       </wr-sorter>
