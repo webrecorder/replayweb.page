@@ -1,4 +1,10 @@
 ## CHANGES
+
+v1.1.2
+- UI: Fix auto-loading of additional results on url search page when searching by mime type.
+- Fidelity: More fixes to replay of embedded "about:blank", fix replay of embedded tweets in particular.
+- Fidelity: Various improvements to fuzzy matching (longer params weighed higher, numeric params weighed by difference, support for required params)
+
 v1.1.1
 
 - UI: Sort column is now remembered (for page lists, url resources and main collection lists)
