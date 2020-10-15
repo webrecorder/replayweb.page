@@ -11,6 +11,8 @@ import { getTS, getPageDateTS } from './pageutils';
 import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 import fasAngleDown from '@fortawesome/fontawesome-free/svgs/solid/angle-down.svg';
 
+import fasEdit from '@fortawesome/fontawesome-free/svgs/solid/edit.svg';
+
 
 // ===========================================================================
 class Pages extends LitElement
@@ -41,6 +43,8 @@ class Pages extends LitElement
     this.isSidebar = false;
     this.url = "";
     this.ts = "";
+
+    this.editing = false;
   }
 
   static get sortKeys() {
@@ -85,7 +89,9 @@ class Pages extends LitElement
 
       isSidebar: { type: Boolean },
       url: { type: String },
-      ts: { type: String }
+      ts: { type: String },
+
+      editing: { type: Boolean }
     }
   }
 
@@ -322,6 +328,7 @@ class Pages extends LitElement
         border-right: 3px solid rgb(237, 237, 237);
         background-color: whitesmoke;
         padding-right: 0px;
+        position: relative;
       }
 
       .index-bar-title {
@@ -329,6 +336,17 @@ class Pages extends LitElement
         text-transform: uppercase;
         margin-bottom: 1.0rem;
         word-break: break-word;
+      }
+
+      .index-bar-title:hover + .editIcon {
+        display: block;
+      }
+
+      .editIcon {
+        display: none;
+        position: absolute;
+        right: 8px;
+        top: 8px;
       }
 
       .index-bar-status {
@@ -411,6 +429,11 @@ class Pages extends LitElement
 
       .selected {
         background-color: rgb(207, 243, 255);
+      }
+
+      .is-disabled {
+        pointer-events: none;
+        opacity: .65;
       }
 
       .page-header {
@@ -509,7 +532,13 @@ class Pages extends LitElement
     </div>
     <div class="main columns">
       <div class="column index-bar is-one-fifth is-hidden-mobile">
-        <div class="index-bar-title">${this.collInfo.title}</div>
+
+        ${this.editable && this.editing ? html`
+        <form @submit="${this.onUpdateTitle}"><input id="titleEdit" class="input" value="${this.collInfo.title}" @blur="${this.onUpdateTitle}"></form>
+        ` : html`
+        <div class="index-bar-title" @dblclick="${(e) => this.editing = true}">${this.collInfo.title}</div>`}
+
+        ${this.editable ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>` : html``}
 
         <span class="num-results" aria-live="polite" aria-atomic="true">${this.formatResults()}</span>
 
@@ -556,17 +585,29 @@ class Pages extends LitElement
         </div>
         <div class="dropdown-menu" id="dropdown-menu">
           <div class="dropdown-content">
-            <a role="button" href="#" @click="${(e) => this.onDownload(e, "wacz", true)}" @keyup="${clickOnSpacebarPress}" class="dropdown-item">
+            <a role="button" href="#"
+             @click="${(e) => this.onDownload(e, "wacz", true)}"
+             @keyup="${clickOnSpacebarPress}"
+             class="dropdown-item ${this.selectedPages.size === 0 ? 'is-disabled' : ''}">
               Download Selected as WACZ (Web Archive Collection)
             </a>
-            <a role="button" href="#" @click="${(e) => this.onDownload(e, "warc", true)}" @keyup="${clickOnSpacebarPress}" class="dropdown-item">
+            <a role="button" href="#"
+             @click="${(e) => this.onDownload(e, "warc", true)}"
+             @keyup="${clickOnSpacebarPress}"
+             class="dropdown-item ${this.selectedPages.size === 0 ? 'is-disabled' : ''}">
               Download Selected as WARC Only
             </a>
             <hr class="dropdown-divider">
-            <a role="button" href="#" @click="${(e) => this.onDownload(e, "wacz", false)}" @keyup="${clickOnSpacebarPress}" class="dropdown-item">
+            <a role="button" href="#"
+             @click="${(e) => this.onDownload(e, "wacz", false)}"
+             @keyup="${clickOnSpacebarPress}"
+             class="dropdown-item">
               Download All as WACZ (Web Archive Collection)
             </a>
-            <a role="button" href="#" @click="${(e) => this.onDownload(e, "warc", false)}" @keyup="${clickOnSpacebarPress}" class="dropdown-item">
+            <a role="button" href="#"
+             @click="${(e) => this.onDownload(e, "warc", false)}"
+             @keyup="${clickOnSpacebarPress}"
+             class="dropdown-item">
               Download All as WARC Only
             </a>
           </div>
@@ -576,7 +617,7 @@ class Pages extends LitElement
 
   renderPageHeader() {
     return html`
-    ${this.editable ? html`
+    ${this.editable && this.filteredPages.length ? html`
     <div class="check-select">
       <label class="checkbox">
       <input @change=${this.onSelectAll} type="checkbox" .checked="${this.allSelected}">
@@ -654,6 +695,30 @@ class Pages extends LitElement
           </li>` })}` : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
       </ul>
     `;
+  }
+
+  onUpdateTitle(event) {
+    event.preventDefault();
+
+    this.editing = false;
+
+    if (!this.editable) {
+      return;
+    }
+    const input = this.renderRoot.querySelector("#titleEdit");
+    if (!input || !input.value.trim()) {
+      return;
+    }
+
+    const title = input.value;
+
+    const body = JSON.stringify({title});
+
+    fetch(`${this.collInfo.apiPrefix}/metadata`, {method: 'POST', body}).then((res) => {
+      if (res.status === 200) {
+        this.dispatchEvent(new CustomEvent("coll-update", {detail: {title}}));
+      }
+    });
   }
 
   onMenu(event) {

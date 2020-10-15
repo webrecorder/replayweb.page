@@ -65,6 +65,8 @@ class Coll extends LitElement
     this.splitter = null;
 
     this.isVisible = true;
+
+    this.favIconUrl = "";
   }
 
   static get properties() {
@@ -93,12 +95,13 @@ class Coll extends LitElement
       embed: { type: String },
       editable: { type: Boolean },
 
-      isVisible: { type: Boolean }
+      isVisible: { type: Boolean },
+
+      favIconUrl: {type: String }
     }
   }
 
   firstUpdated() {
-    //this.doUpdateInfo();
     this.inited = true;
     window.addEventListener("hashchange", (event) => this.onHashChange(event));
 
@@ -126,6 +129,13 @@ class Coll extends LitElement
 
     if (changedProperties.has("sourceUrl")) {
       this.doUpdateInfo();
+    }
+    if (changedProperties.has("editable")) {
+      if (this.editable) {
+        this._pollColl = setInterval(() => this.doUpdateInfo(), 10000);
+      } else if (this._pollColl) {
+        clearInterval(this._pollColl);
+      }
     }
     if (changedProperties.has("tabData")) {
       if (!this.collInfo || !this.collInfo.coll) {
@@ -255,6 +265,14 @@ class Coll extends LitElement
       sourceUrl: this.sourceUrl,
       collInfo: this.collInfo,
     }}));
+  }
+
+  onCollUpdate(event) {
+    if (!this.editable) {
+      return;
+    }
+
+    this.collInfo = {...this.collInfo, ...event.detail};
   }
 
   onHashChange(event) {
@@ -418,6 +436,12 @@ class Coll extends LitElement
       border-radius: 4px;
     }
 
+    .favicon img {
+      width: 20px;
+      height: 20px;
+      filter: drop-shadow(1px 1px 2px grey);
+    }
+
     #datetime {
       position: absolute;
       right: 1em;
@@ -570,6 +594,7 @@ class Coll extends LitElement
           ts="${this.tabData.ts || ""}"
           @coll-tab-nav="${this.onCollTabNav}" id="replay"
           @replay-loading="${(e) => this.isLoading = e.detail.loading}"
+          @replay-favicons="${this.onFavIcons}"
           >
           </wr-coll-replay>
         ` : ``}
@@ -640,6 +665,8 @@ class Coll extends LitElement
 
     const isReplay = !!this.tabData.url;
 
+    const showFavIcon = isReplay && this.favIconUrl;
+
     return html`
     <a class="skip-link" href="#skip-replay-target" @click="${this.skipMenu}">Skip replay navigation</a>
     <nav class="replay-bar" aria-label="replay">
@@ -677,9 +704,13 @@ class Coll extends LitElement
           </span>
         </a>
         <form @submit="${this.onSubmit}">
-          <div class="control is-expanded">
+          <div class="control is-expanded ${showFavIcon ? 'has-icons-left' : ''}">
             <input id="url" class="input" type="search" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
             ${isReplay ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
+            ${showFavIcon ? html`
+            <span class="favicon icon is-small is-left">
+              <img src="${this.favIconUrl}"/>
+            </span>` : html``}
           </div>
         </form>
 
@@ -803,6 +834,7 @@ class Coll extends LitElement
     .url="${this.tabData.url || ""}"
     .ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"
+    @coll-update="${this.onCollUpdate}"
     class="${isPages ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
     role="${isSidebar ? '' : 'main'}"
     >
@@ -876,6 +908,16 @@ class Coll extends LitElement
   onHideSidebar(event) {
     event.preventDefault();
     this.showSidebar = false;
+  }
+
+  onFavIcons(event) {
+    this.favIconUrl = "";
+    event.detail.icons.map(async (icon) => {
+      const res = await fetch(icon.href);
+      if (res.status === 200) {
+        this.favIconUrl = icon.href;
+      }
+    });
   }
 
   onReAuthed(event) {

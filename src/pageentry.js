@@ -4,7 +4,7 @@ import { LitElement, html, css, unsafeCSS } from 'lit-element';
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
-import { getPageDateTS, getReplayLink } from './pageutils';
+import { getReplayLink } from './pageutils';
 
 import { wrapCss } from './misc';
 
@@ -24,9 +24,6 @@ class PageEntry extends LitElement
     this.index = 0;
     this.isCurrent = false;
     this.isSidebar = false;
-
-    this.timestamp = "";
-    this.date = null;
   }
 
   static get properties() {
@@ -42,8 +39,6 @@ class PageEntry extends LitElement
       index: { type: Number },
       isCurrent: { type: Boolean },
       isSidebar: { type: Boolean },
-      timestamp: { type: String },
-      date: { type: Object }
     }
   }
 
@@ -170,16 +165,12 @@ class PageEntry extends LitElement
       this.iconValid = !!this.page.favIconUrl;
       //this.updateFavIcon();
       this.deleting = false;
-
-      const res = getPageDateTS(this.page);
-      this.timestamp = res.timestamp;
-      this.date = res.date;
     }
   }
 
   render() {
     const p = this.page;
-    const date = this.date;
+    const date = this.page.date;
 
     const hasSize = typeof(p.size) === "number";
 
@@ -204,14 +195,13 @@ class PageEntry extends LitElement
           <figure class="media-left">
             <p class="">
             ${this.iconValid ? html`
-              <img class="favicon" @error="${(e) => this.iconValid = false}" src="${this.replayPrefix}/${this.timestamp}id_/${p.favIconUrl}"/>` : html`
+              <img class="favicon" @error="${(e) => this.iconValid = false}" src="${this.replayPrefix}/${this.page.timestamp}id_/${p.favIconUrl}"/>` : html`
               <span class="favicon"></span>`}
             </p>
           </figure>
           <div class="media-content ${this.isCurrent ? 'current' : ''}">
             <div role="heading" aria-level="${this.isSidebar ? "4": "3"}">
-              <a @click="${this.onReplay}" href="${getReplayLink("pages", this.page.url, this.timestamp)}">
-            ${this.isCurrent ? html`<p class="curr-page is-pulled-right">Current Page</p>` : ``}
+              <a @click="${this.onReplay}" href="${getReplayLink("pages", this.page.url, this.page.timestamp)}">
               <p class="is-size-6 has-text-weight-bold has-text-link text">
               <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
               </p>
@@ -245,7 +235,7 @@ class PageEntry extends LitElement
       return;
     }
 
-    const resp = await fetch(`${this.replayPrefix}/${this.timestamp}id_/${this.page.favIconUrl}`);
+    const resp = await fetch(`${this.replayPrefix}/${this.page.timestamp}id_/${this.page.favIconUrl}`);
 
     if (resp.status != 200) {
       this.favIconData = null;
@@ -313,7 +303,7 @@ class PageEntry extends LitElement
 
     const data = {
       url: this.page.url,
-      ts: this.timestamp,
+      ts: this.page.timestamp,
     };
     this.sendChangeEvent(data);
     return false;
