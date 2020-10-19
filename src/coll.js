@@ -1,4 +1,4 @@
-import { LitElement, html, css, query } from 'lit-element';
+import { LitElement, html, css } from 'lit-element';
 import { wrapCss, rwpLogo, IS_APP, clickOnSpacebarPress } from './misc';
 
 import { sourceToId, tsToDate, getPageDateTS } from './pageutils';
@@ -317,7 +317,7 @@ class Coll extends LitElement
   }
 
   onCollTabNav(event) {
-    if (event.target.id === this.tabData.view) {
+    if (event.target.id === this.tabData.view || event.target.id === "replay" && this.tabData.url) {
       this.updateTabData(event.detail.data, event.detail.replaceLoc, false);
     } else if (this.showSidebar && this.tabData.url) {
       this.updateTabData(event.detail.data, event.detail.replaceLoc, true);
@@ -705,7 +705,7 @@ class Coll extends LitElement
         </a>
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded ${showFavIcon ? 'has-icons-left' : ''}">
-            <input id="url" class="input" type="search" @keydown="${this.onKeyDown}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
+            <input id="url" class="input" type="search" @keydown="${this.onKeyDown}" @blur="${this.onLostFocus}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
             ${isReplay ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
             ${showFavIcon ? html`
             <span class="favicon icon is-small is-left">
@@ -851,7 +851,8 @@ class Coll extends LitElement
 
   onKeyDown(event) {
     if (event.key === "Esc" || event.key === "Escape") {
-      event.target.value = this.url;
+      event.preventDefault();
+      event.currentTarget.value = this.url;
     }
   }
 
@@ -952,9 +953,19 @@ class Coll extends LitElement
 
   onSubmit(event) {
     event.preventDefault();
-    const value = this.renderRoot.querySelector("input").value;
-    this.navigateTo(value);
+    const input = this.renderRoot.querySelector("input");
+    if (input.value) {
+      this.navigateTo(input.value);
+    } else {
+      input.value = this.url;
+    }
     return false;
+  }
+
+  onLostFocus(event) {
+    if (!event.currentTarget.value) {
+      event.currentTarget.value = this.url;
+    }
   }
 
   navigateTo(value) {
@@ -962,6 +973,15 @@ class Coll extends LitElement
 
     if (value.startsWith("http://") || value.startsWith("https://")) {
       data = {url: value};
+
+      if (value === this.tabData.url) {
+        const replay = this.renderRoot.querySelector("wr-coll-replay");
+        if (replay) {
+          replay.refresh();
+        }
+        return;
+      }
+
     } else {
       if (!value.startsWith(RWP_SCHEME)) {
         data = {query: value, view: "pages"};
