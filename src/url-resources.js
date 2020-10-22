@@ -13,7 +13,7 @@ class URLResources extends LitElement
 {
   static get filters() {
     return [
-      {name: "HTML", filter: ""}, //default
+      {name: "HTML", filter: "text/html,text/xhtml"},
       {name: "Images", filter: "image/"},
       {name: "Audio/Video", filter: "audio/,video/"},
       {name: "PDF", filter: "application/pdf"},
@@ -23,7 +23,7 @@ class URLResources extends LitElement
       {name: "Plain Text", filter: "text/plain"},
       {name: "JSON", filter: "application/json"},
       {name: "DASH/HLS", filter: "application/dash+xml,application/x-mpegURL,application/vnd.apple.mpegurl"},
-      {name: "All URLs", filter: "all"}
+      {name: "All URLs", filter: ""}
     ];
   }
 
@@ -140,20 +140,7 @@ class URLResources extends LitElement
       url = "https://" + url;
     }
 
-    let mime;
-
-    switch (this.currMime) {
-      case "all":
-        mime = "";
-        break;
-
-      case "":
-        mime = "text/html,text/xhtml";
-        break;
-
-      default:
-        mime = this.currMime;
-    }
+    const mime = this.currMime;
 
     const params = new URLSearchParams({
       mime,
