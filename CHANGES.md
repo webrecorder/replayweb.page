@@ -1,9 +1,17 @@
 ## CHANGES
 
+v1.2.0
+- UI: Location bar fixes: Enter reloads same URL, Escape restores current URL, properly updated on navigation, Favicon displayed in location bar if available
+- UI: URL search defaults to all URL query, not HTML only query
+- Fidelity: Rewriting system overhaul, improved youtube rules, fuzzy matching improvements (using Levenshtein distance for query args)
+- Backend: Support for WARC record proxy, including kiwix/zim style separate headers and payload requests: headers loaded from `<prefix>/H/<url>`, payload from `<prefix>/A/<url>`
+
+
 v1.1.2
 - UI: Fix auto-loading of additional results on url search page when searching by mime type.
 - Fidelity: More fixes to replay of embedded "about:blank", fix replay of embedded tweets in particular.
 - Fidelity: Various improvements to fuzzy matching (longer params weighed higher, numeric params weighed by difference, support for required params)
+
 
 v1.1.1
 
