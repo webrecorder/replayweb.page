@@ -1,5 +1,8 @@
 ## CHANGES
 
+v1.2.1
+- Loading/UI: Fix Google Drive Loading/Reauthorization: Only trigger when reauth is needed. For rate-limit errors, attempt reloading more slowly (exponential backoff)
+
 v1.2.0
 - UI: Location bar fixes: Enter reloads same URL, Escape restores current URL, properly updated on navigation, Favicon displayed in location bar if available
 - UI: URL search defaults to all URL query, not HTML only query
