@@ -3,7 +3,7 @@
 import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
 
-import {app, session, BrowserWindow, ipcMain, shell, dialog } from 'electron';
+import {app, session, BrowserWindow, ipcMain, shell } from 'electron';
 
 import path from 'path';
 import fs from 'fs';
@@ -91,7 +91,6 @@ function main() {
   } else {
     app.on('second-instance', (event, commandLine, workingDirectory) => {
       // Just create a new window in case of second instance request
-      dialog.showErrorBox("new window", JSON.stringify(commandLine));
       createWindow(commandLine);
     });
   }
