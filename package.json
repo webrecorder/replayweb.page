@@ -17,6 +17,7 @@
     "lit-element": "^2.3.1",
     "marked": "^1.0.0",
     "mime-types": "^2.1.27",
+    "minimist": "^1.2.5",
     "pretty-bytes": "^5.3.0",
     "register-service-worker": "^1.7.1",
     "split.js": "^1.6.2"
@@ -52,7 +53,7 @@
     "start-prod": "http-server -p 9990",
     "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
     "pack-signed": "electron-builder",
-    "start-electron": "NODE_ENV=development electron ./dist/electron.js",
+    "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
     "start-jekyll": "yarn run build-docs && bundle exec jekyll serve",
     "dist": "yarn run build && yarn run pack",
     "release": "yarn run build && electron-builder"
@@ -129,6 +130,12 @@
         "ext": "har",
         "name": "HAR File",
         "description": "HAR File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "wacz",
+        "name": "WACZ File",
+        "description": "Web Archive Collection Zipped (WACZ)",
         "role": "Viewer"
       }
     ]

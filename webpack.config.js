@@ -35,7 +35,7 @@ const electronMainConfig = (env, argv) => {
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY)
       })
-    ]
+    ],
   }
 };
 

@@ -374,6 +374,15 @@ class App extends LitElement
       }
       this.loadInfo.customColl = this.pageParams.get("customColl");
     }
+
+    if (IS_APP && this.sourceUrl.startsWith("file://")) {
+      const url = new URL(__APP_FILE_SERVE_PREFIX__);
+      url.searchParams.set("filename", this.sourceUrl.slice("file://".length));
+      this.loadInfo = {
+        sourceUrl: this.sourceUrl,
+        loadUrl: url.href,
+      }
+    }
   }
 
   onStartLoad(event) {

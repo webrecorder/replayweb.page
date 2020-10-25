@@ -3,7 +3,7 @@
 import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
 
-import {app, session, BrowserWindow, ipcMain, shell} from 'electron';
+import {app, session, BrowserWindow, ipcMain, shell, dialog } from 'electron';
 
 import path from 'path';
 import fs from 'fs';
@@ -13,6 +13,7 @@ import { ArchiveResponse, Rewriter } from '@webrecorder/wabac/src/rewrite';
 import { PassThrough } from 'stream';
 
 import mime from 'mime-types';
+import { url } from 'inspector';
 
 global.Headers = Headers;
 
@@ -30,55 +31,100 @@ const staticContentPath = path.join(__dirname, "../");
 
 let pluginPath = "";
 
-switch (process.platform) {
-  case 'win32':
-    pluginPath = path.join(projPath, "plugins-win", `pepflashplayer-x86${process.arch === 'x64' ? '_64' : ''}.dll`);
-    break;
-
-  case 'darwin':
-    pluginPath = path.join(projPath, "plugins-mac", "PepperFlashPlayer.plugin");
-    break;
-
-  case 'linux':
-    pluginPath = path.join(projPath, "plugins-mac", "libpepflashplayer.so");
-    break;
-
-  default:
-    console.log('platform unsupported: ' + process.platform);
-    break;
-}
-
-
-console.log('app path', appPath);
-console.log('dir name', __dirname);
-console.log('proj path', projPath);
-console.log('plugin path', pluginPath);
-
-
-console.log('app data', app.getPath('appData'));
-
-app.setPath('userData', path.join(app.getPath('appData'), 'replaywebpage'));
-
-console.log('user data', app.getPath('userData'));
-
-app.commandLine.appendSwitch('ppapi-flash-path', pluginPath);
-
-
 var proxyColl;
 var proxyTS;
 
 var mainWindow;
 
-// Single instance lock
-const gotTheLock = app.requestSingleInstanceLock();
+let openNextFile = null;
 
-if (!gotTheLock) {
-  console.log("App already running, opening new window in first instance and quitting");
-  app.quit();
-} else {
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
-    // Just create a new window in case of second instance request
-    createWindow();
+
+function main() {
+  switch (process.platform) {
+    case 'win32':
+      pluginPath = path.join(projPath, "plugins-win", `pepflashplayer-x86${process.arch === 'x64' ? '_64' : ''}.dll`);
+      break;
+
+    case 'darwin':
+      pluginPath = path.join(projPath, "plugins-mac", "PepperFlashPlayer.plugin");
+      break;
+
+    case 'linux':
+      pluginPath = path.join(projPath, "plugins-mac", "libpepflashplayer.so");
+      break;
+
+    default:
+      console.log('platform unsupported: ' + process.platform);
+      break;
+  }
+
+
+  console.log('app path', appPath);
+  console.log('dir name', __dirname);
+  console.log('proj path', projPath);
+  console.log('plugin path', pluginPath);
+
+
+  console.log('app data', app.getPath('appData'));
+
+  app.setPath('userData', path.join(app.getPath('appData'), 'replaywebpage'));
+
+  console.log('user data', app.getPath('userData'));
+
+  app.commandLine.appendSwitch('ppapi-flash-path', pluginPath);
+
+  app.on('will-finish-launching', function() {
+    app.on('open-file', function(event, filePath) {
+      openNextFile = filePath;
+      if (mainWindow) {
+        createWindow(process.argv)
+      }
+    });
+  });
+
+  // Single instance lock
+  const gotTheLock = app.requestSingleInstanceLock();
+
+  if (!gotTheLock) {
+    console.log("App already running, opening new window in first instance and quitting");
+    app.quit();
+  } else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+      // Just create a new window in case of second instance request
+      dialog.showErrorBox("new window", JSON.stringify(commandLine));
+      createWindow(commandLine);
+    });
+  }
+
+  app.on('web-contents-created', (event, contents) => {
+    contents.on('new-window', async (event, navigationUrl) => {
+      
+      // load docs in native browser for now
+      if (navigationUrl === STATIC_PREFIX + "docs") {
+        event.preventDefault();
+        await shell.openExternal("https://replayweb.page/docs/");
+      }
+    });
+  });
+
+  app.whenReady().then(() => {
+    mainWindow = createWindow(process.argv);
+
+    app.on('activate', function () {
+      // On macOS it's common to re-create a window in the app when the
+      // dock icon is clicked and there are no other windows open.
+      if (BrowserWindow.getAllWindows().length === 0) {
+        mainWindow = createWindow();
+      }
+    })
+  })
+
+  // Quit when all windows are closed.
+  app.on('window-all-closed', function () {
+    // On macOS it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    //if (process.platform !== 'darwin')
+    app.quit();
   });
 }
 
@@ -89,9 +135,6 @@ function bufferToStream(data) {
   rv.push(null);
   return rv;
 }
-
-
-
 
 async function doIntercept(request, callback) {
   console.log(`${request.method} ${request.url} from ${request.referrer}`);
@@ -270,15 +313,17 @@ function parseRange(reqHeaders, headers, size) {
 }
 
 
-function createWindow () {
+function createWindow(argv, secondWindow) {
   const sesh = session.defaultSession;
 
-  //sesh.protocol.interceptStreamProtocol("file", doIntercept);
-  sesh.protocol.interceptStreamProtocol("http", doIntercept);
-  //sesh.protocol.interceptStreamProtocol("https", doIntercept);
+  if (!secondWindow) {
+    sesh.protocol.interceptStreamProtocol("http", doIntercept);
+  }
+
+  const sourceString = getOpenUrl(argv);
 
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  const theWindow = new BrowserWindow({
     width: 1024,
     height: 768,
     isMaximized: true,
@@ -291,66 +336,50 @@ function createWindow () {
       enableRemoteModule: false
     }
   }).once('ready-to-show', () => {
-
-    //const sesh = session.fromPartition("persist:replay");
-
-    //const filter = {"urls": ['*://*/*']};
-    //sesh.webRequest.onBeforeRequest(filter, (request, callback) => {
-    //  console.log("got onBeforeRequest");
-    //  callback({cancel: false});
-    //});
-
-    //sesh.protocol.interceptStreamProtocol("http", doIntercept);
-    //sesh.protocol.interceptStreamProtocol("https", doIntercept);
-
-    mainWindow.show();
-    mainWindow.maximize();
+    theWindow.show();
+    theWindow.maximize();
   });
 
-  mainWindow.loadURL(STATIC_PREFIX + "index.html");
+  theWindow.loadURL(STATIC_PREFIX + "index.html" + sourceString);
   if (process.env.NODE_ENV === "development") {
-    mainWindow.webContents.openDevTools();
+    theWindow.webContents.openDevTools();
   }
+
+  return theWindow;
 }
 
-app.on('web-contents-created', (event, contents) => {
-  contents.on('new-window', async (event, navigationUrl) => {
-    
-    // load docs in native browser for now
-    if (navigationUrl === STATIC_PREFIX + "docs") {
-      event.preventDefault();
-      await shell.openExternal("https://replayweb.page/docs/");
+function getOpenUrl(argv) {
+  argv = require('minimist')(argv.slice(process.defaultApp ? 2 : 1));
+
+  const filename = openNextFile || argv.filename || argv.f || (argv._.length && argv._[0]);
+
+  let sourceString = "";
+
+  if (filename) {
+    const sourceParams = new URLSearchParams();
+    sourceParams.set("source", "file://" + filename);
+    sourceString = "?" + sourceParams.toString();
+
+    const urlParams = new URLSearchParams();
+
+    const openUrl = argv.url;
+
+    const openTS = argv.ts || argv.timestamp;
+
+    if (openUrl) {
+      urlParams.set("url", openUrl);
     }
-  });
-});
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  createWindow();
-  
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
+    if (openTS)  {
+      urlParams.set("ts", openTS);
+    }
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  //if (process.platform !== 'darwin')
-  app.quit();
-});
+    sourceString += "#" + urlParams.toString();
 
-/*
-app.on('web-contents-created', (event, contents) => {
-  if (contents.getType() === "webview") {
-    contents.openDevTools();
-  } else if (contents.getType() === "window") {
-    console.log("main contents set")
-    mainContents = contents;
+    console.log(`Opening Source: ${sourceString}`);
   }
-});*/
+
+  return sourceString;
+}
+
+main();
