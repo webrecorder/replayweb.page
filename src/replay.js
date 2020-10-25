@@ -13,6 +13,7 @@ class Replay extends LitElement
     this.url = "";
     this.ts = "";
     this.title = "";
+    this.collInfo = null;
 
     this.showAuth = false;
     this.reauthWait = null;
@@ -116,6 +117,22 @@ class Replay extends LitElement
     if (this.title){
       document.title = `Replay of ${this.title} | ReplayWeb.page`;
     }
+  }
+
+  onReAuthed(event) {
+    this.reauthWait = (async () => {
+      const headers = event.detail.headers;
+
+      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
+        method: 'POST',
+        body: JSON.stringify({headers})
+      });
+
+      if (this.showAuth) {
+        this.refresh();
+        this.showAuth = false;
+      }
+    })();
   }
 
   waitForLoad() {

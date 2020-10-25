@@ -921,22 +921,6 @@ class Coll extends LitElement
     });
   }
 
-  onReAuthed(event) {
-    this.reauthWait = (async () => {
-      const headers = event.detail.headers;
-
-      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
-        method: 'POST',
-        body: JSON.stringify({headers})
-      });
-
-      if (this.showAuth) {
-        this.onRefresh(null, true);
-        this.showAuth = false;
-      }
-    })();
-  }
-
   async onPurgeCache(event) {
     event.preventDefault();
 
@@ -1019,7 +1003,7 @@ class Coll extends LitElement
     return q.toString();
   }
 
-  onRefresh(event, forceReload) {
+  onRefresh(event) {
     if (event) {
       event.preventDefault();
     }
