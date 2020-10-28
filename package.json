@@ -72,6 +72,7 @@
       "dist/*.js",
       "*.js",
       "*.html",
+      "webmanifest.json",
       {
         "from": "_site/assets",
         "to": "assets"
