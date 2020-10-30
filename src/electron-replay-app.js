@@ -56,6 +56,10 @@ class ElectronReplayApp
     }
   }
 
+  get mainWindowUrl() {
+    return "index.html";
+  }
+
   init() {
     // Single instance check
     const gotTheLock = app.requestSingleInstanceLock();
@@ -337,7 +341,7 @@ class ElectronReplayApp
     return {statusCode, start, end};
   }
 
-  createMainWindow(argv, startUrl = "index.html") {
+  createMainWindow(argv) {
     const sourceString = this.getOpenUrl(argv);
 
     // Create the browser window.
@@ -352,7 +356,7 @@ class ElectronReplayApp
       theWindow.maximize();
     });
 
-    theWindow.loadURL(STATIC_PREFIX + startUrl + sourceString);
+    theWindow.loadURL(STATIC_PREFIX + this.mainWindowUrl + sourceString);
     if (process.env.NODE_ENV === "development") {
       theWindow.webContents.openDevTools();
     }

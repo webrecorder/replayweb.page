@@ -705,7 +705,7 @@ class Coll extends LitElement
         </a>
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded ${showFavIcon ? 'has-icons-left' : ''}">
-            <input id="url" class="input" type="search" @keydown="${this.onKeyDown}" @blur="${this.onLostFocus}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
+            <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" @blur="${this.onLostFocus}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
             ${isReplay ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
             ${showFavIcon ? html`
             <span class="favicon icon is-small is-left">
