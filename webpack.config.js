@@ -14,6 +14,9 @@ const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
 // GDrive client-id
 const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.googleusercontent.com";
 
+// Copyright banner text
+const BANNER_TEXT = "'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020, Webrecorder Software. Licensed under the Affero General Public License v3.'";
+
 
 const electronMainConfig = (env, argv) => {
   return {
@@ -34,7 +37,8 @@ const electronMainConfig = (env, argv) => {
       new webpack.DefinePlugin({
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY)
-      })
+      }),
+      new webpack.BannerPlugin(BANNER_TEXT)
     ],
   }
 };
@@ -51,6 +55,9 @@ const electronPreloadConfig = (env, argv) => {
       path: path.join(__dirname, 'dist'),
       filename: '[name].js'
     },
+    plugins: [
+      new webpack.BannerPlugin(BANNER_TEXT)
+    ],
   }
 };
  
@@ -97,7 +104,7 @@ const browserConfig = (env, argv) => {
         __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID),
         __VERSION__: JSON.stringify(require("./package.json").version)
       }),
-      new webpack.BannerPlugin('[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020, Webrecorder Software. Licensed under the Affero General Public License v3.')
+      new webpack.BannerPlugin(BANNER_TEXT)
     ],
 
     module: {
