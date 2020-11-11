@@ -85,7 +85,13 @@ class Loader extends LitElement
 
     if (!navigator.serviceWorker) {
       this.state = "errored";
-      this.error = "Sorry, this browser is not supported. Please try a different browser\n(If you're using Firefox, try without Private Mode)";
+      if (window.location.protocol === "http:") {
+        this.error = `\
+Sorry, the ReplayWeb.page system must be loaded from an HTTPS URL, but was loaded from: ${window.location.host}.
+Please try loading this page from an HTTPS URL`;
+      } else {
+        this.error = "Sorry, this browser is not supported. Please try a different browser\n(If you're using Firefox, try without Private Mode)";
+      }
       return;
     }
 
@@ -241,7 +247,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
       case "errored":
         return html`
           <div class="has-text-left">
-          <div class="error  has-text-danger">${this.error}</div>
+          <div class="error has-text-danger">${this.error}</div>
           <div>
           ${this.embed ? html`
           <a class="button is-warning" @click=${(e) => window.parent.location.reload()}>Try Again</a>` : html`

@@ -581,7 +581,7 @@ class Coll extends LitElement
         <div id="contents" class="is-light ${isSidebar ? 'sidebar' : (isReplay ? 'is-hidden' : 'full-pages')}"
              role="${isSidebar ? "complementary" : ""}" aria-label="${isSidebar ? "Browse Contents" : ""}">
           ${this.renderTabHeader(isSidebar)}
-          ${this.renderCollTabs(isSidebar)}
+          ${isSidebar || !isReplay ? this.renderCollTabs(isSidebar) : html``}
         </div>
 
         ${isReplay && this.isVisible ? html`
@@ -796,12 +796,12 @@ class Coll extends LitElement
   }
 
   renderCollTabs(isSidebar) {
-    const isStory = this.tabData.view === 'story';
+    const isStory = this.hasStory && this.tabData.view === 'story';
     const isPages = this.tabData.view === 'pages';
     const isResources = this.tabData.view === 'resources';
 
     return html`
-    ${this.hasStory ? html`
+    ${isStory ? html`
     <wr-coll-story .collInfo="${this.collInfo}"
     .active="${isStory}"
     currList="${this.tabData.currList || 0}"
@@ -812,6 +812,7 @@ class Coll extends LitElement
     >
     </wr-coll-story>` : ''}
 
+    ${isResources ? html`
     <wr-coll-resources .collInfo="${this.collInfo}"
     .active="${isResources}"
     query="${this.tabData.query || ""}"
@@ -822,8 +823,9 @@ class Coll extends LitElement
     class="is-paddingless ${isResources ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
     role="${isSidebar ? '' : 'main'}"
     >
-    </wr-coll-resources>
+    </wr-coll-resources>` : ``}
 
+    ${isPages ? html`
     <wr-page-view
     .collInfo="${this.collInfo}"
     .active="${isPages}"
@@ -838,7 +840,7 @@ class Coll extends LitElement
     class="${isPages ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
     role="${isSidebar ? '' : 'main'}"
     >
-    </wr-page-view>
+    </wr-page-view>` : ``}
     `;
   }
 
