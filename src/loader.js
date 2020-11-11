@@ -3,7 +3,7 @@ import { wrapCss } from './misc';
 
 import prettyBytes from 'pretty-bytes';
 
-import { parseURLSchemeHostPath, initDBWorker } from './pageutils';
+import { parseURLSchemeHostPath } from './pageutils';
 
 
 // ===========================================================================
@@ -20,8 +20,6 @@ class Loader extends LitElement
 
     this.currentSize = 0;
     this.totalSize = 0;
-
-    this.dbworker = initDBWorker();
   }
 
   static get properties() {
@@ -47,7 +45,11 @@ class Loader extends LitElement
   }
 
   initMessages() {
-    this.dbworker.addEventListener("message", (event) => {
+    if (!navigator.serviceWorker) {
+      return;
+    }
+
+    navigator.serviceWorker.addEventListener("message", (event) => {
       switch (event.data.msg_type) {
         case "collProgress":
           if (event.data.name === this.coll) {
@@ -137,7 +139,13 @@ You can select a file to upload from the main page by clicking the \'Choose File
       msg.extraConfig = this.loadInfo.extraConfig;
     }
 
-    this.dbworker.postMessage(msg);
+    if (!navigator.serviceWorker.controller) {
+      navigator.serviceWorker.addEventListener("controllerchange", (event) => {
+        navigator.serviceWorker.controller.postMessage(msg);
+      });
+    } else {
+      navigator.serviceWorker.controller.postMessage(msg);
+    }
   }
 
   googledriveInit() {
@@ -155,7 +163,9 @@ You can select a file to upload from the main page by clicking the \'Choose File
   }
 
   onCancel() {
-    this.dbworker.postMessage({"msg_type": "cancelLoad", "name": this.coll});
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({"msg_type": "cancelLoad", "name": this.coll});
+    }
   }
 
   updated(changedProperties) {

@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import { wrapCss, rwpLogo, IS_APP, clickOnSpacebarPress } from './misc';
 
-import { registerSW, initDBWorker } from './pageutils';
+import { registerSW } from './pageutils';
 
 import prettyBytes from 'pretty-bytes';
 
@@ -26,7 +26,6 @@ class App extends LitElement
     this.navMenuShown = false;
 
     registerSW(__SW_NAME__);
-    initDBWorker();
 
     this.safariKeyframes();
   }
