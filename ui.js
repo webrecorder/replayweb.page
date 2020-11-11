@@ -328,7 +328,7 @@ const re=new WeakMap,oe=v(e=>t=>{if(!(t instanceof L))throw new Error("unsafeSVG
                 </div>
                 <hr class="navbar-divider">
                 <div class="navbar-item">
-                  ReplayWeb.page Version: ${"1.2.2"}
+                  ReplayWeb.page Version: ${"1.2.3"}
                 </div>
               </div>
             </div>
@@ -1045,7 +1045,7 @@ const re=new WeakMap,oe=v(e=>t=>{if(!(t instanceof L))throw new Error("unsafeSVG
               <a href="https://replayweb.page/" target="_blank" class="dropdown-item info">
                 <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${he.a}></fa-icon>
                 <span>&nbsp;About ReplayWeb.page</span>
-                <span class="menu-version">(${"1.2.2"})</span>
+                <span class="menu-version">(${"1.2.3"})</span>
               </a>
               `:""}
             </div>
