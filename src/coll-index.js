@@ -282,7 +282,7 @@ class CollIndex extends LitElement
               <div class="columns">
                 <div class="column col-title is-4">
                   <span class="subtitle has-text-weight-bold">
-                    <a href="?source=${coll.sourceUrl}">${coll.title || coll.filename}</a>
+                    <a href="?source=${encodeURIComponent(coll.sourceUrl)}">${coll.title || coll.filename}</a>
                   </span>
                 </div>
                 <div class="column is-4">

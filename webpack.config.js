@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 // fake url used in app to serve files
 // can not use custom scheme due to service worker issues
@@ -25,9 +26,16 @@ const electronMainConfig = (env, argv) => {
     entry: {
       'electron': './src/electron-main.js', 
     },
+    resolve: {
+      alias: {
+        "abort-controller": "abort-controller/dist/abort-controller.js",
+        "dlv": "dlv/dist/dlv.js",
+        "bignumber.js": "bignumber.js/bignumber.js"
+      }
+    },
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: '[name].js'
+      filename: '[name].js',
     },
     node: {
       __dirname: false,
@@ -38,8 +46,18 @@ const electronMainConfig = (env, argv) => {
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY)
       }),
-      new webpack.BannerPlugin(BANNER_TEXT)
+      new webpack.BannerPlugin(BANNER_TEXT),
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/bcrypto/build/Release/bcrypto.node', to: 'build' },
+          { from: 'node_modules/leveldown/prebuilds/', to: 'prebuilds' },
+        ],
+      }),
     ],
+    externals: {
+      "bufferutil": "bufferutil",
+      "utf-8-validate": "utf-8-validate",
+    }
   }
 };
 
@@ -50,10 +68,6 @@ const electronPreloadConfig = (env, argv) => {
     mode: 'production',
     entry: {
       'preload': './src/electron-preload.js', 
-    },
-    output: {
-      path: path.join(__dirname, 'dist'),
-      filename: '[name].js'
     },
     plugins: [
       new webpack.BannerPlugin(BANNER_TEXT)
@@ -111,15 +125,15 @@ const browserConfig = (env, argv) => {
       rules: [
       {
         test:  /\.svg$/,
-        loader: 'svg-inline-loader'
+        use: ['svg-inline-loader'],
       },
       {
         test: /main.scss$/,
-        loaders: ['css-loader', 'sass-loader']
+        use: ['css-loader', 'sass-loader']
       },
       {
         test: /wombat.js|wombatWorkers.js|index.html$/i,
-        loaders: ['raw-loader'],
+        use: ['raw-loader'],
       }
       ]
     },

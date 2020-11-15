@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -9,10 +9,11 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@webrecorder/wabac": "^2.1.5",
+    "@webrecorder/wabac": "^2.1.7",
     "bulma": "^0.9.0",
     "fetch-ndjson": "^1.1.0",
     "flexsearch": "^0.6.32",
+    "ipfs-core": "^0.2.0",
     "keyword-mark-element": "^0.1.2",
     "lit-element": "^2.3.1",
     "marked": "^1.0.0",
@@ -23,6 +24,7 @@
     "split.js": "^1.6.2"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^6.3.0",
     "css-loader": "^3.5.3",
     "electron": "^10.1.3",
     "electron-builder": "^22.7.0",
@@ -35,7 +37,7 @@
     "style-loader": "^1.2.1",
     "svg-inline-loader": "^0.8.2",
     "to-string-loader": "^1.1.6",
-    "webpack": "^4.43.0",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
   },
@@ -56,6 +58,7 @@
     "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
     "start-jekyll": "yarn run build-docs && bundle exec jekyll serve",
     "dist": "yarn run build && yarn run pack",
+    "dist-dev": "yarn run build-dev && yarn run pack",
     "release": "yarn run build && electron-builder"
   },
   "build": {
@@ -70,6 +73,8 @@
     "files": [
       "!**/node_modules/**/*",
       "dist/*.js",
+      "dist/prebuilds/${platform}-${arch}/*",
+      "dist/build/*",
       "*.js",
       "*.html",
       "webmanifest.json",
