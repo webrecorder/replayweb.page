@@ -8,7 +8,7 @@ import fs from 'fs';
 
 import { ArchiveResponse, Rewriter } from '@webrecorder/wabac/src/rewrite';
 
-import { PassThrough } from 'stream';
+import { PassThrough, Readable } from 'stream';
 
 import mime from 'mime-types';
 
@@ -20,6 +20,10 @@ const STATIC_PREFIX = "http://localhost:5471/";
 const REPLAY_PREFIX = STATIC_PREFIX + "wabac/";
 
 const URL_RX = /([^\/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
+
+let IPFS = null;
+let ipfs = null;
+let initingIPFS = null;
 
 
 // ============================================================================
@@ -95,7 +99,7 @@ class ElectronReplayApp
     app.commandLine.appendSwitch('ppapi-flash-path', this.pluginPath);
 
     console.log('app path', this.appPath);
-    console.log('dir name', this.__dirname);
+    console.log('dir name', __dirname);
     console.log('proj path', this.projPath);
     console.log('plugin path', this.pluginPath);
 
@@ -134,7 +138,38 @@ class ElectronReplayApp
     });
   }
 
+  static async doInitIPFS() {
+    if (!IPFS) {
+      IPFS = require("ipfs-core");
+    }
+
+    ipfs = await IPFS.create({
+      //repo: "/tmp/test-ipfs"
+      init: {emptyRepo: true},
+      //preload: {enabled: false},
+    });
+  }
+
+  async initIPFS() {
+    if (!ipfs) {
+      try {
+        if (!initingIPFS) {
+          initingIPFS = ElectronReplayApp.doInitIPFS();
+        }
+
+        await initingIPFS;
+
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    return ipfs;
+  }
+
   onAppReady() {
+    //ElectronReplayApp.doInitIPFS();
+
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
 
     app.on('web-contents-created', (event, contents) => {
@@ -213,27 +248,62 @@ class ElectronReplayApp
 
     if (request.url.startsWith(__APP_FILE_SERVE_PREFIX__)) {
       const parsedUrl = new URL(request.url);
+
       const filename = parsedUrl.searchParams.get("filename");
-      console.log("file serve:", filename);
+      const ipfsCID = parsedUrl.searchParams.get("ipfs");
 
-      const stat = await fs.promises.lstat(filename);
-
-      if (!stat.isFile()) {
-        return this.notFound(filename, callback);
-      }
-
-      const size = stat.size;
-
-      const headers = {"Content-Length": "" + size, "Content-Type": "application/octet-stream"};
-
+      const headers = {"Content-Type": "application/octet-stream"};
       const reqHeaders = new Headers(request.headers);
 
-      const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
+      if (filename) {
+        console.log("file serve:", filename);
 
-      const data = request.method === "HEAD" ? null : fs.createReadStream(filename, {start, end});
+        const stat = await fs.promises.lstat(filename);
 
-      callback({statusCode, headers, data});
-      return;
+        if (!stat.isFile()) {
+          return this.notFound(filename, callback);
+        }
+
+        const size = stat.size;
+
+        const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
+
+        const data = request.method === "HEAD" ? null : fs.createReadStream(filename, {start, end});
+
+        callback({statusCode, headers, data});
+        return;
+
+      } else if (ipfsCID) {
+        console.log("ipfs serve:", ipfsCID);
+
+        const ipfs = await this.initIPFS();
+
+        let size = 0;
+
+        for await (const file of ipfs.get(ipfsCID, {timeout: 20000, preload: false})) {
+          if (file.type !== "file") {
+            return this.notFound(ipfsCID, callback);
+          }
+          size = file.size;
+          break;
+        }
+
+        const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
+
+        let data = null;
+
+        if (request.method === "GET") {
+          const offset = start || 0;
+          const length = end ? end - start + 1 : size;
+          data = Readable.from(ipfs.cat(ipfsCID, {offset, length}));
+        }
+
+        callback({statusCode, headers, data});
+        return;
+
+      } else {
+        return this.notFound("No Resource Specified", callback);
+      }
     }
 
     // possible 'live leak' attempt, just return not found
@@ -324,6 +394,9 @@ class ElectronReplayApp
     const range = reqHeaders.get("range");
 
     if (!range) {
+      if (headers) {
+        headers["Content-Length"] = "" + size;
+      }
       return {statusCode};
     }
 
@@ -337,6 +410,7 @@ class ElectronReplayApp
     statusCode = 206;
     if (headers) {
       headers["Content-Range"] = `bytes ${start}-${end}/${size}`;
+      headers["Content-Length"] = `${end - start + 1}`;
     }
     return {statusCode, start, end};
   }

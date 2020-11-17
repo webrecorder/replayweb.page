@@ -2,7 +2,7 @@ import { register } from 'register-service-worker';
 
 
 // ===========================================================================
-async function registerSW(name = "sw.js", scope = "./") {
+function registerSW(name = "sw.js", scope = "./") {
   let resolve, reject;
   
   const p = new Promise((res, rej) => {
@@ -28,7 +28,7 @@ async function registerSW(name = "sw.js", scope = "./") {
     }
   });
 
-  await p;
+  return p;
 }
 
 // ===========================================================================

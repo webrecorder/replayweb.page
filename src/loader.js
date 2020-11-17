@@ -1,9 +1,9 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss } from './misc';
+import { wrapCss, IS_APP } from './misc';
 
 import prettyBytes from 'pretty-bytes';
 
-import { parseURLSchemeHostPath, initDBWorker } from './pageutils';
+import { parseURLSchemeHostPath } from './pageutils';
 
 
 // ===========================================================================
@@ -20,8 +20,6 @@ class Loader extends LitElement
 
     this.currentSize = 0;
     this.totalSize = 0;
-
-    this.dbworker = initDBWorker();
   }
 
   static get properties() {
@@ -47,7 +45,11 @@ class Loader extends LitElement
   }
 
   initMessages() {
-    this.dbworker.addEventListener("message", (event) => {
+    if (!navigator.serviceWorker) {
+      return;
+    }
+
+    navigator.serviceWorker.addEventListener("message", (event) => {
       switch (event.data.msg_type) {
         case "collProgress":
           if (event.data.name === this.coll) {
@@ -85,7 +87,13 @@ class Loader extends LitElement
 
     if (!navigator.serviceWorker) {
       this.state = "errored";
-      this.error = "Sorry, this browser is not supported. Please try a different browser\n(If you're using Firefox, try without Private Mode)";
+      if (window.location.protocol === "http:") {
+        this.error = `\
+Sorry, the ReplayWeb.page system must be loaded from an HTTPS URL, but was loaded from: ${window.location.host}.
+Please try loading this page from an HTTPS URL`;
+      } else {
+        this.error = "Sorry, this browser is not supported. Please try a different browser\n(If you're using Firefox, try without Private Mode)";
+      }
       return;
     }
 
@@ -116,8 +124,18 @@ You can select a file to upload from the main page by clicking the \'Choose File
 
           source = this.loadInfo;
           break;
+
+        case "ipfs":
+          if (IS_APP) {
+            const url = new URL(__APP_FILE_SERVE_PREFIX__);
+            url.searchParams.set("ipfs", sourceUrl.slice("ipfs://".length));
+            source = {sourceUrl, loadUrl: url.href};
+          }
+          break;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
 
     if (!source) {
       source = {sourceUrl};
@@ -131,7 +149,13 @@ You can select a file to upload from the main page by clicking the \'Choose File
       msg.extraConfig = this.loadInfo.extraConfig;
     }
 
-    this.dbworker.postMessage(msg);
+    if (!navigator.serviceWorker.controller) {
+      navigator.serviceWorker.addEventListener("controllerchange", (event) => {
+        navigator.serviceWorker.controller.postMessage(msg);
+      });
+    } else {
+      navigator.serviceWorker.controller.postMessage(msg);
+    }
   }
 
   googledriveInit() {
@@ -149,7 +173,9 @@ You can select a file to upload from the main page by clicking the \'Choose File
   }
 
   onCancel() {
-    this.dbworker.postMessage({"msg_type": "cancelLoad", "name": this.coll});
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({"msg_type": "cancelLoad", "name": this.coll});
+    }
   }
 
   updated(changedProperties) {
@@ -241,7 +267,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
       case "errored":
         return html`
           <div class="has-text-left">
-          <div class="error  has-text-danger">${this.error}</div>
+          <div class="error has-text-danger">${this.error}</div>
           <div>
           ${this.embed ? html`
           <a class="button is-warning" @click=${(e) => window.parent.location.reload()}>Try Again</a>` : html`

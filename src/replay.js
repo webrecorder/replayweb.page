@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss } from './misc';
+import { wrapCss, rwpLogo } from './misc';
 
 
 
@@ -17,6 +17,7 @@ class Replay extends LitElement
 
     this.showAuth = false;
     this.reauthWait = null;
+    this.authFileHandle = null;
   }
 
   static get properties() {
@@ -36,20 +37,37 @@ class Replay extends LitElement
       iframeUrl: { type: String },
 
       showAuth: { type: Boolean },
+      authFileHandle: { type: Object }
     }
   }
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
-    navigator.serviceWorker.addEventListener("message", async (event) => {
-      if (event.data.type === "authneeded" && this.collInfo && event.data.coll === this.collInfo.coll) {
-        if (this.reauthWait) {
-          await this.reauthWait;
-        } else {
-          this.showAuth = true;
-        }
+    navigator.serviceWorker.addEventListener("message", (event) => this.handleAuthMessage(event));
+  }
+
+  async handleAuthMessage(event) {
+    if (event.data.type === "authneeded" && this.collInfo && event.data.coll === this.collInfo.coll) {
+      if (event.data.fileHandle) {
+        this.authFileHandle = event.data.fileHandle;
+        try {
+          if (await this.authFileHandle.requestPermission({mode: "read"}) === "granted") {
+            this.showAuth = false;
+            this.reauthWait = null;
+            this.refresh();
+            return;
+          }
+        } catch (e) {} 
+      } else {
+        this.authFileHandle = null;
       }
-    });
+
+      if (this.reauthWait) {
+        await this.reauthWait;
+      } else {
+        this.showAuth = true;
+      }
+    }
   }
 
   doSetIframeUrl() {
@@ -58,9 +76,6 @@ class Replay extends LitElement
 
   updated(changedProperties) {
     if (changedProperties.has("sourceUrl") || changedProperties.has("collInfo")) {
-      this.isAuthable = (this.sourceUrl.startsWith("googledrive://") &&
-        this.collInfo && this.collInfo.onDemand);
-
       this.reauthWait = null;
     }
 
@@ -70,6 +85,8 @@ class Replay extends LitElement
 
       this.replayUrl = this.url;
       this.replayTS = this.ts;
+      this.showAuth = false;
+      this.reauthWait = null;
       this.doSetIframeUrl();
     }
 
@@ -121,17 +138,28 @@ class Replay extends LitElement
 
   onReAuthed(event) {
     this.reauthWait = (async () => {
-      const headers = event.detail.headers;
 
-      const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
-        method: 'POST',
-        body: JSON.stringify({headers})
-      });
+      if (!this.authFileHandle) {
+        // google drive reauth
+        const headers = event.detail.headers;
+
+        const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
+          method: 'POST',
+          body: JSON.stringify({headers})
+        });
+      } else {
+        if (await this.authFileHandle.requestPermission({mode: "read"}) !== "granted") {
+          this.reauthWait = null;
+          return;
+        }
+        this.authFileHandle = null;
+      }
 
       if (this.showAuth) {
-        this.refresh();
         this.showAuth = false;
+        this.reauthWait = null;
       }
+      this.refresh();
     })();
   }
 
@@ -191,18 +219,24 @@ class Replay extends LitElement
 
       .intro-panel .panel-heading {
         font-size: 1.0em;
+        display: inline-block;
+      }
+
+      #wrlogo {
+        vertical-align: middle;
       }
 
       .intro-panel .panel-block {
         padding: 1.0em;
         flex-direction: column;
+        line-height: 2.5em;
       }
 
       div.intro-panel.panel {
         min-width: 40%;
         display: flex;
         flex-direction: column;
-        margin: auto;
+        margin: 3em auto;
       }
     `);
   }
@@ -214,37 +248,39 @@ class Replay extends LitElement
 
     <h1 id="replay-heading" class="is-sr-only">${title}</h1>
 
-    ${this.iframeUrl ? html`
-    <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
-    src="${this.iframeUrl}" title="${title}"></iframe>
-    ` : html`
+    ${!this.iframeUrl ? html`
       <div class="panel intro-panel">
         <p class="panel-heading">Replay Web Page</p>
         <div class="panel-block">
           <p>Enter a URL above to replay it from the web archive!</p>
           <p>(Or, check out <a href="#view=pages">Pages</a> or <a href="#view=resources">URLs</a> to explore the contents of this archive.)</p>
         </div>
-      </div>
-    `}
+      </div>` : html`
 
-    ${this.isAuthable ? html`
-    <div class="modal ${this.showAuth ? 'is-active' : ''}">
-      <div class="modal-background"></div>
-        <div class="modal-card">
-          <header class="modal-card-head">
-            <p class="modal-card-title">Auth Needed</p>
-            <button class="delete" aria-label="close"></button>
-          </header>
-          <section class="modal-card-body">
-            <div class="container has-text-centered">
-              <wr-gdrive .sourceUrl=${this.sourceUrl} .state="${this.showAuth ? 'trymanual' : 'implicitonly'}" .reauth="${true}" @load-ready=${this.onReAuthed}/>
-            </div>
-          </section>
+      ${this.showAuth ? html`
+      <div class="panel intro-panel">
+        <p class="panel-heading">
+          <fa-icon id="wrlogo" size="1.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
+          Authorization Needed
+        </p>
+        <div class="panel-block">
+        ${this.authFileHandle ? html`
+          <p>This archive is loaded from a local file: <b>${this.authFileHandle.name}</b></p>
+          <p>The browser needs to confirm your permission to continue loading from this file.</p>
+          <button class="button is-warning is-rounded" @click="${this.onReAuthed}">Show Confirmation</button>
+          ` : html`
+          <wr-gdrive
+          .sourceUrl=${this.sourceUrl}
+          .state="${this.showAuth ? 'trymanual' : 'implicitonly'}"
+          .reauth="${true}
+            @load-ready=${this.onReAuthed}/>`}
         </div>
-      </div>
-    </div>
-    ` : ``}
-    `;
+      </div>` : html`
+
+      <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
+      src="${this.iframeUrl}" title="${title}"></iframe>
+      `}
+    `}`;
   }
 }
 

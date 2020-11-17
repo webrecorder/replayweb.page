@@ -195,23 +195,6 @@ class CollIndex extends LitElement
     .icon.is-left {
       margin-left: 0.5rem;
     }
-    .columns {
-      width: 100vw;
-    }
-    .column {
-      word-break: break-word;
-      position: relative;
-    }
-    .col-title:hover {
-
-    }
-    .col-title a {
-      display: block;
-      height: 100%;
-    }
-    .column:hover > .copy, .source-text:hover + .copy, .copy:hover {
-      display: inline;
-    }
     .coll-block {
       position: relative;
     }
@@ -219,10 +202,6 @@ class CollIndex extends LitElement
       position: absolute;
       top: 10px;
       right: 10px;
-    }
-    .minihead {
-      font-size: 10px;
-      font-weight: bold;
     }
     #sort-select::after {
       display: none;
@@ -279,23 +258,7 @@ class CollIndex extends LitElement
         <div class="coll-list">
           ${this.sortedColls.map((coll, i) => html`
             <div class="coll-block panel-block">
-              <div class="columns">
-                <div class="column col-title is-4">
-                  <span class="subtitle has-text-weight-bold">
-                    <a href="?source=${coll.sourceUrl}">${coll.title || coll.filename}</a>
-                  </span>
-                </div>
-                <div class="column is-4">
-                  <span class="source-text"><p class="minihead">Source</p>${coll.sourceUrl}&nbsp;</span>
-                  <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy"><fa-icon .svg="${fasCopy}"/></a>
-                  ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://") ? html`
-                    <p><i>(${coll.filename})</i></p>` : ''}
-                </div>
-                <div class="column is-2"><p class="minihead">Date Loaded</p>${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}</div>
-                <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.size || 0))}
-
-                </div>
-              </div>
+              <wr-coll-info .coll=${coll}></wr-coll-info>
               ${!this._deleting[coll.sourceUrl] ? html`
               <button class="delete" aria-label="Unload Collection" title="Unload Collection" data-coll-index="${i}" @click="${this.onDeleteColl}"></button>
               ` : html`
@@ -314,6 +277,138 @@ class CollIndex extends LitElement
     </section>
     `;
   }
+}
+
+
+// ===========================================================================
+class WrCollInfo extends LitElement
+{
+  constructor() {
+    super();
+    this.detailed = false;
+    this.canDelete = false;
+  }
+
+  static get properties() {
+    return {
+      coll: { type: Object },
+      detailed: { type: Boolean },
+      canDelete: { type: Boolean }
+    }
+  }
+
+  static get styles() {
+    return wrapCss(css`
+    .columns {
+      width: 100%;
+    }
+    .column {
+      word-break: break-word;
+      position: relative;
+    }
+
+    :host {
+      width: 100%;
+      height: 100%;
+      min-width: 0px;
+    }
+
+    :host(.is-list) .columns {
+      display: flex !important;
+      flex-direction: column;
+    }
+
+    :host(.is-list) .column {
+      width: 100% !important;
+    }
+
+    .col-title:hover {
+
+    }
+    .col-title a {
+      display: block;
+      height: 100%;
+    }
+    .column:hover > .copy, .source-text:hover + .copy, .copy:hover {
+      display: inline;
+    }
+    .copy {
+      color: black;
+      margin: 0px;
+      margin: 0;
+      line-height: 0.4em;
+      padding: 6px;
+      border-radius: 10px;
+      display: none;
+      position: absolute;
+    }
+    .copy:active {
+      background-color: lightgray;
+    }
+    .minihead {
+      font-size: 10px;
+      font-weight: bold;
+    }
+    `);
+  }
+
+  render() {
+    const coll = this.coll;
+    const detailed = this.detailed;
+
+    return html`
+      <div class="columns">
+        <div class="column col-title is-4">
+          <span class="subtitle has-text-weight-bold">
+            ${detailed ? html`
+            ${coll.title || coll.filename}
+            ` : html`
+            <a href="?source=${encodeURIComponent(coll.sourceUrl)}">${coll.title || coll.filename}</a>`}
+          </span>
+        </div>
+        ${detailed && coll.desc ? html`
+          <div class="column">
+            <p class="minihead">Description</p>
+            ${coll.desc}
+          </div>` : html`
+        `}
+        <div class="column is-4">
+          <span class="source-text"><p class="minihead">Source</p>${coll.sourceUrl}&nbsp;</span>
+          <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy"><fa-icon .svg="${fasCopy}"/></a>
+          ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://") ? html`
+            <p><i>(${coll.filename})</i></p>` : ''}
+        </div>
+        ${detailed ? html`
+        <div class="column"><p class="minihead">Filename</p>${coll.filename}</div>` : html``}
+
+        <div class="column is-2"><p class="minihead">Date Loaded</p>${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}</div>
+        <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.size || 0))}</div>
+
+        ${detailed ? html`
+        <div class="column">
+          <p class="minihead">Loading Mode</p>
+          ${coll.onDemand ? "Download On-Demand" : "Fully Local"}
+        </div>
+        <div class="column">
+          <p class="minihead">Collection id</p>
+          ${coll.coll}
+        </div>
+        ` : html``}
+
+      </div>`;
+  }
+
+  // purge + delete buttons
+  //
+  // <div class="column">
+  //   <button @click="${(e) => this.onPurge(true)}" class="button">Purge Cache + Full Reload</button>
+  // </div>
+
+  // ${this.canDelete ? html`
+  // <div class="column">
+  //   <button @click="${(e) => this.onPurge(false)}" class="button is-outlined is-danger">Delete Archive</button>
+  // </div>` : html``}
+  //
 
   onCopy(event, sourceUrl) {
     event.preventDefault();
@@ -321,9 +416,14 @@ class CollIndex extends LitElement
     navigator.clipboard.writeText(sourceUrl);
     return false;
   }
+
+  onPurge(reload) {
+    const detail = {reload};
+    this.dispatchEvent(new CustomEvent("coll-purge", {detail}));
+  }
 }
 
-
+customElements.define("wr-coll-info", WrCollInfo);
 customElements.define("wr-coll-index", CollIndex);
 
 export { CollIndex };

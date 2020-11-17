@@ -1,21 +1,15 @@
-"use strict";
-
 import INDEX_HTML from '../index.html';
 
-if (self.registration) {
-  const staticData = new Map();
+import { SWReplay } from '@webrecorder/wabac/src/swmain';
 
-  const prefix = self.registration.scope;
+const staticData = new Map();
 
-  staticData.set(prefix, {type: "text/html", content: INDEX_HTML});
-  staticData.set(prefix + "index.html", {type: "text/html", content: INDEX_HTML});
-  //staticData.set(prefix + "ui.js", {type: "application/javascript", content: UI_JS});
+const prefix = self.registration.scope;
 
-  const { SWReplay } = require('@webrecorder/wabac/src/swmain');
-  self.sw = new SWReplay(staticData);
+staticData.set(prefix, {type: "text/html", content: INDEX_HTML});
+staticData.set(prefix + "index.html", {type: "text/html", content: INDEX_HTML});
+//staticData.set(prefix + "ui.js", {type: "application/javascript", content: UI_JS});
 
-} else if (self.postMessage) {
-// Inited as Web Worker
-  const { WorkerLoader } = require('@webrecorder/wabac/src/loaders');
-  const loader = new WorkerLoader(self);
-}
+//const { SWReplay } = require('@webrecorder/wabac/src/swmain');
+self.sw = new SWReplay(staticData);
+

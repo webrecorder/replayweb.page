@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { wrapCss } from './misc';
+import { IS_APP, wrapCss } from './misc';
 
 import fasUpload from '@fortawesome/fontawesome-free/svgs/solid/upload.svg';
 
@@ -12,6 +12,14 @@ class Chooser extends LitElement
 
     this.fileDisplayName = "";
     this.file = null;
+
+    this.hasNativeFS = !!window.showOpenFilePicker && !IS_APP;
+  }
+
+  static get properties() {
+    return {
+      fileDisplayName: { type: String }
+    }
   }
 
   onChooseFile(event) {
@@ -22,7 +30,32 @@ class Chooser extends LitElement
     this.file = event.currentTarget.files[0];
     // file.path only available in electron app
     this.fileDisplayName = "file://" + (this.file.path || this.file.name);
-    this.requestUpdate();
+  }
+
+  async onChooseNativeFile() {
+    const options = {
+      types: [
+        {
+          description: 'WARC, WACZ, HAR and WBN Files',
+          accept: {
+            'application/warc': ['.warc', '.gz'],
+            'application/har': ['.har'],
+            'application/wacz': ['.wacz'],
+            'application/wbn': ['.wbn']
+          }
+        }
+      ]
+    }
+
+    const [fileHandle] = await window.showOpenFilePicker(options);
+    this.fileHandle = fileHandle;
+
+    this.file = await fileHandle.getFile();
+    this.fileDisplayName = "file://" + fileHandle.name;
+  }
+
+  randomId() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
 
   onStartLoad(event) {
@@ -37,12 +70,17 @@ class Chooser extends LitElement
         const url = new URL(__APP_FILE_SERVE_PREFIX__);
         url.searchParams.set("filename", this.file.path);
         loadInfo.loadUrl = url.href;
+        loadInfo.noCache = true;
+      } else if (this.fileHandle) {
+        loadInfo.loadUrl = this.fileDisplayName + "-" + this.randomId();
+        loadInfo.extra = {fileHandle: this.fileHandle};
+        loadInfo.noCache = false;
       } else {
         loadInfo.loadUrl = URL.createObjectURL(this.file);
         loadInfo.blob = this.file;
+        loadInfo.noCache = false;
       }
       loadInfo.size = this.file.size;
-      loadInfo.noCache = this.file.path !== undefined;
       loadInfo.name = this.fileDisplayName;
     }
 
@@ -116,10 +154,11 @@ class Chooser extends LitElement
         <div class="extra-padding panel-block file has-name">
           <form class="content is-flex" @submit="${this.onStartLoad}">
             <label class="file-label">
+              ${!this.hasNativeFS ? html`
               <input class="file-input"
                 @click="${(e) => e.currentTarget.value = null}"
-                @change=${this.onChooseFile} type="file" id="fileupload" name="fileupload">
-              <span class="file-cta">
+                @change=${this.onChooseFile} type="file" id="fileupload" name="fileupload">` : ``}
+              <span class="file-cta" @click="${this.onChooseNativeFile}">
                 <span class="file-icon">
                   <fa-icon size="0.9em" .svg=${fasUpload} aria-hidden="true"></fa-icon>
                 </span>
@@ -133,7 +172,7 @@ class Chooser extends LitElement
               <p class="control is-expanded">
                 <input class="file-name input" type="text"
                 name="filename" id="filename"
-                pattern="((file|http|https|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn))|(googledrive:\/\/.+)"
+                pattern="((file|http|https|ipfs|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn))|(googledrive:\/\/.+)"
                 .value="${this.fileDisplayName}"
                 @input="${this.onInput}"
                 autocomplete="off"
