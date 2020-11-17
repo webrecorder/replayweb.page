@@ -1973,16 +1973,31 @@ const Pt=new WeakMap,Lt=v(e=>t=>{if(!(t instanceof L))throw new Error("unsafeHTM
         height: 100%;
       }
 
-      iframe {
+      .iframe-container {
+        position: relative;
         width: 100%;
-        #height: calc(100vh - 150px);
         height: 100%;
         border: 0px;
+      }
+
+      .iframe-main {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        width: 100%;
+        height: 100%;
       }
 
       .intro-panel .panel-heading {
         font-size: 1.0em;
         display: inline-block;
+      }
+
+      .iframe-main.modal-bg {
+        z-index: 200;
+        background-color: rgba(10, 10, 10, 0.70)
       }
 
       #wrlogo {
@@ -1999,7 +2014,8 @@ const Pt=new WeakMap,Lt=v(e=>t=>{if(!(t instanceof L))throw new Error("unsafeHTM
         min-width: 40%;
         display: flex;
         flex-direction: column;
-        margin: 3em auto;
+        margin: 3em;
+        background-color: white;
       }
     `)}render(){const e=`Replay of ${this.title?this.title+":":""} ${this.url}`;return N`
 
@@ -2007,29 +2023,33 @@ const Pt=new WeakMap,Lt=v(e=>t=>{if(!(t instanceof L))throw new Error("unsafeHTM
 
     ${this.iframeUrl?N`
 
-      ${this.showAuth?N`
-      <div class="panel intro-panel">
-        <p class="panel-heading">
-          <fa-icon id="wrlogo" size="1.5rem" .svg=${he.a} aria-hidden="true"></fa-icon>
-          Authorization Needed
-        </p>
-        <div class="panel-block">
-        ${this.authFileHandle?N`
-          <p>This archive is loaded from a local file: <b>${this.authFileHandle.name}</b></p>
-          <p>The browser needs to confirm your permission to continue loading from this file.</p>
-          <button class="button is-warning is-rounded" @click="${this.onReAuthed}">Show Confirmation</button>
-          `:N`
-          <wr-gdrive
-          .sourceUrl=${this.sourceUrl}
-          .state="${this.showAuth?"trymanual":"implicitonly"}"
-          .reauth="${!0}
-            @load-ready=${this.onReAuthed}/>`}
-        </div>
-      </div>`:N`
+      <div class="iframe-container">
+        <iframe class="iframe-main" @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
+        src="${this.iframeUrl}" title="${e}"></iframe>
 
-      <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
-      src="${this.iframeUrl}" title="${e}"></iframe>
-      `}
+        ${this.showAuth?N`
+        <div class="iframe-main modal-bg">
+          <div class="panel intro-panel">
+            <p class="panel-heading">
+              <fa-icon id="wrlogo" size="1.5rem" .svg=${he.a} aria-hidden="true"></fa-icon>
+              Authorization Needed
+            </p>
+            <div class="panel-block">
+              ${this.authFileHandle?N`
+              <p>This archive is loaded from a local file: <b>${this.authFileHandle.name}</b></p>
+              <p>The browser needs to confirm your permission to continue loading from this file.</p>
+              <button class="button is-warning is-rounded" @click="${this.onReAuthed}">Show Confirmation</button>
+              `:N`
+              <wr-gdrive
+                .sourceUrl="${this.sourceUrl}"
+                .state="trymanual"
+                .reauth="${!0}"
+                @load-ready="${this.onReAuthed}"/>`}
+            </div>
+          </div>
+        </div>
+        `:""}
+      </div>
     `:N`
       <div class="panel intro-panel">
         <p class="panel-heading">Replay Web Page</p>

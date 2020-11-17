@@ -709,10 +709,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webrecorder/wabac@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.2.0.tgz#e974564d4b0e69b09f1a0001873a5f7c650aecff"
-  integrity sha512-HJup/fKLFZTZCWgbYuuO9kabyUvDfBH2rGUD1/aa7C7eTZRt1dSghf4g1yAAp5AigMG2aYXGmHdeyRHW9SR3wA==
+"@webrecorder/wabac@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.2.1.tgz#05cdd85a2c3b1724e5d3754077efd092070bfa26"
+  integrity sha512-9sYtrsOUhsOmIrGYKTGTrXHW2JPX7C3f1bnU5B3vhF8/EKGvdrGEMPkeA/1eunP3mBO9y00snw3ITLb6IWy2zg==
   dependencies:
     "@webrecorder/wombat" "^3.0.1"
     brotli "github:foliojs/brotli.js"

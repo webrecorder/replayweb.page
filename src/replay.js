@@ -210,16 +210,31 @@ class Replay extends LitElement
         height: 100%;
       }
 
-      iframe {
+      .iframe-container {
+        position: relative;
         width: 100%;
-        #height: calc(100vh - 150px);
         height: 100%;
         border: 0px;
+      }
+
+      .iframe-main {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        width: 100%;
+        height: 100%;
       }
 
       .intro-panel .panel-heading {
         font-size: 1.0em;
         display: inline-block;
+      }
+
+      .iframe-main.modal-bg {
+        z-index: 200;
+        background-color: rgba(10, 10, 10, 0.70)
       }
 
       #wrlogo {
@@ -236,7 +251,8 @@ class Replay extends LitElement
         min-width: 40%;
         display: flex;
         flex-direction: column;
-        margin: 3em auto;
+        margin: 3em;
+        background-color: white;
       }
     `);
   }
@@ -257,29 +273,33 @@ class Replay extends LitElement
         </div>
       </div>` : html`
 
-      ${this.showAuth ? html`
-      <div class="panel intro-panel">
-        <p class="panel-heading">
-          <fa-icon id="wrlogo" size="1.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
-          Authorization Needed
-        </p>
-        <div class="panel-block">
-        ${this.authFileHandle ? html`
-          <p>This archive is loaded from a local file: <b>${this.authFileHandle.name}</b></p>
-          <p>The browser needs to confirm your permission to continue loading from this file.</p>
-          <button class="button is-warning is-rounded" @click="${this.onReAuthed}">Show Confirmation</button>
-          ` : html`
-          <wr-gdrive
-          .sourceUrl=${this.sourceUrl}
-          .state="${this.showAuth ? 'trymanual' : 'implicitonly'}"
-          .reauth="${true}
-            @load-ready=${this.onReAuthed}/>`}
-        </div>
-      </div>` : html`
+      <div class="iframe-container">
+        <iframe class="iframe-main" @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
+        src="${this.iframeUrl}" title="${title}"></iframe>
 
-      <iframe @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
-      src="${this.iframeUrl}" title="${title}"></iframe>
-      `}
+        ${this.showAuth ? html`
+        <div class="iframe-main modal-bg">
+          <div class="panel intro-panel">
+            <p class="panel-heading">
+              <fa-icon id="wrlogo" size="1.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
+              Authorization Needed
+            </p>
+            <div class="panel-block">
+              ${this.authFileHandle ? html`
+              <p>This archive is loaded from a local file: <b>${this.authFileHandle.name}</b></p>
+              <p>The browser needs to confirm your permission to continue loading from this file.</p>
+              <button class="button is-warning is-rounded" @click="${this.onReAuthed}">Show Confirmation</button>
+              ` : html`
+              <wr-gdrive
+                .sourceUrl="${this.sourceUrl}"
+                .state="trymanual"
+                .reauth="${true}"
+                @load-ready="${this.onReAuthed}"/>`}
+            </div>
+          </div>
+        </div>
+        `: ``}
+      </div>
     `}`;
   }
 }
