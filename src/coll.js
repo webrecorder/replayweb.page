@@ -8,6 +8,7 @@ import fasBook from '@fortawesome/fontawesome-free/svgs/solid/book.svg';
 import farListAlt from '@fortawesome/fontawesome-free/svgs/regular/list-alt.svg';
 import farResources from '@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg';
 import farPages from '@fortawesome/fontawesome-free/svgs/regular/file-image.svg';
+import fasInfoIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
 
 import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
 import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
@@ -19,6 +20,8 @@ import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
 
 import fasAngleLeft from '@fortawesome/fontawesome-free/svgs/solid/angle-left.svg';
 import fasAngleRight from '@fortawesome/fontawesome-free/svgs/solid/angle-right.svg';
+
+import prettyBytes from 'pretty-bytes';
 
 import Split from 'split.js';
 
@@ -53,7 +56,7 @@ class Coll extends LitElement
     this.url = "";
     this.ts = "";
 
-    this.tabNames = ["pages", "story", "resources"];
+    this.tabNames = ["pages", "story", "resources", "info"];
 
     this.menuActive = false;
 
@@ -97,7 +100,7 @@ class Coll extends LitElement
 
       isVisible: { type: Boolean },
 
-      favIconUrl: {type: String }
+      favIconUrl: {type: String },
     }
   }
 
@@ -425,7 +428,7 @@ class Coll extends LitElement
   static get replayBarStyles() {
     return css`
     .replay-bar {
-      padding: 1em 0em 1em 1em;
+      padding: 0.5em 0em 0.5em 0.5em;
       max-width: none;
       border-bottom: solid .1rem #97989A;
       width: 100%;
@@ -439,7 +442,8 @@ class Coll extends LitElement
     .favicon img {
       width: 20px;
       height: 20px;
-      filter: drop-shadow(1px 1px 2px grey);
+      margin: 8px;
+      /*filter: drop-shadow(1px 1px 2px grey);*/
     }
 
     #datetime {
@@ -484,12 +488,13 @@ class Coll extends LitElement
       border: 0px;
     }
 
-    .modal {
-      top: 174px;
+    .narrow {
+      padding: calc(0.5em - 1px) 0.8em;
     }
 
     form {
       width: 100%;
+      margin-left: 0.5em;
     }
 
     .gutter.gutter-horizontal {
@@ -504,6 +509,18 @@ class Coll extends LitElement
 
     main, wr-coll-replay {
       width: 100%;
+    }
+
+    .info-bg {
+      background-color: whitesmoke;
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
+
+    .is-list {
+      margin: 1.0em;
+      background-color: whitesmoke;
     }
 
     #contents.full-pages {
@@ -644,6 +661,13 @@ class Coll extends LitElement
             </a>
           </li>
 
+          <li class="${this.tabData.view === 'info' ? 'is-active' : ''}">
+            <a @click="${this.onTabClick}" href="#info" class="is-size-6" aria-label="Archive Info" aria-current="${this.tabData.view === 'info' ? 'location' : ''}">
+              <span class="icon"><fa-icon .svg="${fasInfoIcon}" aria-hidden="true" title="Archive Info"></fa-icon></span>
+              <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="Archive Info">Info</span>
+            </a>
+          </li>
+
           ${isSidebar ? html`
           <li class="sidebar-nav right">
             <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
@@ -671,25 +695,34 @@ class Coll extends LitElement
     <a class="skip-link" href="#skip-replay-target" @click="${this.skipMenu}">Skip replay navigation</a>
     <nav class="replay-bar" aria-label="replay">
       <div class="field has-addons">
-        <a href="#" role="button" id="fullscreen" class="button is-borderless is-hidden-touch" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}"
+
+        ${!this.embed ? html`
+        <a href="/" role="button" class="button is-borderless is-hidden-mobile" aria-labelledby="home" @keyup="${clickOnSpacebarPress}">
+          <span class="icon is-small">
+            <fa-icon id="wrlogo" size="1.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
+            <span class="is-sr-only">Home</span>
+          </span>
+        </a>` : ``}
+
+        <a href="#" role="button" class="button narrow is-borderless is-hidden-touch" id="fullscreen" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}"
                 title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}" aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
           </span>
         </a>
-        <a href="#" role="button" class="button is-borderless is-hidden-mobile" @click="${this.onGoBack}" @keyup="${clickOnSpacebarPress}"
+        <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile" @click="${this.onGoBack}" @keyup="${clickOnSpacebarPress}"
                 title="Back" aria-label="Back">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
           </span>
         </a>
-        <a href="#" role="button" class="button is-borderless is-hidden-mobile" @click="${this.onGoForward}" @keyup="${clickOnSpacebarPress}"
+        <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile" @click="${this.onGoForward}" @keyup="${clickOnSpacebarPress}"
                 title="Forward" aria-label="Forward">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
           </span>
         </a>
-        <a href="#" role="button" id="refresh" class="button is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}"
+        <a href="#" role="button" class="button narrow is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" id="refresh" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}"
                 title="Reload" aria-label="Reload">
           <span class="icon is-small">
             ${!this.isLoading ? html`
@@ -697,7 +730,7 @@ class Coll extends LitElement
             ` : ``}
           </span>
         </a>
-        <a href="#" role="button" class="button is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
+        <a href="#" role="button" class="button narrow is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
                 ?disabled="${!isReplay}" title="Browse Contents" aria-label="Browse Contents" aria-controls="contents">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
@@ -725,6 +758,15 @@ class Coll extends LitElement
           </div>
           <div class="dropdown-menu" id="menu-dropdown">
             <div class="dropdown-content">
+              ${!this.embed ? html`
+              <a href="/" role="button" class="dropdown-item is-hidden-tablet" @keyup="${clickOnSpacebarPress}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${rwpLogo}"></fa-icon>
+                </span>
+                <span>Home</span>
+              </a>
+              <hr class="dropdown-divider is-hidden-tablet">
+              ` : ``}
               <a href="#" role="button" class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
@@ -764,14 +806,11 @@ class Coll extends LitElement
               <div class="dropdown-item info is-hidden-desktop">
                 <span class="menu-head">Capture Date</span>${dateStr}
               </div>` : ``}
-              ${this.embed ? html`
               <hr class="dropdown-divider">
-              <a href="https://replayweb.page/" target="_blank" class="dropdown-item info">
-                <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${rwpLogo}></fa-icon>
+              <a href="#" role="button" class="dropdown-item" @click="${this.onAbout}">
                 <span>&nbsp;About ReplayWeb.page</span>
                 <span class="menu-version">(${__VERSION__})</span>
               </a>
-              ` : ``}
             </div>
           </div>
         </div>
@@ -799,8 +838,22 @@ class Coll extends LitElement
     const isStory = this.hasStory && this.tabData.view === 'story';
     const isPages = this.tabData.view === 'pages';
     const isResources = this.tabData.view === 'resources';
+    const isInfo = this.tabData.view === 'info';
 
     return html`
+
+    ${isInfo ? html`
+      <div class="info-bg">
+        <wr-coll-info
+         class="is-list"
+         .coll="${this.collInfo}"
+         ?detailed="${true}"
+         ?canDelete="${!this.embed}"
+         @coll-purge="${this.onPurgeCache}"
+        ></wr-coll-info>
+      </div>
+    `: html``}
+
     ${isStory ? html`
     <wr-coll-story .collInfo="${this.collInfo}"
     .active="${isStory}"
@@ -913,28 +966,46 @@ class Coll extends LitElement
     this.showSidebar = false;
   }
 
-  onFavIcons(event) {
-    this.favIconUrl = "";
-    event.detail.icons.map(async (icon) => {
-      const res = await fetch(icon.href);
-      if (res.status === 200) {
-        this.favIconUrl = icon.href;
+  async onFavIcons(event) {
+    for (const icon of event.detail.icons) {
+      const resp = await fetch(icon.href);
+      if (resp.status === 200) {
+        const ct = resp.headers.get("Content-Type");
+        if (ct && !ct.startsWith("text/")) {
+          this.favIconUrl = icon.href;
+          return;
+        }
       }
-    });
+    }
+
+    // not found
+    this.favIconUrl = "";
   }
 
-  async onPurgeCache(event) {
+  onPurgeCache(event) {
     event.preventDefault();
 
+    const reload = event.detail && event.detail.reload !== undefined ? event.detail.reload : true;
+
+    this.deleteFully(reload);
+  }
+
+  async deleteFully(reload = false) {
     const resp = await fetch(`${this.collInfo.apiPrefix}`, {
       method: 'DELETE',
     });
 
-    if (resp.status === 200 && window.parent) {
-      window.parent.location.reload();
-    } else {
+    if (resp.status !== 200) {
       console.warn("purge failed: " + resp.status);
     }
+
+    if (!reload && !this.embed) {
+      window.location.search = "";
+      return;
+    }
+
+    window.location.hash = "";
+    window.location.reload();
   }
 
   onSubmit(event) {
@@ -1020,6 +1091,10 @@ class Coll extends LitElement
     } else {
       window.location.reload();
     }
+  }
+
+  onAbout() {
+    this.dispatchEvent(new CustomEvent("about-show"));
   }
 }
 
