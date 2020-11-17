@@ -1,5 +1,16 @@
 ## CHANGES
 
+v1.3.0
+- UI: Condense navbar and location bar: add logo to location bar, condense button spacing, add about link to context menu
+- UI: Add collection info dropdown to be a separate tab instead
+- UI: Convert Terms into general About dialog
+- Loading: IPFS support! Load from `ipfs://` URLs, eg. `ipfs://hash/filename.wacz. Possible to specify extension for root with: `ipfs://hash#filename=.wacz`
+- Loading: Native File System (Chrome-only) support: Loading local files on Chrome uses FileHandle, which allows persistent reuse of files with permission
+- Loading: Optimize local file loading on all browsers: No more separate webworker, serviceworker caches entire blob into memory. Should fix Firefox loding issues streaming from blob.
+- Loading/UI: Revamp permissions UI to replace iframe instead of popup
+- UI: Favicon smoother update, better check for valid icon
+- UI: Purge Cache / Full Reload reloads current frame, not parent
+
 v1.2.1
 - Loading/UI: Fix Google Drive Loading/Reauthorization: Only trigger when reauth is needed. For rate-limit errors, attempt reloading more slowly (exponential backoff)
 - Loading: ReplayWeb.page App supports opening WACZ, WARC and HAR files via double-clicking from OS and via command-line.
