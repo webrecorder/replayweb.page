@@ -9,6 +9,8 @@ import farListAlt from '@fortawesome/fontawesome-free/svgs/regular/list-alt.svg'
 import farResources from '@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg';
 import farPages from '@fortawesome/fontawesome-free/svgs/regular/file-image.svg';
 import fasInfoIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
+import fasSync from '@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg';
+import fasHome from '@fortawesome/fontawesome-free/svgs/solid/home.svg';
 
 import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
 import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
@@ -20,8 +22,6 @@ import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
 
 import fasAngleLeft from '@fortawesome/fontawesome-free/svgs/solid/angle-left.svg';
 import fasAngleRight from '@fortawesome/fontawesome-free/svgs/solid/angle-right.svg';
-
-import prettyBytes from 'pretty-bytes';
 
 import Split from 'split.js';
 
@@ -70,6 +70,9 @@ class Coll extends LitElement
     this.isVisible = true;
 
     this.favIconUrl = "";
+
+    this.appName = "ReplayWeb.page";
+    this.appLogo = rwpLogo;
   }
 
   static get properties() {
@@ -101,6 +104,9 @@ class Coll extends LitElement
       isVisible: { type: Boolean },
 
       favIconUrl: {type: String },
+
+      appName: { type: String },
+      appLogo: { type: String },
     }
   }
 
@@ -584,7 +590,7 @@ class Coll extends LitElement
     const isSidebar = isReplay && this.showSidebar;
 
     if (!isReplay){
-      document.title = `Browse Contents | ReplayWeb.page`;
+      document.title = `Browse Contents | ${this.appName}`;
     }
 
     if (this.collInfo && !this.collInfo.coll) {
@@ -697,9 +703,9 @@ class Coll extends LitElement
       <div class="field has-addons">
 
         ${!this.embed ? html`
-        <a href="/" role="button" class="button is-borderless is-hidden-mobile" aria-labelledby="home" @keyup="${clickOnSpacebarPress}">
+        <a href="/" role="button" class="button is-borderless is-hidden-touch" aria-labelledby="home" @keyup="${clickOnSpacebarPress}">
           <span class="icon is-small">
-            <fa-icon id="wrlogo" size="1.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
+            <fa-icon size="1.0em" .svg="${fasHome}" aria-hidden="true"></fa-icon>
             <span class="is-sr-only">Home</span>
           </span>
         </a>` : ``}
@@ -730,7 +736,7 @@ class Coll extends LitElement
             ` : ``}
           </span>
         </a>
-        <a href="#" role="button" class="button narrow is-borderless is-hidden-touch ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
+        <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
                 ?disabled="${!isReplay}" title="Browse Contents" aria-label="Browse Contents" aria-controls="contents">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
@@ -759,9 +765,9 @@ class Coll extends LitElement
           <div class="dropdown-menu" id="menu-dropdown">
             <div class="dropdown-content">
               ${!this.embed ? html`
-              <a href="/" role="button" class="dropdown-item is-hidden-tablet" @keyup="${clickOnSpacebarPress}">
+              <a href="/" role="button" class="dropdown-item is-hidden-desktop" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${rwpLogo}"></fa-icon>
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasHome}"></fa-icon>
                 </span>
                 <span>Home</span>
               </a>
@@ -791,7 +797,7 @@ class Coll extends LitElement
                 </span>
                 <span>Reload</span>
               </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-desktop ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
@@ -799,7 +805,10 @@ class Coll extends LitElement
               </a>
               <hr class="dropdown-divider is-hidden-desktop">
               <a href="#" role="button" class="dropdown-item" @click="${this.onPurgeCache}" @keyup="${clickOnSpacebarPress}">
-                Purge Cache + Full Reload
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasSync}"></fa-icon>
+                </span>
+                <span>Purge Cache + Full Reload</span>
               </a>
               ${dateStr ? html`
               <hr class="dropdown-divider is-hidden-desktop">
@@ -808,7 +817,8 @@ class Coll extends LitElement
               </div>` : ``}
               <hr class="dropdown-divider">
               <a href="#" role="button" class="dropdown-item" @click="${this.onAbout}">
-                <span>&nbsp;About ReplayWeb.page</span>
+                <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
+                <span>&nbsp;About ${this.appName}</span>
                 <span class="menu-version">(${__VERSION__})</span>
               </a>
             </div>
