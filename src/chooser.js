@@ -33,6 +33,10 @@ class Chooser extends LitElement
   }
 
   async onChooseNativeFile() {
+    if (!this.hasNativeFS) {
+      return;
+    }
+
     const options = {
       types: [
         {

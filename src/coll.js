@@ -824,13 +824,11 @@ class Coll extends LitElement
             </div>
           </div>
         </div>
-
-
       </div>
     </nav><p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
   }
 
-  dragStart(event) {
+  dragStart() {
     const replay = this.renderRoot.querySelector("wr-coll-replay");
     if (replay) {
       replay.setDisablePointer(true);
