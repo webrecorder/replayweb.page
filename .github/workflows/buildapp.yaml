@@ -42,6 +42,7 @@ jobs:
           WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
           #OS: "${{ runner.os }}
           PLATFORM: ${{ matrix.platform }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         run: |
               if [ "$GITHUB_REF" == "refs/heads/gh-action-work" ]; then
@@ -58,7 +59,7 @@ jobs:
                   popd;
 
                   docker run --rm \
-                    -e GH_TOKEN=${GITHUB_TOKEN} \
+                    -e GH_TOKEN=${GH_TOKEN} \
                     -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
                     -v ${PWD}:/project \
                     -v ~/.cache/electron:/root/.cache/electron \
@@ -73,7 +74,7 @@ jobs:
                   popd;
 
                   docker run --rm \
-                    -e GH_TOKEN=${GITHUB_TOKEN} \
+                    -e GH_TOKEN=${GH_TOKEN} \
                     -e WIN_CSC_LINK=${WIN_CSC_LINK} \
                     -e WIN_CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD} \
                     -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
