@@ -40,12 +40,11 @@ jobs:
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
           WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
           WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
-          #OS: "${{ runner.os }}
           PLATFORM: ${{ matrix.platform }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         run: |
-              if [ "$GITHUB_REF" == "refs/heads/gh-action-work" ]; then
+              if [ "$GITHUB_REF" == "refs/heads/main" ]; then
                 export YARN_BUILD_CMD="release"
               else
                 export YARN_BUILD_CMD="dist"
