@@ -21,7 +21,16 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 13
+
+      - name: Cache Dirs
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/electron
+            ~/.cache/electron-builder
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Run Build
         env:
@@ -35,15 +44,13 @@ jobs:
           PLATFORM: ${{ matrix.platform }}
 
         run: |
-              echo $GITHUB_REF
-              printenv
-              if [ "$GITHUB_REF" == "main" ]; then
+              if [ "$GITHUB_REF" == "refs/heads/gh-action-work" ]; then
                 export YARN_BUILD_CMD="release"
               else
                 export YARN_BUILD_CMD="dist"
               fi
 
-              if [ "$RUNNER_OS" == "linux" ]; then
+              if [ "$RUNNER_OS" == "Linux" ]; then
                 if [ "$PLATFORM" == "linux" ]; then
                   mkdir -p plugins-linux;
                   pushd plugins-linux;
@@ -57,7 +64,7 @@ jobs:
                     -v ~/.cache/electron:/root/.cache/electron \
                     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
                     electronuserland/builder:wine \
-                    /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run $YARN_BUILD_CMD --linux --x64"
+                    /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn install && yarn run $YARN_BUILD_CMD --linux --x64"
                 else
                   mkdir -p plugins-win;
                   pushd plugins-win;
@@ -74,7 +81,7 @@ jobs:
                     -v ~/.cache/electron:/root/.cache/electron \
                     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
                     electronuserland/builder:wine \
-                    /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run $YARN_BUILD_CMD --win --x64 --ia32"
+                    /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn install && yarn run $YARN_BUILD_CMD --win --x64 --ia32"
                 fi
               else
                 mkdir -p plugins-mac;
@@ -83,6 +90,7 @@ jobs:
                 unzip PepperFlashPlayer.plugin.zip;
                 rm PepperFlashPlayer.plugin.zip;
                 popd;
+                yarn install
                 yarn run $YARN_BUILD_CMD
               fi
                
