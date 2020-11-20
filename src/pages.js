@@ -191,19 +191,7 @@ class Pages extends LitElement
     const resp = await fetch(`${this.collInfo.apiPrefix}/curated/${this.currList}`);
     const json = await resp.json();
 
-    const curated = [];
-
-    for (const c of json.curated) {
-      for (const p of this.filteredPages) {
-        if (p.id === c.page) {
-          if (p.ts) {
-            p.date = new Date(p.ts).toISOString();
-          }
-          curated.push(p);
-          break;
-        }
-      }
-    }
+    const curated = json.curated;
 
     this.filteredPages = curated;
   }

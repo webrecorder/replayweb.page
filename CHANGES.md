@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.3.1
+- Loading: Support updated WACZ Format (1.0.0) with latest wabac.js update
+- Loading: Archives loaded with via native file system can be reloaded after purge cache (chrome only)
+
 v1.3.0
 - UI: Condense navbar and location bar: add logo to location bar, condense button spacing, add about link to context menu
 - UI: Add collection info dropdown to be a separate tab instead

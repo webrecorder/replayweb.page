@@ -709,10 +709,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webrecorder/wabac@^2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.2.2.tgz#9c2335b4656cb3deea2f6c94e2218553fa8d8262"
-  integrity sha512-IFUHYdZ9syoAoItjqa0dI3Vz8IsNU4NdA0VNmq3WF6GxuZzru1HQLUQ/0CXWrub4kFu1xUFPVS16u1asKjuRoQ==
+"@webrecorder/wabac@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.3.0.tgz#e57e46acd7c58afe3bfb42ce54e2cb3bdd1fcd81"
+  integrity sha512-8FefSdft62fgafgXMGRTvhXzcjTCHFMO0+6lcUGPoE28WhYCLgxWA250xxhQlPjoov+YjxffnQGYD+DJmTqWqQ==
   dependencies:
     "@webrecorder/wombat" "^3.0.1"
     brotli "github:foliojs/brotli.js"
@@ -722,7 +722,7 @@
     js-levenshtein "^1.1.6"
     js-yaml "^3.13.1"
     json-2-csv "^3.7.1"
-    jszip "^3.4.0"
+    jszip "^3.5.0"
     pako "^1.0.10"
     parse5-html-rewriting-stream "^6.0.0"
     parse5-sax-parser "^6.0.0"
@@ -5233,10 +5233,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-jszip@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.4.0.tgz#1a69421fa5f0bb9bc222a46bca88182fba075350"
-  integrity sha512-gZAOYuPl4EhPTXT0GjhI3o+ZAz3su6EhLrKUoAivcKqyqC7laS5JEv4XWZND9BgcDcF83vI85yGbDmDR6UhrIg==
+jszip@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.5.0.tgz#b4fd1f368245346658e781fec9675802489e15f6"
+  integrity sha512-WRtu7TPCmYePR1nazfrtuF216cIVon/3GWOvHS9QR5bIwSbnxtdpma6un3jyGGNhHsKCSzn5Ypk+EkDRvTGiFA==
   dependencies:
     lie "~3.3.0"
     pako "~1.0.2"

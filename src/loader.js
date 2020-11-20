@@ -20,6 +20,8 @@ class Loader extends LitElement
 
     this.currentSize = 0;
     this.totalSize = 0;
+
+    this.tryFileHandle = !!window.showOpenFilePicker;
   }
 
   static get properties() {
@@ -35,7 +37,8 @@ class Loader extends LitElement
       total: { type: Number },
       status: { type: String },
       coll: { type: String },
-      embed: { type: String }
+      embed: { type: String },
+      tryFileHandle: { type: Boolean }
     }
   }
 
@@ -57,6 +60,9 @@ class Loader extends LitElement
             if (event.data.error) {
               this.error = event.data.error;
               this.state = "errored";
+              if (this.error === "missing_local_file") {
+                this.tryFileHandle = false;
+              }
             }
             if (event.data.currentSize && event.data.totalSize) {
               this.currentSize = event.data.currentSize;
@@ -114,7 +120,7 @@ Please try loading this page from an HTTPS URL`;
           break;
 
         case "file":
-          if (!this.loadInfo) {
+          if (!this.loadInfo && !this.tryFileHandle) {
             this.state = "errored";
             this.error = `\
 File URLs can not be entered directly or shared.
@@ -179,7 +185,7 @@ You can select a file to upload from the main page by clicking the \'Choose File
   }
 
   updated(changedProperties) {
-    if (this.sourceUrl && changedProperties.has("sourceUrl")) {
+    if (this.sourceUrl && changedProperties.has("sourceUrl") || changedProperties.has("tryFileHandle")) {
       this.doLoad();
     }
   }

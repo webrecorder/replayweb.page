@@ -73,6 +73,7 @@ class Coll extends LitElement
 
     this.appName = "ReplayWeb.page";
     this.appLogo = rwpLogo;
+    this.appHomeUrl = "/";
   }
 
   static get properties() {
@@ -107,6 +108,7 @@ class Coll extends LitElement
 
       appName: { type: String },
       appLogo: { type: String },
+      appHomeUrl: { type: String }
     }
   }
 
@@ -703,7 +705,7 @@ class Coll extends LitElement
       <div class="field has-addons">
 
         ${!this.embed ? html`
-        <a href="/" role="button" class="button is-borderless is-hidden-touch" aria-labelledby="home" @keyup="${clickOnSpacebarPress}">
+        <a href="${this.appHomeUrl}" role="button" class="button is-borderless is-hidden-touch" aria-labelledby="home" @keyup="${clickOnSpacebarPress}">
           <span class="icon is-small">
             <fa-icon size="1.0em" .svg="${fasHome}" aria-hidden="true"></fa-icon>
             <span class="is-sr-only">Home</span>
@@ -765,7 +767,7 @@ class Coll extends LitElement
           <div class="dropdown-menu" id="menu-dropdown">
             <div class="dropdown-content">
               ${!this.embed ? html`
-              <a href="/" role="button" class="dropdown-item is-hidden-desktop" @keyup="${clickOnSpacebarPress}">
+              <a href="${this.appHomeUrl}" role="button" class="dropdown-item is-hidden-desktop" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasHome}"></fa-icon>
                 </span>
@@ -999,7 +1001,9 @@ class Coll extends LitElement
   }
 
   async deleteFully(reload = false) {
-    const resp = await fetch(`${this.collInfo.apiPrefix}`, {
+    const deleteURL = this.collInfo.apiPrefix + (reload ? "?reload=1" : "");
+
+    const resp = await fetch(deleteURL, {
       method: 'DELETE',
     });
 

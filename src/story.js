@@ -117,11 +117,15 @@ class Story extends LitElement
       if (!this.curatedPageMap[curated.list]) {
         this.curatedPageMap[curated.list] = [];
       }
-      const page = pageMap[curated.page];
-      if (!page) {
-        console.log("No Page with id: " + page);
-        continue;
-      }
+      const page = curated;
+
+      // if (curated.page) {
+      //   page = pageMap[curated.page];
+      //   if (!page) {
+      //     console.log("No Page with id: " + page);
+      //     continue;
+      //   }
+      // }
 
       const url = page.url;
       const ts = page.ts;
