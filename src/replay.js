@@ -92,6 +92,9 @@ class Replay extends LitElement
 
     if (this.iframeUrl && changedProperties.has("iframeUrl")) {
       this.waitForLoad();
+
+      const detail = {title: "Archived Page", replayTitle: false};
+      this.dispatchEvent(new CustomEvent("update-title", {bubbles: true, composed: true, detail}));
     }
 
     if (this.replayUrl && changedProperties.has("replayUrl")) {
@@ -131,8 +134,9 @@ class Replay extends LitElement
       }
     }
 
-    if (this.title){
-      document.title = `Replay of ${this.title} | ReplayWeb.page`;
+    if (this.title) {
+      const detail = {title: this.title, replayTitle: true};
+      this.dispatchEvent(new CustomEvent("update-title", {bubbles: true, composed: true, detail}));
     }
   }
 

@@ -108,7 +108,7 @@ class Chooser extends LitElement
       min-width: 0;
     }
     .extra-padding {
-      padding: 2em;
+      padding: 1.5em;
     }
     .less-padding {
       padding-top: 1.0em;
@@ -119,6 +119,7 @@ class Chooser extends LitElement
     }
     .panel-heading {
       background-color: #cff3ff;
+      font-size: 0.85rem;
     }
     form {
       flex-grow: 1;
@@ -154,9 +155,9 @@ class Chooser extends LitElement
     return html`
     <section class="section less-padding">
       <div class="panel">
-        <h2 class="panel-heading">Load Web Archive</h2>
+        <h4 class="panel-heading">Load Web Archive</h4>
         <div class="extra-padding panel-block file has-name">
-          <form class="content is-flex" @submit="${this.onStartLoad}">
+          <form class="is-flex" @submit="${this.onStartLoad}">
             <label class="file-label">
               ${!this.hasNativeFS ? html`
               <input class="file-input"

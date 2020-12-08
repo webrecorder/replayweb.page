@@ -10,7 +10,6 @@ import farResources from '@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.
 import farPages from '@fortawesome/fontawesome-free/svgs/regular/file-image.svg';
 import fasInfoIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
 import fasSync from '@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg';
-import fasHome from '@fortawesome/fontawesome-free/svgs/solid/home.svg';
 
 import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
 import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
@@ -30,7 +29,7 @@ const RWP_SCHEME = "search://";
 
 
 // ===========================================================================
-class Coll extends LitElement
+class WrColl extends LitElement
 {
   constructor() {
     super();
@@ -57,6 +56,12 @@ class Coll extends LitElement
     this.ts = "";
 
     this.tabNames = ["pages", "story", "resources", "info"];
+    this.tabLabels = {
+      "pages": "Pages",
+      "story": "Story",
+      "resources": "URLs",
+      "info": "Archive Info",
+    }
 
     this.menuActive = false;
 
@@ -73,7 +78,6 @@ class Coll extends LitElement
 
     this.appName = "ReplayWeb.page";
     this.appLogo = rwpLogo;
-    this.appHomeUrl = "/";
   }
 
   static get properties() {
@@ -108,7 +112,6 @@ class Coll extends LitElement
 
       appName: { type: String },
       appLogo: { type: String },
-      appHomeUrl: { type: String }
     }
   }
 
@@ -294,7 +297,7 @@ class Coll extends LitElement
     }
 
     if (this.collInfo.coll && !this.tabNames.includes(this.tabData.view)) {
-      const view = this.hasStory ? "story" : (this.collInfo.pages.length ? "pages" : "resources");
+      const view = this.hasStory ? "story" : (this.editable || this.collInfo.pages.length ? "pages" : "resources");
 
       this.tabData = {
         ...this.tabData, view
@@ -429,12 +432,21 @@ class Coll extends LitElement
       flex: auto;
     }
 
-    ${Coll.replayBarStyles}
+    ${WrColl.replayBarStyles}
     `);
   }
 
   static get replayBarStyles() {
     return css`
+    .breadbar {
+      display: flex;
+      align-items: center;
+      height: 35px;
+      width: 100%;
+      background-color: aliceblue;
+      padding: 0.5em;
+    }
+
     .replay-bar {
       padding: 0.5em 0em 0.5em 0.5em;
       max-width: none;
@@ -502,7 +514,7 @@ class Coll extends LitElement
 
     form {
       width: 100%;
-      margin-left: 0.5em;
+      margin: 0 0 0 0.5em;
     }
 
     .gutter.gutter-horizontal {
@@ -591,8 +603,9 @@ class Coll extends LitElement
     const isReplay = !!this.tabData.url;
     const isSidebar = isReplay && this.showSidebar;
 
-    if (!isReplay){
-      document.title = `Browse Contents | ${this.appName}`;
+    if (!isReplay && this.tabData && this.tabData.view){
+      const detail = {title: this.tabLabels[this.tabData.view], replayTitle: false};
+      this.dispatchEvent(new CustomEvent("update-title", {bubbles: true, composed: true, detail}));
     }
 
     if (this.collInfo && !this.collInfo.coll) {
@@ -703,15 +716,6 @@ class Coll extends LitElement
     <a class="skip-link" href="#skip-replay-target" @click="${this.skipMenu}">Skip replay navigation</a>
     <nav class="replay-bar" aria-label="replay">
       <div class="field has-addons">
-
-        ${!this.embed ? html`
-        <a href="${this.appHomeUrl}" role="button" class="button is-borderless is-hidden-touch" aria-labelledby="home" @keyup="${clickOnSpacebarPress}">
-          <span class="icon is-small">
-            <fa-icon size="1.0em" .svg="${fasHome}" aria-hidden="true"></fa-icon>
-            <span class="is-sr-only">Home</span>
-          </span>
-        </a>` : ``}
-
         <a href="#" role="button" class="button narrow is-borderless is-hidden-touch" id="fullscreen" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}"
                 title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}" aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}">
           <span class="icon is-small">
@@ -744,6 +748,7 @@ class Coll extends LitElement
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
           </span>
         </a>
+        ${this.renderExtraToolbar(false)}
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded ${showFavIcon ? 'has-icons-left' : ''}">
             <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" @blur="${this.onLostFocus}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
@@ -766,15 +771,6 @@ class Coll extends LitElement
           </div>
           <div class="dropdown-menu" id="menu-dropdown">
             <div class="dropdown-content">
-              ${!this.embed ? html`
-              <a href="${this.appHomeUrl}" role="button" class="dropdown-item is-hidden-desktop" @keyup="${clickOnSpacebarPress}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasHome}"></fa-icon>
-                </span>
-                <span>Home</span>
-              </a>
-              <hr class="dropdown-divider is-hidden-tablet">
-              ` : ``}
               <a href="#" role="button" class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
@@ -805,13 +801,15 @@ class Coll extends LitElement
                 </span>
                 <span>Browse Contents</span>
               </a>
+              ${this.renderExtraToolbar(true)}
+              ${!this.editable ? html`
               <hr class="dropdown-divider is-hidden-desktop">
               <a href="#" role="button" class="dropdown-item" @click="${this.onPurgeCache}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasSync}"></fa-icon>
                 </span>
                 <span>Purge Cache + Full Reload</span>
-              </a>
+              </a>` : html``}
               ${dateStr ? html`
               <hr class="dropdown-divider is-hidden-desktop">
               <div class="dropdown-item info is-hidden-desktop">
@@ -844,6 +842,23 @@ class Coll extends LitElement
     }
   }
 
+  renderCollInfo() {
+    return html`
+    <div class="info-bg">
+      <wr-coll-info
+      class="is-list"
+      .coll="${this.collInfo}"
+      ?detailed="${true}"
+      ?canDelete="${!this.embed}"
+      @coll-purge="${this.onPurgeCache}"
+      ></wr-coll-info>
+    </div>`;
+  }
+
+  renderExtraToolbar(isDropdown = false) {
+    return '';
+  }
+
   renderCollTabs(isSidebar) {
     const isStory = this.hasStory && this.tabData.view === 'story';
     const isPages = this.tabData.view === 'pages';
@@ -852,17 +867,7 @@ class Coll extends LitElement
 
     return html`
 
-    ${isInfo ? html`
-      <div class="info-bg">
-        <wr-coll-info
-         class="is-list"
-         .coll="${this.collInfo}"
-         ?detailed="${true}"
-         ?canDelete="${!this.embed}"
-         @coll-purge="${this.onPurgeCache}"
-        ></wr-coll-info>
-      </div>
-    `: html``}
+    ${isInfo ? this.renderCollInfo() : html``}
 
     ${isStory ? html`
     <wr-coll-story .collInfo="${this.collInfo}"
@@ -1110,6 +1115,6 @@ class Coll extends LitElement
   }
 }
 
-customElements.define("wr-coll", Coll);
+customElements.define("wr-coll", WrColl);
 
-export { Coll };
+export { WrColl };

@@ -128,4 +128,5 @@ class AnimLogo extends FaIcon
 customElements.define("fa-icon",  FaIcon);
 customElements.define("wr-anim-logo", AnimLogo);
 
-export { wrapCss, IS_APP, clickOnSpacebarPress, rwpLogo, FaIcon, AnimLogo };
+export { wrapCss, IS_APP, clickOnSpacebarPress, rwpLogo, FaIcon, AnimLogo,
+         LitElement, html, css, unsafeCSS, unsafeSVG };

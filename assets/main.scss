@@ -22,6 +22,7 @@ $light: $wr-light-green;
 $dark: $wr-dark-green;
 
 $navbar-breakpoint: 840px;
+$navbar-height: 2.0rem;
 
 // Set placeholder contrast to ~4.5:1 for WCAG AA compliance
 $input-placeholder-color: #757575;
@@ -44,10 +45,10 @@ a:focus {
   background-color: $dark !important;
   color: white !important;
 }
-.button.is-warning:focus, .button.is-warning:hover, .button.is-warning:active {
-  background-color: $wr-dark-yellow !important;
-  color: black !important;
-}
+//.button.is-warning:focus, .button.is-warning:hover, .button.is-warning:active {
+//  background-color: $wr-dark-yellow !important;
+//  color: black !important;
+//}
 
 .replay-bar .button {
   margin: 0 1px;

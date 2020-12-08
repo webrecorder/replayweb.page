@@ -18,6 +18,9 @@ const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.goo
 // Copyright banner text
 const BANNER_TEXT = "'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020, Webrecorder Software. Licensed under the Affero General Public License v3.'";
 
+// IPFS ipfs-core lib url
+const IPFS_CORE_URL = "https://cdn.jsdelivr.net/npm/ipfs-core@0.2.0/dist/index.min.js";
+
 
 const electronMainConfig = (env, argv) => {
   return {
@@ -70,8 +73,14 @@ const electronPreloadConfig = (env, argv) => {
       'preload': './src/electron-preload.js', 
     },
     plugins: [
-      new webpack.BannerPlugin(BANNER_TEXT)
-    ],
+      new webpack.BannerPlugin(BANNER_TEXT),
+
+      // this needs to be defined, but not actually used, as electron app uses
+      // ipfs-core from node
+      new webpack.DefinePlugin({
+        __IPFS_CORE_URL__: JSON.stringify(IPFS_CORE_URL)
+      }),
+    ]
   }
 };
  
@@ -116,9 +125,15 @@ const browserConfig = (env, argv) => {
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
         __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID),
-        __VERSION__: JSON.stringify(require("./package.json").version)
+        __VERSION__: JSON.stringify(require("./package.json").version),
+        __IPFS_CORE_URL__: JSON.stringify(IPFS_CORE_URL)
       }),
-      new webpack.BannerPlugin(BANNER_TEXT)
+      new webpack.BannerPlugin(BANNER_TEXT),
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/ipfs-core/dist/index.min.js', to: 'ipfs-core.min.js' },
+        ]
+      }),
     ],
 
     module: {

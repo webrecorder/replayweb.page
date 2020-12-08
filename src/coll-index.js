@@ -12,7 +12,7 @@ import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 
 
 // ===========================================================================
-class CollIndex extends LitElement
+class WrCollIndex extends LitElement
 {
   constructor() {
     super();
@@ -26,9 +26,12 @@ class CollIndex extends LitElement
     this.hideHeader = localStorage.getItem("index:hideHeader") === "1";
 
     this._deleting = {};
+
+    this.dateName = "Date Loaded";
+    this.headerName = "Loaded Archives";
   }
 
-  static get sortKeys() {
+  get sortKeys() {
     return [
       {key: "title",
        name: "Title"},
@@ -37,7 +40,7 @@ class CollIndex extends LitElement
        name: "Source"},
 
       {key: "ctime",
-       name: "Date Loaded"},
+       name: this.dateName},
 
       {key: "size",
        name: "Total Size"}
@@ -56,7 +59,10 @@ class CollIndex extends LitElement
 
       hideHeader: { type: Boolean },
 
-      _deleting: { type: Object }
+      _deleting: { type: Object },
+
+      dateName: { type: String },
+      headerName: { type: String }
     }
   }
 
@@ -147,6 +153,9 @@ class CollIndex extends LitElement
     .no-top-padding {
       padding-top: 1.0em;
     }
+    .panel-heading {
+      font-size: 0.85rem;
+    }
     .is-loading {
       line-height: 1.5em;
       height: 1.5em;
@@ -224,19 +233,22 @@ class CollIndex extends LitElement
   }
 
   render() {
+    const hasHeader = this.childElementCount > 0;
+
     return html`
     <header class="${this.hideHeader ? 'closed' : ''}">
       <slot name="header"></slot>
     </header>
     <section class="section no-top-padding">
       <div class="sort-header is-small">
+        ${hasHeader ? html`
         <button @click=${(e) => this.hideHeader = !this.hideHeader} class="collapse button is-small">
           <span class="icon"><fa-icon .svg=${this.hideHeader ? fasArrowDown : fasArrowUp}></span>
           <span>${this.hideHeader ? 'Show ' : 'Hide'} <span class="is-sr-only">Header</span></span>
-        </button>
+        </button>` : ``}
       </div>
       <div class="panel is-light">
-        <h2 class="panel-heading"><span>Loaded Archives</span>
+        <h2 class="panel-heading"><span>${this.headerName}</span>
         </h2>
 
         ${this.colls.length ? html`
@@ -249,7 +261,7 @@ class CollIndex extends LitElement
           <wr-sorter id="index"
           sortKey="ctime"
           ?sortDesc="${true}"
-          .sortKeys="${CollIndex.sortKeys}"
+          .sortKeys="${this.sortKeys}"
           .data="${this.filteredColls}"
           @sort-changed="${(e) => this.sortedColls = e.detail.sortedData}">
           </wr-sorter>
@@ -258,7 +270,7 @@ class CollIndex extends LitElement
         <div class="coll-list">
           ${this.sortedColls.map((coll, i) => html`
             <div class="coll-block panel-block">
-              <wr-coll-info .coll=${coll}></wr-coll-info>
+              ${this.renderCollInfo(coll)}
               ${!this._deleting[coll.sourceUrl] ? html`
               <button class="delete" aria-label="Unload Collection" title="Unload Collection" data-coll-index="${i}" @click="${this.onDeleteColl}"></button>
               ` : html`
@@ -276,6 +288,10 @@ class CollIndex extends LitElement
       </div>
     </section>
     `;
+  }
+
+  renderCollInfo(coll) {
+    return html`<wr-coll-info .coll=${coll}></wr-coll-info>`;
   }
 }
 
@@ -424,6 +440,6 @@ class WrCollInfo extends LitElement
 }
 
 customElements.define("wr-coll-info", WrCollInfo);
-customElements.define("wr-coll-index", CollIndex);
+customElements.define("wr-coll-index", WrCollIndex);
 
-export { CollIndex };
+export { WrCollIndex, WrCollInfo };

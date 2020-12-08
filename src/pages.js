@@ -806,7 +806,7 @@ class Pages extends LitElement
 
   getNoResultsMessage() {
     if (!this.collInfo || !this.collInfo.pages.length) {
-      return html`<span class="fix-text-wrapping">No "Pages" are defined in this archive. <a href="#view=resources">Browse by URL</a>.</span>`;
+      return html`<span class="fix-text-wrapping">No Pages are defined in this archive. The archive may be empty. <a href="#view=resources">Try browsing by URL</a>.</span>`;
     }
 
     if (this.updatingSearch) {
