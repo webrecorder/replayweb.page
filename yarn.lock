@@ -709,14 +709,15 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webrecorder/wabac@^2.3.2":
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.3.2.tgz#08c02ce09d88e6a9e44bcf168ae9404d4deb965d"
-  integrity sha512-EXrqeZ7COUBrDW5dNT4PwWmN/OI9cUf6E+WkD+Dfl6hpcKSxzOZ8qUXDU2RBeaKtQtRkr4qbsq45eb/j5wpZYw==
+"@webrecorder/wabac@^2.3.3":
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.3.3.tgz#325fa534de842669f6c5d8da518a0bc55f353d9c"
+  integrity sha512-/VGjRa+WoPQbS2n7IBrsNrrFWbH0wN0/3DA1Us5Bt+AQLq9SvaFRAPDJJGBrFr0NaDB2ij73yHP3mGLa8V8vQQ==
   dependencies:
     "@webrecorder/wombat" "^3.0.2"
     brotli "github:foliojs/brotli.js"
     fast-xml-parser "^3.15.1"
+    hash-wasm "^4.4.1"
     http-status-codes "^2.1.4"
     idb "^5.0.1"
     js-levenshtein "^1.1.6"
@@ -3814,6 +3815,11 @@ hash-base@^3.0.0:
     inherits "^2.0.4"
     readable-stream "^3.6.0"
     safe-buffer "^5.2.0"
+
+hash-wasm@^4.4.1:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/hash-wasm/-/hash-wasm-4.4.1.tgz#9b09b728ab17c2f312639c044ac6f4f98496a090"
+  integrity sha512-6hbcJY74kQQOAoDQZgm0rku51jlf0f3+g+q+1CI3vNvabF27SQuVJm86FnMNMaw8WEjBeW4U5GWX1KsKd8qZCw==
 
 hash.js@^1.0.0, hash.js@^1.0.3:
   version "1.1.7"

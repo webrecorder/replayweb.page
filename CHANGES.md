@@ -1,5 +1,12 @@
 ## CHANGES
 
+v1.3.3
+- UI: Component customization improvements, update to latest wabac.js
+
+v1.3.2
+- UI: Show navbar on all pages, include breadcrumbs with collection title current page
+- UI: Condense frontpage UI slightly
+
 v1.3.1
 - Loading: Support updated WACZ Format (1.0.0) with latest wabac.js update
 - Loading: Archives loaded with via native file system can be reloaded after purge cache (chrome only)

@@ -282,7 +282,7 @@ class WrCollIndex extends LitElement
         ` : html`
 
         <div class="panel-block extra-padding">
-          <i>No Archives so far! Archives loaded in the section above will appear here.</i>
+        ${this.renderEmpty()}
         </div>
         `}
       </div>
@@ -292,6 +292,10 @@ class WrCollIndex extends LitElement
 
   renderCollInfo(coll) {
     return html`<wr-coll-info .coll=${coll}></wr-coll-info>`;
+  }
+
+  renderEmpty() {
+    return html`<i>No Archives so far! Archives loaded in the section above will appear here.</i>`;
   }
 }
 
