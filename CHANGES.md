@@ -2,6 +2,7 @@
 
 v1.3.3
 - UI: Component customization improvements, update to latest wabac.js
+- Loading: Improvements for IPFS loading, fix loading with hashtag #filename= in Electron app
 
 v1.3.2
 - UI: Show navbar on all pages, include breadcrumbs with collection title current page

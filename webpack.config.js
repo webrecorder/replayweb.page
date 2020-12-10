@@ -47,7 +47,8 @@ const electronMainConfig = (env, argv) => {
     plugins: [
       new webpack.DefinePlugin({
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
-        __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY)
+        __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
+        __IPFS_CORE_URL__: JSON.stringify("")
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
@@ -78,7 +79,7 @@ const electronPreloadConfig = (env, argv) => {
       // this needs to be defined, but not actually used, as electron app uses
       // ipfs-core from node
       new webpack.DefinePlugin({
-        __IPFS_CORE_URL__: JSON.stringify(IPFS_CORE_URL)
+        __IPFS_CORE_URL__: JSON.stringify("")
       }),
     ]
   }

@@ -10,18 +10,22 @@ const dbs = {};
 
 const loader = new CollectionLoader();
 
-async function getDB(name) {
+async function getColl(name) {
   if (!dbs[name]) {
     dbs[name] = await loader.loadColl(name);
-    console.log(dbs[name]);
+    await dbs[name].initing;
   }
 
-  return dbs[name].store;
+  return dbs[name];
+}
+
+async function getDB(name) {
+  const coll = await getColl(name);
+  return coll.store;
 }
 
 async function getResponse(event, request, coll, ts, channel) {
   const db = await getDB(coll);
-  await db.initing;
 
   const req = {request, url: request.url, timestamp: ts};
 
@@ -40,6 +44,8 @@ async function getResponse(event, request, coll, ts, channel) {
 }
 
 ipcRenderer.on('getresponse', getResponse);
+
+export { getDB, getColl, loader };
 
 
 

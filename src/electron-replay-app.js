@@ -7,6 +7,7 @@ import path from 'path';
 import fs from 'fs';
 
 import { ArchiveResponse, Rewriter } from '@webrecorder/wabac/src/rewrite';
+import { IPFSClient } from '@webrecorder/wabac/src/ipfs';
 
 import { PassThrough, Readable } from 'stream';
 
@@ -21,9 +22,26 @@ const REPLAY_PREFIX = STATIC_PREFIX + "wabac/";
 
 const URL_RX = /([^\/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
+
 let IPFS = null;
-let ipfs = null;
-let initingIPFS = null;
+
+// ============================================================================
+class NativeIPFSClient extends IPFSClient
+{
+  async _doInitIPFS() {
+    if (!IPFS) {
+      IPFS = require("ipfs-core");
+    }
+
+    this.ipfs = await IPFS.create({
+      //repo: "/tmp/test-ipfs"
+      init: {emptyRepo: true},
+      //preload: {enabled: false},
+    });
+
+    this.resetGC();
+  }
+}
 
 
 // ============================================================================
@@ -48,6 +66,8 @@ class ElectronReplayApp
     this.openNextFile = null;
 
     this.screenSize = {width: 1024, height: 768};
+
+    this.ipfsClient = new NativeIPFSClient();
   }
 
   get mainWindowWebPreferences() {
@@ -138,38 +158,7 @@ class ElectronReplayApp
     });
   }
 
-  static async doInitIPFS() {
-    if (!IPFS) {
-      IPFS = require("ipfs-core");
-    }
-
-    ipfs = await IPFS.create({
-      //repo: "/tmp/test-ipfs"
-      init: {emptyRepo: true},
-      //preload: {enabled: false},
-    });
-  }
-
-  async initIPFS() {
-    if (!ipfs) {
-      try {
-        if (!initingIPFS) {
-          initingIPFS = ElectronReplayApp.doInitIPFS();
-        }
-
-        await initingIPFS;
-
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-
-    return ipfs;
-  }
-
   onAppReady() {
-    //ElectronReplayApp.doInitIPFS();
-
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
 
     app.on('web-contents-created', (event, contents) => {
@@ -276,16 +265,12 @@ class ElectronReplayApp
       } else if (ipfsCID) {
         console.log("ipfs serve:", ipfsCID);
 
-        const ipfs = await this.initIPFS();
+        await this.ipfsClient.initIPFS();
 
-        let size = 0;
+        let size = await this.ipfsClient.getFileSize(ipfsCID);
 
-        for await (const file of ipfs.get(ipfsCID, {timeout: 20000, preload: false})) {
-          if (file.type !== "file") {
-            return this.notFound(ipfsCID, callback);
-          }
-          size = file.size;
-          break;
+        if (size === null) {
+          return this.notFound(ipfsCID, callback);
         }
 
         const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
@@ -295,7 +280,7 @@ class ElectronReplayApp
         if (request.method === "GET") {
           const offset = start || 0;
           const length = end ? end - start + 1 : size;
-          data = Readable.from(ipfs.cat(ipfsCID, {offset, length}));
+          data = Readable.from(this.ipfsClient.cat(ipfsCID, {offset, length}));
         }
 
         callback({statusCode, headers, data});

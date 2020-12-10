@@ -134,7 +134,8 @@ You can select a file to upload from the main page by clicking the \'Choose File
         case "ipfs":
           if (IS_APP) {
             const url = new URL(__APP_FILE_SERVE_PREFIX__);
-            url.searchParams.set("ipfs", sourceUrl.slice("ipfs://".length));
+            const hash = sourceUrl.split("#", 1)[0];
+            url.searchParams.set("ipfs", hash.slice("ipfs://".length));
             source = {sourceUrl, loadUrl: url.href};
           }
           break;
