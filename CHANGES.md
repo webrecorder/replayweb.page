@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.3.4
+- Loading: Fix loading local files in App
+- Fidelity: Latest wabac.js
+
 v1.3.3
 - UI: Component customization improvements, update to latest wabac.js
 - Loading: Improvements for IPFS loading, fix loading with hashtag #filename= in Electron app
