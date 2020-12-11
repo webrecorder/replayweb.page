@@ -11,6 +11,9 @@ import { IPFSClient } from '@webrecorder/wabac/src/ipfs';
 
 import { PassThrough, Readable } from 'stream';
 
+import { autoUpdater } from "electron-updater";
+import log from "electron-log";
+
 import mime from 'mime-types';
 
 global.Headers = Headers;
@@ -158,7 +161,15 @@ class ElectronReplayApp
     });
   }
 
+  checkUpdates() {
+    autoUpdater.logger = log;
+    autoUpdater.logger.transports.file.level = 'info';
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+
   onAppReady() {
+    this.checkUpdates();
+
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
 
     app.on('web-contents-created', (event, contents) => {

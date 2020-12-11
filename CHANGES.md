@@ -3,6 +3,7 @@
 v1.3.4
 - Loading: Fix loading local files in App
 - Fidelity: Latest wabac.js
+- Autoupdate: Add initial support for auto-updating
 
 v1.3.3
 - UI: Component customization improvements, update to latest wabac.js

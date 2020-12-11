@@ -11,6 +11,8 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@webrecorder/wabac": "^2.3.6",
     "bulma": "^0.9.0",
+    "electron-log": "^4.3.0",
+    "electron-updater": "^4.3.5",
     "fetch-ndjson": "^1.1.0",
     "flexsearch": "^0.6.32",
     "ipfs-core": "^0.2.0",
@@ -88,7 +90,10 @@
     },
     "mac": {
       "category": "public.app-category.utilities",
-      "target": "dmg",
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
@@ -110,7 +115,7 @@
       ]
     },
     "win": {
-      "target": "portable",
+      "target": "nsis",
       "extraResources": [
         "plugins-win"
       ]
