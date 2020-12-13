@@ -51,6 +51,7 @@ class ReplayWebApp extends LitElement
       collPageUrl: { type: String },
       pageTitle: { type: String },
       pageReplay: { type: Boolean },
+      source: { type: String }
     }
   }
 
@@ -329,6 +330,13 @@ class ReplayWebApp extends LitElement
       } catch (e) {
         console.log(e);
       }
+    }
+
+    if (this.source) {
+      this.pageParams.set("source", this.source);
+      const url = new URL(window.location.href);
+      url.search = this.pageParams.toString();
+      window.history.replaceState({}, document.title, url.href);
     }
 
     this.sourceUrl = this.pageParams.get("source") || "";

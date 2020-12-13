@@ -216,5 +216,6 @@ async function main() {
   customElements.define("replay-web-page", Embed);
 }
 
-
 main();
+
+export { Embed };

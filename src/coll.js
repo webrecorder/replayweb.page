@@ -29,7 +29,7 @@ const RWP_SCHEME = "search://";
 
 
 // ===========================================================================
-class WrColl extends LitElement
+class Coll extends LitElement
 {
   constructor() {
     super();
@@ -432,7 +432,7 @@ class WrColl extends LitElement
       flex: auto;
     }
 
-    ${WrColl.replayBarStyles}
+    ${Coll.replayBarStyles}
     `);
   }
 
@@ -1115,6 +1115,6 @@ class WrColl extends LitElement
   }
 }
 
-customElements.define("wr-coll", WrColl);
+customElements.define("wr-coll", Coll);
 
-export { WrColl };
+export { Coll };

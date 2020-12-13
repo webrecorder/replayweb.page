@@ -12,7 +12,7 @@ import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
 
 
 // ===========================================================================
-class WrCollIndex extends LitElement
+class CollIndex extends LitElement
 {
   constructor() {
     super();
@@ -301,7 +301,7 @@ class WrCollIndex extends LitElement
 
 
 // ===========================================================================
-class WrCollInfo extends LitElement
+class CollInfo extends LitElement
 {
   constructor() {
     super();
@@ -443,7 +443,7 @@ class WrCollInfo extends LitElement
   }
 }
 
-customElements.define("wr-coll-info", WrCollInfo);
-customElements.define("wr-coll-index", WrCollIndex);
+customElements.define("wr-coll-info", CollInfo);
+customElements.define("wr-coll-index", CollIndex);
 
-export { WrCollIndex, WrCollInfo };
+export { CollIndex, CollInfo };

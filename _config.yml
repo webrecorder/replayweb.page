@@ -37,6 +37,7 @@ exclude:
   - build/*.js
   - build/*.plist
   - src/
+  - index.js
   - dist/
   - node_modules/
   - plugins-win/

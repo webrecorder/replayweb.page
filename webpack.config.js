@@ -19,7 +19,7 @@ const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.goo
 const BANNER_TEXT = "'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020, Webrecorder Software. Licensed under the Affero General Public License v3.'";
 
 // IPFS ipfs-core lib url
-const IPFS_CORE_URL = "https://cdn.jsdelivr.net/npm/ipfs-core@0.2.0/dist/index.min.js";
+const IPFS_CORE_URL = "https://cdn.jsdelivr.net/npm/ipfs-core@0.3.0/dist/index.min.js";
 
 
 const electronMainConfig = (env, argv) => {
