@@ -35,7 +35,7 @@ class ReplayWebApp extends LitElement
   }
 
   get homeUrl() {
-    return "/";
+    return window.location.pathname;
   }
 
   static get properties() {
