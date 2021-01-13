@@ -162,8 +162,9 @@ class ElectronReplayApp
   }
 
   checkUpdates() {
+    autoUpdater.channel = "alpha";
     autoUpdater.logger = log;
-    autoUpdater.logger.transports.file.level = 'info';
+    autoUpdater.logger.transports.file.level = "debug";
     autoUpdater.checkForUpdatesAndNotify();
   }
 

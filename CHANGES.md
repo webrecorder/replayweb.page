@@ -1,5 +1,12 @@
 ## CHANGES
 
+v1.3.6-alpha.0
+- Special build for testing auto-update functionality -- not for general use
+
+v1.3.5
+- Dependency update: Latest wabac.js / warcio / wombat
+- Electron App: Update to Chrome 88, fix for PDF rendering
+
 v1.3.4
 - Loading: Fix loading local files in App
 - Fidelity: Latest wabac.js
