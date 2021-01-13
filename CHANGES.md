@@ -1,7 +1,7 @@
 ## CHANGES
 
-v1.3.6-alpha.0
-- Special build for testing auto-update functionality -- not for general use
+v1.3.6
+- Switch back to Electron 11.2.0 / Chrome 87 to keep support for Flash plugin
 
 v1.3.5
 - Dependency update: Latest wabac.js / warcio / wombat
