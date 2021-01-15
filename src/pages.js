@@ -5,6 +5,7 @@ import { wrapCss, clickOnSpacebarPress } from './misc';
 import ndjson from 'fetch-ndjson';
 
 import FlexSearch from 'flexsearch';
+import prettyBytes from 'pretty-bytes';
 
 import { getTS, getPageDateTS } from './pageutils';
 
@@ -45,6 +46,9 @@ class Pages extends LitElement
     this.ts = "";
 
     this.editing = false;
+
+    this.toDeletePages = null;
+    this.toDeletePage = null;
   }
 
   static get sortKeys() {
@@ -91,7 +95,10 @@ class Pages extends LitElement
       url: { type: String },
       ts: { type: String },
 
-      editing: { type: Boolean }
+      editing: { type: Boolean },
+
+      toDeletePages: { type: Object },
+      toDeletePage: { type: Object }
     }
   }
 
@@ -557,7 +564,9 @@ class Pages extends LitElement
         <div class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "3": "2"}">Page List</div>
         ${this.renderPages()}
       </div>
-    </div>`;
+    </div>
+    ${this.renderDeleteModal()}
+    `;
   }
 
   renderDownloadMenu() {
@@ -620,8 +629,6 @@ class Pages extends LitElement
       <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ''}">Page Title</a>
     </div>
 
-
-
     <div class="is-hidden-tablet mobile-header">
       <div class="num-results" aria-live="polite" aria-atomic="true">${this.formatResults()}</div>
       <wr-sorter id="pages"
@@ -635,6 +642,25 @@ class Pages extends LitElement
       </wr-sorter>
     </div>
     `;
+  }
+
+  renderDeleteModal() {
+    if (!this.toDeletePages) {
+      return html``;
+    }
+
+    return html`
+    <wr-modal bgClass="has-background-grey-lighter" @modal-closed="${(e) => this.toDeletePages = this.toDeletePage = null}" title="Confirm Delete">
+      ${this.toDeletePage ? html`
+      <p>Are you sure you want to delete the page <b>${this.toDeletePage.title}</b>?
+      (Size: <b>${prettyBytes(this.toDeletePage.size)}</b>)</p>` : html`
+      <p>Are you sure you want to delete the <b>${this.toDeletePages.size}</b> selected pages?
+      `}
+      <p>This operation can not be undone.</p>
+
+      <button @click="${this.onDeletePages}"class="button is-danger">Delete</button>
+      <button @click="${(e) => this.toDeletePages = this.toDeletePage = null}" class="button">Cancel</button>
+    </wr-modal>`;
   }
 
   isCurrPage(page) {
@@ -673,8 +699,9 @@ class Pages extends LitElement
             .isCurrent="${this.isCurrPage(p)}"
             .isSidebar="${this.isSidebar}"
             .page="${p}"
+            pid="${p.id}"
             @sel-page="${this.onSelectToggle}"
-            @delete-page="${this.onDeletePage}"
+            @delete-page="${this.onDeleteConfirm}"
             replayPrefix="${this.collInfo.replayPrefix}"
             query="${this.query}"
             class="${this.isSidebar ? 'sidebar' : ''}"
@@ -776,21 +803,50 @@ class Pages extends LitElement
     window.location.href = `${this.collInfo.apiPrefix}/dl?` + params.toString();
   }
 
-  async onDeletePage(event) {
+  onDeleteConfirm(event) {
     const page = event.currentTarget.page;
-    const resp = await fetch(`${this.collInfo.apiPrefix}/page/${page.id}`, {method: 'DELETE'});
-    const json = await resp.json();
+    // if page is one of the selected, delete entire selection
+    if (this.selectedPages.has(page.id)) {
+      this.toDeletePages = this.selectedPages;
+      this.toDeletePage = null;
+    } else {
+    // else, delete just the page
+      this.toDeletePages = [page.id];
+      this.toDeletePage = page;
+    }
+  }
 
-    const inx = this.collInfo.pages.indexOf(page);
-    if (inx < 0) {
-      return;
+  async onDeletePages() {
+    const pageMap = {};
+
+    for (const id of this.toDeletePages) {
+      const p = this.renderRoot.querySelector(`wr-page-entry[pid="${id}"]`);
+      if (p) {
+        p.deleting = true;
+        pageMap[id] = p;
+      }
     }
 
-    //todo: full update?
-    this.collInfo.pages.splice(inx, 1);
-    //if (!this.query){
-    //  this.filteredPages = [...this.collInfo.pages];
-    //}
+    for (const id of this.toDeletePages) {
+      const resp = await fetch(`${this.collInfo.apiPrefix}/page/${id}`, {method: 'DELETE'});
+      const json = await resp.json();
+
+      const page = pageMap[id];
+
+      if (!page) {
+        continue;
+      }
+
+      const inx = this.collInfo.pages.indexOf(page);
+      if (inx < 0) {
+        continue;
+      }
+  
+      this.collInfo.pages.splice(inx, 1);
+    }
+
+    this.toDeletePages = null;
+    this.toDeletePage = null;
 
     this.updateTextSearch();
     this.requestUpdate();

@@ -314,8 +314,7 @@ class PageEntry extends LitElement
   }
 
   onSendDeletePage(event) {
-    const page = this.page.id;
-    this.deleting = true;
+    const page = this.page;
     this.dispatchEvent(new CustomEvent("delete-page", {detail: {page}}));
   }
 

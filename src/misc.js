@@ -125,8 +125,58 @@ class AnimLogo extends FaIcon
   }
 }
 
+class WrModal extends LitElement
+{
+  constructor() {
+    super();
+    this.title = "";
+    this.bgClass = "";
+  }
+
+  static get properties() {
+    return {
+      title: { type: String },
+      bgClass: { type: String }
+    }
+  }
+
+  static get styles() {
+    return wrapCss(css`
+    .modal-background {
+      background-color: rgba(10, 10, 10, 0.50);
+    }
+
+    .modal-card-head {
+      background-color: var(--background, #97a1ff);
+    }
+    `);
+  }
+
+  render() {
+    return html`
+    <div class="modal is-active">
+      <div class="modal-background" @click="${this.onClose}"></div>
+      <div class="modal-card">
+        <header class="modal-card-head ${this.bgClass}">
+          <p class="modal-card-title is-3">${this.title}</p>
+          <button class="delete" aria-label="close" @click="${this.onClose}"></button>
+        </header>
+        <section class="modal-card-body">
+          <slot></slot>
+        </section>
+      </div>
+    </div>`;
+  }
+
+  onClose() {
+    this.dispatchEvent(new CustomEvent("modal-closed"));
+  }
+}
+
 customElements.define("fa-icon",  FaIcon);
 customElements.define("wr-anim-logo", AnimLogo);
 
-export { wrapCss, IS_APP, clickOnSpacebarPress, rwpLogo, FaIcon, AnimLogo,
+customElements.define("wr-modal",  WrModal);
+
+export { wrapCss, IS_APP, clickOnSpacebarPress, rwpLogo, FaIcon, AnimLogo, WrModal,
          LitElement, html, css, unsafeCSS, unsafeSVG };
