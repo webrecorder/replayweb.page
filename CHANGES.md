@@ -1,5 +1,14 @@
 ## CHANGES
 
+v1.3.8
+- Library: Add <wr-modal> to simplify modal creation.
+- Library: UI: Add confirmation for page-deletion and multi page deletion when in editing mode (currently only used in ArchiveWeb.page)
+- Fidelity: Fixes for youtube and vimeo replay fidelity
+- Dependencies: Update to wabac.js 2.5.5, wombat 3.0.4
+
+v1.3.7
+- Library: Add missing index.js to support loading 'replaywebpage' package
+
 v1.3.6
 - Switch back to Electron 11.2.0 / Chrome 87 to keep support for Flash plugin
 
