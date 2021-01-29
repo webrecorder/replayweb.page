@@ -715,8 +715,8 @@
     "@xtuc/long" "4.2.2"
 
 "@webrecorder/wabac@github:webrecorder/wabac.js":
-  version "2.5.5"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/c0ae275683a0dcd72dc5183d7cd7d3d18b8c4be4"
+  version "2.5.6"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/e0b7bf42fd69d5e3349b887220aec50d3972a58d"
   dependencies:
     "@webrecorder/wombat" "^3.0.4"
     brotli "github:foliojs/brotli.js"
