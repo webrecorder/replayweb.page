@@ -22,6 +22,8 @@ class Loader extends LitElement
     this.totalSize = 0;
 
     this.tryFileHandle = !!window.showOpenFilePicker;
+
+    this.fileHandle = null;
   }
 
   static get properties() {
@@ -60,8 +62,12 @@ class Loader extends LitElement
             if (event.data.error) {
               this.error = event.data.error;
               this.state = "errored";
+              this.fileHandle = event.data.fileHandle;
               if (this.error === "missing_local_file") {
                 this.tryFileHandle = false;
+              } else if (this.error === "permission_needed" && event.data.fileHandle) {
+                this.state = "permission_needed";
+                break;
               }
             }
             if (event.data.currentSize && event.data.totalSize) {
@@ -281,10 +287,25 @@ You can select a file to upload from the main page by clicking the \'Choose File
           <a href="/" class="button is-warning">Back</a>`}
           </div>`;
 
+      case "permission_needed":
+        return html`
+        <div class="has-text-left">
+          <div class="">Permission is needed to reload the archive file. (Click <i>Cancel</i> to cancel loading this archive.)</div>
+          <button @click="${this.onAskPermission}" class="button is-primary">Show Permission</button>
+          <a href="/" class="button is-danger">Cancel</a>
+        </div>`;
+
       case "waiting":
       default:
         return html`<progress class="progress is-primary is-large" style="max-width: 400px"/>`;
 
+    }
+  }
+
+  async onAskPermission() {
+    const result = await this.fileHandle.requestPermission({mode: "read"});
+    if (result === "granted") {
+      this.doLoad();
     }
   }
 }

@@ -716,7 +716,7 @@
 
 "@webrecorder/wabac@github:webrecorder/wabac.js":
   version "2.5.6"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/e0b7bf42fd69d5e3349b887220aec50d3972a58d"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/37b46a8de15660e4af307b249136121cab355ca7"
   dependencies:
     "@webrecorder/wombat" "^3.0.4"
     brotli "github:foliojs/brotli.js"

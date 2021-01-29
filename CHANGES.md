@@ -1,6 +1,7 @@
 ## CHANGES
 
 v1.3.8
+- UI: Native files: Support asking permission when doing a full reload of a local file.
 - Library: Add WrModal UI element to simplify modal creation.
 - Library: UI: Add confirmation for page-deletion and multi page deletion when in editing mode (currently only used in ArchiveWeb.page)
 - Fidelity: Fixes for youtube and vimeo replay fidelity
