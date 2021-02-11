@@ -105,6 +105,14 @@ class PageEntry extends LitElement
         background-color: rgb(241, 70, 104);
       }
 
+      .is-loading {
+        line-height: 1.5em;
+        height: 1.5em;
+        border: 0px;
+        background-color: transparent !important;
+        width: auto;
+      }
+
       @media screen and (max-width: 768px) {
         ${PageEntry.sidebarStyles()}
       }
