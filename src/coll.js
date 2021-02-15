@@ -146,7 +146,7 @@ class Coll extends LitElement
     }
     if (changedProperties.has("editable")) {
       if (this.editable) {
-        this._pollColl = setInterval(() => this.doUpdateInfo(), 10000);
+        this._pollColl = setInterval(() => this.doUpdateInfo(true), 10000);
       } else if (this._pollColl) {
         clearInterval(this._pollColl);
       }
@@ -230,7 +230,13 @@ class Coll extends LitElement
     }
   }
 
-  async doUpdateInfo() {
+  async doUpdateInfo(autorefresh = false)
+  {
+    // if auto-refresh, and replay and no sidebar, than skip update
+    if (autorefresh && this.tabData.url && !this.showSidebar) {
+      return;
+    }
+
     let coll = this.loadInfo && this.loadInfo.customColl;
 
     if (!coll) {

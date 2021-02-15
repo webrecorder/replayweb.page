@@ -614,7 +614,7 @@ class Pages extends LitElement
 
   renderPageHeader() {
     return html`
-    ${this.editable && this.filteredPages.length ? html`
+    ${!this.isSidebar && this.editable && this.filteredPages.length ? html`
     <div class="check-select">
       <label class="checkbox">
       <input @change=${this.onSelectAll} type="checkbox" .checked="${this.allSelected}">

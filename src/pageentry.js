@@ -182,8 +182,10 @@ class PageEntry extends LitElement
 
     const hasSize = typeof(p.size) === "number";
 
+    const editable = this.editable && !this.isSidebar;
+
     return html`
-    ${this.editable ? html`
+    ${editable ? html`
     <div class="check-select">
       <label class="checkbox">
       <input @change=${this.onSendSelToggle} type="checkbox" .checked="${this.selected}">
@@ -229,7 +231,7 @@ class PageEntry extends LitElement
       </div>
     </div>
 
-    ${this.editable ? html`
+    ${editable ? html`
       ${!this.deleting ? html`
       <button @click="${this.onSendDeletePage}" class="delete"></button>` : html`
       <button class="button delete is-loading is-static"></button>

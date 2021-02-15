@@ -87,7 +87,7 @@ class ElectronReplayApp
     return "index.html";
   }
 
-  init() {
+  init(includePlugins = false) {
     // Single instance check
     const gotTheLock = app.requestSingleInstanceLock();
 
@@ -101,30 +101,35 @@ class ElectronReplayApp
       });
     }
 
-    switch (process.platform) {
-      case 'win32':
-        this.pluginPath = path.join(this.projPath, "plugins-win", `pepflashplayer-x86${process.arch === 'x64' ? '_64' : ''}.dll`);
-        break;
-  
-      case 'darwin':
-        this.pluginPath = path.join(this.projPath, "plugins-mac", "PepperFlashPlayer.plugin");
-        break;
-  
-      case 'linux':
-        this.pluginPath = path.join(this.projPath, "plugins-mac", "libpepflashplayer.so");
-        break;
-  
-      default:
-        console.log('platform unsupported: ' + process.platform);
-        break;
-    }
+    if (includePlugins) {
+      switch (process.platform) {
+        case 'win32':
+          this.pluginPath = path.join(this.projPath, "plugins-win", `pepflashplayer-x86${process.arch === 'x64' ? '_64' : ''}.dll`);
+          break;
+    
+        case 'darwin':
+          this.pluginPath = path.join(this.projPath, "plugins-mac", "PepperFlashPlayer.plugin");
+          break;
+    
+        case 'linux':
+          this.pluginPath = path.join(this.projPath, "plugins-mac", "libpepflashplayer.so");
+          break;
+    
+        default:
+          console.log('platform unsupported: ' + process.platform);
+          break;
+      }
 
-    app.commandLine.appendSwitch('ppapi-flash-path', this.pluginPath);
+      app.commandLine.appendSwitch('ppapi-flash-path', this.pluginPath);
+    }
 
     console.log('app path', this.appPath);
     console.log('dir name', __dirname);
     console.log('proj path', this.projPath);
-    console.log('plugin path', this.pluginPath);
+
+    if (includePlugins) {
+      console.log('plugin path', this.pluginPath);
+    }
 
     console.log('app data', app.getPath('appData'));
     console.log('user data', app.getPath('userData'));

@@ -8,4 +8,4 @@ const replayApp = new ElectronReplayApp({
   profileName: "replaywebpage"
 });
 
-replayApp.init();
+replayApp.init(true);
