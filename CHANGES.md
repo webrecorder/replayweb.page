@@ -1,7 +1,7 @@
 ## CHANGES
 
 v1.3.9 (tip)
-- Fidelity: Upgrade to wabac.js 2.6.0-beta.1, wombat 3.1.0: improved POST request rewriting for multipart/form-data, Tableau dashboard fidelity
+- Fidelity: Upgrade to wabac.js 2.6.0, wombat 3.1.1: improved POST request rewriting for multipart/form-data, Tableau dashboard fidelity
 - UI: editable mode: style fix on page delete spinner, don't show editing options on sidebar
 
 v1.3.8
