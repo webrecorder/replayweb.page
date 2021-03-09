@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.3.10 (tip)
+- Loading: Improved loading of video, especially on Safari, cache range requests via loading
+- Fidelity: Fixed replay of pages with Javascript modules.
+- Dependencies: wabac.js 2.6.2, wombat 3.1.2, warcio 1.4.2
+
 v1.3.9
 - Fidelity: Upgrade to wabac.js 2.6.1, wombat 3.1.1: improved POST request rewriting for multipart/form-data, Tableau dashboard fidelity
 - UI: editable mode: style fix on page delete spinner, don't show editing options on sidebar
