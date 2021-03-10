@@ -1476,8 +1476,8 @@ const It=new WeakMap,Rt=v(e=>t=>{if(!(t instanceof D))throw new Error("unsafeHTM
           <div class="has-text-left">
           <div class="error has-text-danger">${this.error}</div>
           <div>
-          ${this.embed?q`
-          <a class="button is-warning" @click=${e=>window.parent.location.reload()}>Try Again</a>`:q`
+          <a class="button is-warning" @click=${e=>window.parent.location.reload()}>Try Again</a>
+          ${this.embed?q``:q`
           <a href="/" class="button is-warning">Back</a>`}
           </div>`;case"permission_needed":return q`
         <div class="has-text-left">

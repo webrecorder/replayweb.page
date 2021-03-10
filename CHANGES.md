@@ -2,8 +2,10 @@
 
 v1.3.10 (tip)
 - Loading: Improved loading of video, especially on Safari, cache range requests via loading
+- Loading: Improved loading stability from service worker waiting for loading event to finish!
+- UI: Allow retry on loading errors even in non-embed mode.
 - Fidelity: Fixed replay of pages with Javascript modules.
-- Dependencies: wabac.js 2.6.2, wombat 3.1.2, warcio 1.4.2
+- Dependencies: wabac.js 2.6.3, wombat 3.1.2, warcio 1.4.2
 
 v1.3.9
 - Fidelity: Upgrade to wabac.js 2.6.1, wombat 3.1.1: improved POST request rewriting for multipart/form-data, Tableau dashboard fidelity

@@ -282,8 +282,8 @@ You can select a file to upload from the main page by clicking the \'Choose File
           <div class="has-text-left">
           <div class="error has-text-danger">${this.error}</div>
           <div>
-          ${this.embed ? html`
-          <a class="button is-warning" @click=${(e) => window.parent.location.reload()}>Try Again</a>` : html`
+          <a class="button is-warning" @click=${(e) => window.parent.location.reload()}>Try Again</a>
+          ${this.embed ? html`` : html`
           <a href="/" class="button is-warning">Back</a>`}
           </div>`;
 
