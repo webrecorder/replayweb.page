@@ -9,7 +9,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@webrecorder/wabac": "^2.6.3",
+    "@webrecorder/wabac": "^2.6.4",
     "bulma": "^0.9.0",
     "electron-log": "^4.3.0",
     "electron-updater": "^4.3.5",
