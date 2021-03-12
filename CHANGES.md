@@ -1,12 +1,12 @@
 ## CHANGES
 
-v1.3.10 (tip)
+v1.3.10
 - Loading: Improved loading of video, especially on Safari, cache range requests via loading
 - Loading: Improved loading stability from service worker waiting for loading event to finish!
 - UI: Allow retry on loading errors even in non-embed mode.
 - Fidelity: Fixed replay of pages with Javascript modules.
 - Fidelity: Replay non-HTTP only cookies set via 'Set-Cookie' header, improving fidelity for sites that require cookies set this way.
-- Dependencies: wabac.js 2.6.4, wombat 3.1.2, warcio 1.4.2
+- Dependencies: wabac.js 2.6.4, wombat 3.1.2, warcio 1.4.2, Electron 11.3.0
 
 v1.3.9
 - Fidelity: Upgrade to wabac.js 2.6.1, wombat 3.1.1: improved POST request rewriting for multipart/form-data, Tableau dashboard fidelity
