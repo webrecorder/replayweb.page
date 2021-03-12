@@ -13,7 +13,7 @@ class Embed extends LitElement
 {
   constructor() {
     super();
-    this.replaybase = window.location.origin + "/replay/";
+    this.replaybase = "./replay/";
     this.swName = __SW_NAME__;
     this.view = "replay";
     this.ts = "";
