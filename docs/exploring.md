@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Exploring Web Archives
-nav_order: 2
-parent: About
+nav_order: 3
+parent: Loading Web Archives
 permalink: /docs/exploring
 ---
 
@@ -63,4 +63,4 @@ ReplayWeb.page will soon load existing extracted full-text data as well.
 
 
 <hr>
-Next: [Sharing Links to Archived Pages](sharing.md)
+Next: [Sharing Links to Archived Pages](/docs/sharing)
