@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.3.11
+- Loading: Fix regression in indexing of WARCs, including ignoring metadata records that were accidentally being indexed.
+- Loading: Add periodic ping when loading to avoid serviceworker shutdown in Firefox.
+- UI: On load failure, only add 'try again' option when reasonable.
+- Dependencies: wabac 2.6.5
+
 v1.3.10
 - Loading: Improved loading of video, especially on Safari, cache range requests via loading
 - Loading: Improved loading stability from service worker waiting for loading event to finish!

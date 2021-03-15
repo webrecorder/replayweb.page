@@ -24,6 +24,10 @@ class Loader extends LitElement
     this.tryFileHandle = !!window.showOpenFilePicker;
 
     this.fileHandle = null;
+
+    this.errorAllowRetry = false;
+
+    this.pingInterval = "";
   }
 
   static get properties() {
@@ -40,7 +44,8 @@ class Loader extends LitElement
       status: { type: String },
       coll: { type: String },
       embed: { type: String },
-      tryFileHandle: { type: Boolean }
+      tryFileHandle: { type: Boolean },
+      errorAllowRetry: { type: Boolean }
     }
   }
 
@@ -62,6 +67,7 @@ class Loader extends LitElement
             if (event.data.error) {
               this.error = event.data.error;
               this.state = "errored";
+              this.errorAllowRetry = true;
               this.fileHandle = event.data.fileHandle;
               if (this.error === "missing_local_file") {
                 this.tryFileHandle = false;
@@ -84,6 +90,9 @@ class Loader extends LitElement
             }
             this.progress = this.total;
             this.percent = 100;
+            if (this.pingInterval) {
+              clearInterval(this.pingInterval);
+            }
             this.dispatchEvent(new CustomEvent("coll-loaded", {detail: event.data}));
           }
           break;
@@ -106,6 +115,7 @@ Please try loading this page from an HTTPS URL`;
       } else {
         this.error = "Sorry, this browser is not supported. Please try a different browser\n(If you're using Firefox, try without Private Mode)";
       }
+      this.errorAllowRetry = false;
       return;
     }
 
@@ -131,6 +141,7 @@ Please try loading this page from an HTTPS URL`;
             this.error = `\
 File URLs can not be entered directly or shared.
 You can select a file to upload from the main page by clicking the \'Choose File...\' button.`;
+            this.errorAllowRetry = false;
             return;
           }
 
@@ -163,12 +174,18 @@ You can select a file to upload from the main page by clicking the \'Choose File
     }
 
     if (!navigator.serviceWorker.controller) {
-      navigator.serviceWorker.addEventListener("controllerchange", (event) => {
-        navigator.serviceWorker.controller.postMessage(msg);
+      await new Promise((resolve) => {
+        navigator.serviceWorker.addEventListener("controllerchange", () => resolve);
       });
-    } else {
-      navigator.serviceWorker.controller.postMessage(msg);
     }
+
+    navigator.serviceWorker.controller.postMessage(msg);
+
+    // ping service worker with messages to avoid shutdown while loading
+    // (mostly for Firefox)
+    this.pingInterval = setInterval(() => {
+      navigator.serviceWorker.controller.postMessage({"msg_type": "ping"});
+    }, 15000);
   }
 
   googledriveInit() {
@@ -188,6 +205,9 @@ You can select a file to upload from the main page by clicking the \'Choose File
   onCancel() {
     if (navigator.serviceWorker && navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage({"msg_type": "cancelLoad", "name": this.coll});
+      if (this.pingInterval) {
+        clearInterval(this.pingInterval);
+      }
     }
   }
 
@@ -282,7 +302,8 @@ You can select a file to upload from the main page by clicking the \'Choose File
           <div class="has-text-left">
           <div class="error has-text-danger">${this.error}</div>
           <div>
-          <a class="button is-warning" @click=${(e) => window.parent.location.reload()}>Try Again</a>
+          ${this.errorAllowRetry ? html`
+          <a class="button is-warning" @click=${(e) => window.parent.location.reload()}>Try Again</a>` : ``}
           ${this.embed ? html`` : html`
           <a href="/" class="button is-warning">Back</a>`}
           </div>`;
