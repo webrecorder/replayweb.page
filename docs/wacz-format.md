@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 'Web Archive Collection Zipped (WACZ) Format'
+title: WACZ Format
 nav_order: 1
 permalink: /docs/wacz-format
 parent: Reference
