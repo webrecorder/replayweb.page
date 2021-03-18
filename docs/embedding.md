@@ -95,12 +95,13 @@ and `https://replayweb.page/sw.js` as these will be updated frequently and make 
 
 ## Common Issues
 
-Below are some possible issues that you may encounter when embedding and possible workarounds:
+Below are some possible issues that you may encounter when embedding and possible workarounds.
 
 
-### Embed is too small
+### Embed is too small / doesn't fill page.
 
-If the `<replay-web-page>` tag is the only element on a page, and you want it to use the full window width and height, you may add:
+If the `<replay-web-page>` tag is the only element on a page, and you want it to use the full window width and height, adding the following
+style should fix the issue:
 
 ```html
 <style>
