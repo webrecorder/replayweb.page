@@ -25,8 +25,8 @@ The following is a list of currently supported URL schemes and details below:
 | `file://`        | <span class="d-inline-block p-2 mr-1 v-align-middle bg-green-000"> Supported   |
 | `s3://`          | <span class="d-inline-block p-2 mr-1 v-align-middle bg-green-000"> Supported   |
 | `googledrive://` | <span class="d-inline-block p-2 mr-1 v-align-middle bg-green-000"> Supported   |
-| `ipfs://`        | <span class="d-inline-block p-2 mr-1 v-align-middle bg-purple-000"> Planned    |
-| `hyper://`       | <span class="d-inline-block p-2 mr-1 v-align-middle text-grey-lt-000 bg-purple-000"> Planned     |
+| `ipfs://`        | <span class="d-inline-block p-2 mr-1 v-align-middle bg-purple-000"> Supported  |
+| `hyper://`       | <span class="d-inline-block p-2 mr-1 v-align-middle bg-purple-000"> Planned    |
 
 
 ### HTTP and HTTPS

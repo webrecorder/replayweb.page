@@ -17,10 +17,10 @@ This is where replayweb.page can be helpful for you! You can view your web archi
 
 Currently the easiest way to view your WARC and/or WACZ files is online through <a href="https://replayweb.page/" target="_blank">replayweb.page</a>. You can load web archives locally from your computer or from other remote web archives. Check out [Online Use](/docs/loading_online) for more information how to load your web archives.
 
-<img alt="GIF of uploading a WACZ file into replayweb.page" src="/assets/replaywebpage-online.gif">
+<img alt="GIF of uploading a WACZ file into replayweb.page" src="/docs/assets/replaywebpage-online.gif">
 
 ## <a href="/docs/loading_offline">Offline Use</a> 
 You can run replayweb.page on your computer by running it locally. And then you can load web archives the same way you would online. Check out [Offline Use](/docs/loading_offline) for more information how to load your web archives - offline.  
 
-<img alt="GIF of uploading a WACZ file into replayweb.page running off of localhost (offline)" src="/assets/replaywebpage-offline.gif">
+<img alt="GIF of uploading a WACZ file into replayweb.page running off of localhost (offline)" src="/docs/assets/replaywebpage-offline.gif">
 

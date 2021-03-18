@@ -53,7 +53,7 @@ To do this, on the ReplayWeb.page site, you might have noticed a "new window ico
       </p>
   </details>
 
-<img alt="screenshot of replayweb.page (offline)" src="/assets/replaywebpage-pwa.png">
+<img alt="screenshot of replayweb.page (offline)" src="/docs/assets/replaywebpage-pwa.png">
 
 
 
@@ -83,7 +83,7 @@ When using [https://replayweb.page](https://replayweb.page), you may be asked to
       </p>
   </details>
 
-  <img alt="screenshot of replayweb.page (offline)" src="/assets/replaywebpage-releases.png">
+  <img alt="screenshot of replayweb.page (offline)" src="/docs/assets/replaywebpage-releases.png">
 
 <hr>
 Once an archive has successfully loaded, you will be redirected to the archive view from where you can explore the archive.

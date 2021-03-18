@@ -57,9 +57,7 @@ The contains option will not find any URLs that have not yet been loaded.
 
 The Page view search includes page titles, urls and page full text search, if available.
 
-ReplayWeb.page will currently generate full ext search data from WARC pages automatically.
-
-ReplayWeb.page will soon load existing extracted full-text data as well.
+ReplayWeb.page will load pre-generated full-text search data pages when loading WACZ files, and will also attempt to generate full-text index from HTML pages when loading WARC files.
 
 
 <hr>

@@ -10,7 +10,7 @@ permalink: /docs/loading_online
 
 Using [https://replayweb.page](https://replayweb.page), you can select a web archive file from a local file or enter their unique remote URL directly to load into the site.
 
-<img alt="screenshot of replayweb.page (online)" src="/assets/replaywebpage-online.png">
+<img alt="screenshot of replayweb.page (online)" src="/docs/assets/replaywebpage-online.png">
 <hr> 
 
 ## Browsing Web Archives via the ReplayWeb.page
@@ -33,7 +33,7 @@ this URL is not shareable.
 {:  .fs-3 .pad .bg-grey-lt-100}
 This behavior is similar to how [Webrecorder Player](https://github.com/webrecorder/webrecorder-player) worked, but happens entirely in the browser. <br>The [ReplayWeb.page App](https://github.com/webrecorder/replayweb.page/releases) is also an option for [opening local files when offline](offline#replaywebpage-as-standalone-desktop-electron-app)
 
-<img alt="screenshot of replayweb.page (online)" src="/assets/replaywebpage-online-local.png">
+<img alt="screenshot of replayweb.page (online)" src="/docs/assets/replaywebpage-online-local.png">
 
 <hr> 
 ### Loading Remote Web Archives
@@ -70,7 +70,7 @@ You would first need to integrate replayReplayWeb.page, but it's a fairly easy i
 * Click install and Google will walk you through the steps of installation
 * Once installed, Google will confirm the install and where to find replayweb.page in your drive.
 
-<img alt="screenshot of replayweb.page google drive add-on" src="/assets/replaywebpage-googledrive-install.gif">
+<img alt="screenshot of replayweb.page google drive add-on" src="/docs/assets/replaywebpage-googledrive-install.gif">
 
 
 
