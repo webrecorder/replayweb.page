@@ -62,7 +62,7 @@ The `<replay-web-page>` tag is a web component and supports a number of addition
 
 | Attribute    | Description      |
 |:-------------|:-----------------|
-| `source`     | Source URL for the archive file. It should be a URL in one of the [supported formats](/docs/formats) loaded from one of the [support locations](/docs/locations) and is required. |
+| `source`     | Source URL for the archive file. It should be a URL in one of the [supported formats](/docs/formats) loaded from one of the [support locations](/docs/locations) and is required. If it is a relative URL, it will be evaluated relative to `replayBase`. |
 | `url`        | The starting URL to load from the archive. If omitted, will start with the page list or URL search view. |
 | `ts`         | The timestamp of the starting URL to load. If omitted, the latest available version is used. |
 | `deepLink`   | (`true` / `false`) if set to true, allow 'deep linking' to exact pages in the embed, besides the starting URL. |

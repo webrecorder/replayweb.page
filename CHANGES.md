@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.3.12
+- Loading: Fix bug with pages from WACZ files showing loading time, instead of actual timestamp.
+- Loading: WACZ loading works efficiently even when HEAD method is not supported.
+- Documentation: Updated Documentation with new images, troubleshooting and updated embed guide.
+- Dependencies: wabac 2.6.6
+
 v1.3.11
 - Loading: Fix regression in indexing of WARCs, including ignoring metadata records that were accidentally being indexed.
 - Loading: Add periodic ping when loading to avoid serviceworker shutdown in Firefox.
