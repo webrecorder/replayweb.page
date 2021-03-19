@@ -63,7 +63,7 @@ The `<replay-web-page>` tag is a web component and supports a number of addition
 
 | Attribute    | Description      |
 |:-------------|:-----------------|
-| `source`     | Source URL for the archive file. It should be a URL in one of the [supported formats](/docs/formats) loaded from one of the [support locations](/docs/locations) and is required. If it is a relative URL, it will be evaluated relative to `replayBase`. |
+| `source`     | Source URL for the archive file. It should be a URL in one of the [supported formats](/docs/formats) loaded from one of the [support locations](/docs/locations) and is required. |
 | `url`        | The starting URL to load from the archive. If omitted, will start with the page list or URL search view. |
 | `ts`         | The timestamp of the starting URL to load. If omitted, the latest available version is used. |
 | `deepLink`   | (`true` / `false`) if set to true, allow 'deep linking' to exact pages in the embed, besides the starting URL. |
@@ -75,24 +75,27 @@ The `<replay-web-page>` tag is a web component and supports a number of addition
 
 ### Versioning
 
-Note that the above example uses the paths as, which is a CDN for Javascript packages:
+Note that the above example uses the paths as, which is a CDN for Javascript packages at a specific version:
 
 - `https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.version }}/ui.js`
 - `https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.version }}/sw.js`
 
-Another alternative using a different would be:
-
-- `https://unpkg.com/replaywebpage@{{ site.version }}/ui.js`
-- `https://unpkg.com/replaywebpage@{{ site.version }}/sw.js`
-
 These URLs point to a specific version of ReplayWeb.page software released on NPM, eg. `{{ site.version }}`, meaning that your replay should stay stable, even if ReplayWeb.page is updated.
 
-You can choose another of ReplayWeb.page (or even try different versions) to ensure that you have the best available replay.
+Although ReplayWeb.page strives to remain backwards compatible, this addresses any potential issue of older embeds breaking when the replay system is updated.
 
-This addresses the potential issue of older sites breaking when web archive replay software is updated.
+You can also use the latest stable release by omitting the version, and the URL will automatically load the latest published release:
 
-For production use, it is advised against linking to the latest version, eg. `https://replayweb.page/ui.js`
-and `https://replayweb.page/sw.js` as these will be updated frequently and make break your embed.
+- `https://cdn.jsdelivr.net/npm/replaywebpage/ui.js`
+- `https://cdn.jsdelivr.net/npm/replaywebpage/sw.js`
+
+This is not recommended for full production use as this is more likely to break in case there is a breaking change.
+
+For testing the very latest, it is possible to simply link to replayweb.page itself, eg. `https://replayweb.page/ui.js`
+and `https://replayweb.page/sw.js` but these are updated the most frequently and more likely to break.
+
+For production use, it is recommended to use a fixed version and explicitly upgrade as necessary.
+
 
 ## Common Issues
 

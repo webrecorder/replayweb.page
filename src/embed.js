@@ -121,8 +121,10 @@ class Embed extends LitElement
 
       this.embed = this.embed || "default";
 
+      const source = new URL(this.source, document.baseURI);
+
       this.paramString = new URLSearchParams({
-        source: this.source,
+        source,
         customColl: this.coll,
         config: this.config,
         basePageUrl: window.location.href.split("#")[0],
