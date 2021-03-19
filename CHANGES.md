@@ -3,7 +3,8 @@
 v1.3.12
 - Loading: Fix bug with pages from WACZ files showing loading time, instead of actual timestamp.
 - Loading: WACZ loading works efficiently even when HEAD method is not supported.
-- Documentation: Updated Documentation with new images, troubleshooting and updated embed guide.
+- Embeds: Resolve embed source to current page instead of to replayBase
+- Documentation: Updated Documentation with new images, troubleshooting and updated embed guide with reference and CORS help.
 - Dependencies: wabac 2.6.6
 
 v1.3.11
