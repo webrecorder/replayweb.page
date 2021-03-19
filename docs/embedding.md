@@ -54,6 +54,7 @@ eg.  `https://my-site.example.com/warcs/my-warc-file.warc`.
 
 {:  .fs-3 .pad .bg-grey-lt-100}
 If the file is loaded from a different origin, your site must have CORS access to download the web archive.
+<br>See [CORS restrictions](#cors-restrictions) below for more info.
 
 
 ### Embedding Options
@@ -120,7 +121,7 @@ the site hosting the file needs to 'allow' the website to load the file using sp
 
 If you are hosting from S3 or S3-compatible service, here is a potential CORS bucket configuration that should work.
 
-Replace `https://myarchive.example.com/` with the server (origin) of the URL where the `<replay-web-page>` embed is hosted.
+Replace `https://myarchive.example.com` with the server (origin) of the URL where the `<replay-web-page>` embed is hosted.
 
 ```xml
 <CORSConfiguration
