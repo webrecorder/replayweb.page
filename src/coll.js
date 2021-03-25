@@ -1,28 +1,28 @@
-import { LitElement, html, css } from 'lit-element';
-import { wrapCss, rwpLogo, IS_APP, clickOnSpacebarPress } from './misc';
+import { LitElement, html, css } from "lit-element";
+import { wrapCss, rwpLogo, IS_APP, VERSION, clickOnSpacebarPress, apiPrefix, replayPrefix } from "./misc";
 
-import { sourceToId, tsToDate, getPageDateTS } from './pageutils';
+import { sourceToId, tsToDate, getPageDateTS } from "./pageutils";
 
-import fasBook from '@fortawesome/fontawesome-free/svgs/solid/book.svg';
+import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 
-import farListAlt from '@fortawesome/fontawesome-free/svgs/regular/list-alt.svg';
-import farResources from '@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg';
-import farPages from '@fortawesome/fontawesome-free/svgs/regular/file-image.svg';
-import fasInfoIcon from '@fortawesome/fontawesome-free/svgs/solid/info-circle.svg';
-import fasSync from '@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg';
+import farListAlt from "@fortawesome/fontawesome-free/svgs/regular/list-alt.svg";
+import farResources from "@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg";
+import farPages from "@fortawesome/fontawesome-free/svgs/regular/file-image.svg";
+import fasInfoIcon from "@fortawesome/fontawesome-free/svgs/solid/info-circle.svg";
+import fasSync from "@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg";
 
-import fasRefresh from '@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg';
-import fasFullscreen from '@fortawesome/fontawesome-free/svgs/solid/desktop.svg';
-import fasUnfullscreen from '@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg';
+import fasRefresh from "@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg";
+import fasFullscreen from "@fortawesome/fontawesome-free/svgs/solid/desktop.svg";
+import fasUnfullscreen from "@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg";
 
-import fasLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
-import fasRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
-import fasMenuV from '@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg';
+import fasLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
+import fasRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
+import fasMenuV from "@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg";
 
-import fasAngleLeft from '@fortawesome/fontawesome-free/svgs/solid/angle-left.svg';
-import fasAngleRight from '@fortawesome/fontawesome-free/svgs/solid/angle-right.svg';
+import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.svg";
+import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
 
-import Split from 'split.js';
+import Split from "split.js";
 
 
 const RWP_SCHEME = "search://";
@@ -36,11 +36,6 @@ class Coll extends LitElement
     this.sourceUrl = null;
     this.inited = false;
     this.isLoading = false;
-
-    this.baseApiPrefix = "./wabac/api";
-    this.baseReplayPrefix = "./wabac";
-    this.apiPrefix = "";
-    this.replayPrefix = "";
 
     this.coll = "";
 
@@ -61,7 +56,7 @@ class Coll extends LitElement
       "story": "Story",
       "resources": "URLs",
       "info": "Archive Info",
-    }
+    };
 
     this.menuActive = false;
 
@@ -69,7 +64,7 @@ class Coll extends LitElement
 
     this.editable = false;
 
-    this.showSidebar = localStorage.getItem(`pages:showSidebar`) === "1";
+    this.showSidebar = localStorage.getItem("pages:showSidebar") === "1";
     this.splitter = null;
 
     this.isVisible = true;
@@ -112,19 +107,19 @@ class Coll extends LitElement
 
       appName: { type: String },
       appLogo: { type: String },
-    }
+    };
   }
 
   firstUpdated() {
     this.inited = true;
     window.addEventListener("hashchange", (event) => this.onHashChange(event));
 
-    this.addEventListener("fullscreenchange", (event) => {
+    this.addEventListener("fullscreenchange", () => {
       this.isFullscreen = !!document.fullscreenElement;
     });
 
     if (this.embed) {
-      this.observer = new IntersectionObserver((entries, observer) => {
+      this.observer = new IntersectionObserver((entries/*, observer*/) => {
         this.isVisible = entries[0].isIntersecting;
       });
 
@@ -182,14 +177,14 @@ class Coll extends LitElement
           }
         }
         if (this.embed && window.parent !== window) {
-          window.parent.postMessage(this.tabData, '*');
+          window.parent.postMessage(this.tabData, "*");
         }
       }
       this._locUpdateNeeded = false;
     }
     if (changedProperties.has("showSidebar")) {
       if (!this.embed) {
-        localStorage.setItem(`pages:showSidebar`, this.showSidebar ? "1" : "0");
+        localStorage.setItem("pages:showSidebar", this.showSidebar ? "1" : "0");
       }
     }
 
@@ -218,14 +213,16 @@ class Coll extends LitElement
           onDragEnd() {
             replay.setDisablePointer(false);
           }
-        }
+        };
 
         this.splitter = Split([contents, replay], opts);
       }
     } else if (this.splitter) {
       try {
         this.splitter.destroy();
-      } catch (e) {}
+      } catch (e) {
+        // ignore, remove splitter
+      }
       this.splitter = null;
     }
   }
@@ -246,10 +243,10 @@ class Coll extends LitElement
 
     this.coll = coll;
 
-    const apiPrefix = this.baseApiPrefix + "/" + coll;
-    const replayPrefix = this.baseReplayPrefix + "/" + coll;
+    const collApiPrefix = apiPrefix + "/c/" + coll;
+    const collReplayPrefix = replayPrefix + "/" + coll;
 
-    const resp = await fetch(apiPrefix + "?all=1");
+    const resp = await fetch(collApiPrefix + "?all=1");
 
     if (resp.status != 200) {
       this.collInfo = {};
@@ -258,7 +255,12 @@ class Coll extends LitElement
 
     const json = await resp.json();
 
-    this.collInfo = {apiPrefix, replayPrefix, coll, ...json};
+    this.collInfo = {
+      apiPrefix: collApiPrefix,
+      replayPrefix: collReplayPrefix,
+      coll,
+      ...json
+    };
 
     if (!this.collInfo.title) {
       this.collInfo.title = this.collInfo.filename;
@@ -281,6 +283,9 @@ class Coll extends LitElement
   onCollLoaded(event) {
     this.doUpdateInfo();
     this.loadInfo = null;
+    if (event.detail.sourceUrl) {
+      this.sourceUrl = event.detail.sourceUrl;
+    }
     this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {
       sourceUrl: this.sourceUrl,
       collInfo: this.collInfo,
@@ -295,7 +300,7 @@ class Coll extends LitElement
     this.collInfo = {...this.collInfo, ...event.detail};
   }
 
-  onHashChange(event) {
+  onHashChange() {
     const hash = window.location.hash;
     if (hash && hash !== this._locationHash) {
       this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
@@ -344,7 +349,7 @@ class Coll extends LitElement
     }
   }
 
-  updateTabData(data, replaceLoc = false, merge = false) {
+  updateTabData(data, replaceLoc = false/*, merge = false*/) {
     this.tabData = {...this.tabData, ...data};
     if (this.tabData.url) {
       this.url = this.tabData.url || "";
@@ -622,7 +627,7 @@ class Coll extends LitElement
       return html`
       ${this.renderLocationBar()}
       <div id="tabContents">
-        <div id="contents" class="is-light ${isSidebar ? 'sidebar' : (isReplay ? 'is-hidden' : 'full-pages')}"
+        <div id="contents" class="is-light ${isSidebar ? "sidebar" : (isReplay ? "is-hidden" : "full-pages")}"
              role="${isSidebar ? "complementary" : ""}" aria-label="${isSidebar ? "Browse Contents" : ""}">
           ${this.renderTabHeader(isSidebar)}
           ${isSidebar || !isReplay ? this.renderCollTabs(isSidebar) : html``}
@@ -641,7 +646,7 @@ class Coll extends LitElement
           @replay-favicons="${this.onFavIcons}"
           >
           </wr-coll-replay>
-        ` : ``}
+        ` : ""}
       </div>
       `;
     } else {
@@ -655,7 +660,7 @@ class Coll extends LitElement
     // }
 
     return html`
-      <nav class="main tabs is-centered ${isSidebar ? 'sidebar' : ''}" aria-label="tabs">
+      <nav class="main tabs is-centered ${isSidebar ? "sidebar" : ""}" aria-label="tabs">
         <ul>
           ${isSidebar ? html`
           <li class="sidebar-nav left">
@@ -664,34 +669,34 @@ class Coll extends LitElement
               <span class="nav-hover" aria-hidden="true">Hide</span>
               <span class="is-sr-only">Hide Sidebar</span>
             </a>
-          </li>` : ``}
+          </li>` : ""}
 
           ${this.hasStory ? html`
-          <li class="${this.tabData.view === 'story' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#story" class="is-size-6" aria-label="Story" aria-current="${this.tabData.view === 'story' ? 'location' : ''}">
+          <li class="${this.tabData.view === "story" ? "is-active" : ""}">
+            <a @click="${this.onTabClick}" href="#story" class="is-size-6" aria-label="Story" aria-current="${this.tabData.view === "story" ? "location" : ""}">
               <span class="icon"><fa-icon .svg="${fasBook}" aria-hidden="true" title="Story"></fa-icon></span>
-              <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="Story">Story</span>
+              <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="Story">Story</span>
             </a>
-          </li>` : ``}
+          </li>` : ""}
 
-          <li class="${this.tabData.view === 'pages' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#pages" class="is-size-6" aria-label="Pages" aria-current="${this.tabData.view === 'pages' ? 'location' : ''}">
+          <li class="${this.tabData.view === "pages" ? "is-active" : ""}">
+            <a @click="${this.onTabClick}" href="#pages" class="is-size-6" aria-label="Pages" aria-current="${this.tabData.view === "pages" ? "location" : ""}">
               <span class="icon"><fa-icon .svg="${farPages}" aria-hidden="true" title="Pages"></fa-icon></span>
-              <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="Pages">Pages</span>
+              <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="Pages">Pages</span>
             </a>
           </li>
 
-          <li class="${this.tabData.view === 'resources' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#resources" class="is-size-6" aria-label="URLs" aria-current="${this.tabData.view === 'resources' ? 'location' : ''}">
+          <li class="${this.tabData.view === "resources" ? "is-active" : ""}">
+            <a @click="${this.onTabClick}" href="#resources" class="is-size-6" aria-label="URLs" aria-current="${this.tabData.view === "resources" ? "location" : ""}">
               <span class="icon"><fa-icon .svg="${farResources}" aria-hidden="true" title="URLs"></fa-icon></span>
-              <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="URLs">URLs</span>
+              <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="URLs">URLs</span>
             </a>
           </li>
 
-          <li class="${this.tabData.view === 'info' ? 'is-active' : ''}">
-            <a @click="${this.onTabClick}" href="#info" class="is-size-6" aria-label="Archive Info" aria-current="${this.tabData.view === 'info' ? 'location' : ''}">
+          <li class="${this.tabData.view === "info" ? "is-active" : ""}">
+            <a @click="${this.onTabClick}" href="#info" class="is-size-6" aria-label="Archive Info" aria-current="${this.tabData.view === "info" ? "location" : ""}">
               <span class="icon"><fa-icon .svg="${fasInfoIcon}" aria-hidden="true" title="Archive Info"></fa-icon></span>
-              <span class="tab-label ${isSidebar ? 'is-hidden' : ''}" title="Archive Info">Info</span>
+              <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="Archive Info">Info</span>
             </a>
           </li>
 
@@ -702,7 +707,7 @@ class Coll extends LitElement
               <span class="is-sr-only">Expand Sidebar to Full View</span>
               <fa-icon title="Expand" .svg="${fasAngleRight}" aria-hidden="true"></fa-icon>
             </a>
-          </li>` : ``}
+          </li>` : ""}
         </ul>
       </nav>`;
   }
@@ -740,15 +745,15 @@ class Coll extends LitElement
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
           </span>
         </a>
-        <a href="#" role="button" class="button narrow is-borderless ${this.isLoading ? 'is-loading' : 'is-hidden-mobile'}" id="refresh" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}"
+        <a href="#" role="button" class="button narrow is-borderless ${this.isLoading ? "is-loading" : "is-hidden-mobile"}" id="refresh" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}"
                 title="Reload" aria-label="Reload">
           <span class="icon is-small">
             ${!this.isLoading ? html`
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
-            ` : ``}
+            ` : ""}
           </span>
         </a>
-        <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
+        <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile ${!isReplay ? "grey-disabled" : ""}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
                 ?disabled="${!isReplay}" title="Browse Contents" aria-label="Browse Contents" aria-controls="contents">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
@@ -756,7 +761,7 @@ class Coll extends LitElement
         </a>
         ${this.renderExtraToolbar(false)}
         <form @submit="${this.onSubmit}">
-          <div class="control is-expanded ${showFavIcon ? 'has-icons-left' : ''}">
+          <div class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}">
             <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" @blur="${this.onLostFocus}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
             ${isReplay ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
             ${showFavIcon ? html`
@@ -766,7 +771,7 @@ class Coll extends LitElement
           </div>
         </form>
 
-        <div class="dropdown is-right ${this.menuActive ? 'is-active' : ''}" @click="${(e) => this.menuActive = false}">
+        <div class="dropdown is-right ${this.menuActive ? "is-active" : ""}" @click="${() => this.menuActive = false}">
           <div class="dropdown-trigger">
             <button class="button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" aria-expanded="${this.menuActive}" @click="${this.onMenu}"
                     aria-label="more replay controls">
@@ -801,7 +806,7 @@ class Coll extends LitElement
                 </span>
                 <span>Reload</span>
               </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-tablet ${!isReplay ? 'grey-disabled' : ''}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
+              <a href="#" role="button" class="dropdown-item is-hidden-tablet ${!isReplay ? "grey-disabled" : ""}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
@@ -820,12 +825,12 @@ class Coll extends LitElement
               <hr class="dropdown-divider is-hidden-desktop">
               <div class="dropdown-item info is-hidden-desktop">
                 <span class="menu-head">Capture Date</span>${dateStr}
-              </div>` : ``}
+              </div>` : ""}
               <hr class="dropdown-divider">
               <a href="#" role="button" class="dropdown-item" @click="${this.onAbout}">
                 <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
                 <span>&nbsp;About ${this.appName}</span>
-                <span class="menu-version">(${__VERSION__})</span>
+                <span class="menu-version">(${VERSION})</span>
               </a>
             </div>
           </div>
@@ -861,15 +866,15 @@ class Coll extends LitElement
     </div>`;
   }
 
-  renderExtraToolbar(isDropdown = false) {
-    return '';
+  renderExtraToolbar(/*isDropdown = false*/) {
+    return "";
   }
 
   renderCollTabs(isSidebar) {
-    const isStory = this.hasStory && this.tabData.view === 'story';
-    const isPages = this.tabData.view === 'pages';
-    const isResources = this.tabData.view === 'resources';
-    const isInfo = this.tabData.view === 'info';
+    const isStory = this.hasStory && this.tabData.view === "story";
+    const isPages = this.tabData.view === "pages";
+    const isResources = this.tabData.view === "resources";
+    const isInfo = this.tabData.view === "info";
 
     return html`
 
@@ -881,10 +886,10 @@ class Coll extends LitElement
     currList="${this.tabData.currList || 0}"
     @coll-tab-nav="${this.onCollTabNav}" id="story"
     .isSidebar="${isSidebar}"
-    class="${isStory ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
-    role="${isSidebar ? '' : 'main'}"
+    class="${isStory ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
+    role="${isSidebar ? "" : "main"}"
     >
-    </wr-coll-story>` : ''}
+    </wr-coll-story>` : ""}
 
     ${isResources ? html`
     <wr-coll-resources .collInfo="${this.collInfo}"
@@ -894,10 +899,10 @@ class Coll extends LitElement
     .currMime="${this.tabData.currMime || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="resources"
     .isSidebar="${isSidebar}"
-    class="is-paddingless ${isResources ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
-    role="${isSidebar ? '' : 'main'}"
+    class="is-paddingless ${isResources ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
+    role="${isSidebar ? "" : "main"}"
     >
-    </wr-coll-resources>` : ``}
+    </wr-coll-resources>` : ""}
 
     ${isPages ? html`
     <wr-page-view
@@ -911,10 +916,10 @@ class Coll extends LitElement
     .ts="${this.tabData.ts || ""}"
     @coll-tab-nav="${this.onCollTabNav}" id="pages"
     @coll-update="${this.onCollUpdate}"
-    class="${isPages ? '' : 'is-hidden'} ${isSidebar ? 'sidebar' : ''}"
-    role="${isSidebar ? '' : 'main'}"
+    class="${isPages ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
+    role="${isSidebar ? "" : "main"}"
     >
-    </wr-page-view>` : ``}
+    </wr-page-view>` : ""}
     `;
   }
 
@@ -922,7 +927,7 @@ class Coll extends LitElement
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
     event.preventDefault();
-    this.renderRoot.querySelector("#skip-replay-target").focus()
+    this.renderRoot.querySelector("#skip-replay-target").focus();
   }
 
   onKeyDown(event) {
@@ -1015,7 +1020,7 @@ class Coll extends LitElement
     const deleteURL = this.collInfo.apiPrefix + (reload ? "?reload=1" : "");
 
     const resp = await fetch(deleteURL, {
-      method: 'DELETE',
+      method: "DELETE",
     });
 
     if (resp.status !== 200) {

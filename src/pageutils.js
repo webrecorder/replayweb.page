@@ -1,4 +1,4 @@
-import { register } from 'register-service-worker';
+import { register } from "register-service-worker";
 
 
 // ===========================================================================
@@ -17,13 +17,13 @@ function registerSW(name = "sw.js", scope = "./") {
   
   register(scope + name, {
     registrationOptions: { scope },
-    registered (reg) {
-      console.log('Service worker is registered');
+    registered () {
+      console.log("Service worker is registered");
       resolve();
     },
 
     error (error) {
-      console.error('Error during service worker registration:', error);
+      console.error("Error during service worker registration:", error);
       reject();
     }
   });
@@ -36,6 +36,7 @@ let dbworker = null;
 
 function initDBWorker() {
   if (dbworker === null) {
+    // eslint-disable-next-line no-undef
     dbworker = new Worker(__SW_NAME__);
   }
   return dbworker;
@@ -47,7 +48,7 @@ async function digestMessage(message, hashtype) {
   const msgUint8 = new TextEncoder().encode(message);                           // encode as (utf-8) Uint8Array
   const hashBuffer = await crypto.subtle.digest(hashtype, msgUint8);           // hash the message
   const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join(""); // convert bytes to hex string
   return hashHex;
 }
 
@@ -70,7 +71,7 @@ function tsToDate(ts) {
     ts.substring(12, 14) + "-00:00");
 
   return new Date(datestr);
-};
+}
 
 // ===========================================================================
 function getPageDateTS(page) {
@@ -78,7 +79,7 @@ function getPageDateTS(page) {
   try {
     date = new Date(page.ts || page.date);
   } catch (e) { 
-
+    // leave date unchanged in case of error
   }
 
   const timestamp = (date && !isNaN(date)) ? getTS(date.toISOString()) : "";
@@ -88,7 +89,7 @@ function getPageDateTS(page) {
 
 // ===========================================================================
 function getTS(iso) {
-  return iso.replace(/[-:T]/g, '').slice(0, 14);
+  return iso.replace(/[-:T]/g, "").slice(0, 14);
 }
 
 
@@ -104,7 +105,7 @@ function getReplayLink(view, url, ts) {
 
 // ===========================================================================
 async function sourceToId(url) {
-  const digest = await digestMessage(url, 'SHA-256');
+  const digest = await digestMessage(url, "SHA-256");
   const coll = "id-" + digest.slice(0, 12);
   return {url, coll};
 }
@@ -144,4 +145,4 @@ function parseURLSchemeHostPath(url) {
 
 
 export { digestMessage, tsToDate, getTS, getPageDateTS, getReplayLink, sourceToId, parseURLSchemeHostPath,
-         registerSW, initDBWorker };
+  registerSW, initDBWorker };

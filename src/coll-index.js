@@ -1,14 +1,14 @@
-import { LitElement, html, css } from 'lit-element';
-import { wrapCss } from './misc';
+import { LitElement, html, css } from "lit-element";
+import { wrapCss, apiPrefix } from "./misc";
 
-import prettyBytes from 'pretty-bytes';
+import prettyBytes from "pretty-bytes";
 
-import fasCopy from '@fortawesome/fontawesome-free/svgs/regular/copy.svg';
+import fasCopy from "@fortawesome/fontawesome-free/svgs/regular/copy.svg";
 
-import fasArrowUp from '@fortawesome/fontawesome-free/svgs/solid/angle-double-up.svg';
-import fasArrowDown from '@fortawesome/fontawesome-free/svgs/solid/angle-double-down.svg';
+import fasArrowUp from "@fortawesome/fontawesome-free/svgs/solid/angle-double-up.svg";
+import fasArrowDown from "@fortawesome/fontawesome-free/svgs/solid/angle-double-down.svg";
 
-import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
+import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 
 
 // ===========================================================================
@@ -29,21 +29,24 @@ class CollIndex extends LitElement
 
     this.dateName = "Date Loaded";
     this.headerName = "Loaded Archives";
+
+    this.typeFilter = "";
+    this.indexParams = "";
   }
 
   get sortKeys() {
     return [
       {key: "title",
-       name: "Title"},
+        name: "Title"},
 
       {key: "sourceUrl",
-       name: "Source"},
+        name: "Source"},
 
       {key: "ctime",
-       name: this.dateName},
+        name: this.dateName},
 
       {key: "size",
-       name: "Total Size"}
+        name: "Total Size"}
     ];
   }
 
@@ -62,8 +65,8 @@ class CollIndex extends LitElement
       _deleting: { type: Object },
 
       dateName: { type: String },
-      headerName: { type: String }
-    }
+      headerName: { type: String },
+    };
   }
 
   firstUpdated() {
@@ -90,14 +93,15 @@ class CollIndex extends LitElement
     for (const coll of this.colls) {
       if (coll.sourceUrl.indexOf(this.query) >= 0 ||
           coll.filename.indexOf(this.query) >= 0 ||
+          (coll.loadUrl && coll.loadUrl.indexOf(this.query) >= 0) ||
           (coll.title && coll.title.indexOf(this.query) >= 0)) {
-            this.filteredColls.push(coll);
+        this.filteredColls.push(coll);
       }
     }
   }
 
   async loadColls() {
-    const resp = await fetch("./wabac/api/index");
+    const resp = await fetch(`${apiPrefix}/coll-index?${this.indexParams}`);
     try {
       const json = await resp.json();
       this.colls = json.colls.map((coll) => {
@@ -130,7 +134,7 @@ class CollIndex extends LitElement
     this._deleting[coll.sourceUrl] = true;
     this.requestUpdate();
 
-    const resp = await fetch(`./wabac/api/${coll.id}`, {method: 'DELETE'});
+    const resp = await fetch(`${apiPrefix}/c/${coll.id}`, {method: "DELETE"});
     if (resp.status === 200) {
       const json = await resp.json();
       this.colls = json.colls;
@@ -139,7 +143,11 @@ class CollIndex extends LitElement
   }
 
   static get styles() {
-    return wrapCss(css`
+    return wrapCss(CollIndex.compStyles);
+  }
+
+  static get compStyles() {
+    return css`
     :host {
       overflow-y: auto;
       min-width: 0;
@@ -170,6 +178,11 @@ class CollIndex extends LitElement
     fa-icon {
       vertical-align: middle;
     }
+
+    .panel-color {
+      background-color: rgb(210, 249, 214);
+    }
+
     .copy {
       color: black;
       margin: 0px;
@@ -207,7 +220,8 @@ class CollIndex extends LitElement
     .coll-block {
       position: relative;
     }
-    .delete {
+    .delete-button {
+      width: 32px;
       position: absolute;
       top: 10px;
       right: 10px;
@@ -229,31 +243,38 @@ class CollIndex extends LitElement
       height: 269px;
       margin-top: -269px;
     }
-    `);
+    `;
+  }
+
+  renderHeader() {
+    return html`<h2 class="panel-heading panel-color"><span>${this.headerName}</span></h2>`;
+  }
+
+  renderSearchHeader() {
+    return "";
   }
 
   render() {
     const hasHeader = this.childElementCount > 0;
 
     return html`
-    <header class="${this.hideHeader ? 'closed' : ''}">
+    <header class="${this.hideHeader ? "closed" : ""}">
       <slot name="header"></slot>
     </header>
     <section class="section no-top-padding">
       <div class="sort-header is-small">
         ${hasHeader ? html`
-        <button @click=${(e) => this.hideHeader = !this.hideHeader} class="collapse button is-small">
+        <button @click=${() => this.hideHeader = !this.hideHeader} class="collapse button is-small">
           <span class="icon"><fa-icon .svg=${this.hideHeader ? fasArrowDown : fasArrowUp}></span>
-          <span>${this.hideHeader ? 'Show ' : 'Hide'} <span class="is-sr-only">Header</span></span>
-        </button>` : ``}
+          <span>${this.hideHeader ? "Show " : "Hide"} <span class="is-sr-only">Header</span></span>
+        </button>` : ""}
       </div>
-      <div class="panel is-light">
-        <h2 class="panel-heading"><span>${this.headerName}</span>
-        </h2>
-
+      <div class="panel">
+        ${this.renderHeader()}
         ${this.colls.length ? html`
         <div class="panel-block sort-header is-small">
-          <div class="control has-icons-left">
+        ${this.renderSearchHeader()}
+          <div class="control has-icons-left has-addons">
             <input type="text" class="input is-small" @input="${(e) => this.query = e.currentTarget.value}" .value="${this.query}" type="text"
             placeholder="Search by Archive Title or Source">
             <span class="icon is-left is-small"><fa-icon .svg="${fasSearch}"/></span>
@@ -272,9 +293,9 @@ class CollIndex extends LitElement
             <div class="coll-block panel-block">
               ${this.renderCollInfo(coll)}
               ${!this._deleting[coll.sourceUrl] ? html`
-              <button class="delete" aria-label="Unload Collection" title="Unload Collection" data-coll-index="${i}" @click="${this.onDeleteColl}"></button>
+              <button class="delete delete-button" aria-label="Unload Collection" title="Unload Collection" data-coll-index="${i}" @click="${this.onDeleteColl}"></button>
               ` : html`
-              <span class="button delete is-loading is-static">Deleting</span`}
+              <span class="button delete-button is-loading is-static">Deleting</span`}
             </div>
           `)}
         </div>
@@ -314,11 +335,15 @@ class CollInfo extends LitElement
       coll: { type: Object },
       detailed: { type: Boolean },
       canDelete: { type: Boolean }
-    }
+    };
   }
 
   static get styles() {
-    return wrapCss(css`
+    return wrapCss(CollInfo.compStyles);
+  }
+
+  static get compStyles() {
+    return css`
     .columns {
       width: 100%;
     }
@@ -369,7 +394,7 @@ class CollInfo extends LitElement
       font-size: 10px;
       font-weight: bold;
     }
-    `);
+    `;
   }
 
   render() {
@@ -396,7 +421,7 @@ class CollInfo extends LitElement
           <span class="source-text"><p class="minihead">Source</p>${coll.sourceUrl}&nbsp;</span>
           <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy"><fa-icon .svg="${fasCopy}"/></a>
           ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://") ? html`
-            <p><i>(${coll.filename})</i></p>` : ''}
+            <p><i>(${coll.filename})</i></p>` : ""}
         </div>
         ${detailed ? html`
         <div class="column"><p class="minihead">Filename</p>${coll.filename}</div>` : html``}

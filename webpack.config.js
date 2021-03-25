@@ -1,7 +1,9 @@
-const path = require('path');
-const webpack = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+/*eslint-env node */
+
+const path = require("path");
+const webpack = require("webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 // fake url used in app to serve files
 // can not use custom scheme due to service worker issues
@@ -22,12 +24,12 @@ const BANNER_TEXT = "'[name].js is part of ReplayWeb.page (https://replayweb.pag
 const IPFS_CORE_URL = "https://cdn.jsdelivr.net/npm/ipfs-core@0.4.2/dist/index.min.js";
 
 
-const electronMainConfig = (env, argv) => {
+const electronMainConfig = (/*env, argv*/) => {
   return {
-    target: 'electron-main',
-    mode: 'production',
+    target: "electron-main",
+    mode: "production",
     entry: {
-      'electron': './src/electron-main.js', 
+      "electron": "./src/electron-main.js", 
     },
     resolve: {
       alias: {
@@ -37,8 +39,8 @@ const electronMainConfig = (env, argv) => {
       }
     },
     output: {
-      path: path.join(__dirname, 'dist'),
-      filename: '[name].js',
+      path: path.join(__dirname, "dist"),
+      filename: "[name].js",
     },
     node: {
       __dirname: false,
@@ -53,8 +55,8 @@ const electronMainConfig = (env, argv) => {
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
         patterns: [
-          { from: 'node_modules/bcrypto/build/Release/bcrypto.node', to: 'build' },
-          { from: 'node_modules/leveldown/prebuilds/', to: 'prebuilds' },
+          { from: "node_modules/bcrypto/build/Release/bcrypto.node", to: "build" },
+          { from: "node_modules/leveldown/prebuilds/", to: "prebuilds" },
         ],
       }),
     ],
@@ -62,16 +64,16 @@ const electronMainConfig = (env, argv) => {
       "bufferutil": "bufferutil",
       "utf-8-validate": "utf-8-validate",
     }
-  }
+  };
 };
 
 
-const electronPreloadConfig = (env, argv) => {
+const electronPreloadConfig = (/*env, argv*/) => {
   return {
-    target: 'electron-preload',
-    mode: 'production',
+    target: "electron-preload",
+    mode: "production",
     entry: {
-      'preload': './src/electron-preload.js', 
+      "preload": "./src/electron-preload.js", 
     },
     plugins: [
       new webpack.BannerPlugin(BANNER_TEXT),
@@ -82,30 +84,30 @@ const electronPreloadConfig = (env, argv) => {
         __IPFS_CORE_URL__: JSON.stringify("")
       }),
     ]
-  }
+  };
 };
  
  
 
-const browserConfig = (env, argv) => {
+const browserConfig = (/*env, argv*/) => {
   return {
-    target: 'web',
-    mode: 'production',
+    target: "web",
+    mode: "production",
     entry: {
-      'ui': './src/ui.js',
-      'sw': './src/sw.js'
+      "ui": "./src/ui.js",
+      "sw": "./src/sw.js"
     },
 
     output: {
       path: path.join(__dirname),
-      filename: '[name].js',
-      libraryTarget: 'self',
-      globalObject: 'self',
-      publicPath: '/'
+      filename: "[name].js",
+      libraryTarget: "self",
+      globalObject: "self",
+      publicPath: "/"
     },
 
     externals: {
-      electron: 'electron',
+      electron: "electron",
     },
 
     devServer: {
@@ -113,7 +115,7 @@ const browserConfig = (env, argv) => {
       port: 9990,
       open: false,
       contentBase:  path.join(__dirname),
-      publicPath: '/'
+      publicPath: "/"
     },
 
     plugins: [
@@ -122,7 +124,7 @@ const browserConfig = (env, argv) => {
       }),
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({
-        __SW_NAME__: JSON.stringify('sw.js'),
+        __SW_NAME__: JSON.stringify("sw.js"),
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
         __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID),
@@ -132,28 +134,28 @@ const browserConfig = (env, argv) => {
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
         patterns: [
-          { from: 'node_modules/ipfs-core/dist/index.min.js', to: 'ipfs-core.min.js' },
+          { from: "node_modules/ipfs-core/dist/index.min.js", to: "ipfs-core.min.js" },
         ]
       }),
     ],
 
     module: {
       rules: [
-      {
-        test:  /\.svg$/,
-        use: ['svg-inline-loader'],
-      },
-      {
-        test: /main.scss$/,
-        use: ['css-loader', 'sass-loader']
-      },
-      {
-        test: /wombat.js|wombatWorkers.js|index.html$/i,
-        use: ['raw-loader'],
-      }
+        {
+          test:  /\.svg$/,
+          use: ["svg-inline-loader"],
+        },
+        {
+          test: /main.scss$/,
+          use: ["css-loader", "sass-loader"]
+        },
+        {
+          test: /wombat.js|wombatWorkers.js|index.html$/i,
+          use: ["raw-loader"],
+        }
       ]
     },
-  }
+  };
 };
 
 module.exports = [ browserConfig, electronMainConfig, electronPreloadConfig ];

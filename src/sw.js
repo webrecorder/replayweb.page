@@ -1,6 +1,6 @@
-import INDEX_HTML from '../index.html';
+import INDEX_HTML from "../index.html";
 
-import { SWReplay } from '@webrecorder/wabac/src/swmain';
+import { SWReplay } from "@webrecorder/wabac/src/swmain";
 
 const staticData = new Map();
 

@@ -1,8 +1,8 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from "lit-element";
 
-import { registerSW } from './pageutils';
+import { registerSW } from "./pageutils";
 
-import { wrapCss, rwpLogo } from './misc';
+import { wrapCss, rwpLogo } from "./misc";
 
 
 var scriptSrc = document.currentScript && document.currentScript.src;
@@ -14,6 +14,7 @@ class Embed extends LitElement
   constructor() {
     super();
     this.replaybase = "./replay/";
+    // eslint-disable-next-line no-undef
     this.swName = __SW_NAME__;
     this.view = "replay";
     this.ts = "";
@@ -53,7 +54,7 @@ class Embed extends LitElement
 
       deepLink: { type: Boolean },
       noSW: { type: Boolean },
-    }
+    };
   }
 
   async doRegister() {
@@ -91,7 +92,7 @@ class Embed extends LitElement
 
     if (this.deepLink) {
       this.updateFromHash();
-      window.addEventListener("hashchange", (event) => this.updateFromHash());
+      window.addEventListener("hashchange", () => this.updateFromHash());
     }
   }
 
@@ -172,7 +173,7 @@ class Embed extends LitElement
     ${this.paramString && this.hashString && this.swInited ? html`
       <iframe sandbox="allow-downloads allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-scripts allow-same-origin allow-forms"
               @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"
-              title="Replay of ${this.title ? `${this.title}:` :``} ${this.url}"></iframe>
+              title="Replay of ${this.title ? `${this.title}:` :""} ${this.url}"></iframe>
 
       ` : html``}
 
@@ -187,7 +188,7 @@ Please try a different browser.\n
 (Service Workers are disabled in Firefox in Private Mode. If Using Private Mode in Firefox, try regular mode).
         </div>
       </section>
-    `: ``}`;
+    `: ""}`;
   }
 
   onLoad(event) {

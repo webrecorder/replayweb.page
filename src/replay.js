@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element';
-import { wrapCss, rwpLogo } from './misc';
+import { LitElement, html, css } from "lit-element";
+import { wrapCss, rwpLogo } from "./misc";
 
 
 
@@ -38,7 +38,7 @@ class Replay extends LitElement
 
       showAuth: { type: Boolean },
       authFileHandle: { type: Object }
-    }
+    };
   }
 
   firstUpdated() {
@@ -57,7 +57,9 @@ class Replay extends LitElement
             this.refresh();
             return;
           }
-        } catch (e) {} 
+        } catch (e) {
+          console.warn(e);
+        } 
       } else {
         this.authFileHandle = null;
       }
@@ -147,8 +149,8 @@ class Replay extends LitElement
         // google drive reauth
         const headers = event.detail.headers;
 
-        const resp = await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
-          method: 'POST',
+        await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
+          method: "POST",
           body: JSON.stringify({headers})
         });
       } else {
@@ -173,7 +175,7 @@ class Replay extends LitElement
       const iframe = this.renderRoot.querySelector("iframe");
       if (!iframe || !iframe.contentDocument || !iframe.contentWindow ||
         (iframe.contentDocument.readyState === "complete" && !iframe.contentWindow._WBWombat)) {
-          this.clearLoading(iframe && iframe.contentWindow);
+        this.clearLoading(iframe && iframe.contentWindow);
       }
     }, 5000);
   }
@@ -262,7 +264,7 @@ class Replay extends LitElement
   }
 
   render() {
-    const title = `Replay of ${this.title ? `${this.title}:` :``} ${this.url}`;
+    const title = `Replay of ${this.title ? `${this.title}:` :""} ${this.url}`;
 
     return html`
 
@@ -302,7 +304,7 @@ class Replay extends LitElement
             </div>
           </div>
         </div>
-        `: ``}
+        `: ""}
       </div>
     `}`;
   }
