@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.3.13
+- Fidelity: fix encoding issues with non-UTF-8 encoded pages (wabac 2.6.8)
+- Fidelity: Better detection of JSONP, better rewriting of pages that use JSONP (wabac 2.6.7)
+- Dependencies: wabac 2.6.8
+
 v1.3.12
 - Loading: Fix bug with pages from WACZ files showing loading time, instead of actual timestamp.
 - Loading: WACZ loading works efficiently even when HEAD method is not supported.
