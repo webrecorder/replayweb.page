@@ -1,5 +1,8 @@
 ## CHANGES
 
+v1.3.14
+- Build: Fix incorrectly packaged npm package for 1.3.13, no other changes
+
 v1.3.13
 - Fidelity: fix encoding issues with non-UTF-8 encoded pages (wabac 2.6.8)
 - Fidelity: Better detection of JSONP, better rewriting of pages that use JSONP (wabac 2.6.7)
