@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.3.15
+- Fidelity: fix encoding issues with UTF-8 encoded JS/CSS introduced in 1.3.13 (fixed via wabac 2.6.9)
+- Dependencies: wabac 2.6.9
+
 v1.3.14
 - Build: Fix incorrectly packaged npm package for 1.3.13, no other changes
 
