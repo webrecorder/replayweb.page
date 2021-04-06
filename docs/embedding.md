@@ -39,7 +39,7 @@ one-line script
 ./replay/sw.js
 
 ```javascript
-importScripts("https://cdn.jsdelivr.net/npm/replaywebpage/@{{ site.version }}/sw.js");
+importScripts("https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.version }}/sw.js");
 ```
 
 Thus, if the HTML snippet was added to `https://my-site.example.com/path/my-web-archive-embed.html`
