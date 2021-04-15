@@ -178,7 +178,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
     if (!navigator.serviceWorker.controller) {
       await new Promise((resolve) => {
-        navigator.serviceWorker.addEventListener("controllerchange", () => resolve);
+        navigator.serviceWorker.addEventListener("controllerchange", () => resolve());
       });
     }
 

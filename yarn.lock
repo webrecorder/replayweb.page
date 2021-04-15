@@ -760,29 +760,6 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webrecorder/wabac@^2.6.9":
-  version "2.6.9"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.6.9.tgz#2e453c9b3a71f4b4e20fc79db99243ac4b25716b"
-  integrity sha512-NovRFw02gvjTa/RlAb6zZxmkh1O39Bc8xSXVgY3/w5t7/0JTqih5PNYr1VdbtGqpwO63/Wewp2OFP4JALtcA6Q==
-  dependencies:
-    "@webrecorder/wombat" "^3.1.2"
-    brotli "github:foliojs/brotli.js"
-    fast-xml-parser "^3.15.1"
-    format-link-header "^3.1.1"
-    http-status-codes "^2.1.4"
-    idb "^5.0.1"
-    js-levenshtein "^1.1.6"
-    js-yaml "^3.13.1"
-    json-2-csv "^3.7.1"
-    pako "^1.0.10"
-    parse-link-header "^1.0.1"
-    parse5-html-rewriting-stream "^6.0.1"
-    parse5-sax-parser "^6.0.1"
-    path-parser "^6.1.0"
-    unescape-js "^1.1.4"
-    warcio "^1.4.2"
-    wbn "^0.0.3"
-
 "@webrecorder/wabac@github:webrecorder/wabac.js#multi-wacz":
   version "2.7.0-beta.0"
   resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/330c8489b8f038ec9484b3c73449bb7e13d49327"
@@ -9139,11 +9116,6 @@ string-width@^4.0.0, string-width@^4.1.0, string-width@^4.2.0:
     is-fullwidth-code-point "^3.0.0"
     strip-ansi "^6.0.0"
 
-string.fromcodepoint@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/string.fromcodepoint/-/string.fromcodepoint-0.2.1.tgz#8d978333c0bc92538f50f383e4888f3e5619d653"
-  integrity sha1-jZeDM8C8klOPUPOD5IiPPlYZ1lM=
-
 string.prototype.trimend@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/string.prototype.trimend/-/string.prototype.trimend-1.0.1.tgz#85812a6b847ac002270f5808146064c995fb6913"
@@ -9585,13 +9557,6 @@ uint8arrays@^2.0.5:
   dependencies:
     multibase "^3.0.0"
     web-encoding "^1.0.5"
-
-unescape-js@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/unescape-js/-/unescape-js-1.1.4.tgz#4bc6389c499cb055a98364a0b3094e1c3d5da395"
-  integrity sha512-42SD8NOQEhdYntEiUQdYq/1V/YHwr1HLwlHuTJB5InVVdOSbgI6xu8jK5q65yIzuFCfczzyDF/7hbGzVbyCw0g==
-  dependencies:
-    string.fromcodepoint "^0.2.1"
 
 union-value@^1.0.0:
   version "1.0.1"

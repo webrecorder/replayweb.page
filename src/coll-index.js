@@ -19,7 +19,7 @@ class CollIndex extends LitElement
 
     this.colls = [];
     this.filteredColls = [];
-    this.sortedColls = [];
+    this.sortedColls = null;
 
     this.query = "";
 
@@ -113,6 +113,7 @@ class CollIndex extends LitElement
     }
 
     this._deleting = {};
+    this.sortedColls = [];
   }
 
   async onDeleteColl(event) {
@@ -289,7 +290,7 @@ class CollIndex extends LitElement
         </div>
 
         <div class="coll-list">
-          ${this.sortedColls.map((coll, i) => html`
+          ${this.sortedColls && this.sortedColls.map((coll, i) => html`
             <div class="coll-block panel-block">
               ${this.renderCollInfo(coll)}
               ${!this._deleting[coll.sourceUrl] ? html`
@@ -303,7 +304,8 @@ class CollIndex extends LitElement
         ` : html`
 
         <div class="panel-block extra-padding">
-        ${this.renderEmpty()}
+        ${this.sortedColls === null ? html`<i>Loading Archives...</i>` : 
+         this.renderEmpty()}
         </div>
         `}
       </div>
