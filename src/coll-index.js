@@ -103,17 +103,21 @@ class CollIndex extends LitElement
   async loadColls() {
     const resp = await fetch(`${apiPrefix}/coll-index?${this.indexParams}`);
     try {
+      if (resp.status !== 200) {
+        throw new Error("Invalid API Response");
+      }
       const json = await resp.json();
       this.colls = json.colls.map((coll) => {
         coll.title = coll.title || coll.filename;
         return coll;
       });
-    } catch (e) {
-      // likely no sw registered yet
-    }
 
-    this._deleting = {};
-    this.sortedColls = [];
+      this._deleting = {};
+      this.sortedColls = [];
+
+    } catch (e) {
+      // likely no sw registered yet, or waiting for new sw to register
+    }
   }
 
   async onDeleteColl(event) {
@@ -305,7 +309,7 @@ class CollIndex extends LitElement
 
         <div class="panel-block extra-padding">
         ${this.sortedColls === null ? html`<i>Loading Archives...</i>` : 
-         this.renderEmpty()}
+    this.renderEmpty()}
         </div>
         `}
       </div>

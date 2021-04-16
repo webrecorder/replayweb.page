@@ -1032,7 +1032,7 @@ class Coll extends LitElement
       return;
     }
 
-    window.location.hash = "";
+    //window.location.hash = "";
     window.location.reload();
   }
 

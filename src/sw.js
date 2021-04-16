@@ -12,5 +12,5 @@ staticData.set(prefix + "index.html", {type: "text/html", content: INDEX_HTML});
 
 //const { SWReplay } = require('@webrecorder/wabac/src/swmain');
 self.ipfsCustomPreload = true;
-self.sw = new SWReplay(staticData);
+self.sw = new SWReplay({staticData});
 
