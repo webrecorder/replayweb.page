@@ -1,4 +1,5 @@
 import { LitElement, html, css } from "lit-element";
+import { ifDefined } from "lit-html/directives/if-defined.js";
 
 import { registerSW } from "./pageutils";
 
@@ -27,6 +28,7 @@ class Embed extends LitElement
     this.swInited = false;
     this.embed = null;
     this.reloadCount = 0;
+    this.noSandbox = false;
   }
 
   static get properties() {
@@ -54,6 +56,7 @@ class Embed extends LitElement
 
       deepLink: { type: Boolean },
       noSW: { type: Boolean },
+      noSandbox: { type: Boolean }
     };
   }
 
@@ -171,9 +174,13 @@ class Embed extends LitElement
   render() {
     return html`
     ${this.paramString && this.hashString && this.swInited ? html`
-      <iframe sandbox="allow-downloads allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin allow-forms"
-              @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"
-              title="Replay of ${this.title ? `${this.title}:` :""} ${this.url}"></iframe>
+      <iframe sandbox="${ifDefined(!this.noSandbox ?
+    "allow-downloads allow-modals allow-orientation-lock allow-pointer-lock\
+         allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts\
+         allow-same-origin allow-forms" : undefined)}"
+
+      @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"
+      title="Replay of ${this.title ? `${this.title}:` :""} ${this.url}"></iframe>
 
       ` : html``}
 

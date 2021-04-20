@@ -211,7 +211,7 @@ class PageEntry extends LitElement
           </figure>
           <div class="media-content ${this.isCurrent ? "current" : ""}">
             <div role="heading" aria-level="${this.isSidebar ? "4": "3"}">
-              <a @click="${this.onReplay}" href="${getReplayLink("pages", this.page.url, this.page.timestamp)}">
+              <a @dblclick="${this.onReload}" @click="${this.onReplay}" href="${getReplayLink("pages", this.page.url, this.page.timestamp)}">
               <p class="is-size-6 has-text-weight-bold has-text-link text">
               <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
               </p>
@@ -308,19 +308,23 @@ class PageEntry extends LitElement
     this.requestUpdate("textSnippet", oldVal);
   }
 
-  onReplay(event) {
+  onReplay(event, reload = false) {
     event.preventDefault();
 
     const data = {
       url: this.page.url,
       ts: this.page.timestamp,
     };
-    this.sendChangeEvent(data);
+    this.sendChangeEvent(data, reload);
     return false;
   }
 
-  sendChangeEvent(data) {
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {bubbles: true, composed: true, detail: {data}}));
+  onReload(event) {
+    return this.onReplay(event, true);
+  }
+
+  sendChangeEvent(data, reload) {
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {bubbles: true, composed: true, detail: {data, reload}}));
   }
 
   onSendDeletePage() {
@@ -328,7 +332,7 @@ class PageEntry extends LitElement
     this.dispatchEvent(new CustomEvent("delete-page", {detail: {page}}));
   }
 
-  onSendSelToggle() {
+  onSendSelToggle(event) {
     const page = this.page.id;
     const selected = event.currentTarget.checked;
     this.dispatchEvent(new CustomEvent("sel-page", {detail: {page, selected}}));

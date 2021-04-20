@@ -342,6 +342,11 @@ class Coll extends LitElement
   }
 
   onCollTabNav(event) {
+    if (event.detail.reload) {
+      this.onRefresh(null, true);
+      return;
+    }
+
     if (event.target.id === this.tabData.view || event.target.id === "replay" && this.tabData.url) {
       this.updateTabData(event.detail.data, event.detail.replaceLoc, false);
     } else if (this.showSidebar && this.tabData.url) {
@@ -1104,7 +1109,7 @@ class Coll extends LitElement
     return q.toString();
   }
 
-  onRefresh(event) {
+  onRefresh(event, replayOnly = false) {
     if (event) {
       event.preventDefault();
     }
@@ -1116,7 +1121,7 @@ class Coll extends LitElement
       if (replay) {
         replay.refresh();
       }
-    } else {
+    } else if (!replayOnly) {
       window.location.reload();
     }
   }
