@@ -23,7 +23,7 @@ global.fetch = fetch;
 
 const STATIC_PREFIX = "http://localhost:5471/";
 
-const REPLAY_PREFIX = STATIC_PREFIX + "wabac/";
+const REPLAY_PREFIX = STATIC_PREFIX + "w/";
 
 const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 

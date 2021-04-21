@@ -1,5 +1,18 @@
 ## CHANGES
 
+v1.4.0 (tip)
+- Embed: add 'noSandbox' option to not add sandbox to embed iframe
+- UI: Double-clicking on page entry causes reload.
+- UI: Fix location bar enter not always reloading specified URL
+- UI: Fix 'Purge and Reload' to reload current page
+- UI: Fix initial load not properly waiting for service worker
+- UI: Show 'Loading Archives...' on initial load, until first API response succeeds instead of 'No Archives'
+- Fidelity: Improved fuzzy matching for dynamic sites (facebook)
+- Lint pass on code base
+- API: Switch from /wabac/ -> /w/ for replay paths, make path configurable
+- Extensibility: Make file chooser, collection list more extensible/stylable (for use with archiveweb.page)
+- Dependencies: wabac 2.7.0-beta.1, bulma 0.9.2, electron 11.4.3
+
 v1.3.15
 - Fidelity: fix encoding issues with UTF-8 encoded JS/CSS introduced in 1.3.13 (fixed via wabac 2.6.9)
 - Dependencies: wabac 2.6.9

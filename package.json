@@ -28,7 +28,7 @@
   "devDependencies": {
     "copy-webpack-plugin": "^6.3.0",
     "css-loader": "^3.5.3",
-    "electron": "^11.3.0",
+    "electron": "^11.4.3",
     "electron-builder": "^22.7.0",
     "electron-notarize": "^1.0.0",
     "http-server": "^0.12.3",
