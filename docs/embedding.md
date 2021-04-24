@@ -23,7 +23,7 @@ the following snippet to your HTML page:
 my-web-archive-embed.html
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/replaywebpage/@{{ site.version }}/ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.version }}/ui.js"></script>
 <replay-web-page source="s3://webrecorder-builds/warcs/netpreserve-twitter.warc"
 url="https://twitter.com/netpreserve"></replay-web-page>
 ```
