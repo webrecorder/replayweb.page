@@ -135,6 +135,7 @@ const browserConfig = (/*env, argv*/) => {
       new CopyPlugin({
         patterns: [
           { from: "node_modules/ipfs-core/dist/index.min.js", to: "ipfs-core.min.js" },
+          { from: "package.json", to: "_data/package.json" }
         ]
       }),
     ],

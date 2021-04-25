@@ -22,10 +22,6 @@ logo: "/assets/logo.svg"
 plugins:
   - jekyll-remote-theme
 
-
-version:
-  - 1.3.12
-
 #baseUrl: '/'
 
 exclude:

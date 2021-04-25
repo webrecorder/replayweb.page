@@ -51,7 +51,8 @@ class Chooser extends LitElement
             "application/warc": [".warc", ".gz"],
             "application/har": [".har"],
             "application/wacz": [".wacz"],
-            "application/wbn": [".wbn"]
+            "application/wbn": [".wbn"],
+            "application/json": [".json"],
           }
         }
       ]
@@ -193,7 +194,7 @@ class Chooser extends LitElement
               <p class="control is-expanded">
                 <input class="file-name input ${this.noHead ? "is-small" : ""}" type="text"
                 name="filename" id="filename"
-                pattern="((file|http|https|ipfs|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn))|(googledrive:\/\/.+)"
+                pattern="((file|http|https|ipfs|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn|json))|(googledrive:\/\/.+)"
                 .value="${this.fileDisplayName}"
                 @input="${this.onInput}"
                 autocomplete="off"
