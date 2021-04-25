@@ -1,5 +1,7 @@
-import { ElectronReplayApp } from './electron-replay-app';
-import path from 'path';
+/*eslint-env node */
+
+import { ElectronReplayApp } from "./electron-replay-app";
+import path from "path";
 
 
 // ============================================================================

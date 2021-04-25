@@ -1,12 +1,12 @@
-import { LitElement, html, css, unsafeCSS } from 'lit-element';
-import { wrapCss } from './misc';
+import { LitElement, html, css, unsafeCSS } from "lit-element";
+import { wrapCss } from "./misc";
 
-import { unsafeHTML } from 'lit-html/directives/unsafe-html';
-import marked from 'marked';
+import { unsafeHTML } from "lit-html/directives/unsafe-html";
+import marked from "marked";
 
-import { getTS, getReplayLink } from './pageutils';
+import { getTS, getReplayLink } from "./pageutils";
 
-import Split from 'split.js'
+import Split from "split.js";
 
 
 
@@ -43,7 +43,7 @@ class Story extends LitElement
 
       isSidebar: { type: Boolean },
       splitDirection: { type: Boolean }
-    }
+    };
   }
 
   recalcSplitter(width) {
@@ -53,11 +53,11 @@ class Story extends LitElement
   firstUpdated() {
     this.recalcSplitter(document.documentElement.clientWidth);
 
-    this.obs = new ResizeObserver((entries, observer) => {
+    this.obs = new ResizeObserver((entries/*, observer*/) => {
       this.recalcSplitter(entries[0].contentRect.width);
     });
 
-    this.obs.observe(this)
+    this.obs.observe(this);
   }
 
   updated(changedProperties) {
@@ -87,7 +87,9 @@ class Story extends LitElement
     if (this.splitter) {
       try {
         this.splitter.destroy();
-      } catch (e) {}
+      } catch (e) {
+        // ignore splitter destory err
+      }
       this.splitter = null;
     }
 
@@ -98,7 +100,7 @@ class Story extends LitElement
         gutterSize: 4,
 
         direction: this.splitDirection
-      }
+      };
 
       this.splitter = Split([sidebar, content], opts);
     } 
@@ -160,7 +162,7 @@ class Story extends LitElement
       width: 100% !important;
     }
 
-    ${Story.sidebarStyles(unsafeCSS(`:host(.sidebar)`))}
+    ${Story.sidebarStyles(unsafeCSS(":host(.sidebar)"))}
 
     .desc p {
       margin-bottom: 1.0em;
@@ -257,13 +259,13 @@ class Story extends LitElement
         <aside class="menu">
           <ul class="menu-list">
             <li>
-              <a href="#list-0" data-list="0" class="${currListNum === 0 ? 'is-active' : ''} menu-label is-size-4"
+              <a href="#list-0" data-list="0" class="${currListNum === 0 ? "is-active" : ""} menu-label is-size-4"
                 @click=${this.onClickScroll}>${this.collInfo.title}</a>
               <ul class="menu-list">${this.collInfo.lists.map(list => html`
                 <li>
                   <a @click=${this.onClickScroll} href="#list-${list.id}"
                   data-list="${list.id}" 
-                  class="${currListNum === list.id ? 'is-active' : ''}">${list.title}</a>
+                  class="${currListNum === list.id ? "is-active" : ""}">${list.title}</a>
                 </li>`)}
               </ul>
             </li>
@@ -273,7 +275,7 @@ class Story extends LitElement
       <div @scroll=${this.onScroll} class="column main-content main-scroll">
         <section id="list-0" class="desc">
           <h2 class="has-text-centered title is-3">${this.collInfo.title}</h2>
-          ${this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ''}
+          ${this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ""}
         </section>
         ${this.renderLists()}
       </div>
@@ -283,7 +285,7 @@ class Story extends LitElement
 
   renderLists() {
     return html`
-    ${this.collInfo.lists.map((list, i) => html`
+    ${this.collInfo.lists.map((list) => html`
     <article id="list-${list.id}">
       <div class="content">
         <hr/>

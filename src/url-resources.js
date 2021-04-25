@@ -1,9 +1,9 @@
-import { LitElement, html, css } from 'lit-element';
-import { wrapCss, clickOnSpacebarPress } from './misc';
+import { LitElement, html, css } from "lit-element";
+import { wrapCss, clickOnSpacebarPress } from "./misc";
 
-import { getReplayLink } from './pageutils';
+import { getReplayLink } from "./pageutils";
 
-import fasSearch from '@fortawesome/fontawesome-free/svgs/solid/search.svg';
+import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
@@ -83,7 +83,7 @@ class URLResources extends LitElement
       loading: { type: Boolean },
       sortKey: { type: String },
       sortDesc: { type: Boolean }
-    }
+    };
   }
 
   firstUpdated() {
@@ -318,7 +318,7 @@ class URLResources extends LitElement
             </select>
           </div>
           <div class="field flex-auto">
-            <div class="control has-icons-left ${this.loading ? 'is-loading' : ''}">
+            <div class="control has-icons-left ${this.loading ? "is-loading" : ""}">
               <input type="text" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text" placeholder="Enter URL to Search">
               <span class="icon is-left"><fa-icon .svg="${fasSearch}"/></span>
             </div>
@@ -327,9 +327,9 @@ class URLResources extends LitElement
       </div>
       <div class="control level-right">
         <div style="margin-left: 1em" class="control">
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="contains" ?checked="${this.urlSearchType === 'contains'}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === 'prefix'}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === 'exact'}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
+          <label class="radio has-text-left"><input type="radio" name="urltype" value="contains" ?checked="${this.urlSearchType === "contains"}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
+          <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${this.urlSearchType === "prefix"}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
+          <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${this.urlSearchType === "exact"}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
           <span id="num-results" class="num-results" is-pulled-right" aria-live="polite" aria-atomic="true">${this.filteredResults.length} Result(s)</span>
         </div>
       </div>
@@ -350,16 +350,16 @@ class URLResources extends LitElement
     <table class="all-results" aria-labelledby="results-heading num-results">
       <thead>
         <tr class="columns results-head has-text-weight-bold">
-          <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ''}">URL</a></th>
-          <th scope="col" class="column col-ts is-2 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ''}">Date</a></th>
-          <th scope="col" class="column col-mime is-3 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ''}">Mime Type</a></th>
-          <th scope="col" class="column col-status is-1 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ''}">Status</a></th>
+          <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="url" class="${this.sortKey === "url" ? (this.sortDesc ? "desc" : "asc") : ""}">URL</a></th>
+          <th scope="col" class="column col-ts is-2 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="ts" class="${this.sortKey === "ts" ? (this.sortDesc ? "desc" : "asc") : ""}">Date</a></th>
+          <th scope="col" class="column col-mime is-3 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="mime" class="${this.sortKey === "mime" ? (this.sortDesc ? "desc" : "asc") : ""}">Mime Type</a></th>
+          <th scope="col" class="column col-status is-1 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="status" class="${this.sortKey === "status" ? (this.sortDesc ? "desc" : "asc") : ""}">Status</a></th>
         </tr>
       </thead>
 
       <tbody class="main-scroll" @scroll="${this.onScroll}">
       ${this.sortedResults.length ?
-        this.sortedResults.map((result) => html`
+    this.sortedResults.map((result) => html`
           <tr class="columns result">
             <td class="column col-url is-6"><p class="minihead is-hidden-tablet">URL</p><a @click="${this.onReplay}" data-url="${result.url}" data-ts="${result.ts}" href="${getReplayLink("resources", result.url, result.ts)}">
             <keyword-mark keywords="${this.query}">${result.url}</keyword-mark>

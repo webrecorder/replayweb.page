@@ -23,7 +23,7 @@ the following snippet to your HTML page:
 my-web-archive-embed.html
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.version }}/ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/ui.js"></script>
 <replay-web-page source="s3://webrecorder-builds/warcs/netpreserve-twitter.warc"
 url="https://twitter.com/netpreserve"></replay-web-page>
 ```
@@ -39,7 +39,7 @@ one-line script
 ./replay/sw.js
 
 ```javascript
-importScripts("https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.version }}/sw.js");
+importScripts("https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/sw.js");
 ```
 
 Thus, if the HTML snippet was added to `https://my-site.example.com/path/my-web-archive-embed.html`
@@ -71,16 +71,17 @@ The `<replay-web-page>` tag is a web component and supports a number of addition
 | `replayBase` | Location of the `sw.js` file, defaults to `./replay/` as mentioned above, but can be overridden. |
 | `coll`       | Internal id for this collection, usually generated automatically.
 | `config`     | Extra per collection config options (such as custom fuzzy matching rules, TODO add more info!) |
+| `noSandbox`  | (`true` / `false`) if set to true, don't wrap iframe in `sandbox`. Used as extra precaution to avoid escaping iframe, but prevents PDFs from loading in embed archive. Set for archives of known/trusted sites. |
 
 
 ### Versioning
 
 Note that the above example uses the paths as, which is a CDN for Javascript packages at a specific version:
 
-- `https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.version }}/ui.js`
-- `https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.version }}/sw.js`
+- `https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/ui.js`
+- `https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/sw.js`
 
-These URLs point to a specific version of ReplayWeb.page software released on NPM, eg. `{{ site.version }}`, meaning that your replay should stay stable, even if ReplayWeb.page is updated.
+These URLs point to a specific version of ReplayWeb.page software released on NPM, eg. `{{ site.data.package.version }}`, meaning that your replay should stay stable, even if ReplayWeb.page is updated.
 
 Although ReplayWeb.page strives to remain backwards compatible, this addresses any potential issue of older embeds breaking when the replay system is updated.
 
