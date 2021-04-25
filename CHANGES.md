@@ -1,15 +1,15 @@
 ## CHANGES
 
-v1.4.0 (tip)
+v1.4.0
 - Embed: add 'noSandbox' option to not add sandbox to embed iframe
 - UI: Double-clicking on page entry causes reload.
 - UI: Fix location bar enter not always reloading specified URL
 - UI: Fix 'Purge and Reload' to reload current page
 - UI: Fix initial load not properly waiting for service worker
-- UI: Show 'Loading Archives...' on initial load, until first API response succeeds instead of 'No Archives'
+- UI: Show 'Loading Archives...' on initial load, until first API response succeeds, instead of 'No Archives'
 - Fidelity: Improved fuzzy matching for dynamic sites
 - Fidelity: Fix for multipart/form-data replay dropping certain query params
-- Fidelity: don't remove spaces in css
+- Fidelity: don't remove spaces in css urls
 - Fidelity: Better detection of JSON responses served in response to 'Accept: application/json' but with wrong content-type
 - Docs: copy package.json to 'data' to allow access to version in UI, use latest fixed version in Collec
 - API: Switch from /wabac/ -> /w/ for replay paths, make path configurable
