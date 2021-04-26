@@ -104,7 +104,7 @@ class CollIndex extends LitElement
     const resp = await fetch(`${apiPrefix}/coll-index?${this.indexParams}`);
     try {
       if (resp.status !== 200) {
-        throw new Error("Invalid API Response");
+        throw new Error("Invalid API Response, Retry");
       }
       const json = await resp.json();
       this.colls = json.colls.map((coll) => {
@@ -116,7 +116,8 @@ class CollIndex extends LitElement
       this.sortedColls = [];
 
     } catch (e) {
-      // likely no sw registered yet, or waiting for new sw to register
+      // likely no sw registered yet, or waiting for new sw to register, retry again
+      setTimeout(() => this.loadColls(), 5000);
     }
   }
 
