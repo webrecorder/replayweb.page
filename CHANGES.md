@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.4.1
+- Replay: Remove 'download' attribute from anchor tags, which doesn't work in Chrome
+- Loading: Fix loading of full-text search index from older wacz
+
 v1.4.0
 - Embed: add 'noSandbox' option to not add sandbox to embed iframe
 - UI: Double-clicking on page entry causes reload.

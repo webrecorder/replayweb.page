@@ -245,8 +245,8 @@ class Pages extends LitElement
         let curr = lines;
         lines = [];
         await flex.add(curr);
-        console.log("added " + count + " " + curr.length);
-        console.log(flex.info());
+        //console.log("added " + count + " " + curr.length);
+        //console.log(flex.info());
       };
 
       for await (const line of ndjson(resp.body.getReader())) {
