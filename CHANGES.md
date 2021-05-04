@@ -2,7 +2,7 @@
 
 v1.4.2 (tip)
 - Loading: Optimized loading from WACZ in wabac.js
-- Update to latest wabac.js 2.7.3-beta.1
+- Update to latest wabac.js 2.7.3-beta.2
 
 v1.4.1
 - Replay: Remove 'download' attribute from anchor tags, which doesn't work in Chrome
