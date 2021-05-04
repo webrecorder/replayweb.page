@@ -1,8 +1,9 @@
 ## CHANGES
 
-v1.4.2 (tip)
-- Loading: Optimized loading from WACZ in wabac.js
-- Update to latest wabac.js 2.7.3-beta.2
+v1.4.2
+- Loading: Optimized loading WACZ in wabac.js (cache compressed index loading to avoid duplicate loading)
+- Loading: General fixes for WACZ loading (better format detection for newer and older versions, surt/non-surt indexes)
+- Update to latest wabac.js 2.7.3
 
 v1.4.1
 - Replay: Remove 'download' attribute from anchor tags, which doesn't work in Chrome
