@@ -782,6 +782,27 @@
     warcio "^1.4.4"
     wbn "^0.0.3"
 
+"@webrecorder/wabac@github:webrecorder/wabac.js#auto-live-redir":
+  version "2.7.4-beta.0"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/473cd0740d91a5127fe8ef9b4012ba913ed88ab1"
+  dependencies:
+    "@webrecorder/wombat" "^3.1.4"
+    brotli "github:foliojs/brotli.js"
+    fast-xml-parser "^3.15.1"
+    format-link-header "^3.1.1"
+    http-status-codes "^2.1.4"
+    idb "^5.0.1"
+    js-levenshtein "^1.1.6"
+    js-yaml "^3.13.1"
+    json-2-csv "^3.7.1"
+    pako "^1.0.10"
+    parse-link-header "^1.0.1"
+    parse5-html-rewriting-stream "^6.0.1"
+    parse5-sax-parser "^6.0.1"
+    path-parser "^6.1.0"
+    warcio "^1.4.5"
+    wbn "^0.0.3"
+
 "@webrecorder/wombat@^3.1.4":
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.1.4.tgz#73a1c9d67c3e7d4166819a6c7b72d675b6bd685b"
@@ -9799,6 +9820,19 @@ warcio@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/warcio/-/warcio-1.4.4.tgz#5cd942c7aca0d93b237ef27f9227ef3dec5d18ff"
   integrity sha512-9UyVQoxxy0nRB1HmABeHEL0QMCdyiei8DjzGQxoMuPnzUtiLvtJFuJEJwwaYBNw0L71x2cQJq0l2o2r9A620YQ==
+  dependencies:
+    "@peculiar/webcrypto" "^1.1.1"
+    esm "^3.2.25"
+    hi-base32 "^0.5.0"
+    node-fetch "^2.6.0"
+    pako "^1.0.11"
+    uuid-random "^1.3.0"
+    yargs "^15.3.1"
+
+warcio@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/warcio/-/warcio-1.4.5.tgz#24ca61f799185c5d88cdd0a65d279f376b4f9a63"
+  integrity sha512-VwFBdmEQhWHmxsdyiLM0INHD1KZ2+EGYzslZXFe6JdbuTfSF/dYRQ/wEdvp+m28mydphROF6D32KfkIMRU1NZw==
   dependencies:
     "@peculiar/webcrypto" "^1.1.1"
     esm "^3.2.25"
