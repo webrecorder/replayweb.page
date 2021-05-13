@@ -387,7 +387,7 @@ const oe=new WeakMap,ne=v(e=>t=>{if(!(t instanceof D))throw new Error("unsafeSVG
                   <div style="display: flex">
                     <div class="has-text-centered" style="width: 220px">
                       <wr-anim-logo class="logo" size="48px"></wr-anim-logo>
-                      <div style="font-size: smaller; margin-bottom: 1em">${pe?"App":""} v${"1.4.3-beta.2"}</div>
+                      <div style="font-size: smaller; margin-bottom: 1em">${pe?"App":""} v${"1.4.3-beta.3"}</div>
                     </div>
 
                     ${pe?q`
@@ -1178,7 +1178,7 @@ const oe=new WeakMap,ne=v(e=>t=>{if(!(t instanceof D))throw new Error("unsafeSVG
               <a href="#" role="button" class="dropdown-item" @click="${this.onAbout}">
                 <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
                 <span>&nbsp;About ${this.appName}</span>
-                <span class="menu-version">(${"1.4.3-beta.2"})</span>
+                <span class="menu-version">(${"1.4.3-beta.3"})</span>
               </a>
             </div>
           </div>
