@@ -1,5 +1,13 @@
 ## CHANGES
 
+v1.4.3
+- Loading: Various fixes to index loading for compessed WACZ index
+- Fidelity: Fix edge-case POST-to-get conversion - binary, empty and text/plain POST payloads now handled same way here (via wabac.js/warcio.js) as in other tools (pywb, cdxj-indexer)
+- Customization: Support for automated redirect to live page on not found (via embed options)
+- UI: Updated page not found message
+- UI: Fix location bar refresh not working with hashtag in URL
+- Dependencies: bump to wabac.js 2.7.4
+
 v1.4.2
 - Loading: Optimized loading WACZ in wabac.js (cache compressed index loading to avoid duplicate loading)
 - Loading: General fixes for WACZ loading (better format detection for newer and older versions, surt/non-surt indexes)

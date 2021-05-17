@@ -209,9 +209,9 @@ class Replay extends LitElement
     const oldIframeUrl = this.iframeUrl;
     // set iframe url to expected, refresh if same url
     this.doSetIframeUrl();
-    if (oldIframeUrl === this.iframeUrl) {
+    if (oldIframeUrl === this.iframeUrl || this.url === this.replayUrl) {
       this.waitForLoad();
-      iframe.contentWindow.location.href = this.iframeUrl;
+      iframe.contentWindow.location.reload();
     }
   }
 
