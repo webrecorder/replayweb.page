@@ -1,8 +1,8 @@
-import { LitElement, html, css } from 'lit-element';
-import { wrapCss } from './misc';
+import { LitElement, html, css } from "lit-element";
+import { wrapCss } from "./misc";
 
-import fasSortDown from '@fortawesome/fontawesome-free/svgs/solid/sort-down.svg';
-import fasSortUp from '@fortawesome/fontawesome-free/svgs/solid/sort-up.svg';
+import fasSortDown from "@fortawesome/fontawesome-free/svgs/solid/sort-down.svg";
+import fasSortUp from "@fortawesome/fontawesome-free/svgs/solid/sort-up.svg";
 
 
 // ===========================================================================
@@ -16,7 +16,7 @@ class Sorter extends LitElement
     this.pageResults = 0;
     this.numResults = 0;
 
-    this.sortKey = null
+    this.sortKey = null;
     this.sortDesc = null;
   }
 
@@ -31,7 +31,7 @@ class Sorter extends LitElement
 
       sortKey: { type: String },
       sortDesc: { type: Boolean },
-    }
+    };
   }
 
   firstUpdated() {
@@ -126,7 +126,7 @@ class Sorter extends LitElement
       `)}
       </select>
     </div>
-    <button @click=${(e) => this.sortDesc = !this.sortDesc} class="button is-small">
+    <button @click=${() => this.sortDesc = !this.sortDesc} class="button is-small">
       <span>Order:</span>
       <span class="is-sr-only">${this.sortDesc ? "Ascending" : "Descending"}</span>
       <span class="icon"><fa-icon aria-hidden="true" .svg=${this.sortDesc ? fasSortUp : fasSortDown}></span>

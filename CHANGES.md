@@ -1,5 +1,50 @@
 ## CHANGES
 
+v1.4.2
+- Loading: Optimized loading WACZ in wabac.js (cache compressed index loading to avoid duplicate loading)
+- Loading: General fixes for WACZ loading (better format detection for newer and older versions, surt/non-surt indexes)
+- Update to latest wabac.js 2.7.3
+
+v1.4.1
+- Replay: Remove 'download' attribute from anchor tags, which doesn't work in Chrome
+- Loading: Fix loading of full-text search index from older wacz
+
+v1.4.0
+- Embed: add 'noSandbox' option to not add sandbox to embed iframe
+- UI: Double-clicking on page entry causes reload.
+- UI: Fix location bar enter not always reloading specified URL
+- UI: Fix 'Purge and Reload' to reload current page
+- UI: Fix initial load not properly waiting for service worker
+- UI: Show 'Loading Archives...' on initial load, until first API response succeeds, instead of 'No Archives'
+- Fidelity: Improved fuzzy matching for dynamic sites
+- Fidelity: Fix for multipart/form-data replay dropping certain query params
+- Fidelity: don't remove spaces in css urls
+- Fidelity: Better detection of JSON responses served in response to 'Accept: application/json' but with wrong content-type
+- Docs: copy package.json to 'data' to allow access to version in UI, use latest fixed version in Collec
+- API: Switch from /wabac/ -> /w/ for replay paths, make path configurable
+- Extensibility: Make file chooser, collection list more extensible/stylable (for use with archiveweb.page)
+- Lint pass on code base
+- Dependencies: wabac 2.7.0, bulma 0.9.2, electron 11.4.3
+
+v1.3.15
+- Fidelity: fix encoding issues with UTF-8 encoded JS/CSS introduced in 1.3.13 (fixed via wabac 2.6.9)
+- Dependencies: wabac 2.6.9
+
+v1.3.14
+- Build: Fix incorrectly packaged npm package for 1.3.13, no other changes
+
+v1.3.13
+- Fidelity: fix encoding issues with non-UTF-8 encoded pages (wabac 2.6.8)
+- Fidelity: Better detection of JSONP, better rewriting of pages that use JSONP (wabac 2.6.7)
+- Dependencies: wabac 2.6.8
+
+v1.3.12
+- Loading: Fix bug with pages from WACZ files showing loading time, instead of actual timestamp.
+- Loading: WACZ loading works efficiently even when HEAD method is not supported.
+- Embeds: Resolve embed source to current page instead of to replayBase
+- Documentation: Updated Documentation with new images, troubleshooting and updated embed guide with reference and CORS help.
+- Dependencies: wabac 2.6.6
+
 v1.3.11
 - Loading: Fix regression in indexing of WARCs, including ignoring metadata records that were accidentally being indexed.
 - Loading: Add periodic ping when loading to avoid serviceworker shutdown in Firefox.

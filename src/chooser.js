@@ -1,7 +1,7 @@
-import { LitElement, html, css } from 'lit-element';
-import { IS_APP, wrapCss } from './misc';
+import { LitElement, html, css } from "lit-element";
+import { IS_APP, wrapCss } from "./misc";
 
-import fasUpload from '@fortawesome/fontawesome-free/svgs/solid/upload.svg';
+import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
 
 
 // ===========================================================================
@@ -14,12 +14,18 @@ class Chooser extends LitElement
     this.file = null;
 
     this.hasNativeFS = !!window.showOpenFilePicker && !IS_APP;
+
+    this.newFullImport = false;
+
+    this.noHead = false;
   }
 
   static get properties() {
     return {
-      fileDisplayName: { type: String }
-    }
+      fileDisplayName: { type: String },
+      newFullImport: { type: Boolean },
+      noHead: { type: Boolean }
+    };
   }
 
   onChooseFile(event) {
@@ -40,16 +46,17 @@ class Chooser extends LitElement
     const options = {
       types: [
         {
-          description: 'WARC, WACZ, HAR and WBN Files',
+          description: "WARC, WACZ, HAR and WBN Files",
           accept: {
-            'application/warc': ['.warc', '.gz'],
-            'application/har': ['.har'],
-            'application/wacz': ['.wacz'],
-            'application/wbn': ['.wbn']
+            "application/warc": [".warc", ".gz"],
+            "application/har": [".har"],
+            "application/wacz": [".wacz"],
+            "application/wbn": [".wbn"],
+            "application/json": [".json"],
           }
         }
       ]
-    }
+    };
 
     const [fileHandle] = await window.showOpenFilePicker(options);
     this.fileHandle = fileHandle;
@@ -71,12 +78,13 @@ class Chooser extends LitElement
       loadInfo.isFile = true;
       // file.path only available in electron app
       if (this.file.path) {
+        // eslint-disable-next-line no-undef
         const url = new URL(__APP_FILE_SERVE_PREFIX__);
         url.searchParams.set("filename", this.file.path);
         loadInfo.loadUrl = url.href;
         loadInfo.noCache = true;
       } else if (this.fileHandle) {
-        loadInfo.loadUrl = this.fileDisplayName + "-" + this.randomId();
+        loadInfo.loadUrl = this.fileDisplayName;
         loadInfo.extra = {fileHandle: this.fileHandle};
         loadInfo.noCache = false;
       } else {
@@ -87,6 +95,8 @@ class Chooser extends LitElement
       loadInfo.size = this.file.size;
       loadInfo.name = this.fileDisplayName;
     }
+
+    loadInfo.newFullImport = this.newFullImport;
 
     this.dispatchEvent(new CustomEvent("load-start", {detail: loadInfo}));
 
@@ -119,11 +129,18 @@ class Chooser extends LitElement
     }
     .panel-heading {
       background-color: #cff3ff;
+    }
+    .message-header {
+      background-color: #cff3ff;
+      color: black;
+    }
+    .heading-size {
       font-size: 0.85rem;
     }
     form {
       flex-grow: 1;
       flex-shrink: 0;
+      margin-bottom: 0;
     }
     p.control.is-expanded {
       width: min-content;
@@ -149,20 +166,20 @@ class Chooser extends LitElement
       }
     }
   `);
-  };
+  }
 
   render() {
     return html`
-    <section class="section less-padding">
-      <div class="panel">
-        <h4 class="panel-heading">Load Web Archive</h4>
-        <div class="extra-padding panel-block file has-name">
+    <section class="section ${this.noHead ? "is-paddingless" : "less-padding"}">
+      <div class="${this.noHead ? "" : "panel"}">
+        <div class="${this.noHead ? "is-hidden" : "panel-heading"} heading-size">${this.newFullImport ? "Import Existing" : "Load"} Web Archive</div>
+        <div class="${this.noHead ? "" : "panel-body extra-padding"} file has-name ${this.noHead ? "is-small" : ""}">
           <form class="is-flex" @submit="${this.onStartLoad}">
             <label class="file-label">
               ${!this.hasNativeFS ? html`
               <input class="file-input"
                 @click="${(e) => e.currentTarget.value = null}"
-                @change=${this.onChooseFile} type="file" id="fileupload" name="fileupload">` : ``}
+                @change=${this.onChooseFile} type="file" id="fileupload" name="fileupload">` : ""}
               <span class="file-cta" @click="${this.onChooseNativeFile}">
                 <span class="file-icon">
                   <fa-icon size="0.9em" .svg=${fasUpload} aria-hidden="true"></fa-icon>
@@ -175,16 +192,16 @@ class Chooser extends LitElement
 
             <div class="field has-addons">
               <p class="control is-expanded">
-                <input class="file-name input" type="text"
+                <input class="file-name input ${this.noHead ? "is-small" : ""}" type="text"
                 name="filename" id="filename"
-                pattern="((file|http|https|ipfs|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn))|(googledrive:\/\/.+)"
+                pattern="((file|http|https|ipfs|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn|json))|(googledrive:\/\/.+)"
                 .value="${this.fileDisplayName}"
                 @input="${this.onInput}"
                 autocomplete="off"
-                placeholder="Enter a URL or click 'Choose File' to select a WARC, WACZ, HAR or WBN archive source">
+                placeholder="${this.newFullImport ? "Click 'Choose File' to select a local archive to import" : "Enter a URL or click 'Choose File' to select a WARC, WACZ, HAR or WBN archive source"}">
               </p>
               <div class="control">
-                <button type="submit" class="button is-hidden-mobile is-primary">Load</button>
+                <button type="submit" class="button is-hidden-mobile is-primary ${this.noHead ? "is-small" : ""}">${this.newFullImport ? "Import" : "Load"}</button>
               </div>
             </div>
 

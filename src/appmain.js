@@ -1,11 +1,11 @@
-import { LitElement, html, css } from 'lit-element';
-import { wrapCss, rwpLogo, IS_APP, clickOnSpacebarPress } from './misc';
+import { LitElement, html, css } from "lit-element";
+import { wrapCss, rwpLogo, IS_APP, VERSION, clickOnSpacebarPress } from "./misc";
 
-import { registerSW } from './pageutils';
+import { registerSW } from "./pageutils";
 
-import fasHelp from '@fortawesome/fontawesome-free/svgs/solid/question-circle.svg';
-import fasArrowLeft from '@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg';
-import fasArrowRight from '@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg';
+import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.svg";
+import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
+import fasArrowRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
 
 
 // ===========================================================================
@@ -16,7 +16,7 @@ class ReplayWebApp extends LitElement
     this.sourceUrl = null;
     this.collTitle = null;
     this.showAbout = false;
-    this.pageParams = {};
+    this.pageParams = new URLSearchParams();
 
     this.inited = false;
     this.navMenuShown = false;
@@ -25,6 +25,9 @@ class ReplayWebApp extends LitElement
     this.pageTitle = "";
     this.pageReplay = false;
 
+    this.loadInfo = null;
+
+    // eslint-disable-next-line no-undef
     registerSW(__SW_NAME__);
 
     this.safariKeyframes();
@@ -52,7 +55,7 @@ class ReplayWebApp extends LitElement
       pageTitle: { type: String },
       pageReplay: { type: Boolean },
       source: { type: String }
-    }
+    };
   }
 
   static get styles() {
@@ -168,30 +171,30 @@ class ReplayWebApp extends LitElement
           <span class="no-wrap is-size-6">&nbsp;&nbsp;/&nbsp;
           ${this.pageReplay ? html`<i>${this.pageTitle}</i>` : this.pageTitle}
           </span>
-          ` : ``}
+          ` : ""}
           `: html`
           <span class="navbar-item wr-logo-item">
             <fa-icon id="wrlogo" size="1.0rem" .svg=${this.mainLogo} aria-hidden="true"></fa-icon>
           </span>
         `}
         <a href="#" role="button" id="menu-button" @click="${this.onNavMenu}" @keyup="${clickOnSpacebarPress}"
-          class="navbar-burger burger ${this.navMenuShown ? 'is-active' : ''}" aria-label="main menu" aria-haspopup="true" aria-expanded="${this.navMenuShown}">
+          class="navbar-burger burger ${this.navMenuShown ? "is-active" : ""}" aria-label="main menu" aria-haspopup="true" aria-expanded="${this.navMenuShown}">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
       ${!this.sourceUrl ? html`
-      <div class="navbar-menu ${this.navMenuShown ? 'is-active' : ''}">
+      <div class="navbar-menu ${this.navMenuShown ? "is-active" : ""}">
         <div class="navbar-start">
           ${IS_APP ? html`
-            <a role="button" href="#" class="navbar-item arrow-button" title="Go Back" @click="${(e) => window.history.back()}" @keyup="${clickOnSpacebarPress}">
+            <a role="button" href="#" class="navbar-item arrow-button" title="Go Back" @click="${() => window.history.back()}" @keyup="${clickOnSpacebarPress}">
               <fa-icon size="1.0rem" .svg="${fasArrowLeft}" aria-hidden="true"></fa-icon><span class="menu-only is-size-7">&nbsp;Go Back</span>
             </a>
-            <a role="button" href="#" class="navbar-item arrow-button" title="Go Forward" @click="${(e) => window.history.forward()}" @keyup="${clickOnSpacebarPress}">
+            <a role="button" href="#" class="navbar-item arrow-button" title="Go Forward" @click="${() => window.history.forward()}" @keyup="${clickOnSpacebarPress}">
               <fa-icon size="1.0rem" .svg="${fasArrowRight}" aria-hidden="true"></fa-icon><span class="menu-only is-size-7">&nbsp;Go Forward</span>
             </a>
-          ` : ``}
+          ` : ""}
         </div>
         ${!this.embed ? html`
         <div class="navbar-end">
@@ -211,8 +214,8 @@ class ReplayWebApp extends LitElement
     -- NB: the About modal is currently inaccessible to people using keyboards or screen readers.
     --  Should all the JS and infrastructure for accessible modals be added, or should About be a normal page?
     -->
-    <a href="?terms" @click="${(e) => { e.preventDefault(); this.showAbout = true} }"class="navbar-item is-size-6">About
-    </a>`
+    <a href="?terms" @click="${(e) => { e.preventDefault(); this.showAbout = true;} }"class="navbar-item is-size-6">About
+    </a>`;
   }
 
   renderColl() {
@@ -225,7 +228,7 @@ class ReplayWebApp extends LitElement
     @replay-favicons=${this.onFavIcons}
     @update-title=${this.onTitle}
     @coll-loaded=${this.onCollLoaded}
-    @about-show=${(e) => this.showAbout = true}></wr-coll>`;
+    @about-show=${() => this.showAbout = true}></wr-coll>`;
   }
 
   renderHomeIndex() {
@@ -233,7 +236,7 @@ class ReplayWebApp extends LitElement
       <wr-coll-index>
       ${!IS_APP ? html`
       <p slot="header" class="tagline is-size-5 has-text-centered">Explore and Replay Interactive Archived Webpages Directly in your Browser. <i><a target="_blank" href="./docs/examples">(See Examples)</a></i></p>
-      ` : ``}
+      ` : ""}
       <wr-chooser slot="header" @load-start=${this.onStartLoad}></wr-chooser>
     </wr-coll-index>`;
   }
@@ -244,17 +247,17 @@ class ReplayWebApp extends LitElement
     }
 
     return html`
-      ${!this.embed || this.embed === "full" ? this.renderNavBar() : ''}
+      ${!this.embed || this.embed === "full" ? this.renderNavBar() : ""}
 
       ${this.sourceUrl ? this.renderColl() : this.renderHomeIndex()}
 
-      ${this.showAbout ? this.renderAbout() : ``}
+      ${this.showAbout ? this.renderAbout() : ""}
     `;
   }
 
   firstUpdated() {
     this.initRoute();
-    window.addEventListener("popstate", (event) => {
+    window.addEventListener("popstate", () => {
       this.initRoute();
     });
   }
@@ -266,7 +269,7 @@ class ReplayWebApp extends LitElement
   }
 
   onFavIcons(event) {
-    const head = document.querySelector('head');
+    const head = document.querySelector("head");
     const oldLinks = document.querySelectorAll("link[rel*='icon']");
 
     for (const link of oldLinks) {
@@ -274,7 +277,7 @@ class ReplayWebApp extends LitElement
     }
 
     for (const icon of event.detail.icons) {
-      const link = document.createElement('link');
+      const link = document.createElement("link");
       link.rel = icon.rel;
       link.href = icon.href;
       head.appendChild(link);
@@ -285,7 +288,7 @@ class ReplayWebApp extends LitElement
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
     event.preventDefault();
-    this.renderRoot.querySelector("#skip-main-target").focus()
+    this.renderRoot.querySelector("#skip-main-target").focus();
   }
 
   onNavMenu(event) {
@@ -348,7 +351,7 @@ class ReplayWebApp extends LitElement
 
     if (this.pageParams.get("config")) {
       if (!this.loadInfo) {
-        this.loadInfo = {}
+        this.loadInfo = {};
       }
       try {
         this.loadInfo.extraConfig = JSON.parse(this.pageParams.get("config"));
@@ -359,7 +362,7 @@ class ReplayWebApp extends LitElement
 
     if (this.pageParams.get("basePageUrl")) {
       if (!this.loadInfo) {
-        this.loadInfo = {extraConfig: {}}
+        this.loadInfo = {extraConfig: {}};
       }
       if (!this.loadInfo.extraConfig) {
         this.loadInfo.extraConfig = {};
@@ -369,18 +372,19 @@ class ReplayWebApp extends LitElement
 
     if (this.pageParams.get("customColl")) {
       if (!this.loadInfo) {
-        this.loadInfo = {}
+        this.loadInfo = {};
       }
       this.loadInfo.customColl = this.pageParams.get("customColl");
     }
 
     if (IS_APP && this.sourceUrl.startsWith("file://")) {
+      // eslint-disable-next-line no-undef
       const url = new URL(__APP_FILE_SERVE_PREFIX__);
       url.searchParams.set("filename", this.sourceUrl.slice("file://".length));
       this.loadInfo = {
         sourceUrl: this.sourceUrl,
         loadUrl: url.href,
-      }
+      };
     }
   }
 
@@ -456,7 +460,7 @@ class ReplayWebApp extends LitElement
         <div class="modal-background" @click="${this.onAboutClose}"></div>
           <div class="modal-card">
             <header class="modal-card-head">
-              <p class="modal-card-title">About ReplayWeb.page ${IS_APP ? 'App' : ''}</p>
+              <p class="modal-card-title">About ReplayWeb.page ${IS_APP ? "App" : ""}</p>
               <button class="delete" aria-label="close" @click="${this.onAboutClose}"></button>
             </header>
             <section class="modal-card-body">
@@ -465,7 +469,7 @@ class ReplayWebApp extends LitElement
                   <div style="display: flex">
                     <div class="has-text-centered" style="width: 220px">
                       <wr-anim-logo class="logo" size="48px"></wr-anim-logo>
-                      <div style="font-size: smaller; margin-bottom: 1em">${IS_APP ? 'App' : ''} v${__VERSION__}</div>
+                      <div style="font-size: smaller; margin-bottom: 1em">${IS_APP ? "App" : ""} v${VERSION}</div>
                     </div>
 
                     ${IS_APP ? html`

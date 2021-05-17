@@ -1,12 +1,15 @@
 "use strict";
 
-import { LitElement, html, css, unsafeCSS } from 'lit-element';
-import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { styleMap } from 'lit-html/directives/style-map';
+import { LitElement, html, css, unsafeCSS } from "lit-element";
+import { unsafeSVG } from "lit-html/directives/unsafe-svg";
+import { styleMap } from "lit-html/directives/style-map";
 
-import allCssRaw from '../assets/main.scss';
+import allCssRaw from "../assets/main.scss";
 
-import rwpLogo from '../assets/logo.svg';
+import rwpLogo from "../assets/logo.svg";
+
+const apiPrefix = "./w/api";
+const replayPrefix = "./w";
 
 
 // ===========================================================================
@@ -15,8 +18,10 @@ function wrapCss(custom) {
   return [allCss, custom];
 }
 
-const IS_APP = window.IS_APP || window.electron && window.electron.IS_APP || window.matchMedia('(display-mode: standalone)').matches;
+const IS_APP = window.IS_APP || window.electron && window.electron.IS_APP || window.matchMedia("(display-mode: standalone)").matches;
 
+// eslint-disable-next-line no-undef
+const VERSION = __VERSION__;
 
 // ===========================================================================
 // Buttons are expected to respond to both enter/return and spacebar.
@@ -45,7 +50,7 @@ class FaIcon extends LitElement
       size: { type: String },
       width: { type: String },
       height: { type: String }
-    }
+    };
   }
 
   static get styles() {
@@ -137,7 +142,7 @@ class WrModal extends LitElement
     return {
       title: { type: String },
       bgClass: { type: String }
-    }
+    };
   }
 
   static get styles() {
@@ -178,5 +183,5 @@ customElements.define("wr-anim-logo", AnimLogo);
 
 customElements.define("wr-modal",  WrModal);
 
-export { wrapCss, IS_APP, clickOnSpacebarPress, rwpLogo, FaIcon, AnimLogo, WrModal,
-         LitElement, html, css, unsafeCSS, unsafeSVG };
+export { wrapCss, IS_APP, VERSION, clickOnSpacebarPress, rwpLogo, FaIcon, AnimLogo, WrModal,
+  LitElement, html, css, unsafeCSS, unsafeSVG, apiPrefix, replayPrefix };

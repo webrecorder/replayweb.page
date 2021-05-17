@@ -1,12 +1,12 @@
-import prettyBytes from 'pretty-bytes';
+import prettyBytes from "pretty-bytes";
 
-import { LitElement, html, css, unsafeCSS } from 'lit-element';
+import { LitElement, html, css, unsafeCSS } from "lit-element";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
-import { getReplayLink } from './pageutils';
+import { getReplayLink } from "./pageutils";
 
-import { wrapCss } from './misc';
+import { wrapCss } from "./misc";
 
 
 // ===========================================================================
@@ -39,7 +39,7 @@ class PageEntry extends LitElement
       index: { type: Number },
       isCurrent: { type: Boolean },
       isSidebar: { type: Boolean },
-    }
+    };
   }
 
   static get styles() {
@@ -95,7 +95,7 @@ class PageEntry extends LitElement
         align-self: center;
       }
 
-      .delete {
+      .delete-button {
         position: absolute;
         top: 8px;
         right: 8px;
@@ -190,12 +190,12 @@ class PageEntry extends LitElement
       <label class="checkbox">
       <input @change=${this.onSendSelToggle} type="checkbox" .checked="${this.selected}">
       </label>
-    </div>` : ``}
+    </div>` : ""}
 
     <div class="columns">
       ${this.index ? html`
       <div class="column col-index is-1 is-size-7">${this.index}.</div>
-      ` : ``}
+      ` : ""}
       <div class="column col-date is-2">
         <div>${date ? date.toLocaleDateString() : ""}</div>
         <div>${date ? date.toLocaleTimeString() : ""}</div>
@@ -205,13 +205,13 @@ class PageEntry extends LitElement
           <figure class="media-left">
             <p class="">
             ${this.iconValid ? html`
-              <img class="favicon" @error="${(e) => this.iconValid = false}" src="${this.replayPrefix}/${this.page.timestamp}id_/${p.favIconUrl}"/>` : html`
+              <img class="favicon" @error="${() => this.iconValid = false}" src="${this.replayPrefix}/${this.page.timestamp}id_/${p.favIconUrl}"/>` : html`
               <span class="favicon"></span>`}
             </p>
           </figure>
-          <div class="media-content ${this.isCurrent ? 'current' : ''}">
+          <div class="media-content ${this.isCurrent ? "current" : ""}">
             <div role="heading" aria-level="${this.isSidebar ? "4": "3"}">
-              <a @click="${this.onReplay}" href="${getReplayLink("pages", this.page.url, this.page.timestamp)}">
+              <a @dblclick="${this.onReload}" @click="${this.onReplay}" href="${getReplayLink("pages", this.page.url, this.page.timestamp)}">
               <p class="is-size-6 has-text-weight-bold has-text-link text">
               <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
               </p>
@@ -226,16 +226,16 @@ class PageEntry extends LitElement
           ${hasSize ? html`
           <div class="media-right" style="margin-right: 2em">
             ${prettyBytes(p.size)}
-          </div>` : ``}
+          </div>` : ""}
         </div>
       </div>
     </div>
 
     ${editable ? html`
       ${!this.deleting ? html`
-      <button @click="${this.onSendDeletePage}" class="delete"></button>` : html`
-      <button class="button delete is-loading is-static"></button>
-      `}` : ''}
+      <button @click="${this.onSendDeletePage}" class="delete delete-button"></button>` : html`
+      <button class="button is-loading delete-button is-static"></button>
+      `}` : ""}
     `;
   }
 
@@ -268,7 +268,7 @@ class PageEntry extends LitElement
 
     if (!this.query || !this.page.text) {
       this.textSnippet = null;
-      this.requestUpdate('textSnippet', oldVal);
+      this.requestUpdate("textSnippet", oldVal);
       return;
     }
 
@@ -285,7 +285,7 @@ class PageEntry extends LitElement
 
       if (inx < 0) {
         this.textSnippet = null;
-        this.requestUpdate('textSnippet', oldVal);
+        this.requestUpdate("textSnippet", oldVal);
         return;
       }
 
@@ -305,25 +305,29 @@ class PageEntry extends LitElement
       this.textSnippet = "..." + textContent.slice(inx, lastInx) + "...";
     }
 
-    this.requestUpdate('textSnippet', oldVal);
+    this.requestUpdate("textSnippet", oldVal);
   }
 
-  onReplay(event) {
+  onReplay(event, reload = false) {
     event.preventDefault();
 
     const data = {
       url: this.page.url,
       ts: this.page.timestamp,
     };
-    this.sendChangeEvent(data);
+    this.sendChangeEvent(data, reload);
     return false;
   }
 
-  sendChangeEvent(data) {
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {bubbles: true, composed: true, detail: {data}}));
+  onReload(event) {
+    return this.onReplay(event, true);
   }
 
-  onSendDeletePage(event) {
+  sendChangeEvent(data, reload) {
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", {bubbles: true, composed: true, detail: {data, reload}}));
+  }
+
+  onSendDeletePage() {
     const page = this.page;
     this.dispatchEvent(new CustomEvent("delete-page", {detail: {page}}));
   }

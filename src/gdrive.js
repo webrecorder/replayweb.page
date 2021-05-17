@@ -1,7 +1,7 @@
-import { LitElement, html, css } from 'lit-element';
-import { wrapCss } from './misc';
+import { LitElement, html, css } from "lit-element";
+import { wrapCss } from "./misc";
 
-import fabGoogleDrive from '@fortawesome/fontawesome-free/svgs/brands/google-drive.svg';
+import fabGoogleDrive from "@fortawesome/fontawesome-free/svgs/brands/google-drive.svg";
 
 
 // ===========================================================================
@@ -21,7 +21,7 @@ class GDrive extends LitElement
       sourceUrl: { type: String },
       error: { type: Boolean },
       reauth: { type: Boolean }
-    }
+    };
   }
 
   updated(changedProperties) {
@@ -41,6 +41,7 @@ class GDrive extends LitElement
     try {
       const sourceUrl = this.sourceUrl;
       const fileId = sourceUrl.slice("googledrive://".length);
+      // eslint-disable-next-line no-undef
       const publicCheckUrl = `${__HELPER_PROXY__}/g/${fileId}`;
 
       let resp = null;
@@ -87,7 +88,7 @@ class GDrive extends LitElement
 
   onLoad() {
     this.scriptLoaded = true;
-    this.gauth('none', (response) => {
+    this.gauth("none", (response) => {
       if (response.error) {
         if (this.state !== "implicitonly") {
           this.state = "trymanual";
@@ -99,7 +100,7 @@ class GDrive extends LitElement
   }
 
   onClickAuth() {
-    this.gauth('select_account', (response) => {
+    this.gauth("select_account", (response) => {
       if (!response.error) {
         this.authed(response);
       }
@@ -144,12 +145,12 @@ class GDrive extends LitElement
     ` : html`
     ${this.error ? html`
     <div class="error has-text-danger">
-      <p>${this.reauth ? 'Some resources are loaded on demand from Google Drive, which requires reauthorization.' :
-      'Could not access this file with the current Google Drive account.'}</p>
+      <p>${this.reauth ? "Some resources are loaded on demand from Google Drive, which requires reauthorization." :
+    "Could not access this file with the current Google Drive account."}</p>
       <p>If you have multiple Google Drive accounts, be sure to select the correct one.</p>
     </div>
     <br/>
-    ` : ``}
+    ` : ""}
     <button class="button is-warning is-rounded" @click="${this.onClickAuth}">
     <span class="icon"><fa-icon .svg="${fabGoogleDrive}"></fa-icon></span>
     <span>Authorize Google Drive</span>
@@ -161,19 +162,20 @@ class GDrive extends LitElement
     if (this.state === "trypublic" || this.scriptLoaded) {
       return html``;
     }
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.onload = (() => this.onLoad());
-    script.src = 'https://apis.google.com/js/platform.js';
+    script.src = "https://apis.google.com/js/platform.js";
     return script;
   }
 
   gauth(prompt, callback) {
-    gapi.load('auth2', () => {
-      gapi.auth2.authorize({
-          client_id: __GDRIVE_CLIENT_ID__,
-          scope: "https://www.googleapis.com/auth/drive.file",
-          response_type: "token",
-          prompt
+    self.gapi.load("auth2", () => {
+      self.gapi.auth2.authorize({
+        // eslint-disable-next-line no-undef
+        client_id: __GDRIVE_CLIENT_ID__,
+        scope: "https://www.googleapis.com/auth/drive.file",
+        response_type: "token",
+        prompt
       }, callback);
     });
   }

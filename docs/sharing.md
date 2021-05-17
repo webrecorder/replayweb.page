@@ -2,7 +2,6 @@
 layout: default
 title: Sharing Web Archives
 nav_order: 3
-parent: Usage
 permalink: /docs/sharing
 ---
 

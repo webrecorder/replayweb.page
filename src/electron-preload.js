@@ -1,10 +1,10 @@
-"use strict";
+/*eslint-env node */
 
-import { CollectionLoader } from '@webrecorder/wabac/src/loaders';
+import { CollectionLoader } from "@webrecorder/wabac/src/loaders";
 
-const { ipcRenderer, contextBridge } = require('electron');
+const { ipcRenderer, contextBridge } = require("electron");
 
-contextBridge.exposeInMainWorld('electron', {'IS_APP': true});
+contextBridge.exposeInMainWorld("electron", {"IS_APP": true});
 
 const dbs = {};
 
@@ -43,7 +43,7 @@ async function getResponse(event, request, coll, ts, channel) {
   ipcRenderer.send(channel, result.status, headers, buffer);
 }
 
-ipcRenderer.on('getresponse', getResponse);
+ipcRenderer.on("getresponse", getResponse);
 
 export { getDB, getColl, loader };
 

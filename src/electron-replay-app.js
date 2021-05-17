@@ -1,29 +1,31 @@
-import fetch from 'node-fetch';
-import { Headers } from 'node-fetch';
+/*eslint-env node */
 
-import {app, session, BrowserWindow, ipcMain, screen, shell } from 'electron';
+import fetch from "node-fetch";
+import { Headers } from "node-fetch";
 
-import path from 'path';
-import fs from 'fs';
+import {app, session, BrowserWindow, ipcMain, screen, shell } from "electron";
 
-import { ArchiveResponse, Rewriter } from '@webrecorder/wabac/src/rewrite';
-import { IPFSClient } from '@webrecorder/wabac/src/ipfs';
+import path from "path";
+import fs from "fs";
 
-import { PassThrough, Readable } from 'stream';
+import { ArchiveResponse, Rewriter } from "@webrecorder/wabac/src/rewrite";
+import { IPFSClient } from "@webrecorder/wabac/src/ipfs";
+
+import { PassThrough, Readable } from "stream";
 
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
 
-import mime from 'mime-types';
+import mime from "mime-types";
 
 global.Headers = Headers;
 global.fetch = fetch;
 
 const STATIC_PREFIX = "http://localhost:5471/";
 
-const REPLAY_PREFIX = STATIC_PREFIX + "wabac/";
+const REPLAY_PREFIX = STATIC_PREFIX + "w/";
 
-const URL_RX = /([^\/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
+const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
 
 let IPFS = null;
@@ -76,11 +78,11 @@ class ElectronReplayApp
   get mainWindowWebPreferences() {
     return {
       plugins: true,
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"),
       nativeWindowOpen: true,
       contextIsolation: true,
       enableRemoteModule: false
-    }
+    };
   }
 
   get mainWindowUrl() {
@@ -95,7 +97,7 @@ class ElectronReplayApp
       console.log("App already running, opening new window in first instance and quitting");
       app.quit();
     } else {
-      app.on('second-instance', (event, commandLine, workingDirectory) => {
+      app.on("second-instance", (event, commandLine/*, workingDir*/) => {
         // Just create a new window in case of second instance request
         this.createMainWindow(commandLine);
       });
@@ -103,43 +105,43 @@ class ElectronReplayApp
 
     if (includePlugins) {
       switch (process.platform) {
-        case 'win32':
-          this.pluginPath = path.join(this.projPath, "plugins-win", `pepflashplayer-x86${process.arch === 'x64' ? '_64' : ''}.dll`);
-          break;
+      case "win32":
+        this.pluginPath = path.join(this.projPath, "plugins-win", `pepflashplayer-x86${process.arch === "x64" ? "_64" : ""}.dll`);
+        break;
     
-        case 'darwin':
-          this.pluginPath = path.join(this.projPath, "plugins-mac", "PepperFlashPlayer.plugin");
-          break;
+      case "darwin":
+        this.pluginPath = path.join(this.projPath, "plugins-mac", "PepperFlashPlayer.plugin");
+        break;
     
-        case 'linux':
-          this.pluginPath = path.join(this.projPath, "plugins-mac", "libpepflashplayer.so");
-          break;
+      case "linux":
+        this.pluginPath = path.join(this.projPath, "plugins-mac", "libpepflashplayer.so");
+        break;
     
-        default:
-          console.log('platform unsupported: ' + process.platform);
-          break;
+      default:
+        console.log("platform unsupported: " + process.platform);
+        break;
       }
 
-      app.commandLine.appendSwitch('ppapi-flash-path', this.pluginPath);
+      app.commandLine.appendSwitch("ppapi-flash-path", this.pluginPath);
     }
 
-    console.log('app path', this.appPath);
-    console.log('dir name', __dirname);
-    console.log('proj path', this.projPath);
+    console.log("app path", this.appPath);
+    console.log("dir name", __dirname);
+    console.log("proj path", this.projPath);
 
     if (includePlugins) {
-      console.log('plugin path', this.pluginPath);
+      console.log("plugin path", this.pluginPath);
     }
 
-    console.log('app data', app.getPath('appData'));
-    console.log('user data', app.getPath('userData'));
+    console.log("app data", app.getPath("appData"));
+    console.log("user data", app.getPath("userData"));
 
     if (this.profileName) {
-      app.setPath('userData', path.join(app.getPath('appData'), this.profileName));
+      app.setPath("userData", path.join(app.getPath("appData"), this.profileName));
     }
 
-    app.on('will-finish-launching', () => {
-      app.on('open-file', (event, filePath) => {
+    app.on("will-finish-launching", () => {
+      app.on("open-file", (event, filePath) => {
         this.openNextFile = filePath;
         if (this.mainWindow) {
           this.createMainWindow(process.argv);
@@ -147,7 +149,7 @@ class ElectronReplayApp
       });
     });
 
-    app.on('activate', function () {
+    app.on("activate", function () {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (BrowserWindow.getAllWindows().length === 0) {
@@ -158,7 +160,7 @@ class ElectronReplayApp
     app.whenReady().then(() => this.onAppReady());
 
     // Quit when all windows are closed.
-    app.on('window-all-closed', function () {
+    app.on("window-all-closed", function () {
       // On macOS it is common for applications and their menu bar
       // to stay active until the user quits explicitly with Cmd + Q
       //if (process.platform !== 'darwin')
@@ -177,8 +179,8 @@ class ElectronReplayApp
 
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
 
-    app.on('web-contents-created', (event, contents) => {
-      contents.on('new-window', async (event, navigationUrl) => {
+    app.on("web-contents-created", (event, contents) => {
+      contents.on("new-window", async (event, navigationUrl) => {
         
         // load docs in native browser for now
         if (navigationUrl === STATIC_PREFIX + "docs") {
@@ -251,6 +253,7 @@ class ElectronReplayApp
       return this.notFound(request.url, callback);
     }
 
+    // eslint-disable-next-line no-undef
     if (request.url.startsWith(__APP_FILE_SERVE_PREFIX__)) {
       const parsedUrl = new URL(request.url);
 
@@ -330,7 +333,7 @@ class ElectronReplayApp
   notFound(url, callback) {
     console.log("not found: " +  url);
     const data = this._bufferToStream(`Sorry, the url <b>${url}</b> could not be found in this archive.`);
-    callback({statusCode: 404, headers: {"Content-Type": 'text/html; charset="utf-8"'}, data});
+    callback({statusCode: 404, headers: {"Content-Type": "text/html; charset=\"utf-8\""}, data});
   }
 
   async resolveArchiveResponse(request, callback) {
@@ -340,7 +343,7 @@ class ElectronReplayApp
       const url = request.url;
 
       if (status === 404 && !payload) {
-        return notFound(url, callback);
+        return this.notFound(url, callback);
       } else {
         console.log("got response for: " + url);
       }
@@ -426,7 +429,7 @@ class ElectronReplayApp
       isMaximized: true,
       show: false,
       webPreferences: this.mainWindowWebPreferences,
-    }).once('ready-to-show', () => {
+    }).once("ready-to-show", () => {
       theWindow.show();
       theWindow.maximize();
     });
@@ -440,7 +443,7 @@ class ElectronReplayApp
   }
 
   getOpenUrl(argv) {
-    argv = require('minimist')(argv.slice(process.defaultApp ? 2 : 1));
+    argv = require("minimist")(argv.slice(process.defaultApp ? 2 : 1));
 
     const filename = this.openNextFile || argv.filename || argv.f || (argv._.length && argv._[0]);
     this.openNextFile = null;

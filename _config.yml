@@ -4,7 +4,7 @@ remote_theme: pmarsceill/just-the-docs
 title: ReplayWeb.Page
 
 # Enable or disable the site search
-search_enabled: false
+search_enabled: true
 
 # Set the search token separator for hyphenated-word search:
 search_tokenizer_separator: /[\s/]+/
@@ -21,7 +21,6 @@ logo: "/assets/logo.svg"
 
 plugins:
   - jekyll-remote-theme
-
 
 #baseUrl: '/'
 

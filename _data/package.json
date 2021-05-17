@@ -1,0 +1,156 @@
+{
+  "name": "replaywebpage",
+  "productName": "ReplayWeb.page",
+  "version": "1.4.2",
+  "description": "Serverless Web Archive Replay",
+  "repository": "https://github.com/webrecorder/replayweb.page",
+  "homepage": "https://replayweb.page/",
+  "author": "Webrecorder Software",
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "@webrecorder/wabac": "^2.7.3",
+    "bulma": "^0.9.2",
+    "electron-log": "^4.3.0",
+    "electron-updater": "^4.3.5",
+    "fetch-ndjson": "^1.1.0",
+    "flexsearch": "^0.6.32",
+    "ipfs-core": "^0.5.2",
+    "keyword-mark-element": "^0.1.2",
+    "lit-element": "^2.4.0",
+    "marked": "^1.0.0",
+    "mime-types": "^2.1.27",
+    "minimist": "^1.2.5",
+    "pretty-bytes": "^5.3.0",
+    "register-service-worker": "^1.7.1",
+    "split.js": "^1.6.2"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^6.3.0",
+    "css-loader": "^3.5.3",
+    "electron": "^11.4.3",
+    "electron-builder": "^22.7.0",
+    "electron-notarize": "^1.0.0",
+    "http-server": "^0.12.3",
+    "mini-css-extract-plugin": "^0.9.0",
+    "node-sass": "^4.14.0",
+    "raw-loader": "^4.0.1",
+    "sass-loader": "^8.0.2",
+    "style-loader": "^1.2.1",
+    "svg-inline-loader": "^0.8.2",
+    "to-string-loader": "^1.1.6",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "files": [
+    "/assets",
+    "/src",
+    "sw.js",
+    "ui.js",
+    "index.js"
+  ],
+  "scripts": {
+    "build": "webpack --mode production",
+    "build-dev": "webpack --mode development",
+    "build-docs": "bundle install; bundle exec jekyll build",
+    "start-dev": "webpack-dev-server --mode development",
+    "start-prod": "http-server -p 9990",
+    "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
+    "pack-signed": "electron-builder",
+    "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
+    "start-jekyll": "yarn run build-docs && bundle exec jekyll serve",
+    "dist": "yarn run build && yarn run pack",
+    "dist-dev": "yarn run build-dev && yarn run pack",
+    "release": "yarn run build && electron-builder",
+    "lint": "eslint ./src/ webpack.config.js"
+  },
+  "build": {
+    "afterSign": "build/notarize.js",
+    "productName": "ReplayWeb.page",
+    "asar": true,
+    "appId": "net.webrecorder.replaywebpage",
+    "artifactName": "${productName}-${version}.${ext}",
+    "extraMetadata": {
+      "main": "dist/electron.js"
+    },
+    "files": [
+      "!**/node_modules/**/*",
+      "dist/*.js",
+      "dist/prebuilds/${platform}-${arch}/*",
+      "dist/build/*",
+      "*.js",
+      "*.html",
+      "webmanifest.json",
+      {
+        "from": "_site/assets",
+        "to": "assets"
+      }
+    ],
+    "dmg": {
+      "title": "ReplayWeb.page"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "electronLanguages": [
+        "en"
+      ],
+      "extraResources": [
+        "plugins-mac"
+      ]
+    },
+    "linux": {
+      "category": "Archiving;Utility;",
+      "target": [
+        "AppImage"
+      ],
+      "extraResources": [
+        "plugins-linux"
+      ]
+    },
+    "win": {
+      "target": "nsis",
+      "extraResources": [
+        "plugins-win"
+      ]
+    },
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "fileAssociations": [
+      {
+        "ext": "warc",
+        "name": "WARC File",
+        "description": "WARC File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "warc.gz",
+        "name": "WARC File",
+        "description": "WARC File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "har",
+        "name": "HAR File",
+        "description": "HAR File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "wacz",
+        "name": "WACZ File",
+        "description": "Web Archive Collection Zipped (WACZ)",
+        "role": "Viewer"
+      }
+    ]
+  }
+}

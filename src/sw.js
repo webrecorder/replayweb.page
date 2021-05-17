@@ -1,6 +1,6 @@
-import INDEX_HTML from '../index.html';
+import INDEX_HTML from "../index.html";
 
-import { SWReplay } from '@webrecorder/wabac/src/swmain';
+import { SWReplay } from "@webrecorder/wabac/src/swmain";
 
 const staticData = new Map();
 
@@ -12,5 +12,5 @@ staticData.set(prefix + "index.html", {type: "text/html", content: INDEX_HTML});
 
 //const { SWReplay } = require('@webrecorder/wabac/src/swmain');
 self.ipfsCustomPreload = true;
-self.sw = new SWReplay(staticData);
+self.sw = new SWReplay({staticData});
 
