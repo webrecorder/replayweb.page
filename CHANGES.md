@@ -1,7 +1,7 @@
 ## CHANGES
 
 v1.4.4
-- Loading: Fix loading from sources that don't support range requests for HEAD, don't send If-Range header (fixes in wabac.js 2.7.5)
+- Loading: Fix loading from sources that don't support range requests for HEAD, don't send If-Range header (fixes in wabac.js 2.7.6)
 
 v1.4.3
 - Loading: Various fixes to index loading for compessed WACZ index
