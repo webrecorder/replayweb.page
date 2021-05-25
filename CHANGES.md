@@ -1,5 +1,8 @@
 ## CHANGES
 
+v1.4.4
+- Loading: Fix loading from sources that don't support range requests for HEAD, don't send If-Range header (fixes in wabac.js 2.7.5)
+
 v1.4.3
 - Loading: Various fixes to index loading for compessed WACZ index
 - Fidelity: Fix edge-case POST-to-get conversion - binary, empty and text/plain POST payloads now handled same way here (via wabac.js/warcio.js) as in other tools (pywb, cdxj-indexer)
