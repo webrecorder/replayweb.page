@@ -782,7 +782,7 @@
     warcio "^1.4.6"
     wbn "^0.0.3"
 
-"@webrecorder/wombat@^3.1.8", "@webrecorder/wombat@github:webrecorder/wombat":
+"@webrecorder/wombat@^3.1.8":
   version "3.1.8"
   resolved "https://codeload.github.com/webrecorder/wombat/tar.gz/9265b84fa189bca77b7f25fb6c5f4aadbabc379a"
 
@@ -2840,10 +2840,10 @@ electron-updater@^4.3.5:
     lodash.isequal "^4.5.0"
     semver "^7.3.2"
 
-electron@^11.4.3:
-  version "11.4.3"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-11.4.3.tgz#74319635417c24fd19e31cfce5a39c8792e4014b"
-  integrity sha512-RhCWJqiYK5oIRGOheilhg/nngCgk0fPgaf00KvbxorlvFZAz8OeMT5ShCpVsMSoyYhk4XEnn4orRly5ltaFYJg==
+electron@^11.4.8:
+  version "11.4.8"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-11.4.8.tgz#6f89be903bd917bda52afacf7cd3bdf2154b5c79"
+  integrity sha512-NrxlDZN1sWiDCWWOm5aX+tPGtiLgsCUwNqNFP3eJfY+RPdYLsxYRJDFa1vc4GcuCZEp9kZusINjmpPWsvJdspQ==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"

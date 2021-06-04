@@ -310,9 +310,9 @@ class ElectronReplayApp
       }
     }
 
-    // possible 'live leak' attempt, just return not found
+    // possible 'live leak' attempt, return archived version, if any
     if (request.referrer && request.referrer.startsWith(REPLAY_PREFIX)) {
-      return this.notFound(request.url, callback);
+      return await this.resolveArchiveResponse(request, callback);
     }
 
     await this.proxyLive(request, callback);
