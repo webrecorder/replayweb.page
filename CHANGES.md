@@ -1,10 +1,15 @@
 ## CHANGES
 
+v1.4.5
+- Loading: Fix IPFS loading (fixed in wabac.js 2.7.8)
+- Fidelity: Support replaying localStorage/sessionStorage (if available)
+- Dependencies: bump to wabac.js 2.7.7, wombat 3.2.0
+
 v1.4.4
-- Loading: Fix loading from sources that don't support range requests for HEAD, don't send If-Range header (fixes in wabac.js 2.7.8)
+- Loading: Fix loading from sources that don't support range requests for HEAD, don't send If-Range header (fixes in wabac.js 2.7.7)
 - Loading: Cleanup of any partial data loaded when collection load fails (from wabac.js)
 - Fidelity: Improved fidelity of certain sites that use eval() (from wabac.js)
-- Dependencies: bump to wabac.js 2.7.8, wombat 1.3.8, Electron 11.4.8
+- Dependencies: bump to wabac.js 2.7.8, wombat 3.1.8, Electron 11.4.8
 
 v1.4.3
 - Loading: Various fixes to index loading for compessed WACZ index
