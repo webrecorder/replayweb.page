@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.4.6
+- Fidelity: Better WS override that avoids network connection attempts, fixes to pixel ratio override (via wombat.js)
+
+
 v1.4.5
 - Loading: Fix IPFS loading (fixed in wabac.js 2.7.8)
 - Fidelity: Support replaying localStorage/sessionStorage (if available)
