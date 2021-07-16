@@ -2,7 +2,11 @@
 
 v1.4.6
 - Fidelity: Better WS override that avoids network connection attempts, fixes to pixel ratio override (via wombat.js)
-
+- Fidelity: Better SW override, add missing members that caused errors (via wombat.js)
+- Fidelity: Better Storage overrides, more compatible with native Storage APIs (via wombat.js)
+- Fidelity: disable DASH loading for IG videos (via wombat.js)
+- Loading: Include hashtag URL on not found pages (via wabac.js)
+- Dependencies: bump to wabac.js 2.7.10, wombat 3.2.2
 
 v1.4.5
 - Loading: Fix IPFS loading (fixed in wabac.js 2.7.8)
