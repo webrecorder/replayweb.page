@@ -760,10 +760,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webrecorder/wabac@^2.7.10":
-  version "2.7.10"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.7.10.tgz#50b06ea78975db489be0ac82ac288e704a9c5244"
-  integrity sha512-9NmkV3TO+vhTGhEpaqjF7gaUUsAS1zSvp84y0hpkdwDv9WefcILgiR/0PElRmDE6OpYHvsv8QzonW9BUrFMMIg==
+"@webrecorder/wabac@^2.7.11":
+  version "2.7.11"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.7.11.tgz#6ffaada9bcf702245e8bd948d387ca0a675d9e37"
+  integrity sha512-uZz3b2kJRuGzE8wP0tJ848oIaqJHPrXivnDHd6wew3bPDhLr5s9twO1ozn9P6hJSkL3H6f5Yf8gw3HTKbNtygA==
   dependencies:
     "@webrecorder/wombat" "^3.2.2"
     brotli "github:foliojs/brotli.js"
@@ -2841,10 +2841,10 @@ electron-updater@^4.3.5:
     lodash.isequal "^4.5.0"
     semver "^7.3.2"
 
-electron@^11.4.8:
-  version "11.4.8"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-11.4.8.tgz#6f89be903bd917bda52afacf7cd3bdf2154b5c79"
-  integrity sha512-NrxlDZN1sWiDCWWOm5aX+tPGtiLgsCUwNqNFP3eJfY+RPdYLsxYRJDFa1vc4GcuCZEp9kZusINjmpPWsvJdspQ==
+electron@^11.4.11:
+  version "11.4.11"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-11.4.11.tgz#27091dcd54d28539b492d011b0ed3aef7d69cb60"
+  integrity sha512-DyarEH2IJpx5KfE42vF+uq7jyfHDrDRUsXXZyc69tR/GOO0DGuFE6/BHlTaywgPbCS4Sa5/ffEGlG6xq9+eRAQ==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"

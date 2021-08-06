@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.4.7
+- Loading: HAR file loading: Add messages when HAR file content is missing, don't filter out empty urls (via wabac.js)
+- Loading: Fix "null" added on Not Found error page when there is no hashtag.
+- Dependencies: bump to wabac.js 2.7.11
+
 v1.4.6
 - Fidelity: Better WS override that avoids network connection attempts, fixes to pixel ratio override (via wombat.js)
 - Fidelity: Better SW override, add missing members that caused errors (via wombat.js)
