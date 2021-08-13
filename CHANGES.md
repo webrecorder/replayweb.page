@@ -4,7 +4,7 @@ v1.4.7
 - Loading: HAR file loading: Add messages when HAR file content is missing, don't filter out empty urls (via wabac.js)
 - Loading: Fix "null" added on Not Found error page when there is no hashtag.
 - Fidelity: Disable post-to-GET conversion (no longer need in latest Chrome!)
-- Rewriting: Optimized HTML rewrite for large HTML, improved eval() rewriting, more lenient JSONP matching (via wabac 2.8.0)
+- Rewriting: Optimized HTML rewrite for large HTML and disable rewriting if HTML >5MB, improved eval() rewriting, more lenient JSONP matching (via wabac 2.8.0)
 - Dependencies: bump to wabac.js 2.8.0-beta.0
 
 v1.4.6
