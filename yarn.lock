@@ -760,12 +760,11 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webrecorder/wabac@^2.7.11":
-  version "2.7.11"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.7.11.tgz#6ffaada9bcf702245e8bd948d387ca0a675d9e37"
-  integrity sha512-uZz3b2kJRuGzE8wP0tJ848oIaqJHPrXivnDHd6wew3bPDhLr5s9twO1ozn9P6hJSkL3H6f5Yf8gw3HTKbNtygA==
+"@webrecorder/wabac@github:webrecorder/wabac.js":
+  version "2.8.0-beta.0"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/66a8a361a592e8cfbe16497d113e299244651c66"
   dependencies:
-    "@webrecorder/wombat" "^3.2.2"
+    "@webrecorder/wombat" "^3.3.0"
     brotli "github:foliojs/brotli.js"
     fast-xml-parser "^3.15.1"
     format-link-header "^3.1.1"
@@ -782,10 +781,12 @@
     warcio "^1.4.6"
     wbn "^0.0.3"
 
-"@webrecorder/wombat@^3.2.2":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.2.2.tgz#e803d6929f9c55d0e68bf0f4b363114c27695924"
-  integrity sha512-oe+EMpPZUo5YoPjvrfxrf8+z/atBh9yzr7S2xFOeXXpeBt/s62rFY84n/tuE6poIKtYHSD9Radjap7JSuE9F6w==
+"@webrecorder/wombat@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.3.0.tgz#9f14cb75ce722683a047c8687d1ef6353a3e58ed"
+  integrity sha512-BpyRndvu6RaOVfIY4rdjcN8PM4ezcRItQp94/GVeksXahMlkf9CHsr/ATtPYUv1g7UIqq+O540WG9p3BmjwNqQ==
+  dependencies:
+    warcio "^1.4.6"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
