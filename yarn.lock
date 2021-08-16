@@ -760,11 +760,11 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webrecorder/wabac@github:webrecorder/wabac.js":
-  version "2.8.0-beta.0"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/17bf4bedfd9b5c25d9a2d27f29ac5e987b3d1283"
+"@webrecorder/wabac@webrecorder/wabac.js":
+  version "2.8.0"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/ce52b15cfca1b971b103973cd85a514b69e8aa8f"
   dependencies:
-    "@webrecorder/wombat" "^3.3.0"
+    "@webrecorder/wombat" "^3.3.1"
     brotli "github:foliojs/brotli.js"
     fast-xml-parser "^3.15.1"
     format-link-header "^3.1.1"
@@ -778,13 +778,13 @@
     parse5-html-rewriting-stream "^6.0.1"
     parse5-sax-parser "^6.0.1"
     path-parser "^6.1.0"
-    warcio "^1.4.6"
+    warcio "^1.4.8"
     wbn "^0.0.3"
 
-"@webrecorder/wombat@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.3.0.tgz#9f14cb75ce722683a047c8687d1ef6353a3e58ed"
-  integrity sha512-BpyRndvu6RaOVfIY4rdjcN8PM4ezcRItQp94/GVeksXahMlkf9CHsr/ATtPYUv1g7UIqq+O540WG9p3BmjwNqQ==
+"@webrecorder/wombat@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.3.1.tgz#f1c5a0725f8893b68871303449b36bac69de0325"
+  integrity sha512-cEl794AU6k0AI7/xwPNy6M8isoCdj/1DisHgW64tT1P4dkeO5wC8inZOf859Dq/YgYjSCfKwQTAelzTxXsuvDw==
   dependencies:
     warcio "^1.4.6"
 
@@ -9778,6 +9778,19 @@ warcio@^1.4.6:
   version "1.4.6"
   resolved "https://registry.yarnpkg.com/warcio/-/warcio-1.4.6.tgz#56ea9a118b89b7b9c71eec493d140876f65d94ee"
   integrity sha512-uncb/Xokc9XL4/1UMHPteAWpiLToOkcu2qhT2ivhVN1t8HwApHGAmLY4y9gqewgtO3s5aRq6T7lJ6WSP5IlA+A==
+  dependencies:
+    "@peculiar/webcrypto" "^1.1.1"
+    esm "^3.2.25"
+    hi-base32 "^0.5.0"
+    node-fetch "^2.6.0"
+    pako "^1.0.11"
+    uuid-random "^1.3.0"
+    yargs "^15.3.1"
+
+warcio@^1.4.8:
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/warcio/-/warcio-1.4.8.tgz#428cbebf80d2f4f69169b1f4a8f3aba7bda829ab"
+  integrity sha512-k8mi2uYWO8KIJxqbwPGm4v7SOwweGewMECjzN1iPu0uIg6irl2i0tDCeJrFMD5NQqzhVrn1x7m8Dh62KmfpZhw==
   dependencies:
     "@peculiar/webcrypto" "^1.1.1"
     esm "^3.2.25"

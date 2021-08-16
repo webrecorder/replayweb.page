@@ -5,7 +5,8 @@ v1.4.7
 - Loading: Fix "null" added on Not Found error page when there is no hashtag.
 - Fidelity: Disable post-to-GET conversion (no longer need in latest Chrome!)
 - Rewriting: Optimized HTML rewrite for large HTML and disable rewriting if HTML >5MB, improved eval() rewriting, more lenient JSONP matching (via wabac 2.8.0)
-- Dependencies: bump to wabac.js 2.8.0-beta.0
+- Fidelity: Fix possible skipping of URLs from WACZ that contain'www.' in the middle of URL due to incorrect surt canonicalization (wabac.js 2.8.0)
+- Dependencies: bump to wabac.js 2.8.0, wombat to 3.3.1
 
 v1.4.6
 - Fidelity: Better WS override that avoids network connection attempts, fixes to pixel ratio override (via wombat.js)
