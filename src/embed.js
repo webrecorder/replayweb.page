@@ -55,19 +55,18 @@ class Embed extends LitElement
       hashString: { type: String },
 
       deepLink: { type: Boolean },
-      noSW: { type: Boolean },
-      noSandbox: { type: Boolean }
+      noSandbox: { type: Boolean },
+
+      errorMessage: { type: String }
     };
   }
 
   async doRegister() {
     try {
       await registerSW(this.swName, this.replaybase);
-      console.log("done");
       this.swInited = true;
     } catch (e) {
-      console.log(e);
-      this.noSW = true;
+      this.errorMessage = e;
     }
   }
 
@@ -184,16 +183,12 @@ class Embed extends LitElement
 
       ` : html``}
 
-    ${this.noSW ? html`
+    ${this.errorMessage ? html`
       <section class="full-width">
         <div class="has-text-centered">
           <fa-icon class="logo" id="wrlogo" size="2.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
         </div>
-        <div class="error">
-Sorry, ReplayWeb.page won't work in this browser as Service Workers are not supported.
-Please try a different browser.\n
-(Service Workers are disabled in Firefox in Private Mode. If Using Private Mode in Firefox, try regular mode).
-        </div>
+        <div class="error">${this.errorMessage}</div>
       </section>
     `: ""}`;
   }

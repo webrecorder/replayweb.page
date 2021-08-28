@@ -1,9 +1,6 @@
-name: Build ReplayWeb.page App
+name: Build/release
 
-on:
-  push:
-    branches:
-      - main
+on: push
 
 jobs:
   release:
@@ -11,10 +8,10 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-10.14, ubuntu-latest]
+        os: [macos-10.15, ubuntu-latest]
         platform: [windows, linux]
         exclude:
-          - os: macos-10.14
+          - os: macos-10.15
             platform: windows
 
     steps:
@@ -24,7 +21,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: 13
+          node-version: 14
 
       - name: Cache Dirs
         uses: actions/cache@v2
@@ -47,7 +44,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         run: |
-              if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+              if [ "$GITHUB_REF" == "refs/heads/main" ] || [ -f ./force_release ]; then
                 export YARN_BUILD_CMD="release"
               else
                 export YARN_BUILD_CMD="dist"
@@ -55,10 +52,10 @@ jobs:
 
               if [ "$RUNNER_OS" == "Linux" ]; then
                 if [ "$PLATFORM" == "linux" ]; then
-                  mkdir -p plugins-linux;
-                  pushd plugins-linux;
-                  wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/libpepflashplayer.so";
-                  popd;
+                  #mkdir -p plugins-linux;
+                  #pushd plugins-linux;
+                  #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/libpepflashplayer.so";
+                  #popd;
 
                   docker run --rm \
                     -e GH_TOKEN=${GH_TOKEN} \
@@ -69,11 +66,11 @@ jobs:
                     electronuserland/builder:wine \
                     /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn install && yarn run $YARN_BUILD_CMD --linux --x64"
                 else
-                  mkdir -p plugins-win;
-                  pushd plugins-win;
-                  wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86_64.dll";
-                  wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86.dll";
-                  popd;
+                  #mkdir -p plugins-win;
+                  #pushd plugins-win;
+                  #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86_64.dll";
+                  #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86.dll";
+                  #popd;
 
                   docker run --rm \
                     -e GH_TOKEN=${GH_TOKEN} \
@@ -87,12 +84,12 @@ jobs:
                     /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn install && yarn run $YARN_BUILD_CMD --win --x64 --ia32"
                 fi
               else
-                mkdir -p plugins-mac;
-                pushd plugins-mac;
-                wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/PepperFlashPlayer.plugin.zip";
-                unzip PepperFlashPlayer.plugin.zip;
-                rm PepperFlashPlayer.plugin.zip;
-                popd;
+                #mkdir -p plugins-mac;
+                #pushd plugins-mac;
+                #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/PepperFlashPlayer.plugin.zip";
+                #unzip PepperFlashPlayer.plugin.zip;
+                #rm PepperFlashPlayer.plugin.zip;
+                #popd;
                 yarn install
                 yarn run $YARN_BUILD_CMD
               fi

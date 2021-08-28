@@ -11,6 +11,13 @@ staticData.set(prefix + "index.html", {type: "text/html", content: INDEX_HTML});
 //staticData.set(prefix + "ui.js", {type: "application/javascript", content: UI_JS});
 
 //const { SWReplay } = require('@webrecorder/wabac/src/swmain');
+
+const defaultConfig = {
+  injectScripts: ["ruffle/ruffle.js"],
+};
+
 self.ipfsCustomPreload = true;
-self.sw = new SWReplay({staticData});
+self.sw = new SWReplay({staticData, defaultConfig});
+
+
 

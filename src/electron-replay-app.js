@@ -180,13 +180,14 @@ class ElectronReplayApp
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
 
     app.on("web-contents-created", (event, contents) => {
-      contents.on("new-window", async (event, navigationUrl) => {
-        
+      contents.setWindowOpenHandler(({url}) => {
         // load docs in native browser for now
-        if (navigationUrl === STATIC_PREFIX + "docs") {
-          event.preventDefault();
-          await shell.openExternal("https://replayweb.page/docs/");
+        if (url === STATIC_PREFIX + "docs") {
+          shell.openExternal("https://replayweb.page/docs/");
+          return { action: "deny"};
         }
+
+        return { action: "allow"};
       });
     });
 

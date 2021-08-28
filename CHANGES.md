@@ -1,5 +1,12 @@
 ## CHANGES
 
+v1.5.0
+- Update to wabac.js 2.9.0-beta.1, fidelity and loading improvements, smaller size (includes indexeddb data migration)
+- Update to electron 14, latest Chrome
+- Update to Universal builds for OS X.
+- Add Ruffle, use for Flash Rendering, both in hosted and electron app versions.
+- Embeds: Better error message for service worker not found
+
 v1.4.7
 - Loading: HAR file loading: Add messages when HAR file content is missing, don't filter out empty urls (via wabac.js)
 - Loading: Fix "null" added on Not Found error page when there is no hashtag.

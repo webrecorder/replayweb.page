@@ -158,7 +158,8 @@ class ReplayWebApp extends LitElement
 
   renderNavBar() {
     return html`
-    <a href="#skip-main-target" @click=${this.skipMenu} class="skip-link">Skip main navigation</a>
+    ${IS_APP ? "" :
+    html`<a href="#skip-main-target" @click=${this.skipMenu} class="skip-link">Skip main navigation</a>`}
     <nav class="navbar has-background-info" aria-label="main">
       <div class="navbar-brand">
         ${!this.embed ? html`

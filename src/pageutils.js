@@ -11,8 +11,11 @@ function registerSW(name = "sw.js", scope = "./") {
   });
 
   if (!navigator.serviceWorker) {
-    console.error("Service Workers not supported");
-    reject();
+    const errMsg = `Sorry, ReplayWeb.page won't work in this browser as Service Workers are not supported.
+Please try a different browser.
+(Service Workers are disabled in Firefox in Private Mode. If Using Private Mode in Firefox, try regular mode)`;
+    console.error(errMsg);
+    reject(errMsg);
   }
   
   register(scope + name, {
@@ -24,7 +27,7 @@ function registerSW(name = "sw.js", scope = "./") {
 
     error (error) {
       console.error("Error during service worker registration:", error);
-      reject();
+      reject(`ReplayWeb.page could not be loaded due to the following error:\n${error.toString()}`);
     }
   });
 
