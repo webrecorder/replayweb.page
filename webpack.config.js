@@ -57,7 +57,6 @@ const electronMainConfig = (/*env, argv*/) => {
         patterns: [
           { from: "node_modules/bcrypto/build/Release/bcrypto.node", to: "build" },
           { from: "node_modules/leveldown/prebuilds/", to: "prebuilds" },
-          { from: "ruffle/", to: "ruffle/" },
         ],
       }),
     ],

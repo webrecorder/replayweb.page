@@ -82,6 +82,7 @@
       "dist/build/*",
       "*.js",
       "*.html",
+      "ruffle",
       "webmanifest.json",
       {
         "from": "_site/assets",
