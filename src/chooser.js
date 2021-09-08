@@ -98,7 +98,7 @@ class Chooser extends LitElement
 
     loadInfo.newFullImport = this.newFullImport;
 
-    this.dispatchEvent(new CustomEvent("load-start", {detail: loadInfo}));
+    this.dispatchEvent(new CustomEvent("load-start", {bubbles: true, composed: true, detail: loadInfo}));
 
     return false;
   }
@@ -173,7 +173,7 @@ class Chooser extends LitElement
     <section class="section ${this.noHead ? "is-paddingless" : "less-padding"}">
       <div class="${this.noHead ? "" : "panel"}">
         <div class="${this.noHead ? "is-hidden" : "panel-heading"} heading-size">${this.newFullImport ? "Import Existing" : "Load"} Web Archive</div>
-        <div class="${this.noHead ? "" : "panel-body extra-padding"} file has-name ${this.noHead ? "is-small" : ""}">
+        <div class="${this.noHead ? "" : "panel-body extra-padding"} file has-name">
           <form class="is-flex" @submit="${this.onStartLoad}">
             <label class="file-label">
               ${!this.hasNativeFS ? html`
@@ -192,7 +192,7 @@ class Chooser extends LitElement
 
             <div class="field has-addons">
               <p class="control is-expanded">
-                <input class="file-name input ${this.noHead ? "is-small" : ""}" type="text"
+                <input class="file-name input" type="text"
                 name="filename" id="filename"
                 pattern="((file|http|https|ipfs|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn|json))|(googledrive:\/\/.+)"
                 .value="${this.fileDisplayName}"
@@ -201,7 +201,7 @@ class Chooser extends LitElement
                 placeholder="${this.newFullImport ? "Click 'Choose File' to select a local archive to import" : "Enter a URL or click 'Choose File' to select a WARC, WACZ, HAR or WBN archive source"}">
               </p>
               <div class="control">
-                <button type="submit" class="button is-hidden-mobile is-primary ${this.noHead ? "is-small" : ""}">${this.newFullImport ? "Import" : "Load"}</button>
+                <button type="submit" class="button is-hidden-mobile is-primary">${this.newFullImport ? "Import" : "Load"}</button>
               </div>
             </div>
 

@@ -117,7 +117,7 @@ class CollIndex extends LitElement
 
     } catch (e) {
       // likely no sw registered yet, or waiting for new sw to register, retry again
-      setTimeout(() => this.loadColls(), 5000);
+      setTimeout(() => this.loadColls(), 500);
     }
   }
 

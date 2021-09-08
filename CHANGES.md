@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.5.1
+- Library usage: Simplfy download options in editable mode, add warc/1.0 download opt (for archiveweb.page)
+- Library usage: Allow custom service worker init path on app init (or none)
+- Library usage: Ensure page title reflects current app
+- UI: Refresh UI after half second while waiting for service worker to load, instead of every 5.
+
 v1.5.0
 - Update to wabac.js 2.9.0-beta.1, fidelity and loading improvements, smaller size (includes indexeddb data migration)
 - Update to electron 14 (latest beta), Chromium 93

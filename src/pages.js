@@ -583,29 +583,22 @@ class Pages extends LitElement
         <div class="dropdown-menu" id="dropdown-menu">
           <div class="dropdown-content">
             <a role="button" href="#"
-             @click="${(e) => this.onDownload(e, "wacz", true)}"
-             @keyup="${clickOnSpacebarPress}"
-             class="dropdown-item ${this.selectedPages.size === 0 ? "is-disabled" : ""}">
-              Download Selected as WACZ (Web Archive Collection)
-            </a>
-            <a role="button" href="#"
-             @click="${(e) => this.onDownload(e, "warc", true)}"
-             @keyup="${clickOnSpacebarPress}"
-             class="dropdown-item ${this.selectedPages.size === 0 ? "is-disabled" : ""}">
-              Download Selected as WARC Only
-            </a>
-            <hr class="dropdown-divider">
-            <a role="button" href="#"
-             @click="${(e) => this.onDownload(e, "wacz", false)}"
+             @click="${(e) => this.onDownload(e, "wacz")}"
              @keyup="${clickOnSpacebarPress}"
              class="dropdown-item">
-              Download All as WACZ (Web Archive Collection)
+              Download ${this.selectedPages.size === 0 ? "All" : "Selected"} as WACZ (Web Archive Collection Zip)
             </a>
             <a role="button" href="#"
-             @click="${(e) => this.onDownload(e, "warc", false)}"
+             @click="${(e) => this.onDownload(e, "warc")}"
              @keyup="${clickOnSpacebarPress}"
              class="dropdown-item">
-              Download All as WARC Only
+              Download ${this.selectedPages.size === 0 ? "All" : "Selected"} as WARC 1.1 Only
+            </a>
+            <a role="button" href="#"
+              @click="${(e) => this.onDownload(e, "warc1.0")}"
+              @keyup="${clickOnSpacebarPress}"
+              class="dropdown-item">
+              Download ${this.selectedPages.size === 0 ? "All" : "Selected"} as WARC 1.0 Only
             </a>
           </div>
         </div>
@@ -790,8 +783,10 @@ class Pages extends LitElement
     this.requestUpdate();
   }
 
-  async onDownload(event, format, selected) {
+  async onDownload(event, format) {
     event.preventDefault();
+
+    const selected = this.selectedPages.size > 0;
 
     const params = new URLSearchParams();
     params.set("pages", selected ? Array.from(this.selectedPages.keys()).join(",") : "all");

@@ -130,6 +130,8 @@ class AnimLogo extends FaIcon
   }
 }
 
+
+// ===========================================================================
 class WrModal extends LitElement
 {
   constructor() {
@@ -153,6 +155,11 @@ class WrModal extends LitElement
 
     .modal-card-head {
       background-color: var(--background, #97a1ff);
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: var(--modal-width, 640px)
     }
     `);
   }

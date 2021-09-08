@@ -11,7 +11,8 @@ import fasArrowRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.
 // ===========================================================================
 class ReplayWebApp extends LitElement
 {
-  constructor() {
+  // eslint-disable-next-line no-undef
+  constructor(swName = __SW_NAME__) {
     super();
     this.sourceUrl = null;
     this.collTitle = null;
@@ -27,8 +28,9 @@ class ReplayWebApp extends LitElement
 
     this.loadInfo = null;
 
-    // eslint-disable-next-line no-undef
-    registerSW(__SW_NAME__);
+    if (swName) {
+      registerSW(swName);
+    }
 
     this.safariKeyframes();
   }
@@ -432,7 +434,7 @@ class ReplayWebApp extends LitElement
       this.pageTitle = event.detail.title;
       this.pageReplay = event.detail.replayTitle;
 
-      document.title = (event.detail.replayTitle ? "Archive of " : "") + this.pageTitle + " | ReplayWeb.page";
+      document.title = (event.detail.replayTitle ? "Archive of " : "") + this.pageTitle + " | " + this.appName;
     }
   }
 
