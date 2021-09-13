@@ -1,8 +1,8 @@
 "use strict";
 
-import { LitElement, html, css, unsafeCSS } from "lit-element";
-import { unsafeSVG } from "lit-html/directives/unsafe-svg";
-import { styleMap } from "lit-html/directives/style-map";
+import { LitElement, html, css, unsafeCSS } from "lit";
+import { unsafeSVG } from "lit/directives/unsafe-svg.js";
+import { styleMap } from "lit/directives/style-map.js";
 
 import allCssRaw from "../assets/main.scss";
 

@@ -1,10 +1,10 @@
 "use strict";
 
-import { LitElement, html, css, unsafeCSS } from "lit-element";
+import { LitElement, html, css, unsafeCSS } from "lit";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
 import ndjson from "fetch-ndjson";
 
-import FlexSearch from "flexsearch";
+import { Index as FlexIndex } from "flexsearch";
 import prettyBytes from "pretty-bytes";
 
 import { getTS, getPageDateTS } from "./pageutils";
@@ -24,6 +24,7 @@ class Pages extends LitElement
     this.sortedPages = [];
     this.query = "";
     this.flex = null;
+    this.textPages = null;
     this.newQuery = null;
     this.loading = false;
     this.updatingSearch = false;
@@ -169,10 +170,9 @@ class Pages extends LitElement
       this.changeNeeded = true;
     }
     this.loading = true;
-    if (this.flex && this.query) {
-      const result = await this.flex.search(this.query, {limit: 25});
-
-      this.filteredPages = result;
+    if (this.flex && this.query && this.textPages) {
+      const results = await this.flex.searchAsync(this.query, 25);
+      this.filteredPages = results.map(inx => this.textPages[inx]);
     } else {
       this.filteredPages = [...this.collInfo.pages];
     }
@@ -207,6 +207,24 @@ class Pages extends LitElement
     this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
   }
 
+  addPages(pages) {
+    const flex = new FlexIndex();
+
+    this.flex = flex;
+    this.textPages = pages;
+
+    return Promise.all(pages.map((page, index) => {
+      let text = page.url;
+      if (page.title) {
+        text += " " + page.title;
+      }
+      if (page.text) {
+        text += " " + page.text;
+      }
+      return flex.addAsync(index, text);
+    }));
+  };
+
   async updateTextSearch() {
     if (this.updatingSearch) {
       return;
@@ -216,16 +234,6 @@ class Pages extends LitElement
     let count = 0;
 
     try {
-      const flex = new FlexSearch({
-        doc: {
-          id: "id",
-          field: ["url", "title", "text"],
-        },
-        async: true
-      });
-
-      this.flex = flex;
-
       const cache = await caches.open("cache:" + this.collInfo.coll);
 
       const indexUrl = `${this.collInfo.apiPrefix}/textIndex`;
@@ -239,15 +247,7 @@ class Pages extends LitElement
         }
       }
 
-      let lines = [];
-
-      const flush = async () => {
-        let curr = lines;
-        lines = [];
-        await flex.add(curr);
-        //console.log("added " + count + " " + curr.length);
-        //console.log(flex.info());
-      };
+      const lines = [];
 
       for await (const line of ndjson(resp.body.getReader())) {
         if (!line.text) {
@@ -256,16 +256,16 @@ class Pages extends LitElement
 
         line.id = ++count;
         lines.push(line);
-        if ((count % 100) === 0) {
-          await flush();
-        }
       }
 
-      await flush();
+      await this.addPages(lines);
+
+    } catch (e) {
+      console.warn(e);
 
     } finally {
       if (count === 0) {
-        this.flex.add(this.collInfo.pages);
+        await this.addPages(this.collInfo.pages);
       }
 
       this.updatingSearch = false;

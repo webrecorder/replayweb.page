@@ -1,8 +1,13 @@
 ## CHANGES
 
+v1.5.3
+- Fidelity: fix for some eval replay (via wombat), include http->https check for wacz sources
+- Dependencies: update to webpack 5 build, wabac.js 2.9.2, wombat 3.3.4
+- Search: update to latest flexsearch, faster/improved searching
+
 v1.5.2
 - App: IPFS: Configure js-ipfs repo directory to be in existing profile directory
-- App: IPFS: Fix IPFS support for OSX M1 builds by including leveldown prebuilds
+- Loading: IPFS: Fix IPFS support for OSX M1 builds by including leveldown prebuilds
 - Dependencies: update to wabac.js 2.9.1, wombat 3.3.3
 
 v1.5.1

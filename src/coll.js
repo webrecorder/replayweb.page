@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from "lit";
 import { wrapCss, rwpLogo, IS_APP, VERSION, clickOnSpacebarPress, apiPrefix, replayPrefix } from "./misc";
 
 import { sourceToId, tsToDate, getPageDateTS } from "./pageutils";

@@ -1,5 +1,5 @@
-import { LitElement, html, css } from "lit-element";
-import { ifDefined } from "lit-html/directives/if-defined.js";
+import { LitElement, html, css } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { registerSW } from "./pageutils";
 

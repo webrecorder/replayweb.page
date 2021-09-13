@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from "lit";
 import { wrapCss, rwpLogo, IS_APP, VERSION, clickOnSpacebarPress } from "./misc";
 
 import { registerSW } from "./pageutils";

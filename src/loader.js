@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from "lit";
 import { wrapCss, IS_APP } from "./misc";
 
 import prettyBytes from "pretty-bytes";

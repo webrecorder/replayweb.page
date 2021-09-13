@@ -1,6 +1,6 @@
 import prettyBytes from "pretty-bytes";
 
-import { LitElement, html, css, unsafeCSS } from "lit-element";
+import { LitElement, html, css, unsafeCSS } from "lit";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 

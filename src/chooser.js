@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from "lit";
 import { IS_APP, wrapCss } from "./misc";
 
 import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";

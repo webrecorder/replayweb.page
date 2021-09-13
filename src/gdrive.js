@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from "lit";
 import { wrapCss } from "./misc";
 
 import fabGoogleDrive from "@fortawesome/fontawesome-free/svgs/brands/google-drive.svg";
