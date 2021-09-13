@@ -4,6 +4,7 @@ const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const package_json = require("./package.json");
 
 // fake url used in app to serve files
 // can not use custom scheme due to service worker issues
@@ -21,7 +22,7 @@ const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.goo
 const BANNER_TEXT = "'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020-2021, Webrecorder Software. Licensed under the Affero General Public License v3.'";
 
 // IPFS ipfs-core lib url
-const IPFS_CORE_URL = "https://cdn.jsdelivr.net/npm/ipfs-core@0.7.1/dist/index.min.js";
+const IPFS_CORE_URL = `https://cdn.jsdelivr.net/npm/ipfs-core@${package_json.dependencies["ipfs-core"].replace("^", "")}/dist/index.min.js`;
 
 
 const electronMainConfig = (/*env, argv*/) => {
@@ -35,7 +36,8 @@ const electronMainConfig = (/*env, argv*/) => {
       alias: {
         "abort-controller": "abort-controller/dist/abort-controller.js",
         "dlv": "dlv/dist/dlv.js",
-        "bignumber.js": "bignumber.js/bignumber.js"
+        "bignumber.js": "bignumber.js/bignumber.js",
+        "multiformats/hashes/sha2": "multiformats/cjs/src/hashes/sha2.js"
       }
     },
     output: {
@@ -55,8 +57,8 @@ const electronMainConfig = (/*env, argv*/) => {
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
         patterns: [
-          { from: "node_modules/bcrypto/build/Release/bcrypto.node", to: "build" },
           { from: "node_modules/leveldown/prebuilds/", to: "prebuilds" },
+          { from: "build/extra_prebuilds/", to: "prebuilds" },
         ],
       }),
     ],
@@ -128,7 +130,7 @@ const browserConfig = (/*env, argv*/) => {
         __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
         __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID),
-        __VERSION__: JSON.stringify(require("./package.json").version),
+        __VERSION__: JSON.stringify(package_json.version),
         __IPFS_CORE_URL__: JSON.stringify(IPFS_CORE_URL)
       }),
       new webpack.BannerPlugin(BANNER_TEXT),

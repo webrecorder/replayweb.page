@@ -33,13 +33,18 @@ let IPFS = null;
 // ============================================================================
 class NativeIPFSClient extends IPFSClient
 {
+  constructor(repoPath) {
+    super();
+    this.repoPath = repoPath;
+  }
+
   async _doInitIPFS() {
     if (!IPFS) {
       IPFS = require("ipfs-core");
     }
 
     this.ipfs = await IPFS.create({
-      //repo: "/tmp/test-ipfs"
+      repo: this.repoPath,
       init: {emptyRepo: true},
       //preload: {enabled: false},
     });
@@ -72,7 +77,7 @@ class ElectronReplayApp
 
     this.screenSize = {width: 1024, height: 768};
 
-    this.ipfsClient = new NativeIPFSClient();
+    this.ipfsClient = null;
   }
 
   get mainWindowWebPreferences() {
@@ -139,6 +144,11 @@ class ElectronReplayApp
     if (this.profileName) {
       app.setPath("userData", path.join(app.getPath("appData"), this.profileName));
     }
+
+    const ipfsRepoPath = path.join(app.getPath("userData"), "js-ipfs");
+    console.log("ipfs path", ipfsRepoPath);
+
+    this.ipfsClient = new NativeIPFSClient(ipfsRepoPath);
 
     app.on("will-finish-launching", () => {
       app.on("open-file", (event, filePath) => {
@@ -300,7 +310,7 @@ class ElectronReplayApp
         if (request.method === "GET") {
           const offset = start || 0;
           const length = end ? end - start + 1 : size;
-          data = Readable.from(this.ipfsClient.cat(ipfsCID, {offset, length}));
+          data = Readable.from(await this.ipfsClient.cat(ipfsCID, {offset, length}));
         }
 
         callback({statusCode, headers, data});

@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.5.2
+- App: IPFS: Configure js-ipfs repo directory to be in existing profile directory
+- App: IPFS: Fix IPFS support for OSX M1 builds by including leveldown prebuilds
+- Dependencies: update to wabac.js 2.9.1, wombat 3.3.3
+
 v1.5.1
 - Library usage: Simplfy download options in editable mode, add warc/1.0 download opt (for archiveweb.page)
 - Library usage: Allow custom service worker init path on app init (or none)
