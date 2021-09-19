@@ -3,6 +3,7 @@
 # ReplayWeb.page
 
 ## Serverless Web Archive Replay
+[Embedded Viewer](https://replayweb.page/docs/embedding) Usage: [![](https://data.jsdelivr.com/v1/package/npm/replaywebpage/badge)](https://www.jsdelivr.com/package/npm/replaywebpage)
 
 ReplayWeb.page provides a full web archive replay system running directly in the browser, 
 available at: [https://replayweb.page/](https://replayweb.page)
