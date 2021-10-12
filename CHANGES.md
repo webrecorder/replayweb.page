@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.5.4
+- Fidelity: Faster rewriting of large JS files
+- Fidelity: Fixes for twitter video replay
+- Loading: Fix IPFS loading of WARCs
+- Dependencies: update to wabac.js 2.9.3
+
 v1.5.3
 - Fidelity: fix for some eval replay (via wombat), include http->https check for wacz sources
 - Dependencies: update to webpack 5 build, wabac.js 2.9.2, wombat 3.3.4
