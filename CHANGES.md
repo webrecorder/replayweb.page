@@ -4,7 +4,9 @@ v1.5.4
 - Fidelity: Faster rewriting of large JS files
 - Fidelity: Fixes for twitter video replay
 - Loading: Fix IPFS loading of WARCs
-- Dependencies: update to wabac.js 2.9.3
+- Fidelity: fix replay of .php files being treated as static files (via wabac.js 2.9.4)
+- Fidelity: Fix wombat.js build to avoid adding '__esModule' to window (via wabac.js 2.9.4)
+- Dependencies: update to wabac.js 2.9.4
 
 v1.5.3
 - Fidelity: fix for some eval replay (via wombat), include http->https check for wacz sources
