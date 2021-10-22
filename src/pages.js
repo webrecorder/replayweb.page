@@ -223,7 +223,7 @@ class Pages extends LitElement
       }
       return flex.addAsync(index, text);
     }));
-  };
+  }
 
   async updateTextSearch() {
     if (this.updatingSearch) {
