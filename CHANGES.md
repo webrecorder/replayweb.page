@@ -4,6 +4,8 @@ v1.5.5
 - Fidelity: Only wrap JS globals if necessary (via wabac.js 2.9.5)
 - UI: Add download option from collection info and dropdown menu to download web archives from http.
 - Dependencies: update to wabac.js 2.9.5
+- Dependencies: update to electron 15.3.0 (chromium 94)
+- Dependencies: update ruffle to latest nightly (2021-10-25)
 
 v1.5.4
 - Fidelity: Faster rewriting of large JS files
