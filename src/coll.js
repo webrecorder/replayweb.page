@@ -5,6 +5,8 @@ import { sourceToId, tsToDate, getPageDateTS } from "./pageutils";
 
 import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 
+import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
+
 import farListAlt from "@fortawesome/fontawesome-free/svgs/regular/list-alt.svg";
 import farResources from "@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg";
 import farPages from "@fortawesome/fontawesome-free/svgs/regular/file-image.svg";
@@ -825,6 +827,14 @@ class Coll extends LitElement
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasSync}"></fa-icon>
                 </span>
                 <span>Purge Cache + Full Reload</span>
+              </a>` : html``}
+              ${!this.editable && this.sourceUrl.startsWith("http://") || this.sourceUrl.startsWith("https://") ? html`
+              <hr class="dropdown-divider">
+              <a href="${this.sourceUrl}" role="button" class="dropdown-item" @keyup="${clickOnSpacebarPress}">
+                <span class="icon is-small">
+                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasDownload}"></fa-icon>
+                </span>
+                <span>Download Archive</span>
               </a>` : html``}
               ${dateStr ? html`
               <hr class="dropdown-divider is-hidden-desktop">

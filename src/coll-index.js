@@ -425,7 +425,12 @@ class CollInfo extends LitElement
           </div>` : html`
         `}
         <div class="column is-4">
-          <span class="source-text"><p class="minihead">Source</p>${coll.sourceUrl}&nbsp;</span>
+          <span class="source-text"><p class="minihead">Source</p>
+          ${coll.sourceUrl && (coll.sourceUrl.startsWith("http://") || coll.sourceUrl.startsWith("https://")) ? html`
+          <a href="${coll.sourceUrl}">${coll.sourceUrl}&nbsp;</a>` : html`
+          ${coll.sourceUrl}&nbsp;`}
+          </span>
+
           <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy"><fa-icon .svg="${fasCopy}"/></a>
           ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://") ? html`
             <p><i>(${coll.filename})</i></p>` : ""}
