@@ -31,6 +31,7 @@ const fallback = {
   "querystring": require.resolve("querystring-es3"),
   "url": require.resolve("url/"),
   "buffer": false,
+  "process": false
 };
 
 const optimization = {

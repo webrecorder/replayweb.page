@@ -2,22 +2,29 @@ import INDEX_HTML from "../index.html";
 
 import { SWReplay } from "@webrecorder/wabac/src/swmain";
 
-const staticData = new Map();
+import { WorkerLoader } from "@webrecorder/wabac/src/loaders";
 
-const prefix = self.registration.scope;
 
-staticData.set(prefix, {type: "text/html", content: INDEX_HTML});
-staticData.set(prefix + "index.html", {type: "text/html", content: INDEX_HTML});
-//staticData.set(prefix + "ui.js", {type: "application/javascript", content: UI_JS});
+if (self.registration) {
+  const staticData = new Map();
 
-//const { SWReplay } = require('@webrecorder/wabac/src/swmain');
+  const prefix = self.registration.scope;
 
-const defaultConfig = {
-  injectScripts: ["ruffle/ruffle.js"],
-};
+  staticData.set(prefix, {type: "text/html", content: INDEX_HTML});
+  staticData.set(prefix + "index.html", {type: "text/html", content: INDEX_HTML});
+  //staticData.set(prefix + "ui.js", {type: "application/javascript", content: UI_JS});
 
-self.ipfsCustomPreload = true;
-self.sw = new SWReplay({staticData, defaultConfig});
+  //const { SWReplay } = require('@webrecorder/wabac/src/swmain');
+
+  const defaultConfig = {
+    injectScripts: ["ruffle/ruffle.js"],
+  };
+
+  self.ipfsCustomPreload = true;
+  self.sw = new SWReplay({staticData, defaultConfig});
+} else {
+  new WorkerLoader(self);
+}
 
 
 

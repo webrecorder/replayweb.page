@@ -45,7 +45,8 @@ class Loader extends LitElement
       coll: { type: String },
       embed: { type: String },
       tryFileHandle: { type: Boolean },
-      errorAllowRetry: { type: Boolean }
+      errorAllowRetry: { type: Boolean },
+      extraMsg: { type: String }
     };
   }
 
@@ -55,11 +56,12 @@ class Loader extends LitElement
   }
 
   initMessages() {
-    if (!navigator.serviceWorker) {
-      return;
-    }
+    // if (!navigator.serviceWorker) {
+    //   return;
+    // }
+    this.worker = new Worker(__SW_NAME__);
 
-    navigator.serviceWorker.addEventListener("message", (event) => {
+    this.worker.addEventListener("message", (event) => {
       switch (event.data.msg_type) {
       case "collProgress":
         if (event.data.name === this.coll) {
@@ -80,6 +82,7 @@ class Loader extends LitElement
             this.currentSize = event.data.currentSize;
             this.totalSize = event.data.totalSize;
           }
+          this.extraMsg = event.data.extraMsg;
         }
         break;
 
@@ -94,6 +97,7 @@ class Loader extends LitElement
             clearInterval(this.pingInterval);
           }
           this.dispatchEvent(new CustomEvent("coll-loaded", {detail: event.data}));
+          this.worker.terminate();
         }
         break;
       }
@@ -182,13 +186,15 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       });
     }
 
-    navigator.serviceWorker.controller.postMessage(msg);
+    this.worker.postMessage(msg);
+
+    //navigator.serviceWorker.controller.postMessage(msg);
 
     // ping service worker with messages to avoid shutdown while loading
     // (mostly for Firefox)
-    this.pingInterval = setInterval(() => {
-      navigator.serviceWorker.controller.postMessage({"msg_type": "ping"});
-    }, 15000);
+    // this.pingInterval = setInterval(() => {
+    //   navigator.serviceWorker.controller.postMessage({"msg_type": "ping"});
+    // }, 15000);
   }
 
   googledriveInit() {
@@ -206,11 +212,12 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   }
 
   onCancel() {
-    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({"msg_type": "cancelLoad", "name": this.coll});
-      if (this.pingInterval) {
-        clearInterval(this.pingInterval);
-      }
+    //if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    if (this.worker) {
+      this.worker.controller.postMessage({"msg_type": "cancelLoad", "name": this.coll});
+      // if (this.pingInterval) {
+      //   clearInterval(this.pingInterval);
+      // }
     }
   }
 
@@ -260,6 +267,10 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       section.container {
         margin: auto;
       }
+
+      .extra-msg {
+        font-size: 0.8rem;
+      }
     `);
   }
 
@@ -294,7 +305,11 @@ You can select a file to upload from the main page by clicking the 'Choose File.
             value="${this.percent}" max="100"></progress>
             <label class="progress-label" for="progress">${this.percent}%</label>
             ${this.currentSize && this.totalSize ? html`
-              <p class="loaded-prog">Loaded <b>${prettyBytes(this.currentSize)}</b> of <b>${prettyBytes(this.totalSize)}</b></p>` : html``}
+              <div class="loaded-prog">Loaded <b>${prettyBytes(this.currentSize)}</b> of <b>${prettyBytes(this.totalSize)}</b>
+              ${this.extraMsg && html`
+              <p class="extra-msg">(${this.extraMsg})</p>
+              `}
+              </div>` : html``}
 
             ${!this.embed ? html`
             <button @click="${this.onCancel}" class="button is-danger">Cancel</button>` : ""}

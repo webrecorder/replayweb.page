@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.5.6
+- Fidelity: Fix assignment to local location causing invalid redirect (via wombat 3.3.5)
+- Loading: Optimized loading for larger WARCs (via warcio 1.5.0)
+- Loading: Show number of WARC records loaded (via wabac.js 2.10.0)
+- Loading: Use separate web worker for loading, then remove for possible faster loading
+
 v1.5.5
 - Fidelity: Only wrap JS globals if necessary (via wabac.js 2.9.5)
 - UI: Add download option from collection info and dropdown menu to download web archives from http.
