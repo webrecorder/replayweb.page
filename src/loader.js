@@ -59,6 +59,7 @@ class Loader extends LitElement
     // if (!navigator.serviceWorker) {
     //   return;
     // }
+    // eslint-disable-next-line no-undef
     this.worker = new Worker(__SW_NAME__);
 
     this.worker.addEventListener("message", (event) => {
@@ -214,7 +215,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   onCancel() {
     //if (navigator.serviceWorker && navigator.serviceWorker.controller) {
     if (this.worker) {
-      this.worker.controller.postMessage({"msg_type": "cancelLoad", "name": this.coll});
+      this.worker.postMessage({"msg_type": "cancelLoad", "name": this.coll});
       // if (this.pingInterval) {
       //   clearInterval(this.pingInterval);
       // }
