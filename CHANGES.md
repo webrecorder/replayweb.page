@@ -1,9 +1,14 @@
 ## CHANGES
 
+v1.5.7
+- Dependencies: update to wabac.js 2.10.0 and wombat 3.3.6
+- Dependencies: update to electron 16.0.6 (chromium 96)
+- Dependencies: update ruffle to latest nightly (2022-01-08)
+
 v1.5.6
 - Fidelity: Fix assignment to local location causing invalid redirect (via wombat 3.3.5)
 - Loading: Optimized loading for larger WARCs (via warcio 1.5.0)
-- Loading: Show number of WARC records loaded (via wabac.js 2.10.0)
+- Loading: Show number of WARC records loaded (via wabac.js 2.10.0-beta.0)
 - Loading: Use separate web worker for loading, then remove for possible faster loading
 
 v1.5.5

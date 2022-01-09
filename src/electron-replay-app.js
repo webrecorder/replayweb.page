@@ -297,7 +297,11 @@ class ElectronReplayApp
 
         await this.ipfsClient.initIPFS();
 
+        console.log("inited");
+
         let size = await this.ipfsClient.getFileSize(ipfsCID);
+
+        console.log("got size", size);
 
         if (size === null) {
           return this.notFound(ipfsCID, callback);
