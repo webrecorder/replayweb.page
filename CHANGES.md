@@ -4,6 +4,7 @@ v1.5.7
 - Dependencies: update to wabac.js 2.10.0 and wombat 3.3.6
 - Dependencies: update to electron 16.0.6 (chromium 96)
 - Dependencies: update ruffle to latest nightly (2022-01-08)
+- Dependencies: update lit to 2.1.1
 
 v1.5.6
 - Fidelity: Fix assignment to local location causing invalid redirect (via wombat 3.3.5)

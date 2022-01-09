@@ -23,7 +23,7 @@ const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.goo
 const BANNER_TEXT = "'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020-2021, Webrecorder Software. Licensed under the Affero General Public License v3.'";
 
 // IPFS ipfs-core lib url
-const IPFS_CORE_URL = `https://cdn.jsdelivr.net/npm/ipfs-core@${package_json.dependencies["ipfs-core"].replace("^", "")}/index.min.js`;
+const IPFS_CORE_URL = `https://cdn.jsdelivr.net/npm/ipfs-core@${package_json.dependencies["ipfs-core"].replace("^", "")}/dist/index.min.js`;
 
 
 const fallback = {
@@ -163,7 +163,7 @@ const browserConfig = (/*env, argv*/) => {
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
         patterns: [
-          { from: "node_modules/ipfs-core/index.min.js", to: "ipfs-core.min.js" },
+          { from: "node_modules/ipfs-core/dist/index.min.js", to: "ipfs-core.min.js" },
           { from: "package.json", to: "_data/package.json" }
         ]
       }),
