@@ -18,7 +18,7 @@
     "ipfs-core": "^0.10.8",
     "keyword-mark-element": "^0.2.0",
     "lit": "^2.1.1",
-    "marked": "^3.0.3",
+    "marked": "^4.0.10",
     "mime-types": "^2.1.32",
     "minimist": "^1.2.5",
     "pretty-bytes": "^5.6.0",
