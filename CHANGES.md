@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.5.8
+- Loading: fix hosted replay via subpath when opening in new tab (#82)
+- Loading: fix multi-wacz support in wabac.js
+- Dependencies: update to wabac.js 2.10.1
+
 v1.5.7
 - Dependencies: update to wabac.js 2.10.0 and wombat 3.3.6
 - Dependencies: update to electron 16.0.6 (chromium 96)
