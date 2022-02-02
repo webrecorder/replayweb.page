@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.5.9
+- Dependencies: update to wabac.js 2.10.2
+- Loading: for experimental multi-wacz input, disable periodic reload for now
+
 v1.5.8
 - Loading: fix hosted replay via subpath when opening in new tab (#82)
 - Loading: fix multi-wacz support in wabac.js
