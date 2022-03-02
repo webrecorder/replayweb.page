@@ -139,7 +139,16 @@ xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
 	<ExposeHeader>Content-Encoding</ExposeHeader>
 	<ExposeHeader>Content-Length</ExposeHeader>
 </CORSRule>
+</CORSConfiguration>
 ```
+
+One way to set this policy is to use the popular [s3cmd](https://s3tools.org/usage) command-line tool:
+
+1) Paste the above snippet into a file, eg. `cors.xml`
+2) Be sure to set the 'Allowed Origin' to the site hosting the embed. You can add as many of these as necessary.
+3) Run `s3cmd setcors ./cors.xml s3://<your-bucket>`
+
+See the s3cmd docs for how to configure it s3cmd to work with your setup.
 
 See [S3 Docs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ManageCorsUsing.html) for more info on how to set this policy.
 
