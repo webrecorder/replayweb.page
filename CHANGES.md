@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.5.10
+- Fidelity: Encoding fix for non-ascii links, optimizations for utf-8 parsing (via wabac.js 2.10.3)
+- Dependencies: update to wabac.js 2.10.3
+
 v1.5.9
 - Dependencies: update to wabac.js 2.10.2
 - Loading: for experimental multi-wacz input, disable periodic reload for now
