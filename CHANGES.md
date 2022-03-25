@@ -4,7 +4,8 @@ v1.5.11
 - Loading: fix url lookup when no '=' in query arg, optimize loading compressed index (only load 3 blocks), via (wabac.js)
 - Loading: fix url lookup api calls
 - Loading: new live proxy support, per-hostname config, combined with wacz loading or main 'proxy:' config
-- Dependencies: update to wabac.js 2.11.0
+- Loading: fix loading for very large wacz files (via wabac.js)
+- Dependencies: update to wabac.js 2.11.1
 
 v1.5.10
 - Fidelity: Encoding fix for non-ascii links, optimizations for utf-8 parsing (via wabac.js 2.10.3)

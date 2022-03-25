@@ -988,10 +988,10 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.5.2.tgz#ea584b637ff63c5a477f6f21604b5a205b72c9ec"
   integrity sha512-vgJ5OLWadI8aKjDlOH3rb+dYyPd2GTZuQC/Tihjct6F9GpXGZINo3Y/IVuZVTM1eDQB+/AOsjPUWH/WySDaXvw==
 
-"@webrecorder/wabac@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.11.0.tgz#817a8f213679802b9506b3fa9161805ecd41759d"
-  integrity sha512-V8ruQfPQdx7sZVOrJda7qcFtyLyyhYJe7BsYBl8zvDNZnZ4AFfuPyq/ZoZZRQsYUVblvy9uD+ROj4v5WEKPYCw==
+"@webrecorder/wabac@^2.11.1":
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.11.1.tgz#292b05f07025f38ad2a00201c1ba86227d4d21d1"
+  integrity sha512-VhQ26umx6m6zP/gXpju15CZJgzh3L0j6W5E5U2L3CmsdGzf41RkCaxyRqMPA1UccTqGKzQj5Gw4PmmhwaXMKmQ==
   dependencies:
     "@webrecorder/wombat" "^3.3.6"
     brotli "github:foliojs/brotli.js"
