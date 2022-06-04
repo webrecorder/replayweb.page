@@ -11,3 +11,5 @@ coverage/
 _site/
 dist/
 plugins-*/
+
+ipfs-core.min.js
