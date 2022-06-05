@@ -194,7 +194,7 @@ class Chooser extends LitElement
               <p class="control is-expanded">
                 <input class="file-name input" type="text"
                 name="filename" id="filename"
-                pattern="((file|http|https|ipfs|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn|json))|(googledrive:\/\/.+)"
+                pattern="((file|http|https|ipfs|s3):\/\/.*\.(warc|warc.gz|zip|wacz|har|wbn|json))|(googledrive:\/\/.+)|(ssb:\/\/.+)"
                 .value="${this.fileDisplayName}"
                 @input="${this.onInput}"
                 autocomplete="off"
