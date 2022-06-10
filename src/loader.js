@@ -27,7 +27,7 @@ class Loader extends LitElement
 
     this.errorAllowRetry = false;
 
-    this.pingInterval = "";
+    this.pingInterval = 0;
 
     this.noWebWorker = false;
   }
@@ -48,7 +48,7 @@ class Loader extends LitElement
       embed: { type: String },
       tryFileHandle: { type: Boolean },
       errorAllowRetry: { type: Boolean },
-      extraMsg: { type: String },
+      extraMsg: { type: String }
     };
   }
 
@@ -103,12 +103,14 @@ class Loader extends LitElement
           }
           this.progress = this.total;
           this.percent = 100;
-          if (this.pingInterval) {
-            clearInterval(this.pingInterval);
-          }
           this.dispatchEvent(new CustomEvent("coll-loaded", {detail: event.data}));
+
           if (!this.noWebWorker) {
             this.worker.terminate();
+          } else {
+            if (this.pingInterval) {
+              clearInterval(this.pingInterval);
+            }
           }
         }
         break;
