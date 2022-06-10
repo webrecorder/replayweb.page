@@ -72,6 +72,7 @@ The `<replay-web-page>` tag is a web component and supports a number of addition
 | `coll`       | Internal id for this collection, usually generated automatically.
 | `config`     | Extra per collection config options (such as custom fuzzy matching rules, TODO add more info!) |
 | `noSandbox`  | (`true` / `false`) if set to true, don't wrap iframe in `sandbox`. Used as extra precaution to avoid escaping iframe, but prevents PDFs from loading in embed archive. Set for archives of known/trusted sites. |
+| `noWebWorker`| (`true` / `false`) if set to true, will not use Web Worker for loading, only Service Worker. May be useful for certain loading edge cases. |
 
 
 ### Versioning

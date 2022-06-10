@@ -28,6 +28,8 @@ class Loader extends LitElement
     this.errorAllowRetry = false;
 
     this.pingInterval = "";
+
+    this.noWebWorker = false;
   }
 
   static get properties() {
@@ -46,7 +48,7 @@ class Loader extends LitElement
       embed: { type: String },
       tryFileHandle: { type: Boolean },
       errorAllowRetry: { type: Boolean },
-      extraMsg: { type: String }
+      extraMsg: { type: String },
     };
   }
 
@@ -56,11 +58,18 @@ class Loader extends LitElement
   }
 
   initMessages() {
-    // if (!navigator.serviceWorker) {
-    //   return;
-    // }
-    // eslint-disable-next-line no-undef
-    this.worker = new Worker(__SW_NAME__);
+    this.noWebWorker = this.loadInfo && this.loadInfo.noWebWorker;
+
+    if (!this.noWebWorker) {
+      // eslint-disable-next-line no-undef
+      this.worker = new Worker(__SW_NAME__);
+    } else {
+      if (!navigator.serviceWorker) {
+        return;
+      }
+
+      this.worker = navigator.serviceWorker;
+    }
 
     this.worker.addEventListener("message", (event) => {
       switch (event.data.msg_type) {
@@ -98,7 +107,9 @@ class Loader extends LitElement
             clearInterval(this.pingInterval);
           }
           this.dispatchEvent(new CustomEvent("coll-loaded", {detail: event.data}));
-          this.worker.terminate();
+          if (!this.noWebWorker) {
+            this.worker.terminate();
+          }
         }
         break;
       }
@@ -187,15 +198,19 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       });
     }
 
-    this.worker.postMessage(msg);
+    if (this.worker) {
+      if (!this.noWebWorker) {
+        this.worker.postMessage(msg);
+      } else {
+        navigator.serviceWorker.controller.postMessage(msg);
 
-    //navigator.serviceWorker.controller.postMessage(msg);
-
-    // ping service worker with messages to avoid shutdown while loading
-    // (mostly for Firefox)
-    // this.pingInterval = setInterval(() => {
-    //   navigator.serviceWorker.controller.postMessage({"msg_type": "ping"});
-    // }, 15000);
+        // ping service worker with messages to avoid shutdown while loading
+        // (mostly for Firefox)
+        this.pingInterval = setInterval(() => {
+          navigator.serviceWorker.controller.postMessage({"msg_type": "ping"});
+        }, 15000);
+      }
+    }
   }
 
   googledriveInit() {
@@ -213,12 +228,22 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   }
 
   onCancel() {
-    //if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-    if (this.worker) {
-      this.worker.postMessage({"msg_type": "cancelLoad", "name": this.coll});
-      // if (this.pingInterval) {
-      //   clearInterval(this.pingInterval);
-      // }
+    if (!this.worker) {
+      return;
+    }
+
+    const msg = {"msg_type": "cancelLoad", "name": this.coll};
+
+    if (!this.noWebWorker) {
+      this.worker.postMessage(msg);
+      return;
+    }
+
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage(msg);
+      if (this.pingInterval) {
+        clearInterval(this.pingInterval);
+      }
     }
   }
 

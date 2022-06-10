@@ -379,6 +379,13 @@ class ReplayWebApp extends LitElement
       this.loadInfo.customColl = this.pageParams.get("customColl");
     }
 
+    if (this.pageParams.get("noWebWorker") === "1") {
+      if (!this.loadInfo) {
+        this.loadInfo = {};
+      }
+      this.loadInfo.noWebWorker = true;
+    }
+
     if (IS_APP && this.sourceUrl.startsWith("file://")) {
       // eslint-disable-next-line no-undef
       const url = new URL(__APP_FILE_SERVE_PREFIX__);
