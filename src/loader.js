@@ -112,6 +112,7 @@ class Loader extends LitElement
               clearInterval(this.pingInterval);
             }
           }
+          this.worker = null;
         }
         break;
       }
