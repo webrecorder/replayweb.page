@@ -1,7 +1,13 @@
 ## CHANGES
 
-v1.5.12
-- Embeds: Support embedding without using webworker with 'noWebWorker' attrib added to `<replay-web-page>`.
+v1.6.0
+- Embeds: Support embedding without using webworker with 'noWebWorker' attrib added to `<replay-web-page>`
+- Fidelity: improved replay of pages that use eval() in global scope (via wabac.js)
+- Fidelity: improved replay of twitter videos archived via browsertrix-crawler/pywb (via wabac.js)
+- Loading: Support for multi-WACZ json, with search across all WACZ files (via wabac.js)
+- Loading: Support for loading from non-HTTP URLs (via wabac.js) in browsers that support custom fetch
+- UI: Support for entering `ssb://<hash>` URLs for use with browsers that support custom fetch
+- Dependencies: update to wabac.js 2.12.0, update to electron 19.0.4
 
 v1.5.11
 - Loading: fix url lookup when no '=' in query arg, optimize loading compressed index (only load 3 blocks), via (wabac.js)

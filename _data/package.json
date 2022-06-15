@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "1.5.12",
+  "version": "1.6.0",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -9,7 +9,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@webrecorder/wabac": "^2.11.1",
+    "@webrecorder/wabac": "^2.12.0",
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
     "electron-updater": "^4.3.9",
@@ -18,7 +18,7 @@
     "ipfs-core": "^0.10.8",
     "keyword-mark-element": "^0.2.0",
     "lit": "^2.1.1",
-    "marked": "^3.0.3",
+    "marked": "^4.0.10",
     "mime-types": "^2.1.32",
     "minimist": "^1.2.5",
     "pretty-bytes": "^5.6.0",
@@ -31,8 +31,8 @@
   "devDependencies": {
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
-    "electron": "^16.0.6",
-    "electron-builder": "^22.14.2",
+    "electron": "^19.0.4",
+    "electron-builder": "^23.0.3",
     "electron-notarize": "^1.1.1",
     "http-server": "^13.0.2",
     "mini-css-extract-plugin": "^2.3.0",
