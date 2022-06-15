@@ -115,7 +115,8 @@
       ],
       "extraResources": [
         "plugins-mac"
-      ]
+      ],
+      "singleArchFiles": "dist/prebuilds/**/*"
     },
     "linux": {
       "category": "Archiving;Utility;",
