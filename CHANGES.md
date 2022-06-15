@@ -1,5 +1,8 @@
 ## CHANGES
 
+v1.5.12
+- Embeds: Support embedding without using webworker with 'noWebWorker' attrib added to `<replay-web-page>`.
+
 v1.5.11
 - Loading: fix url lookup when no '=' in query arg, optimize loading compressed index (only load 3 blocks), via (wabac.js)
 - Loading: fix url lookup api calls
