@@ -34,17 +34,6 @@ Please try a different browser.
   return p;
 }
 
-// ===========================================================================
-let dbworker = null;
-
-function initDBWorker() {
-  if (dbworker === null) {
-    // eslint-disable-next-line no-undef
-    dbworker = new Worker(__SW_NAME__);
-  }
-  return dbworker;
-}
-
 
 // ===========================================================================
 async function digestMessage(message, hashtype) {
@@ -148,4 +137,4 @@ function parseURLSchemeHostPath(url) {
 
 
 export { digestMessage, tsToDate, getTS, getPageDateTS, getReplayLink, sourceToId, parseURLSchemeHostPath,
-  registerSW, initDBWorker };
+  registerSW };

@@ -66,12 +66,13 @@ The `<replay-web-page>` tag is a web component and supports a number of addition
 | `source`     | Source URL for the archive file. It should be a URL in one of the [supported formats](/docs/formats) loaded from one of the [support locations](/docs/locations) and is required. |
 | `url`        | The starting URL to load from the archive. If omitted, will start with the page list or URL search view. |
 | `ts`         | The timestamp of the starting URL to load. If omitted, the latest available version is used. |
-| `deepLink`   | (`true` / `false`) if set to true, allow 'deep linking' to exact pages in the embed, besides the starting URL. |
+| `deepLink`   | if set, allow 'deep linking' to exact pages in the embed, besides the starting URL. |
 | `embed`      | (`default` / `full` / `replayonly` ) - if set to `full`, will show the replayweb.page nav bar and logo. if set to `default`, omitted, will show the location bar. if set to `replayonly`, will only show the `url` and not location bar or any nav bar buttons, which may be useful for embedding a single page only. |
 | `replayBase` | Location of the `sw.js` file, defaults to `./replay/` as mentioned above, but can be overridden. |
 | `coll`       | Internal id for this collection, usually generated automatically.
 | `config`     | Extra per collection config options (such as custom fuzzy matching rules, TODO add more info!) |
-| `noSandbox`  | (`true` / `false`) if set to true, don't wrap iframe in `sandbox`. Used as extra precaution to avoid escaping iframe, but prevents PDFs from loading in embed archive. Set for archives of known/trusted sites. |
+| `noSandbox`  | if set, don't wrap iframe in `sandbox`. Used as extra precaution to avoid escaping iframe, but prevents PDFs from loading in embed archive. Set for archives of known/trusted sites. |
+| `noWebWorker`| if set, will not use Web Worker for loading, only Service Worker. May be useful for certain loading edge cases. |
 
 
 ### Versioning

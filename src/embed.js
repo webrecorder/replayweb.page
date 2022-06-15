@@ -29,6 +29,7 @@ class Embed extends LitElement
     this.embed = null;
     this.reloadCount = 0;
     this.noSandbox = false;
+    this.noWebWorker = false;
   }
 
   static get properties() {
@@ -56,6 +57,7 @@ class Embed extends LitElement
 
       deepLink: { type: Boolean },
       noSandbox: { type: Boolean },
+      noWebWorker: { type: Boolean },
 
       errorMessage: { type: String }
     };
@@ -126,13 +128,19 @@ class Embed extends LitElement
 
       const source = new URL(this.source, document.baseURI);
 
-      this.paramString = new URLSearchParams({
+      const params = {
         source,
         customColl: this.coll,
         config: this.config,
         basePageUrl: window.location.href.split("#")[0],
         embed: this.embed,
-      }).toString();
+      };
+
+      if (this.noWebWorker) {
+        params.noWebWorker = "1";
+      }
+
+      this.paramString = new URLSearchParams(params).toString();
 
       this.hashString = new URLSearchParams({
         url: this.url,
