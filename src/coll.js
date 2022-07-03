@@ -65,6 +65,7 @@ class Coll extends LitElement
     this.hasStory = false;
 
     this.editable = false;
+    this.browsable = true;
 
     this.showSidebar = localStorage.getItem("pages:showSidebar") === "1";
     this.splitter = null;
@@ -74,6 +75,7 @@ class Coll extends LitElement
     this.favIconUrl = "";
 
     this.appName = "ReplayWeb.page";
+    this.appVersion = VERSION;
     this.appLogo = rwpLogo;
   }
 
@@ -108,6 +110,7 @@ class Coll extends LitElement
       favIconUrl: {type: String },
 
       appName: { type: String },
+      appVersion: { type: String },
       appLogo: { type: String },
     };
   }
@@ -730,7 +733,6 @@ class Coll extends LitElement
     const dateStr = tsToDate(this.ts).toLocaleString();
 
     const isReplay = !!this.tabData.url;
-    const hasTime = !!this.tabData.ts;
 
     const showFavIcon = isReplay && this.favIconUrl;
 
@@ -764,12 +766,13 @@ class Coll extends LitElement
             ` : ""}
           </span>
         </a>
+        ${this.browsable ? html`
         <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile ${!isReplay ? "grey-disabled" : ""}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
                 ?disabled="${!isReplay}" title="Browse Contents" aria-label="Browse Contents" aria-controls="contents">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
           </span>
-        </a>
+        </a>` : ``}
         ${this.renderExtraToolbar(false)}
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}">
@@ -817,12 +820,13 @@ class Coll extends LitElement
                 </span>
                 <span>Reload</span>
               </a>
+              ${this.browsable ? html`
               <a href="#" role="button" class="dropdown-item is-hidden-tablet ${!isReplay ? "grey-disabled" : ""}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
                 <span>Browse Contents</span>
-              </a>
+              </a>` : ``}
               ${this.renderExtraToolbar(true)}
               ${!this.editable ? html`
               <hr class="dropdown-divider is-hidden-desktop">
@@ -849,7 +853,7 @@ class Coll extends LitElement
               <a href="#" role="button" class="dropdown-item" @click="${this.onAbout}">
                 <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
                 <span>&nbsp;About ${this.appName}</span>
-                <span class="menu-version">(${VERSION})</span>
+                <span class="menu-version">(${this.appVersion})</span>
               </a>
             </div>
           </div>

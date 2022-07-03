@@ -8,6 +8,8 @@ import { wrapCss, rwpLogo } from "./misc";
 
 var scriptSrc = document.currentScript && document.currentScript.src;
 
+var defaultReplayFile = "";
+
 
 // ===========================================================================
 class Embed extends LitElement
@@ -15,7 +17,7 @@ class Embed extends LitElement
   constructor() {
     super();
     this.replaybase = "./replay/";
-    this.replayfile = "";
+    this.replayfile = defaultReplayFile;
     // eslint-disable-next-line no-undef
     this.swName = __SW_NAME__;
     this.mainElementName = "replay-app-main";
@@ -33,6 +35,10 @@ class Embed extends LitElement
     this.reloadCount = 0;
     this.noSandbox = false;
     this.noWebWorker = false;
+  }
+
+  static setDefaultReplayFile(replayfile) {
+    defaultReplayFile = replayfile;
   }
 
   static get properties() {
@@ -133,8 +139,12 @@ class Embed extends LitElement
       return this.config;
     }
 
-    const config = {...this.customConfig, ...JSON.parse(this.config)};
-    return JSON.stringify(config);
+    if (this.config) {
+      const config = {...this.customConfig, ...JSON.parse(this.config)};
+      return JSON.stringify(config);
+    } else {
+      return JSON.stringify(this.customConfig);
+    }
   }
 
   updated(changedProperties) {
