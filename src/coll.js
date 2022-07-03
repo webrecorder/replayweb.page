@@ -772,7 +772,7 @@ class Coll extends LitElement
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
           </span>
-        </a>` : ``}
+        </a>` : ""}
         ${this.renderExtraToolbar(false)}
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}">
@@ -826,7 +826,7 @@ class Coll extends LitElement
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
                 <span>Browse Contents</span>
-              </a>` : ``}
+              </a>` : ""}
               ${this.renderExtraToolbar(true)}
               ${!this.editable ? html`
               <hr class="dropdown-divider is-hidden-desktop">
