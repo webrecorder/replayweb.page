@@ -369,7 +369,11 @@ class Coll extends LitElement
   }
 
   static get styles() {
-    return wrapCss(css`
+    return wrapCss(Coll.compStyles);
+  }
+
+  static get compStyles() {
+    return css`
     :host {
       display: flex;
       flex-direction: column;
@@ -450,8 +454,7 @@ class Coll extends LitElement
       flex: auto;
     }
 
-    ${Coll.replayBarStyles}
-    `);
+    ${Coll.replayBarStyles}`;
   }
 
   static get replayBarStyles() {
@@ -727,6 +730,7 @@ class Coll extends LitElement
     const dateStr = tsToDate(this.ts).toLocaleString();
 
     const isReplay = !!this.tabData.url;
+    const hasTime = !!this.tabData.ts;
 
     const showFavIcon = isReplay && this.favIconUrl;
 

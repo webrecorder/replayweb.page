@@ -15,13 +15,16 @@ class Embed extends LitElement
   constructor() {
     super();
     this.replaybase = "./replay/";
+    this.replayfile = "";
     // eslint-disable-next-line no-undef
     this.swName = __SW_NAME__;
+    this.mainElementName = "replay-app-main";
     this.view = "replay";
     this.ts = "";
     this.url = "";
     this.query = "";
     this.config = "";
+    this.customConfig = null;
     this.coll = "";
     this.paramString = null;
     this.deepLink = false;
@@ -39,6 +42,8 @@ class Embed extends LitElement
       query: { type: String },
 
       source: { type: String },
+      src: { type: String },
+
       view: { type: String },
       embed: { type: String },
 
@@ -72,27 +77,33 @@ class Embed extends LitElement
     }
   }
 
+  handleMessage(event) {
+    const iframe = this.renderRoot.querySelector("iframe");
+
+    if (iframe && event.source === iframe.contentWindow) {
+      if (!event.data.view) {
+        return;
+      }
+
+      if (event.data.title) {
+        this.title = event.data.title;
+      }
+
+      if (!this.deepLink) {
+        return;
+      }
+
+      const currHash = new URLSearchParams(event.data);
+      const url = new URL(window.location.href);
+      url.hash = "#" + currHash.toString();
+      window.history.replaceState({}, "", url);
+    }
+  }
+
   firstUpdated() {
     this.doRegister();
 
-    window.addEventListener("message", (event) => {
-      const iframe = this.renderRoot.querySelector("iframe");
-
-      if (iframe && event.source === iframe.contentWindow) {
-        if (event.data.title) {
-          this.title = event.data.title;
-        }
-
-        if (!this.deepLink) {
-          return;
-        }
-
-        const currHash = new URLSearchParams(event.data);
-        const url = new URL(window.location.href);
-        url.hash = "#" + currHash.toString();
-        window.history.replaceState({}, "", url);
-      }
-    });
+    window.addEventListener("message", (event) => this.handleMessage(event));
 
     if (this.deepLink) {
       this.updateFromHash();
@@ -117,21 +128,37 @@ class Embed extends LitElement
     }
   }
 
+  mergeConfigs() {
+    if (!this.customConfig) {
+      return this.config;
+    }
+
+    const config = {...this.customConfig, ...JSON.parse(this.config)};
+    return JSON.stringify(config);
+  }
+
   updated(changedProperties) {
     if (changedProperties.has("url") ||
         changedProperties.has("ts") ||
         changedProperties.has("query") ||
         changedProperties.has("view") ||
-        changedProperties.has("source")) {
+        changedProperties.has("source") ||
+        changedProperties.has("src")) {
 
       this.embed = this.embed || "default";
 
+      if (this.src) {
+        this.source = this.src;
+      }
+
       const source = new URL(this.source, document.baseURI);
+
+      const config = this.mergeConfigs();
 
       const params = {
         source,
         customColl: this.coll,
-        config: this.config,
+        config,
         basePageUrl: window.location.href.split("#")[0],
         embed: this.embed,
       };
@@ -186,7 +213,7 @@ class Embed extends LitElement
          allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts\
          allow-same-origin allow-forms" : undefined)}"
 
-      @load="${this.onLoad}" src="${this.replaybase}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"
+      @load="${this.onLoad}" src="${this.replaybase}${this.replayfile}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"
       title="Replay of ${this.title ? `${this.title}:` :""} ${this.url}"></iframe>
 
       ` : html``}
@@ -213,7 +240,7 @@ class Embed extends LitElement
 
     this.reloadCount = 0;
 
-    if (win.customElements.get("replay-app-main")) {
+    if (win.customElements.get(this.mainElementName)) {
       return;
     }
 

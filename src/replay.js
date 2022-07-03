@@ -122,7 +122,7 @@ class Replay extends LitElement
 
     if (iframe && event.source === iframe.contentWindow) {
       if (event.data.wb_type === "load" || event.data.wb_type === "replace-url") {
-        this.replayTS = event.data.ts;
+        this.replayTS = event.data.is_live ? "" : event.data.ts;
         this.replayUrl = event.data.url;
         this.title = event.data.title || this.title;
         this.clearLoading(iframe.contentWindow);
