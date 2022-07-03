@@ -35,6 +35,7 @@ class Embed extends LitElement
     this.reloadCount = 0;
     this.noSandbox = false;
     this.noWebWorker = false;
+    this.logo = rwpLogo;
   }
 
   static setDefaultReplayFile(replayfile) {
@@ -231,7 +232,7 @@ class Embed extends LitElement
     ${this.errorMessage ? html`
       <section class="full-width">
         <div class="has-text-centered">
-          <fa-icon class="logo" id="wrlogo" size="2.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
+          <fa-icon class="logo" id="wrlogo" size="2.5rem" .svg=${this.logo} aria-hidden="true"></fa-icon>
         </div>
         <div class="error">${this.errorMessage}</div>
       </section>

@@ -1,5 +1,11 @@
 import { register } from "register-service-worker";
 
+let appName = "ReplayWeb.page";
+
+// ===========================================================================
+function setAppName(newAppName) {
+  appName = newAppName;
+}
 
 // ===========================================================================
 function registerSW(name = "sw.js", scope = "./") {
@@ -26,7 +32,7 @@ function registerSW(name = "sw.js", scope = "./") {
 
     error (error) {
       console.error("Error during service worker registration:", error);
-      reject(`ReplayWeb.page could not be loaded due to the following error:\n${error.toString()}`);
+      reject(`${appName} could not be loaded due to the following error:\n${error.toString()}`);
     }
   });
 
@@ -39,10 +45,10 @@ function getSWErrorMsg() {
   }
   if (window.location.protocol === "http:") {
     return `\
-Sorry, the ReplayWeb.page system must be loaded from an HTTPS URL, but was loaded from: ${window.location.host}.
+Sorry, the ${appName} system must be loaded from an HTTPS URL, but was loaded from: ${window.location.host}.
 Please try loading this page from an HTTPS URL`;
   } else {
-    return `Sorry, ReplayWeb.page won't work in this browser as Service Workers are not supported.
+    return `Sorry, ${appName} won't work in this browser as Service Workers are not supported.
 Please try a different browser.
 (Service Workers are disabled in Firefox in Private Mode. If Using Private Mode in Firefox, try regular mode)`;
   }
@@ -150,4 +156,4 @@ function parseURLSchemeHostPath(url) {
 
 
 export { digestMessage, tsToDate, getTS, getPageDateTS, getReplayLink, sourceToId, parseURLSchemeHostPath,
-  registerSW, getSWErrorMsg };
+  registerSW, getSWErrorMsg, setAppName };
