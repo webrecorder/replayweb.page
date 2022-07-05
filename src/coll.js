@@ -74,6 +74,9 @@ class Coll extends LitElement
 
     this.favIconUrl = "";
 
+    this.autoUpdateInterval = 10;
+    this._autoUpdater = null;
+
     this.appName = "ReplayWeb.page";
     this.appVersion = VERSION;
     this.appLogo = rwpLogo;
@@ -104,6 +107,7 @@ class Coll extends LitElement
 
       embed: { type: String },
       editable: { type: Boolean },
+      browsable: { type: Boolean },
 
       isVisible: { type: Boolean },
 
@@ -112,6 +116,8 @@ class Coll extends LitElement
       appName: { type: String },
       appVersion: { type: String },
       appLogo: { type: String },
+
+      autoUpdateInterval: { type: Number }
     };
   }
 
@@ -132,6 +138,18 @@ class Coll extends LitElement
     }
   }
 
+  async runUpdateLoop() {
+    try {
+      // only autoupdate if interval is set, and number of pages < 100 to avoid messing up scrolling
+      while (this.editable && this.autoUpdateInterval && (!this.collInfo || this.collInfo.pages.length < 100)) {
+        await new Promise(resolve => setTimeout(resolve, this.autoUpdateInterval * 1000));
+        await this.doUpdateInfo(true);
+      }
+    } finally {
+      this._autoUpdater = null;
+    }
+  }
+
   updated(changedProperties) {
     // if (changedProperties.has("url") || changedProperties.has("ts")) {
     //   if (this.url.startsWith("rwp?")) {
@@ -145,10 +163,8 @@ class Coll extends LitElement
       this.doUpdateInfo();
     }
     if (changedProperties.has("editable")) {
-      if (this.editable) {
-        this._pollColl = setInterval(() => this.doUpdateInfo(true), 10000);
-      } else if (this._pollColl) {
-        clearInterval(this._pollColl);
+      if (this.editable && this.autoUpdateInterval && !this._autoUpdater) {
+        this._autoUpdater = this.runUpdateLoop();
       }
     }
     if (changedProperties.has("tabData")) {
