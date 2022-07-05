@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -51,7 +51,8 @@
     "/ruffle",
     "sw.js",
     "ui.js",
-    "index.js"
+    "index.js",
+    "index.html"
   ],
   "scripts": {
     "build": "webpack --mode production",

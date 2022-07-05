@@ -71,7 +71,7 @@ function tsToDate(ts) {
   }
 
   if (ts.length < 14) {
-    ts += "00000000000000".substr(ts.length);
+    ts += "00000101000000".substr(ts.length);
   }
 
   const datestr = (ts.substring(0, 4) + "-" +

@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.6.2
+- Library: additional fixes, make 'purge cache' configurable
+- Library: Add index.html to npm bundle
+- UI: Fix date padding
+
 v1.6.1
 - Embed/Library: Make embedding more extensable for use as a library (for archiveweb.page extensions)
 - UI: Unified service worker error messaging for regular and embed mode, show correct error when loaded over http.

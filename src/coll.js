@@ -66,6 +66,7 @@ class Coll extends LitElement
 
     this.editable = false;
     this.browsable = true;
+    this.clearable = true;
 
     this.showSidebar = localStorage.getItem("pages:showSidebar") === "1";
     this.splitter = null;
@@ -108,6 +109,7 @@ class Coll extends LitElement
       embed: { type: String },
       editable: { type: Boolean },
       browsable: { type: Boolean },
+      clearable: { type: Boolean },
 
       isVisible: { type: Boolean },
 
@@ -844,7 +846,7 @@ class Coll extends LitElement
                 <span>Browse Contents</span>
               </a>` : ""}
               ${this.renderExtraToolbar(true)}
-              ${!this.editable ? html`
+              ${this.clearable ? html`
               <hr class="dropdown-divider is-hidden-desktop">
               <a href="#" role="button" class="dropdown-item" @click="${this.onPurgeCache}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
