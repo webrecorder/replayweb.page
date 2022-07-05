@@ -138,12 +138,14 @@ class WrModal extends LitElement
     super();
     this.title = "";
     this.bgClass = "";
+    this.noBgClose = false;
   }
 
   static get properties() {
     return {
       title: { type: String },
-      bgClass: { type: String }
+      bgClass: { type: String },
+      noBgClose: { type: Boolean }
     };
   }
 
@@ -167,7 +169,7 @@ class WrModal extends LitElement
   render() {
     return html`
     <div class="modal is-active">
-      <div class="modal-background" @click="${this.onClose}"></div>
+      <div class="modal-background" @click="${() => !this.noBgClose && this.onClose()}"></div>
       <div class="modal-card">
         <header class="modal-card-head ${this.bgClass}">
           <p class="modal-card-title is-3">${this.title}</p>

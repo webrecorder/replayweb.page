@@ -2,7 +2,7 @@ import { LitElement, html, css, unsafeCSS } from "lit";
 import { wrapCss } from "./misc";
 
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-import marked from "marked";
+import { marked } from "marked";
 
 import { getTS, getReplayLink } from "./pageutils";
 

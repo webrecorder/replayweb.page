@@ -3,7 +3,7 @@ import { wrapCss, IS_APP } from "./misc";
 
 import prettyBytes from "pretty-bytes";
 
-import { parseURLSchemeHostPath } from "./pageutils";
+import { getSWErrorMsg, parseURLSchemeHostPath } from "./pageutils";
 
 
 // ===========================================================================
@@ -125,15 +125,11 @@ class Loader extends LitElement
 
     this.percent = this.currentSize = this.totalSize = 0;
 
-    if (!navigator.serviceWorker) {
+    const noSWError = getSWErrorMsg();
+
+    if (noSWError) {
       this.state = "errored";
-      if (window.location.protocol === "http:") {
-        this.error = `\
-Sorry, the ReplayWeb.page system must be loaded from an HTTPS URL, but was loaded from: ${window.location.host}.
-Please try loading this page from an HTTPS URL`;
-      } else {
-        this.error = "Sorry, this browser is not supported. Please try a different browser\n(If you're using Firefox, try without Private Mode)";
-      }
+      this.error = noSWError;
       this.errorAllowRetry = false;
       return;
     }
@@ -176,6 +172,10 @@ You can select a file to upload from the main page by clicking the 'Choose File.
           source = {sourceUrl, loadUrl: url.href};
         }
         break;
+
+      case "proxy":
+        sourceUrl = "proxy:" + sourceUrl.slice("proxy://".length);
+        break;
       }
     } catch (e) {
       console.log(e);
@@ -189,10 +189,21 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
     this.state = "started";
 
-    const msg = {"msg_type": "addColl", "name": this.coll, skipExisting: true, file: source};
+    const msg = {
+      msg_type: "addColl",
+      name: this.coll,
+      skipExisting: true,
+      file: source
+    };
 
-    if (this.loadInfo && this.loadInfo.extraConfig) {
-      msg.extraConfig = this.loadInfo.extraConfig;
+    if (this.loadInfo) {
+      if (this.loadInfo.extraConfig) {
+        msg.extraConfig = this.loadInfo.extraConfig;
+      }
+      // todo: too special case?
+      if (sourceUrl.startsWith("proxy:") && msg.extraConfig && msg.extraConfig.recording) {
+        msg.type = "recordingproxy";
+      }
     }
 
     if (!navigator.serviceWorker.controller) {

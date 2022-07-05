@@ -10,6 +10,7 @@ class Replay extends LitElement
     super();
     this.replayUrl = "";
     this.replayTS = "";
+    this.actualTS = "";
     this.url = "";
     this.ts = "";
     this.title = "";
@@ -32,6 +33,7 @@ class Replay extends LitElement
       // actual replay url
       replayUrl: { type: String },
       replayTS: { type: String },
+      actualTS: { type: String },
       title: { type: String },
 
       iframeUrl: { type: String },
@@ -107,6 +109,18 @@ class Replay extends LitElement
 
       this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: true, data}}));
     }
+
+    if (this.title && (changedProperties.has("title") || changedProperties.has("actualTS"))) {
+      const detail = {
+        title: this.title,
+        url: this.replayUrl,
+        // send actual ts even if live
+        ts: this.actualTS,
+
+        replayTitle: true
+      };
+      this.dispatchEvent(new CustomEvent("update-title", {bubbles: true, composed: true, detail}));
+    }
   }
 
   setDisablePointer(disable) {
@@ -122,7 +136,8 @@ class Replay extends LitElement
 
     if (iframe && event.source === iframe.contentWindow) {
       if (event.data.wb_type === "load" || event.data.wb_type === "replace-url") {
-        this.replayTS = event.data.ts;
+        this.replayTS = event.data.is_live ? "" : event.data.ts;
+        this.actualTS = event.data.ts;
         this.replayUrl = event.data.url;
         this.title = event.data.title || this.title;
         this.clearLoading(iframe.contentWindow);
@@ -134,11 +149,6 @@ class Replay extends LitElement
       } else if (event.data.wb_type === "title") {
         this.title = event.data.title;
       }
-    }
-
-    if (this.title) {
-      const detail = {title: this.title, replayTitle: true};
-      this.dispatchEvent(new CustomEvent("update-title", {bubbles: true, composed: true, detail}));
     }
   }
 

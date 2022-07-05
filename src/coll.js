@@ -65,6 +65,7 @@ class Coll extends LitElement
     this.hasStory = false;
 
     this.editable = false;
+    this.browsable = true;
 
     this.showSidebar = localStorage.getItem("pages:showSidebar") === "1";
     this.splitter = null;
@@ -73,7 +74,11 @@ class Coll extends LitElement
 
     this.favIconUrl = "";
 
+    this.autoUpdateInterval = 10;
+    this._autoUpdater = null;
+
     this.appName = "ReplayWeb.page";
+    this.appVersion = VERSION;
     this.appLogo = rwpLogo;
   }
 
@@ -102,13 +107,17 @@ class Coll extends LitElement
 
       embed: { type: String },
       editable: { type: Boolean },
+      browsable: { type: Boolean },
 
       isVisible: { type: Boolean },
 
       favIconUrl: {type: String },
 
       appName: { type: String },
+      appVersion: { type: String },
       appLogo: { type: String },
+
+      autoUpdateInterval: { type: Number }
     };
   }
 
@@ -129,6 +138,18 @@ class Coll extends LitElement
     }
   }
 
+  async runUpdateLoop() {
+    try {
+      // only autoupdate if interval is set, and number of pages < 100 to avoid messing up scrolling
+      while (this.editable && this.autoUpdateInterval && (!this.collInfo || this.collInfo.pages.length < 100)) {
+        await new Promise(resolve => setTimeout(resolve, this.autoUpdateInterval * 1000));
+        await this.doUpdateInfo(true);
+      }
+    } finally {
+      this._autoUpdater = null;
+    }
+  }
+
   updated(changedProperties) {
     // if (changedProperties.has("url") || changedProperties.has("ts")) {
     //   if (this.url.startsWith("rwp?")) {
@@ -142,10 +163,8 @@ class Coll extends LitElement
       this.doUpdateInfo();
     }
     if (changedProperties.has("editable")) {
-      if (this.editable) {
-        this._pollColl = setInterval(() => this.doUpdateInfo(true), 10000);
-      } else if (this._pollColl) {
-        clearInterval(this._pollColl);
+      if (this.editable && this.autoUpdateInterval && !this._autoUpdater) {
+        this._autoUpdater = this.runUpdateLoop();
       }
     }
     if (changedProperties.has("tabData")) {
@@ -369,7 +388,11 @@ class Coll extends LitElement
   }
 
   static get styles() {
-    return wrapCss(css`
+    return wrapCss(Coll.compStyles);
+  }
+
+  static get compStyles() {
+    return css`
     :host {
       display: flex;
       flex-direction: column;
@@ -450,8 +473,7 @@ class Coll extends LitElement
       flex: auto;
     }
 
-    ${Coll.replayBarStyles}
-    `);
+    ${Coll.replayBarStyles}`;
   }
 
   static get replayBarStyles() {
@@ -760,12 +782,13 @@ class Coll extends LitElement
             ` : ""}
           </span>
         </a>
+        ${this.browsable ? html`
         <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile ${!isReplay ? "grey-disabled" : ""}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
                 ?disabled="${!isReplay}" title="Browse Contents" aria-label="Browse Contents" aria-controls="contents">
           <span class="icon is-small">
             <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
           </span>
-        </a>
+        </a>` : ""}
         ${this.renderExtraToolbar(false)}
         <form @submit="${this.onSubmit}">
           <div class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}">
@@ -813,12 +836,13 @@ class Coll extends LitElement
                 </span>
                 <span>Reload</span>
               </a>
+              ${this.browsable ? html`
               <a href="#" role="button" class="dropdown-item is-hidden-tablet ${!isReplay ? "grey-disabled" : ""}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
                 <span class="icon is-small">
                   <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
                 </span>
                 <span>Browse Contents</span>
-              </a>
+              </a>` : ""}
               ${this.renderExtraToolbar(true)}
               ${!this.editable ? html`
               <hr class="dropdown-divider is-hidden-desktop">
@@ -845,7 +869,7 @@ class Coll extends LitElement
               <a href="#" role="button" class="dropdown-item" @click="${this.onAbout}">
                 <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
                 <span>&nbsp;About ${this.appName}</span>
-                <span class="menu-version">(${VERSION})</span>
+                <span class="menu-version">(${this.appVersion})</span>
               </a>
             </div>
           </div>

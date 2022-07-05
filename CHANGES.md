@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.6.1
+- Embed/Library: Make embedding more extensable for use as a library (for archiveweb.page extensions)
+- UI: Unified service worker error messaging for regular and embed mode, show correct error when loaded over http.
+- Dependencies: update ruffle to 2022-07-02
+
 v1.6.0
 - Embeds: Support embedding without using webworker with 'noWebWorker' attrib added to `<replay-web-page>`
 - Fidelity: improved replay of pages that use eval() in global scope (via wabac.js)
