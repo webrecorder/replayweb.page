@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.6.3
+- Loading: replay fixes for WARCs with revisit records (via wabac.js)
+- Fidelity: fix for rewriting of some JS incorrectly treated as a module (via wabac.js)
+- Loading: fix loading ipfs:// urls (via wabac.js)
+- Dependencies: update to wabac.js 2.12.2
+
 v1.6.2
 - Library: additional fixes, make 'purge cache' configurable
 - Library: Add index.html to npm bundle
