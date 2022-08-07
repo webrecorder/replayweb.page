@@ -35,6 +35,7 @@ class Embed extends LitElement
     this.reloadCount = 0;
     this.noSandbox = false;
     this.noWebWorker = false;
+    this.noCache = false;
     this.logo = rwpLogo;
   }
 
@@ -70,6 +71,7 @@ class Embed extends LitElement
       deepLink: { type: Boolean },
       noSandbox: { type: Boolean },
       noWebWorker: { type: Boolean },
+      noCache: { type: Boolean },
 
       errorMessage: { type: String }
     };
@@ -176,6 +178,10 @@ class Embed extends LitElement
 
       if (this.noWebWorker) {
         params.noWebWorker = "1";
+      }
+
+      if (this.noCache) {
+        params.noCache = "1";
       }
 
       this.paramString = new URLSearchParams(params).toString();

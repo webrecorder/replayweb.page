@@ -185,26 +185,32 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       source = {sourceUrl};
     }
 
-    source.newFullImport = (this.loadInfo && this.loadInfo.newFullImport);
-
     this.state = "started";
+
+    let type = undefined;
+    let extraConfig = undefined;
+
+    if (this.loadInfo) {
+      source.newFullImport = this.loadInfo.newFullImport;
+      source.noCache = this.loadInfo.noCache;
+
+      if (this.loadInfo.extraConfig) {
+        extraConfig = this.loadInfo.extraConfig;
+      }
+      // todo: too special case?
+      if (sourceUrl.startsWith("proxy:") && extraConfig && extraConfig.recording) {
+        type = "recordingproxy";
+      }
+    }
 
     const msg = {
       msg_type: "addColl",
       name: this.coll,
+      extraConfig,
+      type,
       skipExisting: true,
       file: source
     };
-
-    if (this.loadInfo) {
-      if (this.loadInfo.extraConfig) {
-        msg.extraConfig = this.loadInfo.extraConfig;
-      }
-      // todo: too special case?
-      if (sourceUrl.startsWith("proxy:") && msg.extraConfig && msg.extraConfig.recording) {
-        msg.type = "recordingproxy";
-      }
-    }
 
     if (!navigator.serviceWorker.controller) {
       await new Promise((resolve) => {

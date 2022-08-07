@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.6.4
+- Embeds: Support `noCache` attribute in `<replay-web-page>` to disable cacheing any HTTP response payloads
+- Dependencies: update to wabac.js 2.12.3
+
 v1.6.3
 - Loading: replay fixes for WARCs with revisit records (via wabac.js)
 - Fidelity: fix for rewriting of some JS incorrectly treated as a module (via wabac.js)
