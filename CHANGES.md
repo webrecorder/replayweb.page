@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.6.5
+- Loading: Don't ignore hashtag, eg. #.wacz to specify file type when loading (via wabac.js)
+- Dependencies: update to wabac.js 2.12.4
+
 v1.6.4
 - Embeds: Support `noCache` attribute in `<replay-web-page>` to disable cacheing any HTTP response payloads
 - Dependencies: update to wabac.js 2.12.3
