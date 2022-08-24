@@ -25,6 +25,7 @@ import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.sv
 import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
 
 import Split from "split.js";
+import { verify } from "tweetnacl";
 
 
 const RWP_SCHEME = "search://";
@@ -61,6 +62,7 @@ class Coll extends LitElement
     };
 
     this.menuActive = false;
+    this.embedDropdownActive = false;
 
     this.hasStory = false;
 
@@ -107,6 +109,8 @@ class Coll extends LitElement
       menuActive: { type: Boolean },
 
       embed: { type: String },
+      embedDropdownActive: { type: Boolean },
+
       editable: { type: Boolean },
       browsable: { type: Boolean },
       clearable: { type: Boolean },
@@ -284,12 +288,13 @@ class Coll extends LitElement
       coll,
       ...json
     };
+    console.log(this.collInfo);
 
     if (!this.collInfo.title) {
       this.collInfo.title = this.collInfo.filename;
     }
 
-    if (this.embed === "replayonly") {
+    if (this.embed === "replayonly" || this.embed === "replay-with-info") {
       this.showSidebar = false;
     }
 
@@ -657,6 +662,7 @@ class Coll extends LitElement
     } else if (this.collInfo) {
       return html`
       ${this.renderLocationBar()}
+      ${this.renderVerifyInfo()}
       <div id="tabContents">
         <div id="contents" class="is-light ${isSidebar ? "sidebar" : (isReplay ? "is-hidden" : "full-pages")}"
              role="${isSidebar ? "complementary" : ""}" aria-label="${isSidebar ? "Browse Contents" : ""}">
@@ -744,7 +750,7 @@ class Coll extends LitElement
   }
 
   renderLocationBar() {
-    if (this.embed === "replayonly") {
+    if (this.embed === "replayonly" || this.embed == "replay-with-info") {
       return "";
     }
 
@@ -878,6 +884,65 @@ class Coll extends LitElement
         </div>
       </div>
     </nav><p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
+  }
+
+  renderVerifyInfo() {
+    if (this.embed !== "replay-with-info") {
+      return "";
+    }
+
+    const {verified, domain, certFingerprint} = this.collInfo.verify || {};
+
+    const certFingerprintUrl = certFingerprint ? `https://crt.sh/?q=${certFingerprint}` : "";
+
+    const dateStr = tsToDate(this.ts).toLocaleString();
+
+    return html`
+    <div class="dropdown mb-4 ${this.embedDropdownActive ? "is-active" : ""}" @click="${() => this.embedDropdownActive = false}">
+      <div class="dropdown-trigger">
+        <button class="button is-small" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
+          <span>
+          <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
+          This embed is part of a web archive. Click for more info</span>
+          <span class="icon is-small">
+            <i class="fas fa-angle-down" aria-hidden="true"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="embed-dropdown" role="menu">
+        <div class="dropdown-content">
+          <p class="is-size-6">You are viewing an archived embed, which won't go away!</p>
+
+          <p class="is-size-5 mt-4">Archive Information</p>
+          <div class="ml-4 mr-4 mb-4">
+            <p>Original URL: <b>${this.tabData.url}</b></p>
+            <p>Archived On: <b>${dateStr}</b></p>
+            <p>Signing Witness: 
+            ${domain ? html`<b>${domain}</b> ${certFingerprintUrl ?
+                 html`<b><a target="_blank" href="${certFingerprintUrl}">(View Cert)</a></b>` : ""}` :
+               html`<i>unknown</i>`}
+            </p>
+            <p>Signatures: ${verified == true ?
+              html`<span class="has-text-primary-dark has-text-weight-bold">Valid!</span>` : 
+              (verified == false ? 
+                html`<span class=has-text-primary-danger has-text-weight-bold">Invalid!</span>` : html`<i>unknown</i>`)}</p>
+          </div>
+          <p class="is-size-7 is-italic">Powered by <a target="_blank" href="https://replayweb.page">ReplayWeb.page</a></p>
+        </div>
+      </div>
+    </div>
+    `;
+  }
+
+  onEmbedDrop(event) {
+    event.stopPropagation();
+    this.embedDropdownActive = !this.embedDropdownActive;
+
+    if (this.embedDropdownActive) {
+      document.addEventListener("click", () => {
+        this.embedDropdownActive = false;
+      }, {once: true});
+    }
   }
 
   dragStart() {
