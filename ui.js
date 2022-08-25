@@ -610,7 +610,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=re(se
       font-size: 10px;
       font-weight: bold;
     }
-    `}render(){const e=this.coll,t=this.detailed;return I`
+    `}render(){const e=this.coll,t=this.detailed,{verified:i,domain:r,certFingerprint:a}=this.coll.verify||{},o=a?`https://crt.sh/?q=${a}`:"";return I`
       <div class="columns">
         <div class="column col-title is-4">
           <span class="subtitle has-text-weight-bold">
@@ -642,6 +642,15 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=re(se
 
         <div class="column is-2"><p class="minihead">Date Loaded</p>${e.ctime?new Date(e.ctime).toLocaleString():""}</div>
         <div class="column is-2"><p class="minihead">Total Size</p>${Ne()(Number(e.size||0))}</div>
+
+        ${t?I`
+        <div class="column"><p class="minihead">Signing Witness: </p>
+            ${r?I`<b>${r}</b> ${o?I`<b><a target="_blank" href="${o}">(View Cert)</a></b>`:""}`:I`<i>unknown</i>`}
+        </div>
+        <div class="column"><p class="minihead">Signatures:</p>
+            ${1==i?I`<span class="has-text-primary-dark has-text-weight-bold">Valid!</span>`:0==i?I`<span class=has-text-primary-danger has-text-weight-bold">Invalid!</span>`:I`<i>unknown</i>`}
+        </div>`:""}
+
 
         ${t?I`
         <div class="column">

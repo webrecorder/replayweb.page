@@ -408,6 +408,10 @@ class CollInfo extends LitElement
     const coll = this.coll;
     const detailed = this.detailed;
 
+    const {verified, domain, certFingerprint} = this.coll.verify || {};
+
+    const certFingerprintUrl = certFingerprint ? `https://crt.sh/?q=${certFingerprint}` : "";
+
     return html`
       <div class="columns">
         <div class="column col-title is-4">
@@ -440,6 +444,20 @@ class CollInfo extends LitElement
 
         <div class="column is-2"><p class="minihead">Date Loaded</p>${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}</div>
         <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.size || 0))}</div>
+
+        ${detailed ? html`
+        <div class="column"><p class="minihead">Signing Witness: </p>
+            ${domain ? html`<b>${domain}</b> ${certFingerprintUrl ?
+                 html`<b><a target="_blank" href="${certFingerprintUrl}">(View Cert)</a></b>` : ""}` :
+               html`<i>unknown</i>`}
+        </div>
+        <div class="column"><p class="minihead">Signatures:</p>
+            ${verified == true ?
+              html`<span class="has-text-primary-dark has-text-weight-bold">Valid!</span>` : 
+              (verified == false ? 
+                html`<span class=has-text-primary-danger has-text-weight-bold">Invalid!</span>` : html`<i>unknown</i>`)}
+        </div>` : ``}
+
 
         ${detailed ? html`
         <div class="column">
