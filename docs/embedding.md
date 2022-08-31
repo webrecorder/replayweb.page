@@ -7,33 +7,27 @@ permalink: /docs/embedding
 
 ## Embedding Web Archives with ReplayWeb.page
 
-A key goal of ReplayWeb.page is to make embedding web archives into other sites as easily as possible,
-as easy as it is to embed PDFs, for example.
+A key goal of ReplayWeb.page is to make embedding web archives into other sites as easy as it is to embed media files like images and PDFs.
 
-ReplayWeb.page provides the `<replay-web-page>` HTML tag to support embedding.
+To make this possible ReplayWeb.page provides the `<replay-web-page>` HTML web component to support embedding in the pages where you would like to display web archives. This component works in all modern browsers, and has several configuration options that allow you to control things like the initial URL or snapshot to display from the archive when the component loads. The component allows you to load WACZ files that are created with Webrecorder tools, as well as standalone WARC files.
 
-Embedding requires just two parts, loading the frontend ui and the backend service worker.
+For the web component to work you need to load the *frontend* user interface and the *backend* service worker into your web page, and then point a `<replay-web-page>` component at your WACZ file. The *frontend* defines the `<replay-web-page>` web component itself, and the backend service worker is responsible for retrieving data on demand from your web archive file. The backend pulls resources from the WACZ file *on-demand* as they are requested, so full retrieval of the WACZ to the browser is *not* required. The frontend and backend are just static JavaScript assets which you can choose to load from a Content Delivery Network (CDN) or directly from your website if you would like to host them yourself.
 
-For example, to embed a web archive stored on s3 at `s3://webrecorder-builds/warcs/netpreserve-twitter.warc`
-(shorthand for: `https://webrecorder-builds.s3.amazonaws.com/warcs/netpreserve-twitter.warc`), you can first add
-the following snippet to your HTML page:
-
+For example, to embed a WACZ web archive stored at `https://webrecorder-builds.s3.amazonaws.com/wacz/netpreserve-twitter.wacz`, you first need to add the following snippet to your HTML page to load the user interface and use the `<replay-web-page>` component to point to the WACZ:
 
 {: .bg-blue-000 .text-grey-lt-000 .cap-header}
 my-web-archive-embed.html
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/ui.js"></script>
-<replay-web-page source="s3://webrecorder-builds/warcs/netpreserve-twitter.warc"
+
+<replay-web-page source="https://webrecorder-builds.s3.amazonaws.com/wacz/netpreserve-twitter.wacz"
 url="https://twitter.com/netpreserve"></replay-web-page>
 ```
 
-This will load the frontend UI.
+The first line loads version {{ site.data.package.version }} of the ui from the jsDelivr content delivery network. And the second instantiates the ReplayWebPage component using the `source` attribute to point to the location of the WACZ file on the web (in this case published on AWS S3). The `url` attribute is used to indicate what URL to display from the archive after the component loads.
 
-Since ReplayWeb.page requires a service worker, it is necessary to add a service worker path
-from where the web archive will be served. Create a subdirectory (eg. `replay/`) and place the following
-one-line script
-
+ReplayWeb.page's backend is a [service worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) which intercepts requests for URLs and looks for them in your WACZ file. Service workers are just JavaScript files, but it is necessary to add a service worker path from where the web archive will be served. This allows the service worker to catch requests only from the scope of the current page. To do this create a subdirectory (eg. `replay/`) and place the following one-line script in it:
 
 {: .bg-blue-000 .text-grey-lt-000 .cap-header}
 ./replay/sw.js
@@ -42,24 +36,58 @@ one-line script
 importScripts("https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/sw.js");
 ```
 
-Thus, if the HTML snippet was added to `https://my-site.example.com/path/my-web-archive-embed.html`
-then the sw.js should be added such that it is at: `https://my-site.example.com/path/replay/sw.js`.
+If the HTML snippet was added to `https://my-site.example.com/path/my-web-archive-embed.html`
+then the `sw.js` should be added such that it is at: `https://my-site.example.com/path/replay/sw.js`.
 
 That's it! Loading `https://my-site.example.com/path/my-web-archive-embed.html` should now load the web archive.
 
-(Be sure to add width and height styles to the `<replay-web-page>` tag as needed to size the embed).
+Be sure to add width and height styles to the `<replay-web-page>` tag as needed to size the embed.
 
-You can replace `s3://webrecorder-builds/warcs/netpreserve-twitter.warc` with any web archive hosted on your site,
-eg.  `https://my-site.example.com/warcs/my-warc-file.warc`.
+You can replace `s3://webrecorder-builds/wacz/netpreserve-twitter.wacz` with any web archive hosted on your site,
+eg.  `https://my-site.example.com/wacz/my-wacz-file.wacz`.
 
 {:  .fs-3 .pad .bg-grey-lt-100}
 If the file is loaded from a different origin, your site must have CORS access to download the web archive.
 <br>See [CORS restrictions](#cors-restrictions) below for more info.
 
+### Self Hosting
+
+Sometimes it can be desirable to *self-host* the user interface, service worker, and WACZ files. This is useful in situations where you want to prevent tracking by CDNs, or to make it easier to host the content in one place without needing to work out the details of Cross Origin Resource Sharing (CORS). Self-hosting is easy if you follow the same steps as above, but instead of loading the JavaScript and WACZ file from external locations you will need to [download](https://www.jsdelivr.com/package/npm/replaywebpage) the `ui.js` and `sw.js` JavaScript files and put them on the same server as the HTML that you are publishing.
+
+For example if you are publishing a page at `https://my-site.example.com/path/my-web-archive-embed.html` you could adjust the &lt;script&gt; element to load the ui from a location on your website:
+
+```html
+<script src="ui.js"></script>
+
+<replay-web-page source="netpreserve-twitter.wacz" url="https://twitter.com/netpreserve"></replay-web-page>
+```
+
+The following URLs would then need to resolve correctly:
+
+* https://my-site.example.com/path/my-web-archive-embed.html
+* https://my-site.example.com/path/netpreserve-twitter.wacz
+* https://my-site.example.com/path/ui.js
+* https://my-site.example.com/path/replay/sw.js
+
+If you want to embed more than one web archive on your site it can be helpful to centralise the location of the frontend and backend JavaScript and potentially WACZ files. The &lt;replay-web-page&gt; component has a `replayBase` attribute that lets you define the location to load the `sw.js` service worker from. For example if you publish your JavaScript files at:
+
+* https://my-site.example.com/js/ui.js
+* https://my-site.example.com/js/sw.js
+* https://my-site.example.com/wacz/netpreserve-twitter.wacz
+
+Then you adjust your HTML to reference the new resources:
+
+```html
+<script src="/js/ui.js"></script>
+
+<replay-web-page replayBase="/js/" source="netpreserve-twitter.wacz" url="https://twitter.com/netpreserve"></replay-web-page>
+```
+
+For a working example of hosting multiple web archives take a look at our *example-webarchive* [repository](https://github.com/webrecorder/example-webarchive/) and [static website](https://webrecorder.github.io/example-webarchive) which hosted on Github pages. It may give you ideas for how to integrate the ReplayWeb.page component into your site You may also be interested in [Web Replay Gen](https://github.com/webrecorder/web-replay-gen) which is an 11ty based static site builder for a web archive of WACZ files.
 
 ### Embedding Options
 
-The `<replay-web-page>` tag is a web component and supports a number of additional attributes:
+The `<replay-web-page>` tag is a web component that supports a number of additional attributes:
 
 | Attribute    | Description      |
 |:-------------|:-----------------|
@@ -133,13 +161,13 @@ Replace `https://myarchive.example.com` with the server (origin) of the URL wher
 <CORSConfiguration
 xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
 <CORSRule>
-	<AllowedMethod>GET</AllowedMethod>
-	<AllowedMethod>HEAD</AllowedMethod>
-	<AllowedOrigin>https://myarchive.example.com</AllowedOrigin>
-	<AllowedHeader>*</AllowedHeader>
-	<ExposeHeader>Content-Range</ExposeHeader>
-	<ExposeHeader>Content-Encoding</ExposeHeader>
-	<ExposeHeader>Content-Length</ExposeHeader>
+  <AllowedMethod>GET</AllowedMethod>
+  <AllowedMethod>HEAD</AllowedMethod>
+  <AllowedOrigin>https://myarchive.example.com</AllowedOrigin>
+  <AllowedHeader>*</AllowedHeader>
+  <ExposeHeader>Content-Range</ExposeHeader>
+  <ExposeHeader>Content-Encoding</ExposeHeader>
+  <ExposeHeader>Content-Length</ExposeHeader>
 </CORSRule>
 </CORSConfiguration>
 ```
