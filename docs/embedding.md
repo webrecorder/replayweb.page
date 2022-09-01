@@ -69,7 +69,7 @@ The following URLs would then need to resolve correctly:
 * https://my-site.example.com/path/ui.js
 * https://my-site.example.com/path/replay/sw.js
 
-If you want to embed more than one web archive on your site it can be helpful to centralise the location of the frontend and backend JavaScript and potentially WACZ files. The &lt;replay-web-page&gt; component has a `replayBase` attribute that lets you define the location to load the `sw.js` service worker from. For example if you publish your JavaScript files at:
+If you want to embed more than one web archive on your site it can be helpful to centralise the location of the frontend and backend JavaScript and potentially WACZ files. The &lt;replay-web-page&gt; component has a `replayBase` attribute that lets you define the location to load the `sw.js` service worker from. By default, `replayBase` is set to `./replay/` and so the service worker is loaded from `./replay/sw.js`. For example if you publish your JavaScript files at:
 
 * https://my-site.example.com/js/ui.js
 * https://my-site.example.com/js/sw.js
