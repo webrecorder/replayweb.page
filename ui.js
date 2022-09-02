@@ -2230,6 +2230,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
       :host {
         width: 100%;
         height: 100%;
+        display: block;
       }
     `)}render(){return U`
     ${this.paramString&&this.hashString&&this.swInited?U`

@@ -2,7 +2,10 @@
 
 v1.6.5
 - Loading: Don't ignore hashtag, eg. #.wacz to specify file type when loading (via wabac.js)
-- Dependencies: update to wabac.js 2.12.4
+- Documentation: Update embedding guide to mention self-hosting of embed scripts
+- Embed: Use `display: block` for embed to avoid extra scrollbars
+- Fidelity: Various replay improvements via latest wabac.js (fix module script rewriting, more twitter video rewriting fidelity, ignore invalid link headers)
+- Dependencies: update to wabac.js 2.12.5
 
 v1.6.4
 - Embeds: Support `noCache` attribute in `<replay-web-page>` to disable cacheing any HTTP response payloads
