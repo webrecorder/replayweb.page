@@ -10,6 +10,8 @@ var scriptSrc = document.currentScript && document.currentScript.src;
 
 var defaultReplayFile = "";
 
+const DEFAULT_REPLAY_BASE = "https://replayweb.page/";
+
 
 // ===========================================================================
 class Embed extends LitElement
@@ -30,6 +32,7 @@ class Embed extends LitElement
     this.coll = "";
     this.paramString = null;
     this.deepLink = false;
+    this.newWindowBase = "";
     this.swInited = false;
     this.embed = null;
     this.reloadCount = 0;
@@ -72,6 +75,8 @@ class Embed extends LitElement
       noSandbox: { type: Boolean },
       noWebWorker: { type: Boolean },
       noCache: { type: Boolean },
+
+      newWindowBase: { type: String },
 
       errorMessage: { type: String }
     };
@@ -173,8 +178,13 @@ class Embed extends LitElement
         customColl: this.coll,
         config,
         basePageUrl: window.location.href.split("#")[0],
+        baseUrlSourcePrefix: this.newWindowBase,
         embed: this.embed,
       };
+
+      if (!this.deepLink && !params.baseUrlSourcePrefix) {
+        params.baseUrlSourcePrefix = DEFAULT_REPLAY_BASE;
+      }
 
       if (this.noWebWorker) {
         params.noWebWorker = "1";
@@ -218,6 +228,7 @@ class Embed extends LitElement
       :host {
         width: 100%;
         height: 100%;
+        display: block;
       }
     `);
   }

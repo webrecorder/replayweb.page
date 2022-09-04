@@ -351,10 +351,13 @@ class ReplayWebApp extends LitElement
       this.showAbout = true;
     }
 
-    if (this.pageParams.get("config")) {
+    if (this.pageParams.has("embed")) {
       if (!this.loadInfo) {
         this.loadInfo = {};
       }
+    }
+
+    if (this.pageParams.get("config")) {
       try {
         this.loadInfo.extraConfig = JSON.parse(this.pageParams.get("config"));
       } catch (e) {
@@ -362,35 +365,26 @@ class ReplayWebApp extends LitElement
       }
     }
 
+    if (this.pageParams.get("baseUrlSourcePrefix")) {
+      this.loadInfo.extraConfig = this.loadInfo.extraConfig || {};
+      this.loadInfo.extraConfig.baseUrlSourcePrefix = this.pageParams.get("baseUrlSourcePrefix");
+    }
+
     if (this.pageParams.get("basePageUrl")) {
-      if (!this.loadInfo) {
-        this.loadInfo = {extraConfig: {}};
-      }
-      if (!this.loadInfo.extraConfig) {
-        this.loadInfo.extraConfig = {};
-      }
+      this.loadInfo.extraConfig = this.loadInfo.extraConfig || {};
       this.loadInfo.extraConfig.baseUrl = this.pageParams.get("basePageUrl");
     }
 
     if (this.pageParams.get("customColl")) {
-      if (!this.loadInfo) {
-        this.loadInfo = {};
-      }
       this.loadInfo.customColl = this.pageParams.get("customColl");
     }
 
     if (this.pageParams.get("noWebWorker") === "1") {
-      if (!this.loadInfo) {
-        this.loadInfo = {};
-      }
       this.loadInfo.noWebWorker = true;
     }
 
 
     if (this.pageParams.get("noCache") === "1") {
-      if (!this.loadInfo) {
-        this.loadInfo = {};
-      }
       this.loadInfo.noCache = true;
     }
 
