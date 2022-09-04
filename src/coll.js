@@ -891,7 +891,9 @@ class Coll extends LitElement
       return "";
     }
 
-    const {verified, domain, certFingerprint} = this.collInfo.verify || {};
+    let {numValid, numInvalid, domain, certFingerprint} = this.collInfo.verify || {};
+    numValid = numValid || 0;
+    numInvalid = numInvalid || 0;
 
     const certFingerprintUrl = certFingerprint ? `https://crt.sh/?q=${certFingerprint}` : "";
 
@@ -922,10 +924,10 @@ class Coll extends LitElement
                  html`<b><a target="_blank" href="${certFingerprintUrl}">(View Cert)</a></b>` : ""}` :
                html`<i>unknown</i>`}
             </p>
-            <p>Signatures: ${verified == true ?
-              html`<span class="has-text-primary-dark has-text-weight-bold">Valid!</span>` : 
-              (verified == false ? 
-                html`<span class=has-text-primary-danger has-text-weight-bold">Invalid!</span>` : html`<i>unknown</i>`)}</p>
+            <p>Signatures: ${numValid > 0 && numInvalid === 0 ?
+              html`<span class="has-text-primary-dark has-text-weight-bold">Valid (${numValid} checked)</span>` : 
+              (numInvalid > 0 ? 
+                html`<span class=has-text-primary-danger has-text-weight-bold">Invalid (${numInvalid} invalid, ${numValid} valid)</span>` : html`<i>unknown</i>`)}</p>
           </div>
           <p class="is-size-7 is-italic">Powered by <a target="_blank" href="https://replayweb.page">ReplayWeb.page</a></p>
         </div>

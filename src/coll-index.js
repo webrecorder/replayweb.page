@@ -408,7 +408,9 @@ class CollInfo extends LitElement
     const coll = this.coll;
     const detailed = this.detailed;
 
-    const {verified, domain, certFingerprint} = this.coll.verify || {};
+    let {numValid, numInvalid, domain, certFingerprint} = this.coll.verify || {};
+    numValid = numValid || 0;
+    numInvalid = numInvalid || 0;
 
     const certFingerprintUrl = certFingerprint ? `https://crt.sh/?q=${certFingerprint}` : "";
 
@@ -452,10 +454,10 @@ class CollInfo extends LitElement
                html`<i>unknown</i>`}
         </div>
         <div class="column"><p class="minihead">Signatures:</p>
-            ${verified == true ?
-              html`<span class="has-text-primary-dark has-text-weight-bold">Valid!</span>` : 
-              (verified == false ? 
-                html`<span class=has-text-primary-danger has-text-weight-bold">Invalid!</span>` : html`<i>unknown</i>`)}
+            ${numValid > 0 && numInvalid === 0 ?
+              html`<span class="has-text-primary-dark has-text-weight-bold">Valid (${numValid} checked)</span>` : 
+              (numInvalid > 0 ? 
+                html`<span class=has-text-primary-danger has-text-weight-bold">Invalid (${numInvalid} invalid, ${numValid} valid)</span>` : html`<i>unknown</i>`)}
         </div>` : ``}
 
 
