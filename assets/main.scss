@@ -113,7 +113,7 @@ a:focus {
 
 // Add html and body styles to :host for webcomponents
 :host {
-  background-color: $body-background-color;
+  //background-color: $body-background-color;
   font-size: $body-size;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
