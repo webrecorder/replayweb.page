@@ -1208,7 +1208,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=re(se
           ${n?I`
           <p class="heading mt-4">Download Archive</p>
           <a target="_blank" href="${n}">${n}</a>
-          <p class="mt-2">This archive can be viewed directly in your browser by loading it on <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
+          <p class="mt-2">This archive can be viewed directly in your browser by loading it via<br/><a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
           `:""}
           <p class="is-size-7 is-italic is-flex is-justify-content-space-between" style="margin-top: 40px">
             <span>

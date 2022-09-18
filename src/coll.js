@@ -1003,7 +1003,7 @@ class Coll extends LitElement
           ${sourceUrl ? html`
           <p class="heading mt-4">Download Archive</p>
           <a target="_blank" href="${sourceUrl}">${sourceUrl}</a>
-          <p class="mt-2">This archive can be viewed directly in your browser by loading it on <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
+          <p class="mt-2">This archive can be viewed directly in your browser by loading it via<br/><a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
           ` : ``}
           <p class="is-size-7 is-italic is-flex is-justify-content-space-between" style="margin-top: 40px">
             <span>
