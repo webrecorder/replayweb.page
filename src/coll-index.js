@@ -408,7 +408,7 @@ class CollInfo extends LitElement
     const coll = this.coll;
     const detailed = this.detailed;
 
-    let {numValid, numInvalid, domain, certFingerprint} = this.coll.verify || {};
+    let {numValid, numInvalid, domain, certFingerprint, datapackageHash, software} = this.coll.verify || {};
     numValid = numValid || 0;
     numInvalid = numInvalid || 0;
 
@@ -448,18 +448,27 @@ class CollInfo extends LitElement
         <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.size || 0))}</div>
 
         ${detailed ? html`
-        <div class="column"><p class="minihead">Signing Witness: </p>
-            ${domain ? html`<b>${domain}</b> ${certFingerprintUrl ?
-                 html`<b><a target="_blank" href="${certFingerprintUrl}">(View Cert)</a></b>` : ""}` :
-               html`<i>unknown</i>`}
+        <div class="column">
+        ${domain ? html`
+          <p class="minihead">Observed By</p>
+          <p>${domain}</p>
+          ${certFingerprintUrl ?
+                 html`<span><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></span>` : ""}
+        ` : software ? html`
+        <p class="minihead">Created With</p>
+        ${software}
+        ` : ``}
         </div>
-        <div class="column"><p class="minihead">Signatures:</p>
-            ${numValid > 0 && numInvalid === 0 ?
-              html`<span class="has-text-primary-dark has-text-weight-bold">Valid (${numValid} checked)</span>` : 
-              (numInvalid > 0 ? 
-                html`<span class=has-text-primary-danger has-text-weight-bold">Invalid (${numInvalid} invalid, ${numValid} valid)</span>` : html`<i>unknown</i>`)}
-        </div>` : ``}
 
+        <div class="column">
+          <p class="minihead">Validation</p>
+          <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ``}</p>
+        </div>
+
+        <div class="column">
+          <p class="minihead">Package Hash</p>
+        ${datapackageHash}
+        </div>` : ``}
 
         ${detailed ? html`
         <div class="column">

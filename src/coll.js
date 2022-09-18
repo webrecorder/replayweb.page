@@ -21,6 +21,14 @@ import fasLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
 import fasRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
 import fasMenuV from "@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg";
 
+//import fasGlobe from "@fortawesome/fontawesome-free/svgs/solid/globe.svg";
+//import fasAngleDoubleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-double-down.svg";
+import btGlobe from "../assets/globe.svg";
+import btAngleDoubleDown from "../assets/chevron-double-down.svg";
+import btAngleDoubleUp from "../assets/chevron-double-up.svg";
+
+import fabGithub from "@fortawesome/fontawesome-free/svgs/brands/github.svg";
+
 import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.svg";
 import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
 
@@ -288,7 +296,6 @@ class Coll extends LitElement
       coll,
       ...json
     };
-    console.log(this.collInfo);
 
     if (!this.collInfo.title) {
       this.collInfo.title = this.collInfo.filename;
@@ -478,6 +485,56 @@ class Coll extends LitElement
       flex-direction: row;
       min-height: 0px;
       flex: auto;
+    }
+
+    #embed-dropdown {
+      padding-top: 0px;
+      display: block;
+      opacity: 0;
+
+      transition: all .3s linear;
+      transform-origin: left top;
+      transform: scaleY(0);
+    }
+
+    .dropdown.is-active #embed-dropdown {
+      opacity: 1;
+
+      transform: scaleY(1);
+    }
+
+    button.embed-info {
+      padding-left: 6px !important;
+      justify-content: space-between;
+      width: 450px;
+    }
+
+    .embed-info-drop {
+      font-size: 12px;
+      margin-left: 18px;
+      padding: 12px;
+      padding-top: 20px;
+      max-width: 414px;
+      border-top-right-radius: 0px;
+      border-top-left-radius: 0px;
+    }
+
+    .embed-info-drop > p.heading {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .embed-info-drop .show-hash {
+      word-break: break-all;
+      font-family: monospace;
+    }
+
+    .embed-globe {
+      padding: 6px;
+      background-color: #4876ff;
+      border-radius: 9999px;
+      color: white;
+      line-height: 0.5em;
     }
 
     ${Coll.replayBarStyles}`;
@@ -891,45 +948,70 @@ class Coll extends LitElement
       return "";
     }
 
-    let {numValid, numInvalid, domain, certFingerprint} = this.collInfo.verify || {};
+    let {numValid, numInvalid, domain, certFingerprint, datapackageHash, software} = this.collInfo.verify || {};
     numValid = numValid || 0;
     numInvalid = numInvalid || 0;
+
+    const sourceUrl = this.collInfo.sourceUrl;
 
     const certFingerprintUrl = certFingerprint ? `https://crt.sh/?q=${certFingerprint}` : "";
 
     const dateStr = tsToDate(this.ts).toLocaleString();
 
     return html`
-    <div class="dropdown mb-4 ${this.embedDropdownActive ? "is-active" : ""}" @click="${() => this.embedDropdownActive = false}">
+    <div class="dropdown mb-4 ${this.embedDropdownActive ? "is-active" : ""}">
       <div class="dropdown-trigger">
-        <button class="button is-small" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
+        <button class="embed-info button is-small is-rounded" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
           <span>
-          <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
-          This embed is part of a web archive. Click for more info</span>
-          <span class="icon is-small">
-            <i class="fas fa-angle-down" aria-hidden="true"></i>
+          <fa-icon class="menu-logo mr-2 embed-globe" size="0.75rem" aria-hidden="true" .svg=${btGlobe}></fa-icon>
+          This embed is part of a web archive. Click here for more info.</span>
+          <span class="icon is-small mr-1">
+            <fa-icon title="Toggle" .svg="${this.embedDropdownActive ? btAngleDoubleUp : btAngleDoubleDown}" aria-hidden="true"></fa-icon>
           </span>
         </button>
       </div>
       <div class="dropdown-menu" id="embed-dropdown" role="menu">
-        <div class="dropdown-content">
-          <p class="is-size-6">You are viewing an archived embed, which won't go away!</p>
-
-          <p class="is-size-5 mt-4">Archive Information</p>
-          <div class="ml-4 mr-4 mb-4">
-            <p>Original URL: <b>${this.tabData.url}</b></p>
-            <p>Archived On: <b>${dateStr}</b></p>
-            <p>Signing Witness: 
-            ${domain ? html`<b>${domain}</b> ${certFingerprintUrl ?
-                 html`<b><a target="_blank" href="${certFingerprintUrl}">(View Cert)</a></b>` : ""}` :
-               html`<i>unknown</i>`}
-            </p>
-            <p>Signatures: ${numValid > 0 && numInvalid === 0 ?
-              html`<span class="has-text-primary-dark has-text-weight-bold">Valid (${numValid} checked)</span>` : 
-              (numInvalid > 0 ? 
-                html`<span class=has-text-primary-danger has-text-weight-bold">Invalid (${numInvalid} invalid, ${numValid} valid)</span>` : html`<i>unknown</i>`)}</p>
+        <div class="dropdown-content embed-info-drop">
+          <p class="heading">This Embed Won't Go Away</p>
+          <p>
+          The content shown here is loaded from a web archive. Even if the original page
+          goes offline or is changed, the content below will remain unchanged.
+          </p>
+          <p class="heading mt-4">Archive Information</p>
+          <div>
+            <p>Original URL:</p>
+            <p><a target="_blank" href="${this.tabData.url}">${this.tabData.url}</a></p>
+            <p class="mt-2">Archived On:</p>
+            <p>${dateStr}</p>
+            ${domain ? html`
+            <p class="mt-2">Observed By:</p>
+            <p>${domain}</p>
+            ${certFingerprintUrl ?
+              html`<p><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></p>` : ""}
+            ` : software ? html`
+            <p class="mt-2">Created With:</p>
+            <p>${software}</p>` : ``}
+            <p class="mt-2">Validation:</p>
+            <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ``}</p>
+            <p class="mt-2">Package Hash:</p>
+            <p class="show-hash">${datapackageHash}</p>
           </div>
-          <p class="is-size-7 is-italic">Powered by <a target="_blank" href="https://replayweb.page">ReplayWeb.page</a></p>
+          ${sourceUrl ? html`
+          <p class="heading mt-4">Download Archive</p>
+          <a target="_blank" href="${sourceUrl}">${sourceUrl}</a>
+          <p class="mt-2">This archive can be viewed directly in your browser by loading it on <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
+          ` : ``}
+          <p class="is-size-7 is-italic is-flex is-justify-content-space-between" style="margin-top: 40px">
+            <span>
+              <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
+              Powered by ReplayWeb.page
+            </span>
+            <span>
+              <a class="has-text-black" target="_blank" href="https://github.com/webrecorder/replayweb.page">Source Code
+              <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${fabGithub}></fa-icon>
+              </a>
+            </span>
+          </p>
         </div>
       </div>
     </div>
@@ -939,12 +1021,6 @@ class Coll extends LitElement
   onEmbedDrop(event) {
     event.stopPropagation();
     this.embedDropdownActive = !this.embedDropdownActive;
-
-    if (this.embedDropdownActive) {
-      document.addEventListener("click", () => {
-        this.embedDropdownActive = false;
-      }, {once: true});
-    }
   }
 
   dragStart() {
