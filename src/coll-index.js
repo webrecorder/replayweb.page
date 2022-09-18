@@ -453,22 +453,22 @@ class CollInfo extends LitElement
           <p class="minihead">Observed By</p>
           <p>${domain}</p>
           ${certFingerprintUrl ?
-                 html`<span><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></span>` : ""}
+    html`<span><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></span>` : ""}
         ` : software ? html`
         <p class="minihead">Created With</p>
         ${software}
-        ` : ``}
+        ` : ""}
         </div>
 
         <div class="column">
           <p class="minihead">Validation</p>
-          <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ``}</p>
+          <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ""}</p>
         </div>
 
         <div class="column">
           <p class="minihead">Package Hash</p>
         ${datapackageHash}
-        </div>` : ``}
+        </div>` : ""}
 
         ${detailed ? html`
         <div class="column">

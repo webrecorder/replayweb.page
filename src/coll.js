@@ -33,7 +33,6 @@ import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.sv
 import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
 
 import Split from "split.js";
-import { verify } from "tweetnacl";
 
 
 const RWP_SCHEME = "search://";
@@ -991,12 +990,12 @@ class Coll extends LitElement
             <p class="mt-2">Observed By:</p>
             <p>${domain}</p>
             ${certFingerprintUrl ?
-              html`<p><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></p>` : ""}
+    html`<p><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></p>` : ""}
             ` : software ? html`
             <p class="mt-2">Created With:</p>
-            <p>${software}</p>` : ``}
+            <p>${software}</p>` : ""}
             <p class="mt-2">Validation:</p>
-            <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ``}</p>
+            <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ""}</p>
             <p class="mt-2">Package Hash:</p>
             <p class="show-hash">${datapackageHash}</p>
           </div>
@@ -1004,7 +1003,7 @@ class Coll extends LitElement
           <p class="heading mt-4">Download Archive</p>
           <a target="_blank" href="${sourceUrl}">${sourceUrl}</a>
           <p class="mt-2">This archive can be viewed directly in your browser by loading it via<br/><a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
-          ` : ``}
+          ` : ""}
           <p class="is-size-7 is-italic is-flex is-justify-content-space-between" style="margin-top: 40px">
             <span>
               <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>

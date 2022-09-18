@@ -101,7 +101,8 @@ class Replay extends LitElement
       this.dispatchEvent(new CustomEvent("update-title", {bubbles: true, composed: true, detail}));
     }
 
-    if (this.replayUrl && changedProperties.has("replayUrl")) {
+    if ((this.replayUrl && changedProperties.has("replayUrl")) || 
+        (this.replayTS && changedProperties.has("replayTS"))) {
       const data = {
         url: this.replayUrl,
         ts: this.replayTS,
