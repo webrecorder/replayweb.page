@@ -794,6 +794,10 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=re(se
       font-weight: bold;
     }
 
+    .embed-info-drop a {
+      word-break: break-all;
+    }
+
     .embed-info-drop .show-hash {
       word-break: break-all;
       font-family: monospace;

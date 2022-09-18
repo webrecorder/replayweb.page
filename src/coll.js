@@ -524,6 +524,10 @@ class Coll extends LitElement
       font-weight: bold;
     }
 
+    .embed-info-drop a {
+      word-break: break-all;
+    }
+
     .embed-info-drop .show-hash {
       word-break: break-all;
       font-family: monospace;
