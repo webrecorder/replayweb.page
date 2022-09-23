@@ -490,7 +490,6 @@ class Coll extends LitElement
       padding-top: 0px;
       display: block;
       opacity: 0;
-
       transition: all .3s linear;
       transform-origin: left top;
       transform: scaleY(0);
@@ -502,10 +501,43 @@ class Coll extends LitElement
       transform: scaleY(1);
     }
 
+    .dropdown-trigger {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
     button.embed-info {
-      padding-left: 6px !important;
+      padding: 0;
+      background-color: white;
       justify-content: space-between;
-      width: 450px;
+      max-width: 640px;
+      width: calc(100% - 1rem);
+      height: 42px;
+      border-color: #D1D5DA;
+      border-width: 1px;
+      border-style: solid;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      text-overflow: ellipsis;
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.15));
+      transition-duration: 100ms;
+      transition-timing-function: ease-out;
+      cursor: pointer;
+    }
+    
+    button.embed-info:hover {
+      filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
+      transform: scale(1.01);
+    }
+
+    .embed-info-buttontext {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;  
+      flex-grow: 1;
+      text-align: start;
     }
 
     .embed-info-drop {
@@ -533,10 +565,14 @@ class Coll extends LitElement
     }
 
     .embed-globe {
-      padding: 6px;
-      background-color: #4876ff;
+      margin: 0.25rem;
+      padding: 7px;
+      background-color: #0366D6;
       border-radius: 9999px;
       color: white;
+      border-width: 1px;
+      border-color: #D1D5DA;
+      border-style: solid;
       line-height: 0.5em;
     }
 
@@ -964,11 +1000,12 @@ class Coll extends LitElement
     return html`
     <div class="dropdown mb-4 ${this.embedDropdownActive ? "is-active" : ""}">
       <div class="dropdown-trigger">
-        <button class="embed-info button is-small is-rounded" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
-          <span>
-          <fa-icon class="menu-logo mr-2 embed-globe" size="0.75rem" aria-hidden="true" .svg=${btGlobe}></fa-icon>
-          This embed is part of a web archive. Click here for more info.</span>
-          <span class="icon is-small mr-1">
+        <button class="embed-info is-small is-rounded mt-4" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
+          <fa-icon class="menu-logo mr-2 embed-globe" size="1rem" aria-hidden="true" .svg=${btGlobe}></fa-icon>
+          <span class="embed-info-buttontext">
+            This embed is part of a web archive. Click here to learn more.
+          </span>
+          <span class="icon is-small mr-4 ml-2">
             <fa-icon title="Toggle" .svg="${this.embedDropdownActive ? btAngleDoubleUp : btAngleDoubleDown}" aria-hidden="true"></fa-icon>
           </span>
         </button>
