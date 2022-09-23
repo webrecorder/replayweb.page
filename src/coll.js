@@ -487,23 +487,24 @@ class Coll extends LitElement
     }
 
     #embed-dropdown {
-      padding-top: 0px;
+      padding-top: 0;
+      margin-top: -0.5rem;
       display: block;
-      opacity: 0;
+      z-index: 1;
       transition: all .3s linear;
       transform-origin: left top;
       transform: scaleY(0);
+      transition: all 300ms cubic-bezier(0.15, 0, 0.1, 1);
+      filter: drop-shadow(0px 8px 4px rgba(0, 0, 0, 0.15));
     }
 
     .dropdown.is-active #embed-dropdown {
-      opacity: 1;
-
       transform: scaleY(1);
     }
 
-    .dropdown-trigger {
+    .embed-info-container {
       width: 100%;
-      display: flex;
+      display: flex !important;
       justify-content: center;
     }
 
@@ -511,7 +512,7 @@ class Coll extends LitElement
       padding: 0;
       background-color: white;
       justify-content: space-between;
-      max-width: 640px;
+      max-width: 40rem;
       width: calc(100% - 1rem);
       height: 42px;
       border-color: #D1D5DA;
@@ -522,14 +523,19 @@ class Coll extends LitElement
       align-items: center;
       text-overflow: ellipsis;
       filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.15));
-      transition-duration: 100ms;
+      transition-duration: 50ms;
       transition-timing-function: ease-out;
       cursor: pointer;
+      z-index: 2
     }
-    
+
     button.embed-info:hover {
       filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
       transform: scale(1.01);
+    }
+
+    button.embed-info:hover:active {
+      transform: translateY(0.25rem);
     }
 
     .embed-info-buttontext {
@@ -541,18 +547,40 @@ class Coll extends LitElement
     }
 
     .embed-info-drop {
-      font-size: 12px;
-      margin-left: 18px;
-      padding: 12px;
-      padding-top: 20px;
-      max-width: 414px;
+      font-size: 14px;
+      padding: 1rem;
+      padding-top: 2rem;
+      max-width: 38rem;
+      max-height: 42rem;
+      overflow: scroll;
+      width: calc(100% - 2rem);
       border-top-right-radius: 0px;
       border-top-left-radius: 0px;
+      z-index: 1
     }
 
-    .embed-info-drop > p.heading {
+    .embed-info-drop > p {
       font-size: 14px;
+      color: black;
+    }
+
+    .embed-info-drop > h2 {
+      margin-bottom: 0.25rem;
+      font-size: 16px;
       font-weight: bold;
+      text-transform: none;
+      letter-spacing: 0;
+      color: #24292E;
+    }
+
+    .embed-info-drop-statscontainer > h3 {
+      font-size: 12px;
+      color: #394146;
+    }
+
+    .embed-info-drop-statscontainer > p {
+      font-size: 14px;
+      color: black;
     }
 
     .embed-info-drop a {
@@ -999,7 +1027,7 @@ class Coll extends LitElement
 
     return html`
     <div class="dropdown mb-4 ${this.embedDropdownActive ? "is-active" : ""}">
-      <div class="dropdown-trigger">
+      <div class="dropdown-trigger embed-info-container">
         <button class="embed-info is-small is-rounded mt-4" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
           <fa-icon class="menu-logo mr-2 embed-globe" size="1rem" aria-hidden="true" .svg=${btGlobe}></fa-icon>
           <span class="embed-info-buttontext">
@@ -1010,45 +1038,47 @@ class Coll extends LitElement
           </span>
         </button>
       </div>
-      <div class="dropdown-menu" id="embed-dropdown" role="menu">
+      <div class="dropdown-menu embed-info-container" id="embed-dropdown" role="menu">
         <div class="dropdown-content embed-info-drop">
-          <p class="heading">This Embed Won't Go Away</p>
-          <p>
+          <h2>This Embed Won't Go Away</h2>
+          <p class="mb-4">
           The content shown here is loaded from a web archive. Even if the original page
           goes offline or is changed, the content below will remain unchanged.
           </p>
-          <p class="heading mt-4">Archive Information</p>
-          <div>
-            <p>Original URL:</p>
+          <h2 mt-4">Archive Information</h2>
+          <div class="embed-info-drop-statscontainer mb-4">
+            <h3>Original URL:</h3>
             <p><a target="_blank" href="${this.tabData.url}">${this.tabData.url}</a></p>
-            <p class="mt-2">Archived On:</p>
+            <h3 class="mt-2">Archived On:</h3>
             <p>${dateStr}</p>
             ${domain ? html`
-            <p class="mt-2">Observed By:</p>
+            <h3 class="mt-2">Observed By:</h3>
             <p>${domain}</p>
             ${certFingerprintUrl ?
     html`<p><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></p>` : ""}
             ` : software ? html`
-            <p class="mt-2">Created With:</p>
+            <h3 class="mt-2">Created With:</h3>
             <p>${software}</p>` : ""}
-            <p class="mt-2">Validation:</p>
+            <h3 class="mt-2">Validation:</h3>
             <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ""}</p>
-            <p class="mt-2">Package Hash:</p>
+            <h3 class="mt-2">Package Hash:</h3>
             <p class="show-hash">${datapackageHash}</p>
           </div>
           ${sourceUrl ? html`
-          <p class="heading mt-4">Download Archive</p>
+          <h2 mt-4">Download Archive</h2>
           <a target="_blank" href="${sourceUrl}">${sourceUrl}</a>
-          <p class="mt-2">This archive can be viewed directly in your browser by loading it via<br/><a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
+          <p class="mt-2">This archive can be viewed directly in your browser by loading it via <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
           ` : ""}
-          <p class="is-size-7 is-italic is-flex is-justify-content-space-between" style="margin-top: 40px">
+          <p class="is-size-7 is-flex is-justify-content-space-between" style="margin-top: 40px">
             <span>
-              <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
-              Powered by ReplayWeb.page
+              <a class="has-text-black" target="_blank" href="https://github.com/webrecorder/replayweb.page">
+                <fa-icon class="menu-logo mr-1" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
+                Powered by ReplayWeb.page
+              </a>
             </span>
             <span>
               <a class="has-text-black" target="_blank" href="https://github.com/webrecorder/replayweb.page">Source Code
-              <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${fabGithub}></fa-icon>
+                <fa-icon class="menu-logo ml-1" size="1.0rem" aria-hidden="true" .svg=${fabGithub}></fa-icon>
               </a>
             </span>
           </p>
