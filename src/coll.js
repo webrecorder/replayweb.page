@@ -491,6 +491,7 @@ class Coll extends LitElement
       margin-top: -0.5rem;
       display: block;
       z-index: 1;
+      pointer-events: none;
       transition: all .3s linear;
       transform-origin: left top;
       transform: scaleY(0);
@@ -552,11 +553,10 @@ class Coll extends LitElement
       padding-top: 2rem;
       max-width: 38rem;
       max-height: 42rem;
-      overflow: scroll;
       width: calc(100% - 2rem);
       border-top-right-radius: 0px;
       border-top-left-radius: 0px;
-      z-index: 1
+      pointer-events: auto;
     }
 
     .embed-info-drop > p {
