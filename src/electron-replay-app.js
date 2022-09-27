@@ -18,6 +18,10 @@ import log from "electron-log";
 
 import mime from "mime-types";
 
+import {
+  registerHandler, registerPrivileges
+} from "./electron-ipfs-handler.js";
+
 global.Headers = Headers;
 global.fetch = fetch;
 
@@ -81,6 +85,8 @@ class ElectronReplayApp
       });
     }
 
+    registerPrivileges();
+
     if (includePlugins) {
       switch (process.platform) {
       case "win32":
@@ -118,9 +124,6 @@ class ElectronReplayApp
       app.setPath("userData", path.join(app.getPath("appData"), this.profileName));
     }
 
-    const ipfsRepoPath = path.join(app.getPath("userData"), "js-ipfs");
-    console.log("ipfs path", ipfsRepoPath);
-
     app.on("will-finish-launching", () => {
       app.on("open-file", (event, filePath) => {
         this.openNextFile = filePath;
@@ -156,6 +159,11 @@ class ElectronReplayApp
   }
 
   onAppReady() {
+    const ipfsRepoPath = path.join(app.getPath("userData"), "js-ipfs");
+    console.log("ipfs path", ipfsRepoPath);
+
+    registerHandler(ipfsRepoPath);
+
     this.checkUpdates();
 
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
