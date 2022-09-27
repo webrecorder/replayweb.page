@@ -1000,29 +1000,6 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.5.2.tgz#ea584b637ff63c5a477f6f21604b5a205b72c9ec"
   integrity sha512-vgJ5OLWadI8aKjDlOH3rb+dYyPd2GTZuQC/Tihjct6F9GpXGZINo3Y/IVuZVTM1eDQB+/AOsjPUWH/WySDaXvw==
 
-"@webrecorder/wabac@^2.12.5":
-  version "2.12.5"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.12.5.tgz#d876e1907ded4a4ea9ae9855a12a79a0ddd3c3da"
-  integrity sha512-m/b7KZlWNYTl/va8Zjo+W26p5kWP0ZLnV04+6wmkAuD9LJLW4hU0LHGgQ3TBXsk3giYL6CHrTvKHCvnu4PeV/Q==
-  dependencies:
-    "@webrecorder/wombat" "^3.3.7"
-    brotli "github:foliojs/brotli.js"
-    buffer "^6.0.3"
-    fast-xml-parser "^3.19.0"
-    format-link-header "^3.1.1"
-    http-status-codes "^2.1.4"
-    idb "^6.1.2"
-    js-levenshtein "^1.1.6"
-    js-yaml "^4.1.0"
-    pako "^2.0.4"
-    parse-link-header "^2.0.0"
-    parse5-html-rewriting-stream "^6.0.1"
-    parse5-sax-parser "^6.0.1"
-    path-parser "^6.1.0"
-    process "^0.11.10"
-    stream-browserify "^3.0.0"
-    warcio "^1.5.1"
-
 "@webrecorder/wabac@github:webrecorder/wabac.js#verify-loading":
   version "2.13.0-beta.0"
   resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/1a9e63946c2e2ecc81314d83671babc1f3bcacc7"

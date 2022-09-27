@@ -487,6 +487,7 @@ class Coll extends LitElement
     }
 
     #embed-dropdown {
+      max-height: calc(100vh - 50px);
       padding-top: 0;
       margin-top: -0.5rem;
       display: block;
@@ -530,6 +531,10 @@ class Coll extends LitElement
       z-index: 2
     }
 
+    button.embed-info:active {
+      color: initial;
+    }
+
     button.embed-info:hover {
       filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
       transform: scale(1.01);
@@ -557,6 +562,7 @@ class Coll extends LitElement
       border-top-right-radius: 0px;
       border-top-left-radius: 0px;
       pointer-events: auto;
+      overflow-y: auto;
     }
 
     .embed-info-drop > p {
@@ -1045,6 +1051,7 @@ class Coll extends LitElement
           The content shown here is loaded from a web archive. Even if the original page
           goes offline or is changed, the content below will remain unchanged.
           </p>
+          <hr class="dropdown-divider">
           <h2 mt-4">Archive Information</h2>
           <div class="embed-info-drop-statscontainer mb-4">
             <h3>Original URL:</h3>
@@ -1065,6 +1072,7 @@ class Coll extends LitElement
             <p class="show-hash">${datapackageHash}</p>
           </div>
           ${sourceUrl ? html`
+          <hr class="dropdown-divider">
           <h2 mt-4">Download Archive</h2>
           <a target="_blank" href="${sourceUrl}">${sourceUrl}</a>
           <p class="mt-2">This archive can be viewed directly in your browser by loading it via <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>

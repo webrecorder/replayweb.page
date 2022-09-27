@@ -758,40 +758,106 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
     }
 
     #embed-dropdown {
-      padding-top: 0px;
+      max-height: calc(100vh - 50px);
+      padding-top: 0;
+      margin-top: -0.5rem;
       display: block;
-      opacity: 0;
-
+      z-index: 1;
+      pointer-events: none;
       transition: all .3s linear;
       transform-origin: left top;
       transform: scaleY(0);
+      transition: all 300ms cubic-bezier(0.15, 0, 0.1, 1);
+      filter: drop-shadow(0px 8px 4px rgba(0, 0, 0, 0.15));
     }
 
     .dropdown.is-active #embed-dropdown {
-      opacity: 1;
-
       transform: scaleY(1);
     }
 
+    .embed-info-container {
+      width: 100%;
+      display: flex !important;
+      justify-content: center;
+    }
+
     button.embed-info {
-      padding-left: 6px !important;
+      padding: 0;
+      background-color: white;
       justify-content: space-between;
-      width: 450px;
+      max-width: 40rem;
+      width: calc(100% - 1rem);
+      height: 42px;
+      border-color: #D1D5DA;
+      border-width: 1px;
+      border-style: solid;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      text-overflow: ellipsis;
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.15));
+      transition-duration: 50ms;
+      transition-timing-function: ease-out;
+      cursor: pointer;
+      z-index: 2
+    }
+
+    button.embed-info:active {
+      color: initial;
+    }
+
+    button.embed-info:hover {
+      filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
+      transform: scale(1.01);
+    }
+
+    button.embed-info:hover:active {
+      transform: translateY(0.25rem);
+    }
+
+    .embed-info-buttontext {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;  
+      flex-grow: 1;
+      text-align: start;
     }
 
     .embed-info-drop {
-      font-size: 12px;
-      margin-left: 18px;
-      padding: 12px;
-      padding-top: 20px;
-      max-width: 414px;
+      font-size: 14px;
+      padding: 1rem;
+      padding-top: 2rem;
+      max-width: 38rem;
+      max-height: 42rem;
+      width: calc(100% - 2rem);
       border-top-right-radius: 0px;
       border-top-left-radius: 0px;
+      pointer-events: auto;
+      overflow-y: auto;
     }
 
-    .embed-info-drop > p.heading {
+    .embed-info-drop > p {
       font-size: 14px;
+      color: black;
+    }
+
+    .embed-info-drop > h2 {
+      margin-bottom: 0.25rem;
+      font-size: 16px;
       font-weight: bold;
+      text-transform: none;
+      letter-spacing: 0;
+      color: #24292E;
+    }
+
+    .embed-info-drop-statscontainer > h3 {
+      font-size: 12px;
+      color: #394146;
+    }
+
+    .embed-info-drop-statscontainer > p {
+      font-size: 14px;
+      color: black;
     }
 
     .embed-info-drop a {
@@ -804,10 +870,14 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
     }
 
     .embed-globe {
-      padding: 6px;
-      background-color: #4876ff;
+      margin: 0.25rem;
+      padding: 7px;
+      background-color: #0366D6;
       border-radius: 9999px;
       color: white;
+      border-width: 1px;
+      border-color: #D1D5DA;
+      border-style: solid;
       line-height: 0.5em;
     }
 
@@ -1170,54 +1240,59 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
       </div>
     </nav><p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`}renderVerifyInfo(){if("replay-with-info"!==this.embed)return"";let{numValid:e,numInvalid:t,domain:i,certFingerprint:a,datapackageHash:r,software:o}=this.collInfo.verify||{};e=e||0,t=t||0;const n=this.collInfo.sourceUrl,s=a?`https://crt.sh/?q=${a}`:"",l=Ae(this.ts).toLocaleString();return P`
     <div class="dropdown mb-4 ${this.embedDropdownActive?"is-active":""}">
-      <div class="dropdown-trigger">
-        <button class="embed-info button is-small is-rounded" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
-          <span>
-          <fa-icon class="menu-logo mr-2 embed-globe" size="0.75rem" aria-hidden="true" .svg=${_t()}></fa-icon>
-          This embed is part of a web archive. Click here for more info.</span>
-          <span class="icon is-small mr-1">
+      <div class="dropdown-trigger embed-info-container">
+        <button class="embed-info is-small is-rounded mt-4" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
+          <fa-icon class="menu-logo mr-2 embed-globe" size="1rem" aria-hidden="true" .svg=${_t()}></fa-icon>
+          <span class="embed-info-buttontext">
+            This embed is part of a web archive. Click here to learn more.
+          </span>
+          <span class="icon is-small mr-4 ml-2">
             <fa-icon title="Toggle" .svg="${this.embedDropdownActive?At():St()}" aria-hidden="true"></fa-icon>
           </span>
         </button>
       </div>
-      <div class="dropdown-menu" id="embed-dropdown" role="menu">
+      <div class="dropdown-menu embed-info-container" id="embed-dropdown" role="menu">
         <div class="dropdown-content embed-info-drop">
-          <p class="heading">This Embed Won't Go Away</p>
-          <p>
+          <h2>This Embed Won't Go Away</h2>
+          <p class="mb-4">
           The content shown here is loaded from a web archive. Even if the original page
           goes offline or is changed, the content below will remain unchanged.
           </p>
-          <p class="heading mt-4">Archive Information</p>
-          <div>
-            <p>Original URL:</p>
+          <hr class="dropdown-divider">
+          <h2 mt-4">Archive Information</h2>
+          <div class="embed-info-drop-statscontainer mb-4">
+            <h3>Original URL:</h3>
             <p><a target="_blank" href="${this.tabData.url}">${this.tabData.url}</a></p>
-            <p class="mt-2">Archived On:</p>
+            <h3 class="mt-2">Archived On:</h3>
             <p>${l}</p>
             ${i?P`
-            <p class="mt-2">Observed By:</p>
+            <h3 class="mt-2">Observed By:</h3>
             <p>${i}</p>
             ${s?P`<p><a target="_blank" href="${s}">View Certificate</a></p>`:""}
             `:o?P`
-            <p class="mt-2">Created With:</p>
+            <h3 class="mt-2">Created With:</h3>
             <p>${o}</p>`:""}
-            <p class="mt-2">Validation:</p>
+            <h3 class="mt-2">Validation:</h3>
             <p>${e} hashes verified${t?P`, ${t} invalid`:""}</p>
-            <p class="mt-2">Package Hash:</p>
+            <h3 class="mt-2">Package Hash:</h3>
             <p class="show-hash">${r}</p>
           </div>
           ${n?P`
-          <p class="heading mt-4">Download Archive</p>
+          <hr class="dropdown-divider">
+          <h2 mt-4">Download Archive</h2>
           <a target="_blank" href="${n}">${n}</a>
-          <p class="mt-2">This archive can be viewed directly in your browser by loading it via<br/><a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
+          <p class="mt-2">This archive can be viewed directly in your browser by loading it via <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
           `:""}
-          <p class="is-size-7 is-italic is-flex is-justify-content-space-between" style="margin-top: 40px">
+          <p class="is-size-7 is-flex is-justify-content-space-between" style="margin-top: 40px">
             <span>
-              <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
-              Powered by ReplayWeb.page
+              <a class="has-text-black" target="_blank" href="https://github.com/webrecorder/replayweb.page">
+                <fa-icon class="menu-logo mr-1" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
+                Powered by ReplayWeb.page
+              </a>
             </span>
             <span>
               <a class="has-text-black" target="_blank" href="https://github.com/webrecorder/replayweb.page">Source Code
-              <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${Dt()}></fa-icon>
+                <fa-icon class="menu-logo ml-1" size="1.0rem" aria-hidden="true" .svg=${Dt()}></fa-icon>
               </a>
             </span>
           </p>
