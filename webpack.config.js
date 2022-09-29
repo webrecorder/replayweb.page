@@ -77,6 +77,8 @@ const electronMainConfig = (/*env, argv*/) => {
           { from: "build/extra_prebuilds/", to: "prebuilds" }
         ],
       }),
+      new webpack.NormalModuleReplacementPlugin(/\.\/http\/fetch/, "./http/fetch.node"),
+      new webpack.NormalModuleReplacementPlugin(/\.\.\/fetch$/, "node-fetch"),
     ],
     externals: {
       "bufferutil": "bufferutil",
