@@ -404,73 +404,88 @@ class CollInfo extends LitElement
     `;
   }
 
-  render() {
+  renderSource(coll) {
+    return html`
+  <div class="column is-4">
+    <span class="source-text"><p class="minihead">Source</p>
+    ${coll.sourceUrl && (coll.sourceUrl.startsWith("http://") || coll.sourceUrl.startsWith("https://")) ? html`
+    <a href="${coll.sourceUrl}">${coll.sourceUrl}&nbsp;</a>` : html`
+    ${coll.sourceUrl}&nbsp;`}
+    </span>
+
+    <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy"><fa-icon .svg="${fasCopy}"/></a>
+    ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://") ? html`
+      <p><i>(${coll.filename})</i></p>` : ""}
+  </div>
+  <div class="column is-2"><p class="minihead">Date Loaded</p>${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}</div>
+  <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.size || 0))}</div>
+  `;
+  }
+
+  renderSummaryView() {
     const coll = this.coll;
-    const detailed = this.detailed;
+
+    return html`
+    <div class="columns">
+      <div class="column col-title is-4">
+        <span class="subtitle has-text-weight-bold">
+          <a href="?source=${encodeURIComponent(coll.sourceUrl)}">${coll.title || coll.filename}</a>
+        </span>
+      </div>
+      ${this.renderSource(coll)}
+    </div>`;
+  }
+
+  renderDetailed() {
+    const coll = this.coll;
 
     let {numValid, numInvalid, domain, certFingerprint, datapackageHash, software} = this.coll.verify || {};
     numValid = numValid || 0;
     numInvalid = numInvalid || 0;
 
-    const certFingerprintUrl = certFingerprint ? `https://crt.sh/?q=${certFingerprint}` : "";
+    const certFingerprintUrl = certFingerprint ? `https://search.censys.io/certificates/${certFingerprint}` : "";
 
     return html`
       <div class="columns">
         <div class="column col-title is-4">
           <span class="subtitle has-text-weight-bold">
-            ${detailed ? html`
             ${coll.title || coll.filename}
-            ` : html`
-            <a href="?source=${encodeURIComponent(coll.sourceUrl)}">${coll.title || coll.filename}</a>`}
           </span>
         </div>
-        ${detailed && coll.desc ? html`
+        ${coll.desc ? html`
           <div class="column">
             <p class="minihead">Description</p>
             ${coll.desc}
           </div>` : html`
         `}
-        <div class="column is-4">
-          <span class="source-text"><p class="minihead">Source</p>
-          ${coll.sourceUrl && (coll.sourceUrl.startsWith("http://") || coll.sourceUrl.startsWith("https://")) ? html`
-          <a href="${coll.sourceUrl}">${coll.sourceUrl}&nbsp;</a>` : html`
-          ${coll.sourceUrl}&nbsp;`}
-          </span>
+        <div class="column"><p class="minihead">Filename</p>${coll.filename}</div>
+        ${this.renderSource(coll)}
 
-          <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy"><fa-icon .svg="${fasCopy}"/></a>
-          ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://") ? html`
-            <p><i>(${coll.filename})</i></p>` : ""}
-        </div>
-        ${detailed ? html`
-        <div class="column"><p class="minihead">Filename</p>${coll.filename}</div>` : html``}
-
-        <div class="column is-2"><p class="minihead">Date Loaded</p>${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}</div>
-        <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.size || 0))}</div>
-
-        ${detailed ? html`
-        <div class="column">
         ${domain ? html`
+        <div class="column">
           <p class="minihead">Observed By</p>
           <p>${domain}</p>
-          ${certFingerprintUrl ?
-    html`<span><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></span>` : ""}
-        ` : software ? html`
-        <p class="minihead">Created With</p>
-        ${software}
-        ` : ""}
+          ${certFingerprintUrl ? html`<span><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></span>` : ""}
         </div>
+        ` : software ? html`
+        <div class="column">
+          <p class="minihead">Created With</p>
+          ${software || "Unknown"}
+        </div>
+        ` : ""}
 
         <div class="column">
           <p class="minihead">Validation</p>
-          <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ""}</p>
+          ${numValid > 0 || numInvalid > 0 ? html`
+          <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ""}</p>` : html`
+          Not Available`}
         </div>
 
         <div class="column">
           <p class="minihead">Package Hash</p>
-        ${datapackageHash}
-        </div>` : ""}
+        ${datapackageHash || "Not Available"}
+        </div>
 
-        ${detailed ? html`
         <div class="column">
           <p class="minihead">Loading Mode</p>
           ${coll.onDemand ? "Download On-Demand" : "Fully Local"}
@@ -479,22 +494,12 @@ class CollInfo extends LitElement
           <p class="minihead">Collection id</p>
           ${coll.coll}
         </div>
-        ` : html``}
-
       </div>`;
   }
 
-  // purge + delete buttons
-  //
-  // <div class="column">
-  //   <button @click="${(e) => this.onPurge(true)}" class="button">Purge Cache + Full Reload</button>
-  // </div>
-
-  // ${this.canDelete ? html`
-  // <div class="column">
-  //   <button @click="${(e) => this.onPurge(false)}" class="button is-outlined is-danger">Delete Archive</button>
-  // </div>` : html``}
-  //
+  render() {
+    return this.detailed ? this.renderDetailed() : this.renderSummaryView();
+  }
 
   onCopy(event, sourceUrl) {
     event.preventDefault();

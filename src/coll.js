@@ -1027,7 +1027,7 @@ class Coll extends LitElement
 
     const sourceUrl = this.collInfo.sourceUrl;
 
-    const certFingerprintUrl = certFingerprint ? `https://crt.sh/?q=${certFingerprint}` : "";
+    const certFingerprintUrl = certFingerprint ? `https://search.censys.io/certificates/${certFingerprint}` : "";
 
     const dateStr = tsToDate(this.ts).toLocaleString();
 
@@ -1067,7 +1067,10 @@ class Coll extends LitElement
             <h3 class="mt-2">Created With:</h3>
             <p>${software}</p>` : ""}
             <h3 class="mt-2">Validation:</h3>
-            <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ""}</p>
+            ${numValid > 0 || numInvalid > 0 ? html`
+            <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ""}</p>` : html`
+            <p>Not Available</p>
+            `}
             <h3 class="mt-2">Package Hash:</h3>
             <p class="show-hash">${datapackageHash}</p>
           </div>
