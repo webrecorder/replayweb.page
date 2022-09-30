@@ -3,9 +3,13 @@ import btGlobe from "../assets/globe.svg";
 import btAngleDoubleDown from "../assets/chevron-double-down.svg";
 import btAngleDoubleUp from "../assets/chevron-double-up.svg";
 import fabGithub from "@fortawesome/fontawesome-free/svgs/brands/github.svg";
+import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
+
+import {clickOnSpacebarPress} from "./misc";
 
 import { LitElement, html, css } from "lit";
 import { tsToDate } from "./pageutils";
+import prettyBytes from "pretty-bytes";
 
 
 // ===========================================================================
@@ -198,11 +202,10 @@ export class RWPEmbedReceipt extends LitElement
       <div class="dropdown-menu embed-info-container" id="embed-dropdown" role="menu">
         <div class="dropdown-content embed-info-drop">
           <p class="mb-4">
-          Even if the original page goes offline or is changed, the content below will remain unchanged.
-          More information, including the link to download the full archive, is provided below.
+          Even if the original page goes offline or is changed, the content below will remain unchanged as it is loaded from a web archive.
           </p>
           <hr class="dropdown-divider">
-          <h2 mt-4">Archive Information</h2>
+          <h2 mt-4">Technical Information</h2>
           <div class="embed-info-drop-statscontainer mb-4">
             <h3>Original URL:</h3>
             <p><a target="_blank" href="${this.url}">${this.url}</a></p>
@@ -223,12 +226,18 @@ export class RWPEmbedReceipt extends LitElement
             `}
             <h3 class="mt-2">Package Hash:</h3>
             <p class="show-hash">${datapackageHash}</p>
+            <h3 class="mt-2">Size</h3>
+            <p>${prettyBytes(Number(this.collInfo.size || 0))}</p>
           </div>
           ${sourceUrl ? html`
           <hr class="dropdown-divider">
-          <h2 mt-4">Download Archive</h2>
-          <a target="_blank" href="${sourceUrl}">${sourceUrl}</a>
-          <p class="mt-2">This archive can be viewed directly in your browser by loading it via <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
+          <a href="${sourceUrl}" class="button" @keyup="${clickOnSpacebarPress}">
+            <span class="icon is-small">
+              <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasDownload}"></fa-icon>
+            </span>
+            <span>Download Archive</span>
+          </a>
+          <p class="mt-2">This archive can then be viewed directly in your browser by loading it via <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
           ` : ""}
           <p class="is-size-7 is-flex is-justify-content-space-between" style="margin-top: 40px">
             <span>
