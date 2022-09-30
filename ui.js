@@ -828,10 +828,9 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
       </div>
       <div class="dropdown-menu embed-info-container" id="embed-dropdown" role="menu">
         <div class="dropdown-content embed-info-drop">
-          <h2>This Embed Won't Go Away</h2>
           <p class="mb-4">
-          The content shown here is loaded from a web archive. Even if the original page
-          goes offline or is changed, the content below will remain unchanged.
+          Even if the original page goes offline or is changed, the content below will remain unchanged.
+          More information, including the link to download the full archive, is provided below.
           </p>
           <hr class="dropdown-divider">
           <h2 mt-4">Archive Information</h2>
