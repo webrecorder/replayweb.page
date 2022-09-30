@@ -75,6 +75,7 @@ class Embed extends LitElement
       noSandbox: { type: Boolean },
       noWebWorker: { type: Boolean },
       noCache: { type: Boolean },
+      hideOffscreen: { type: Boolean },
 
       newWindowBase: { type: String },
 
@@ -122,6 +123,23 @@ class Embed extends LitElement
     if (this.deepLink) {
       this.updateFromHash();
       window.addEventListener("hashchange", () => this.updateFromHash());
+    }
+
+    this.loadBrowserDefaults();
+  }
+
+  loadBrowserDefaults() {
+    // set defaults for older browsers (eg. Safari < 16) based on recommendations from:
+    // https://lil.law.harvard.edu/blog/2022/09/15/opportunities-and-challenges-of-client-side-playback/
+
+    // likely safari < 16, don't use web workers due to issues with split storage state
+    if (window.GestureEvent !== undefined && window.SharedWorker === undefined ){
+      this.noWebWorker = true;
+    }
+
+    // if no storage manager or estimate, don't cache
+    if (!navigator.storage || !navigator.storage.estimate) {
+      this.noCache = true;
     }
   }
 
@@ -192,6 +210,10 @@ class Embed extends LitElement
 
       if (this.noCache) {
         params.noCache = "1";
+      }
+
+      if (this.hideOffscreen) {
+        params.hideOffscreen = "1";
       }
 
       this.paramString = new URLSearchParams(params).toString();

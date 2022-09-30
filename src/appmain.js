@@ -388,6 +388,10 @@ class ReplayWebApp extends LitElement
       this.loadInfo.noCache = true;
     }
 
+    if (this.pageParams.get("hideOffscreen") === "1") {
+      this.loadInfo.hideOffscreen = true;
+    }
+
     if (IS_APP && this.sourceUrl.startsWith("file://")) {
       // eslint-disable-next-line no-undef
       const url = new URL(__APP_FILE_SERVE_PREFIX__);
