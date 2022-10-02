@@ -103,6 +103,7 @@ The `<replay-web-page>` tag is a web component that supports a number of additio
 | `noWebWorker`| if set, will not use Web Worker for loading, only Service Worker. May be useful for certain loading edge cases. |
 | `noCache`    | if set, will not cache any loaded content HTTP responses locally, always loading from original source. |
 | `hideOffscreen` | if set, will unload the embed when it is not visible and reload when scrolled into view. Useful if multiple embeds per-page to avoid loading all at once. |
+| `newWindowBase` | set base replay URL loaded when a page opens a new window, defaults to `https://replayweb.page/` |
 
 
 ### Versioning
