@@ -4,7 +4,6 @@ title: Embedding ReplayWeb.page
 nav_order: 3
 permalink: /docs/embedding
 ---
-
 ## Embedding Web Archives with ReplayWeb.page
 
 A key goal of ReplayWeb.page is to make embedding web archives into other sites as easy as it is to embed media files like images and PDFs.
@@ -13,7 +12,7 @@ To make this possible ReplayWeb.page provides the `<replay-web-page>` HTML web c
 
 For the web component to work you need to load the *frontend* user interface and the *backend* service worker into your web page, and then point a `<replay-web-page>` component at your WACZ file. The *frontend* defines the `<replay-web-page>` web component itself, and the backend service worker is responsible for retrieving data on demand from your web archive file. The backend pulls resources from the WACZ file *on-demand* as they are requested, so full retrieval of the WACZ to the browser is *not* required. The frontend and backend are just static JavaScript assets which you can choose to load from a Content Delivery Network (CDN) or directly from your website if you would like to host them yourself.
 
-For example, to embed a WACZ web archive stored at `https://replayweb.page/docs/assets/example.wacz` you first need to add the following snippet to your HTML page to load the user interface and use the `<replay-web-page>` component to point to the WACZ:
+For example, to embed a WACZ web archive stored at `https://replayweb.page/docs/assets/tweet-example.wacz` you first need to add the following snippet to your HTML page to load the user interface and use the `<replay-web-page>` component to point to the WACZ:
 
 {: .bg-blue-000 .text-grey-lt-000 .cap-header}
 my-web-archive-embed.html
@@ -21,8 +20,8 @@ my-web-archive-embed.html
 ```html
 <script src="https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/ui.js"></script>
 
-<replay-web-page source="https://replayweb.page/docs/assets/example.wacz"
-url="https://webrecorder.net"></replay-web-page>
+<replay-web-page source="https://replayweb.page/docs/assets/tweet-example.wacz"
+url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
 ```
 
 The first line loads version {{ site.data.package.version }} of the ui from the jsDelivr content delivery network. And the second instantiates the ReplayWebPage component using the `source` attribute to point to the location of the WACZ file on the web (in this case published on AWS S3). The `url` attribute is used to indicate what URL to display from the archive after the component loads.
@@ -81,6 +80,19 @@ Then you adjust your HTML to reference the new resources:
 
 <replay-web-page replayBase="/js/" source="/wacz/example.wacz" url="https://webrecorder.net"></replay-web-page>
 ```
+
+### Examples
+
+<details>
+<summary>
+Here is an example embed added directly to this page:
+</summary>
+
+<script src="../ui.js"></script>
+
+<replay-web-page style="height: 600px" embed="replay-with-info" replaybase="../" source="./assets/tweet-example.wacz"
+url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
+</details>
 
 For a working example of hosting multiple web archives take a look at our *example-webarchive* [repository](https://github.com/webrecorder/example-webarchive/) and [static website](https://webrecorder.github.io/example-webarchive) which hosted on Github pages. It may give you ideas for how to integrate the ReplayWeb.page component into your site You may also be interested in [Web Replay Gen](https://github.com/webrecorder/web-replay-gen) which is an 11ty based static site builder for a web archive of WACZ files.
 

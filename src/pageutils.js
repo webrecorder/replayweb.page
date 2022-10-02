@@ -1,59 +1,3 @@
-import { register } from "register-service-worker";
-
-let appName = "ReplayWeb.page";
-
-// ===========================================================================
-function setAppName(newAppName) {
-  appName = newAppName;
-}
-
-// ===========================================================================
-function registerSW(name = "sw.js", scope = "./") {
-  let resolve, reject;
-  
-  const p = new Promise((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-
-  const errMsg = getSWErrorMsg();
-
-  if (errMsg) {
-    console.error(errMsg);
-    reject(errMsg);
-  }
-  
-  register(scope + name, {
-    registrationOptions: { scope },
-    registered () {
-      console.log("Service worker is registered");
-      resolve();
-    },
-
-    error (error) {
-      console.error("Error during service worker registration:", error);
-      reject(`${appName} could not be loaded due to the following error:\n${error.toString()}`);
-    }
-  });
-
-  return p;
-}
-
-function getSWErrorMsg() {
-  if (navigator.serviceWorker) {
-    return null;
-  }
-  if (window.location.protocol === "http:") {
-    return `\
-Sorry, the ${appName} system must be loaded from an HTTPS URL, but was loaded from: ${window.location.host}.
-Please try loading this page from an HTTPS URL`;
-  } else {
-    return `Sorry, ${appName} won't work in this browser as Service Workers are not supported.
-Please try a different browser.
-(Service Workers are disabled in Firefox in Private Mode. If Using Private Mode in Firefox, try regular mode)`;
-  }
-}
-
 // ===========================================================================
 async function digestMessage(message, hashtype) {
   const msgUint8 = new TextEncoder().encode(message);                           // encode as (utf-8) Uint8Array
@@ -155,5 +99,4 @@ function parseURLSchemeHostPath(url) {
 }
 
 
-export { digestMessage, tsToDate, getTS, getPageDateTS, getReplayLink, sourceToId, parseURLSchemeHostPath,
-  registerSW, getSWErrorMsg, setAppName };
+export { digestMessage, tsToDate, getTS, getPageDateTS, getReplayLink, sourceToId, parseURLSchemeHostPath };

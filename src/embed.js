@@ -1,9 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { registerSW } from "./pageutils";
-
 import { wrapCss, rwpLogo } from "./misc";
+import { SWManager } from "./swmanager";
 
 
 var scriptSrc = document.currentScript && document.currentScript.src;
@@ -33,10 +32,10 @@ class Embed extends LitElement
     this.paramString = null;
     this.deepLink = false;
     this.newWindowBase = "";
-    this.swInited = false;
+    this.inited = false;
     this.embed = null;
     this.reloadCount = 0;
-    this.noSandbox = false;
+    this.sandbox = false;
     this.noWebWorker = false;
     this.noCache = false;
     this.logo = rwpLogo;
@@ -66,29 +65,46 @@ class Embed extends LitElement
       coll: { type: String },
       config: { type: String },
 
-      swInited: { type: Boolean },
+      inited: { type: Boolean },
 
       paramString: { type: String },
       hashString: { type: String },
 
       deepLink: { type: Boolean },
-      noSandbox: { type: Boolean },
+      sandbox: { type: Boolean },
       noWebWorker: { type: Boolean },
       noCache: { type: Boolean },
       hideOffscreen: { type: Boolean },
 
       newWindowBase: { type: String },
 
-      errorMessage: { type: String }
+      errorMessage: { type: String },
+
+      requireSubdomainIframe: {type: Boolean}
     };
   }
 
   async doRegister() {
+    const replaybaseURL = new URL(this.replaybase, window.location.href);
+
+    this.isCrossOrigin = replaybaseURL.origin !== window.location.origin;
+
+    if (this.isCrossOrigin) {
+      this.inited = true;
+      return;
+    }
+
+    const name = this.swName;
+    const scope = this.replaybase;
+    const requireSubdomainIframe = this.requireSubdomainIframe;
+
+    this.swmanager = new SWManager({name, scope, requireSubdomainIframe});
+
     try {
-      await registerSW(this.swName, this.replaybase);
-      this.swInited = true;
+      await this.swmanager.register();
+      this.inited = true;
     } catch (e) {
-      this.errorMessage = e;
+      this.errorMessage = this.swmanager.renderErrorReport(this.logo);
     }
   }
 
@@ -257,8 +273,8 @@ class Embed extends LitElement
 
   render() {
     return html`
-    ${this.paramString && this.hashString && this.swInited ? html`
-      <iframe sandbox="${ifDefined(!this.noSandbox ?
+    ${this.paramString && this.hashString && this.inited ? html`
+      <iframe sandbox="${ifDefined(this.sandbox ?
     "allow-downloads allow-modals allow-orientation-lock allow-pointer-lock\
          allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts\
          allow-same-origin allow-forms" : undefined)}"
@@ -268,17 +284,15 @@ class Embed extends LitElement
 
       ` : html``}
 
-    ${this.errorMessage ? html`
-      <section class="full-width">
-        <div class="has-text-centered">
-          <fa-icon class="logo" id="wrlogo" size="2.5rem" .svg=${this.logo} aria-hidden="true"></fa-icon>
-        </div>
-        <div class="error">${this.errorMessage}</div>
-      </section>
-    `: ""}`;
+    ${this.errorMessage}
+    `;
   }
 
   onLoad(event) {
+    if (this.isCrossOrigin) {
+      return;
+    }
+
     const win = event.target.contentWindow;
     const doc = event.target.contentDocument;
 

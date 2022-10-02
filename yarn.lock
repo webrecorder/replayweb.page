@@ -1152,6 +1152,33 @@
     stream-browserify "^3.0.0"
     warcio "^1.5.1"
 
+"@webrecorder/wabac@github:webrecorder/wabac.js#target-rewrite":
+  version "2.13.0-beta.1"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/3ac9424518d347c2f91d56976ee5ac919729180f"
+  dependencies:
+    "@peculiar/asn1-ecc" "^2.3.0"
+    "@peculiar/asn1-schema" "^2.3.0"
+    "@peculiar/x509" "^1.8.3"
+    "@webrecorder/wombat" "^3.3.8"
+    base64-js "^1.5.1"
+    brotli "github:foliojs/brotli.js"
+    buffer "^6.0.3"
+    fast-xml-parser "^3.19.0"
+    format-link-header "^3.1.1"
+    hash-wasm "^4.9.0"
+    http-status-codes "^2.1.4"
+    idb "^6.1.2"
+    js-levenshtein "^1.1.6"
+    js-yaml "^4.1.0"
+    pako "^2.0.4"
+    parse-link-header "^2.0.0"
+    parse5-html-rewriting-stream "^6.0.1"
+    parse5-sax-parser "^6.0.1"
+    path-parser "^6.1.0"
+    process "^0.11.10"
+    stream-browserify "^3.0.0"
+    warcio "^1.5.1"
+
 "@webrecorder/wombat@^3.3.8":
   version "3.3.8"
   resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.3.8.tgz#de9d5de46bad8be208a260165c1204b6edf50c9b"
