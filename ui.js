@@ -755,6 +755,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
       text-overflow: ellipsis;  
       flex-grow: 1;
       text-align: start;
+      font-size: 13px;
     }
 
     .embed-info-drop {

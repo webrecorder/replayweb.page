@@ -114,6 +114,7 @@ export class RWPEmbedReceipt extends LitElement
       text-overflow: ellipsis;  
       flex-grow: 1;
       text-align: start;
+      font-size: 13px;
     }
 
     .embed-info-drop {

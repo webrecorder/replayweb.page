@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.7.0
+- UI: Support verification info on info tab, showing hashes verified, observer domain, and certificate fingerprint
+- Embed UI: Add "replay-with-info" embed mode which provides an information dropdown above replay, including verification info and link to download.
+- Embed UI: Add "hideOffscreen" attribute to enable hiding embed when offscreen (previously always enabled).
+- Dependencies: update to wabac.js 2.13.0 to support verification, latest wombat
+
 v1.6.5
 - Loading: Don't ignore hashtag, eg. #.wacz to specify file type when loading (via wabac.js)
 - Documentation: Update embedding guide to mention self-hosting of embed scripts
