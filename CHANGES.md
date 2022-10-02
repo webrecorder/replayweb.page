@@ -1,5 +1,14 @@
 ## CHANGES
 
+v1.7.0 Beta 0
+- UI: Support showing WACZ verification stats on info tab, showing hashes verified, observer domain (or creation software), and certificate fingerprint, and WACZ package digest
+- Embed UI: Add `replay-with-info` embed mode which provides an information dropdown above replay, including verification info and link to download.
+- Embed UI: Add `hideOffscreen` attribute to enable hiding embed when offscreen (previously always enabled).
+- Embeds: add `newWindowBase" for configuring base replay for loading pages in new windows (default: https://replayweb.page/ or current page with deep links)
+- Embeds: Set `noCache` and `noWebWorker` automatically if needed based on browser features (eg. Safari)
+- UI: improved formatting on 404 not found page.
+- Dependencies: update to wabac.js 2.13.0 to support verification, latest wombat
+
 v1.6.5
 - Loading: Don't ignore hashtag, eg. #.wacz to specify file type when loading (via wabac.js)
 - Documentation: Update embedding guide to mention self-hosting of embed scripts

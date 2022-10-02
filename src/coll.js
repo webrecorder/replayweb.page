@@ -24,6 +24,7 @@ import fasMenuV from "@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg";
 import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.svg";
 import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
 
+import { RWPEmbedReceipt } from "./embed-receipt.js";
 import Split from "split.js";
 
 
@@ -61,6 +62,7 @@ class Coll extends LitElement
     };
 
     this.menuActive = false;
+    this.embedDropdownActive = false;
 
     this.hasStory = false;
 
@@ -107,6 +109,8 @@ class Coll extends LitElement
       menuActive: { type: Boolean },
 
       embed: { type: String },
+      embedDropdownActive: { type: Boolean },
+
       editable: { type: Boolean },
       browsable: { type: Boolean },
       clearable: { type: Boolean },
@@ -131,7 +135,7 @@ class Coll extends LitElement
       this.isFullscreen = !!document.fullscreenElement;
     });
 
-    if (this.embed) {
+    if (this.embed && this.loadInfo && this.loadInfo.hideOffscreen) {
       this.observer = new IntersectionObserver((entries/*, observer*/) => {
         this.isVisible = entries[0].isIntersecting;
       });
@@ -289,7 +293,7 @@ class Coll extends LitElement
       this.collInfo.title = this.collInfo.filename;
     }
 
-    if (this.embed === "replayonly") {
+    if (this.embed === "replayonly" || this.embed === "replay-with-info") {
       this.showSidebar = false;
     }
 
@@ -475,6 +479,13 @@ class Coll extends LitElement
       flex: auto;
     }
 
+    rwp-embed-receipt {
+      flex-direction: column;
+      display: flex;
+    }
+
+    ${RWPEmbedReceipt.embedStyles}
+
     ${Coll.replayBarStyles}`;
   }
 
@@ -657,6 +668,7 @@ class Coll extends LitElement
     } else if (this.collInfo) {
       return html`
       ${this.renderLocationBar()}
+      ${this.renderVerifyInfo()}
       <div id="tabContents">
         <div id="contents" class="is-light ${isSidebar ? "sidebar" : (isReplay ? "is-hidden" : "full-pages")}"
              role="${isSidebar ? "complementary" : ""}" aria-label="${isSidebar ? "Browse Contents" : ""}">
@@ -744,7 +756,7 @@ class Coll extends LitElement
   }
 
   renderLocationBar() {
-    if (this.embed === "replayonly") {
+    if (this.embed === "replayonly" || this.embed == "replay-with-info") {
       return "";
     }
 
@@ -878,6 +890,20 @@ class Coll extends LitElement
         </div>
       </div>
     </nav><p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
+  }
+
+  renderVerifyInfo() {
+    if (this.embed !== "replay-with-info") {
+      return "";
+    }
+
+    return html`<rwp-embed-receipt
+            .collInfo=${this.collInfo}
+            url=${this.url}
+            ts=${this.ts}
+            .appLogo=${this.appLogo}
+            >
+            </rwp-embed-receipt>`;
   }
 
   dragStart() {
