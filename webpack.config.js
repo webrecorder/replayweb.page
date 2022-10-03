@@ -73,12 +73,12 @@ const electronMainConfig = (/*env, argv*/) => {
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
         patterns: [
-          { from: "node_modules/classic-level/prebuilds/", to: "prebuilds" },
+          // { from: "node_modules/classic-level/prebuilds/", to: "prebuilds" },
           { from: "build/extra_prebuilds/", to: "prebuilds" }
         ],
       }),
-      new webpack.NormalModuleReplacementPlugin(/\.\/http\/fetch/, "./http/fetch.node"),
-      new webpack.NormalModuleReplacementPlugin(/\.\.\/fetch$/, "electron-fetch"),
+      //new webpack.NormalModuleReplacementPlugin(/\.\/http\/fetch/, "./http/fetch.node"),
+      //new webpack.NormalModuleReplacementPlugin(/\.\.\/fetch$/, "electron-fetch"),
     ],
     externals: {
       "bufferutil": "bufferutil",
