@@ -27,7 +27,7 @@ class ReplayWebApp extends LitElement
 
     this.loadInfo = null;
 
-    this.swmanager = new SWManager({name: swName});
+    this.swmanager = new SWManager({name: swName, appName: this.appName});
     this.swmanager.register().catch(() => this.swErrorMsg = this.swmanager.renderErrorReport(this.mainLogo));
 
     this.safariKeyframes();

@@ -22,6 +22,7 @@ class Embed extends LitElement
     // eslint-disable-next-line no-undef
     this.swName = __SW_NAME__;
     this.mainElementName = "replay-app-main";
+    this.appName = "ReplayWeb.page";
     this.view = "replay";
     this.ts = "";
     this.url = "";
@@ -95,10 +96,11 @@ class Embed extends LitElement
     }
 
     const name = this.swName;
+    const appName = this.appName;
     const scope = this.replaybase;
     const requireSubdomainIframe = this.requireSubdomainIframe;
 
-    this.swmanager = new SWManager({name, scope, requireSubdomainIframe});
+    this.swmanager = new SWManager({name, scope, requireSubdomainIframe, appName});
 
     try {
       await this.swmanager.register();
