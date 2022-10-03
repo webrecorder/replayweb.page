@@ -232,13 +232,14 @@ export class RWPEmbedReceipt extends LitElement
           </div>
           ${sourceUrl ? html`
           <hr class="dropdown-divider">
+          <h2 mt-4">Get A Copy</h2>
+          <p class="mt-2">After downloading, this archive can be loaded and viewed directly in your browser via <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
           <a href="${sourceUrl}" class="button" @keyup="${clickOnSpacebarPress}">
             <span class="icon is-small">
               <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasDownload}"></fa-icon>
             </span>
             <span>Download Archive</span>
           </a>
-          <p class="mt-2">This archive can then be viewed directly in your browser by loading it via <a target="_blank" href="https://replayweb.page">replayweb.page</a></p>
           ` : ""}
           <p class="is-size-7 is-flex is-justify-content-space-between" style="margin-top: 40px">
             <span>
