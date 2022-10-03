@@ -2003,10 +2003,10 @@ at-least-node@^1.0.0:
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
-auto-js-ipfs@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/auto-js-ipfs/-/auto-js-ipfs-1.3.3.tgz#a193c252dd806458d2bb7988ab6d8f5435bb403c"
-  integrity sha512-P3kWt2MGi5uJNtpUMN7eCpTT5KZE2AX35AOWUTlZCQi03LgPYfjzYksdAcHF96+5b6CbpDIp3carho1h2si0+g==
+auto-js-ipfs@^1.3.9:
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/auto-js-ipfs/-/auto-js-ipfs-1.3.9.tgz#270bc63071dd9aa3748ab0716d80ab46310986ad"
+  integrity sha512-2BSCJijP6h8bqFmphrGZ83lvnyro/F/VebV+d0E+5TpJzSVj4x3KDAZYNdPLixGpcFLyvJKheNIgv0f3yZ5qdQ==
 
 aws-sign2@~0.7.0:
   version "0.7.0"
