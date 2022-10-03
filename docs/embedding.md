@@ -110,7 +110,7 @@ The `<replay-web-page>` tag is a web component that supports a number of additio
 | `replayBase` | Location of the `sw.js` file, defaults to `./replay/` as mentioned above, but can be overridden. |
 | `coll`       | Internal id for this collection, usually generated automatically.
 | `config`     | Extra per collection config options (such as custom fuzzy matching rules, TODO add more info!) |
-| `noSandbox`  | if set, don't wrap iframe in `sandbox`. Used as extra precaution to avoid escaping iframe, but prevents PDFs from loading in embed archive. Set for archives of known/trusted sites. |
+| `sandbox`    | if set, will iframe in `sandbox`. Provides extra isolation, but prevents PDFs from loading in an embed, and may result in links opening in new windows. |
 | `noWebWorker`| if set, will not use Web Worker for loading, only Service Worker. May be useful for certain loading edge cases. |
 | `noCache`    | if set, will not cache any loaded content HTTP responses locally, always loading from original source. |
 | `hideOffscreen` | if set, will unload the embed when it is not visible and reload when scrolled into view. Useful if multiple embeds per-page to avoid loading all at once. |
