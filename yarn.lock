@@ -625,14 +625,16 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.5.2.tgz#ea584b637ff63c5a477f6f21604b5a205b72c9ec"
   integrity sha512-vgJ5OLWadI8aKjDlOH3rb+dYyPd2GTZuQC/Tihjct6F9GpXGZINo3Y/IVuZVTM1eDQB+/AOsjPUWH/WySDaXvw==
 
-"@webrecorder/wabac@github:webrecorder/wabac.js":
-  version "2.13.0-beta.1"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/3f9fbabb185d1d8c14cfb34505b81abc2c133bc7"
+"@webrecorder/wabac@^2.13.0":
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.13.0.tgz#9ebb3f484ad219f05d6a7a943a12c238058bc964"
+  integrity sha512-AUGkM5GM5OSrkQDjzWWWBJrpiLeSuUQSV5UK//XW/wsIn+FzcpVesaHbLVY69rsbCBEK3fqqir0AkEKVwGfb+w==
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.0"
     "@peculiar/asn1-schema" "^2.3.0"
     "@peculiar/x509" "^1.8.3"
-    "@webrecorder/wombat" "^3.3.8"
+    "@webrecorder/wombat" "^3.3.9"
+    auto-js-ipfs "^1.3.10"
     base64-js "^1.5.1"
     brotli "github:foliojs/brotli.js"
     buffer "^6.0.3"
@@ -935,6 +937,11 @@ at-least-node@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
+
+auto-js-ipfs@^1.3.10:
+  version "1.3.10"
+  resolved "https://registry.yarnpkg.com/auto-js-ipfs/-/auto-js-ipfs-1.3.10.tgz#e723607e31a73283c79ed9189fe3dc0b43bb1374"
+  integrity sha512-96vAnIR6hNtTRc9Q+7a/UJNF3ThPwwu75GgSr1E8oVPDp6ZK9K67FmTT/ecHAw9IsmKxCBcZdM2rhzTHByQdCQ==
 
 auto-js-ipfs@^1.3.9:
   version "1.3.9"
