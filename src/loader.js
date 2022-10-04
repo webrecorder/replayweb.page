@@ -3,7 +3,7 @@ import { wrapCss, IS_APP } from "./misc";
 
 import prettyBytes from "pretty-bytes";
 
-import { getSWErrorMsg, parseURLSchemeHostPath } from "./pageutils";
+import { parseURLSchemeHostPath } from "./pageutils";
 
 
 // ===========================================================================
@@ -125,11 +125,11 @@ class Loader extends LitElement
 
     this.percent = this.currentSize = this.totalSize = 0;
 
-    const noSWError = getSWErrorMsg();
+    // const noSWError = getSWErrorMsg();
 
-    if (noSWError) {
+    if (this.loadInfo && this.loadInfo.swError) {
       this.state = "errored";
-      this.error = noSWError;
+      this.error = this.loadInfo.swError;
       this.errorAllowRetry = false;
       return;
     }

@@ -298,7 +298,7 @@ class Replay extends LitElement
       </div>` : html`
 
       <div class="iframe-container">
-        <iframe class="iframe-main" @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
+        <iframe class="iframe-main" name="___wb_replay_top_frame" @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
         src="${this.iframeUrl}" title="${title}"></iframe>
 
         ${this.showAuth ? html`
