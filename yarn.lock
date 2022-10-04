@@ -625,10 +625,9 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.5.2.tgz#ea584b637ff63c5a477f6f21604b5a205b72c9ec"
   integrity sha512-vgJ5OLWadI8aKjDlOH3rb+dYyPd2GTZuQC/Tihjct6F9GpXGZINo3Y/IVuZVTM1eDQB+/AOsjPUWH/WySDaXvw==
 
-"@webrecorder/wabac@^2.13.0-beta.0":
-  version "2.13.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.13.0-beta.0.tgz#79b6c884b74fe328cc48b9b4ff1948bf1b55309c"
-  integrity sha512-2NwhrtJnFbyseErWplZQiJ/3HN3fWAJsM/aC+Znz3Bn+Z1gWkdVaKu2ah3OaS3sfQZuw2rWqTWvHJYTd/l+ZVA==
+"@webrecorder/wabac@github:webrecorder/wabac.js":
+  version "2.13.0-beta.1"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/3f9fbabb185d1d8c14cfb34505b81abc2c133bc7"
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.0"
     "@peculiar/asn1-schema" "^2.3.0"
@@ -653,10 +652,10 @@
     stream-browserify "^3.0.0"
     warcio "^1.5.1"
 
-"@webrecorder/wombat@^3.3.8":
-  version "3.3.8"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.3.8.tgz#de9d5de46bad8be208a260165c1204b6edf50c9b"
-  integrity sha512-X876dIJTqqIpjf/uDQHFmZ2HzO3Vz2oyZ6XdDUqFSn30OHIMs5N9K8dx2+g1OCRDglpOKo4KnzCs7hTHYFm9RA==
+"@webrecorder/wombat@^3.3.9":
+  version "3.3.9"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.3.9.tgz#c60f9ac14a955e0ed5471974cc77e81528612754"
+  integrity sha512-tiE/EnYWgZ5zZ1cXDMgEf2cEr4IZxP/h4TWudp4smsNHxPQI+sGo/ouGWJBEUKHzRV63o7eQddpJMnhbJoElnw==
   dependencies:
     warcio "^1.5.1"
 

@@ -1,9 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { registerSW } from "./pageutils";
-
 import { wrapCss, rwpLogo } from "./misc";
+import { SWManager } from "./swmanager";
 
 
 var scriptSrc = document.currentScript && document.currentScript.src;
@@ -23,6 +22,7 @@ class Embed extends LitElement
     // eslint-disable-next-line no-undef
     this.swName = __SW_NAME__;
     this.mainElementName = "replay-app-main";
+    this.appName = "ReplayWeb.page";
     this.view = "replay";
     this.ts = "";
     this.url = "";
@@ -33,12 +33,14 @@ class Embed extends LitElement
     this.paramString = null;
     this.deepLink = false;
     this.newWindowBase = "";
-    this.swInited = false;
+    this.inited = false;
     this.embed = null;
     this.reloadCount = 0;
-    this.noSandbox = false;
+    this.sandbox = false;
     this.noWebWorker = false;
     this.noCache = false;
+    // deprecated;
+    this.noSandbox = null;
     this.logo = rwpLogo;
   }
 
@@ -66,12 +68,13 @@ class Embed extends LitElement
       coll: { type: String },
       config: { type: String },
 
-      swInited: { type: Boolean },
+      inited: { type: Boolean },
 
       paramString: { type: String },
       hashString: { type: String },
 
       deepLink: { type: Boolean },
+      sandbox: { type: Boolean },
       noSandbox: { type: Boolean },
       noWebWorker: { type: Boolean },
       noCache: { type: Boolean },
@@ -79,16 +82,34 @@ class Embed extends LitElement
 
       newWindowBase: { type: String },
 
-      errorMessage: { type: String }
+      errorMessage: { type: String },
+
+      requireSubdomainIframe: {type: Boolean}
     };
   }
 
   async doRegister() {
+    const replaybaseURL = new URL(this.replaybase, window.location.href);
+
+    this.isCrossOrigin = replaybaseURL.origin !== window.location.origin;
+
+    if (this.isCrossOrigin) {
+      this.inited = true;
+      return;
+    }
+
+    const name = this.swName;
+    const appName = this.appName;
+    const scope = this.replaybase;
+    const requireSubdomainIframe = this.requireSubdomainIframe;
+
+    this.swmanager = new SWManager({name, scope, requireSubdomainIframe, appName});
+
     try {
-      await registerSW(this.swName, this.replaybase);
-      this.swInited = true;
+      await this.swmanager.register();
+      this.inited = true;
     } catch (e) {
-      this.errorMessage = e;
+      this.errorMessage = this.swmanager.renderErrorReport(this.logo);
     }
   }
 
@@ -116,6 +137,9 @@ class Embed extends LitElement
   }
 
   firstUpdated() {
+    if (this.noSandbox) {
+      console.warn("The noSandbox flag is deprecated. ReplayWeb.page does not add a sandbox by default. To enable sandboxing, use 'sandbox' flag instead. This may result in PDFs not loading and pages opening in new windows, but may be more secure in some situations");
+    }
     this.doRegister();
 
     window.addEventListener("message", (event) => this.handleMessage(event));
@@ -257,8 +281,8 @@ class Embed extends LitElement
 
   render() {
     return html`
-    ${this.paramString && this.hashString && this.swInited ? html`
-      <iframe sandbox="${ifDefined(!this.noSandbox ?
+    ${this.paramString && this.hashString && this.inited ? html`
+      <iframe sandbox="${ifDefined(this.sandbox ?
     "allow-downloads allow-modals allow-orientation-lock allow-pointer-lock\
          allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts\
          allow-same-origin allow-forms" : undefined)}"
@@ -268,17 +292,15 @@ class Embed extends LitElement
 
       ` : html``}
 
-    ${this.errorMessage ? html`
-      <section class="full-width">
-        <div class="has-text-centered">
-          <fa-icon class="logo" id="wrlogo" size="2.5rem" .svg=${this.logo} aria-hidden="true"></fa-icon>
-        </div>
-        <div class="error">${this.errorMessage}</div>
-      </section>
-    `: ""}`;
+    ${this.errorMessage}
+    `;
   }
 
   onLoad(event) {
+    if (this.isCrossOrigin) {
+      return;
+    }
+
     const win = event.target.contentWindow;
     const doc = event.target.contentDocument;
 

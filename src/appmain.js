@@ -1,11 +1,10 @@
 import { LitElement, html, css } from "lit";
 import { wrapCss, rwpLogo, IS_APP, VERSION, clickOnSpacebarPress } from "./misc";
 
-import { registerSW } from "./pageutils";
-
 import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.svg";
 import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
 import fasArrowRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
+import { SWManager } from "./swmanager";
 
 
 // ===========================================================================
@@ -28,9 +27,8 @@ class ReplayWebApp extends LitElement
 
     this.loadInfo = null;
 
-    if (swName) {
-      registerSW(swName);
-    }
+    this.swmanager = new SWManager({name: swName, appName: this.appName});
+    this.swmanager.register().catch(() => this.swErrorMsg = this.swmanager.renderErrorReport(this.mainLogo));
 
     this.safariKeyframes();
   }
@@ -56,7 +54,9 @@ class ReplayWebApp extends LitElement
       collPageUrl: { type: String },
       pageTitle: { type: String },
       pageReplay: { type: Boolean },
-      source: { type: String }
+      source: { type: String },
+
+      swErrorMsg: { type: Object },
     };
   }
 
@@ -246,6 +246,10 @@ class ReplayWebApp extends LitElement
   render() {
     if (!this.inited) {
       return html``;
+    }
+
+    if (this.embed && this.swErrorMsg) {
+      return this.swErrorMsg;
     }
 
     return html`
