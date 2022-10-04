@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { wrapCss, IS_APP } from "./misc";
+import { wrapCss } from "./misc";
 
 import prettyBytes from "pretty-bytes";
 
@@ -161,16 +161,6 @@ You can select a file to upload from the main page by clicking the 'Choose File.
         }
 
         source = this.loadInfo;
-        break;
-
-      case "ipfs":
-        if (IS_APP) {
-          // eslint-disable-next-line no-undef
-          const url = new URL(__APP_FILE_SERVE_PREFIX__);
-          const hash = sourceUrl.split("#", 1)[0];
-          url.searchParams.set("ipfs", hash.slice("ipfs://".length));
-          source = {sourceUrl, loadUrl: url.href};
-        }
         break;
 
       case "proxy":

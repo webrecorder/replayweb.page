@@ -9,13 +9,13 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@webrecorder/wabac": "github:webrecorder/wabac.js",
+    "@webrecorder/wabac": "^2.13.0",
+    "auto-js-ipfs": "^1.3.9",
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
     "electron-updater": "^4.3.9",
     "fetch-ndjson": "^1.1.6",
     "flexsearch": "^0.7.21",
-    "ipfs-core": "^0.10.8",
     "keyword-mark-element": "^0.2.0",
     "lit": "^2.1.1",
     "marked": "^4.0.10",
@@ -34,6 +34,7 @@
     "electron": "^19.0.4",
     "electron-builder": "^23.0.3",
     "electron-notarize": "^1.1.1",
+    "eslint": "^8.23.1",
     "http-server": "^13.0.2",
     "mini-css-extract-plugin": "^2.3.0",
     "node-sass": "^7.0.1",
@@ -117,7 +118,7 @@
       "extraResources": [
         "plugins-mac"
       ],
-      "singleArchFiles": "dist/prebuilds/**/*"
+      "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**}"
     },
     "linux": {
       "category": "Archiving;Utility;",

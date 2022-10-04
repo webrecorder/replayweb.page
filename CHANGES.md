@@ -11,6 +11,7 @@ v1.7.0
 - Fidelity/Embeds: Redirect new windows from links / `window.open` to existing replay frame (only possible w/o 'sandbox').
 - Embeds: Add 'requireSubdomainIframe' embed attribute to only allow embed if loaded from a cross-origin / subdomain iframe.
 - UI: improved formatting on 404 not found page.
+- Loading: Fix IPFS loading, use auto-js-ipfs to load from gateway or existing local instance (don't run local node for now)
 - Dependencies: update to wabac.js 2.13.0 to support verification, latest wombat (3.3.9)
 
 v1.6.5

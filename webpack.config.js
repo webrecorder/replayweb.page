@@ -22,10 +22,6 @@ const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.goo
 // Copyright banner text
 const BANNER_TEXT = "'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020-2021, Webrecorder Software. Licensed under the Affero General Public License v3.'";
 
-// IPFS ipfs-core lib url
-const IPFS_CORE_URL = `https://cdn.jsdelivr.net/npm/ipfs-core@${package_json.dependencies["ipfs-core"].replace("^", "")}/dist/index.min.js`;
-
-
 const fallback = {
   "stream": require.resolve("stream-browserify"),
   "querystring": require.resolve("querystring-es3"),
@@ -77,14 +73,16 @@ const electronMainConfig = (/*env, argv*/) => {
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
         patterns: [
-          { from: "node_modules/leveldown/prebuilds/", to: "prebuilds" },
-          { from: "build/extra_prebuilds/", to: "prebuilds" },
+          // { from: "node_modules/classic-level/prebuilds/", to: "prebuilds" },
+          { from: "build/extra_prebuilds/", to: "prebuilds" }
         ],
       }),
+      //new webpack.NormalModuleReplacementPlugin(/\.\/http\/fetch/, "./http/fetch.node"),
+      //new webpack.NormalModuleReplacementPlugin(/\.\.\/fetch$/, "electron-fetch"),
     ],
     externals: {
       "bufferutil": "bufferutil",
-      "utf-8-validate": "utf-8-validate",
+      "utf-8-validate": "utf-8-validate"
     }
   };
 };
@@ -158,12 +156,10 @@ const browserConfig = (/*env, argv*/) => {
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
         __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID),
         __VERSION__: JSON.stringify(package_json.version),
-        __IPFS_CORE_URL__: JSON.stringify(IPFS_CORE_URL)
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
         patterns: [
-          { from: "node_modules/ipfs-core/dist/index.min.js", to: "ipfs-core.min.js" },
           { from: "package.json", to: "_data/package.json" }
         ]
       }),

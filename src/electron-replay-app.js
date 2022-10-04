@@ -9,7 +9,7 @@ import path from "path";
 import fs from "fs";
 
 import { ArchiveResponse, Rewriter } from "@webrecorder/wabac/src/rewrite";
-import { IPFSClient } from "@webrecorder/wabac/src/ipfs";
+import {create as createIPFS} from "auto-js-ipfs";
 
 import { PassThrough, Readable } from "stream";
 
@@ -26,33 +26,6 @@ const STATIC_PREFIX = "http://localhost:5471/";
 const REPLAY_PREFIX = STATIC_PREFIX + "w/";
 
 const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
-
-
-let IPFS = null;
-
-// ============================================================================
-class NativeIPFSClient extends IPFSClient
-{
-  constructor(repoPath) {
-    super();
-    this.repoPath = repoPath;
-  }
-
-  async _doInitIPFS() {
-    if (!IPFS) {
-      IPFS = require("ipfs-core");
-    }
-
-    this.ipfs = await IPFS.create({
-      repo: this.repoPath,
-      init: {emptyRepo: true},
-      //preload: {enabled: false},
-    });
-
-    this.resetGC();
-  }
-}
-
 
 // ============================================================================
 class ElectronReplayApp
@@ -145,11 +118,6 @@ class ElectronReplayApp
       app.setPath("userData", path.join(app.getPath("appData"), this.profileName));
     }
 
-    const ipfsRepoPath = path.join(app.getPath("userData"), "js-ipfs");
-    console.log("ipfs path", ipfsRepoPath);
-
-    this.ipfsClient = new NativeIPFSClient(ipfsRepoPath);
-
     app.on("will-finish-launching", () => {
       app.on("open-file", (event, filePath) => {
         this.openNextFile = filePath;
@@ -185,6 +153,9 @@ class ElectronReplayApp
   }
 
   onAppReady() {
+    const ipfsRepoPath = path.join(app.getPath("userData"), "js-ipfs");
+    console.log("ipfs path", ipfsRepoPath);
+
     this.checkUpdates();
 
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
@@ -293,13 +264,16 @@ class ElectronReplayApp
         return;
 
       } else if (ipfsCID) {
+        const ipfsURL = `ipfs://${ipfsCID}}`;
+
         console.log("ipfs serve:", ipfsCID);
 
-        await this.ipfsClient.initIPFS();
+        // TODO: Pass in config?
+        this.ipfsClient = await createIPFS();
 
         console.log("inited");
 
-        let size = await this.ipfsClient.getFileSize(ipfsCID);
+        let size = await this.ipfsClient.getSize(ipfsURL);
 
         console.log("got size", size);
 
@@ -314,7 +288,10 @@ class ElectronReplayApp
         if (request.method === "GET") {
           const offset = start || 0;
           const length = end ? end - start + 1 : size;
-          data = Readable.from(await this.ipfsClient.cat(ipfsCID, {offset, length}));
+          data = Readable.from(await this.ipfsClient.get(ipfsURL, {
+            start: offset,
+            end: offset +length
+          }));
         }
 
         callback({statusCode, headers, data});
