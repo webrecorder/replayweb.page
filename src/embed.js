@@ -39,6 +39,8 @@ class Embed extends LitElement
     this.sandbox = false;
     this.noWebWorker = false;
     this.noCache = false;
+    // deprecated;
+    this.noSandbox = null;
     this.logo = rwpLogo;
   }
 
@@ -73,6 +75,7 @@ class Embed extends LitElement
 
       deepLink: { type: Boolean },
       sandbox: { type: Boolean },
+      noSandbox: { type: Boolean },
       noWebWorker: { type: Boolean },
       noCache: { type: Boolean },
       hideOffscreen: { type: Boolean },
@@ -134,6 +137,9 @@ class Embed extends LitElement
   }
 
   firstUpdated() {
+    if (this.noSandbox) {
+      console.warn("The noSandbox flag is deprecated. ReplayWeb.page does not add a sandbox by default. To enable sandboxing, use 'sandbox' flag instead. This may result in PDFs not loading and pages opening in new windows, but may be more secure in some situations");
+    }
     this.doRegister();
 
     window.addEventListener("message", (event) => this.handleMessage(event));
