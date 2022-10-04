@@ -48,7 +48,7 @@ class oe extends re{constructor(e){if(super(e),this.it=R,e.type!==ie)throw Error
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se),ce=ae(class extends re{constructor(e){var t;if(super(e),e.type!==te||"style"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce(((t,i)=>{const a=e[i];return null==a?t:t+`${i=i.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${a};`}),"")}update(e,[t]){const{style:i}=e.element;if(void 0===this.ct){this.ct=new Set;for(const e in t)this.ct.add(e);return this.render(t)}this.ct.forEach((e=>{null==t[e]&&(this.ct.delete(e),e.includes("-")?i.removeProperty(e):i[e]="")}));for(const e in t){const a=t[e];null!=a&&(this.ct.add(e),e.includes("-")?i.setProperty(e,a):i[e]=a)}return U}});var de=__webpack_require__(6274),he=__webpack_require__(3029),fe=__webpack_require__.n(he);const be=r(de.Z);function ue(e){return[be,e]}const pe=window.IS_APP||window.electron&&window.electron.IS_APP||window.matchMedia("(display-mode: standalone)").matches,me="1.7.0-beta.1";function ge(e){" "==e.key&&(e.preventDefault(),e.target.click())}class ve extends X{constructor(){super(),this.size="1.1em",this.width=null,this.height=null}static get properties(){return{svg:{type:String},size:{type:String},width:{type:String},height:{type:String}}}static get styles(){return o`
+class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se),ce=ae(class extends re{constructor(e){var t;if(super(e),e.type!==te||"style"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce(((t,i)=>{const a=e[i];return null==a?t:t+`${i=i.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${a};`}),"")}update(e,[t]){const{style:i}=e.element;if(void 0===this.ct){this.ct=new Set;for(const e in t)this.ct.add(e);return this.render(t)}this.ct.forEach((e=>{null==t[e]&&(this.ct.delete(e),e.includes("-")?i.removeProperty(e):i[e]="")}));for(const e in t){const a=t[e];null!=a&&(this.ct.add(e),e.includes("-")?i.setProperty(e,a):i[e]=a)}return U}});var de=__webpack_require__(6274),he=__webpack_require__(3029),fe=__webpack_require__.n(he);const be=r(de.Z);function ue(e){return[be,e]}const pe=window.IS_APP||window.electron&&window.electron.IS_APP||window.matchMedia("(display-mode: standalone)").matches,me="1.7.0";function ge(e){" "==e.key&&(e.preventDefault(),e.target.click())}class ve extends X{constructor(){super(),this.size="1.1em",this.width=null,this.height=null}static get properties(){return{svg:{type:String},size:{type:String},width:{type:String},height:{type:String}}}static get styles(){return o`
     :host {
       display: inline-block;
       padding: 0;
@@ -811,6 +811,13 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
       font-family: monospace;
     }
 
+    .embed-info-drop .show-key {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      whitespace: nowrap;
+      font-family: monospace;
+    }
+
     .embed-globe {
       margin: 0.25rem;
       padding: 7px;
@@ -821,7 +828,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
       border-color: #D1D5DA;
       border-style: solid;
       line-height: 0.5em;
-    }`}render(){let{numValid:e,numInvalid:t,domain:i,certFingerprint:a,datapackageHash:r,software:o}=this.collInfo.verify||{};e=e||0,t=t||0;const n=this.collInfo.sourceUrl,s=a?`https://search.censys.io/certificates/${a}`:"",l=Ke(this.ts).toLocaleString();return P`
+    }`}render(){let{numValid:e,numInvalid:t,domain:i,certFingerprint:a,datapackageHash:r,publicKey:o,software:n}=this.collInfo.verify||{};e=e||0,t=t||0;const s=this.collInfo.sourceUrl,l=a?`https://search.censys.io/certificates/${a}`:"",c=Ke(this.ts).toLocaleString();return P`
     <div class="dropdown mb-4 ${this.active?"is-active":""}">
       <div class="dropdown-trigger embed-info-container">
         <button class="embed-info is-small is-rounded mt-4" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
@@ -845,14 +852,18 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
             <h3>Original URL:</h3>
             <p><a target="_blank" href="${this.url}">${this.url}</a></p>
             <h3 class="mt-2">Archived On:</h3>
-            <p>${l}</p>
+            <p>${c}</p>
             ${i?P`
             <h3 class="mt-2">Observed By:</h3>
             <p>${i}</p>
-            ${s?P`<p><a target="_blank" href="${s}">View Certificate</a></p>`:""}
-            `:o?P`
+            ${l?P`
+            <p><a target="_blank" href="${l}">View Certificate</a></p>`:""}
+            `:n?P`
             <h3 class="mt-2">Created With:</h3>
-            <p>${o}</p>`:""}
+            <p>${n}</p>`:""}
+            ${!i&&o?P`
+            <h3 class="mt-2">Observer Public Key:</h3>
+            <p class="show-key">${o}</p>`:""}
             <h3 class="mt-2">Validation:</h3>
             ${e>0||t>0?P`
             <p>${e} hashes verified${t?P`, ${t} invalid`:""}</p>`:P`
@@ -863,11 +874,11 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
             <h3 class="mt-2">Size</h3>
             <p>${Re()(Number(this.collInfo.size||0))}</p>
           </div>
-          ${n?P`
+          ${s?P`
           <hr class="dropdown-divider">
           <h2 mt-4">Get A Copy!</h2>
           <p class="mt-2">After downloading, this web archive can be loaded and viewed directly in your browser via <a style="white-space: nowrap;" target="_blank" href="https://replayweb.page">replayweb.page</a>.</p>
-          <a href="${n}" class="button mt-4" @keyup="${ge}">
+          <a href="${s}" class="button mt-4" @keyup="${ge}">
             <span class="icon is-small">
               <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${tt()}"></fa-icon>
             </span>
