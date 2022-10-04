@@ -163,6 +163,13 @@ export class RWPEmbedReceipt extends LitElement
       font-family: monospace;
     }
 
+    .embed-info-drop .show-key {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      whitespace: nowrap;
+      font-family: monospace;
+    }
+
     .embed-globe {
       margin: 0.25rem;
       padding: 7px;
@@ -177,7 +184,7 @@ export class RWPEmbedReceipt extends LitElement
   }
 
   render() {
-    let {numValid, numInvalid, domain, certFingerprint, datapackageHash, software} = this.collInfo.verify || {};
+    let {numValid, numInvalid, domain, certFingerprint, datapackageHash, publicKey, software} = this.collInfo.verify || {};
     numValid = numValid || 0;
     numInvalid = numInvalid || 0;
 
@@ -215,11 +222,14 @@ export class RWPEmbedReceipt extends LitElement
             ${domain ? html`
             <h3 class="mt-2">Observed By:</h3>
             <p>${domain}</p>
-            ${certFingerprintUrl ?
-    html`<p><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></p>` : ""}
+            ${certFingerprintUrl ? html`
+            <p><a target="_blank" href="${certFingerprintUrl}">View Certificate</a></p>` : ""}
             ` : software ? html`
             <h3 class="mt-2">Created With:</h3>
             <p>${software}</p>` : ""}
+            ${!domain && publicKey ? html`
+            <h3 class="mt-2">Observer Public Key:</h3>
+            <p class="show-key">${publicKey}</p>` : ``}
             <h3 class="mt-2">Validation:</h3>
             ${numValid > 0 || numInvalid > 0 ? html`
             <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ""}</p>` : html`

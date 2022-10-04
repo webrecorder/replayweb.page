@@ -1,7 +1,7 @@
 ## CHANGES
 
 v1.7.0
-- UI: Support showing WACZ verification stats on info tab, showing hashes verified, observer domain (or creation software), and certificate fingerprint, and WACZ package digest
+- UI: Support showing WACZ verification stats on info tab, showing hashes verified, observer domain, (or public key and creation software), and certificate fingerprint, and WACZ package digest
 - Embed UI: Add `replay-with-info` embed mode which provides an information dropdown above replay, including verification info and link to download.
 - Embed UI: Add `hideOffscreen` attribute to enable hiding embed when offscreen (previously always enabled).
 - Embeds: add `newWindowBase" for configuring base replay for loading pages in new windows (default: https://replayweb.page/ or current page with deep links)
@@ -11,7 +11,7 @@ v1.7.0
 - Fidelity/Embeds: Redirect new windows from links / `window.open` to existing replay frame (only possible w/o 'sandbox').
 - Embeds: Add 'requireSubdomainIframe' embed attribute to only allow embed if loaded from a cross-origin / subdomain iframe.
 - UI: improved formatting on 404 not found page.
-- Loading: Fix IPFS loading, use auto-js-ipfs to load from gateway or existing local instance (don't run local node for now)
+- Loading: Fix IPFS loading, use auto-js-ipfs to load from an IPFS gateway or existing local instance (don't run local node for now)
 - Dependencies: update to wabac.js 2.13.0 to support verification, latest wombat (3.3.9)
 
 v1.6.5
