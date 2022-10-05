@@ -168,6 +168,12 @@ class ElectronReplayApp
           return { action: "deny"};
         }
 
+        // load external URLs in native browser
+        if (!url.startsWith(STATIC_PREFIX)) {
+          shell.openExternal(url);
+          return { action: "deny"};
+        }
+
         return { action: "allow"};
       });
     });

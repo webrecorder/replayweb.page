@@ -12,7 +12,8 @@ v1.7.0
 - Embeds: Add 'requireSubdomainIframe' embed attribute to only allow embed if loaded from a cross-origin / subdomain iframe.
 - UI: improved formatting on 404 not found page.
 - Loading: Fix IPFS loading, use auto-js-ipfs to load from an IPFS gateway or existing local instance (don't run local node for now)
-- Dependencies: update to wabac.js 2.13.0 to support verification, latest wombat (3.3.9)
+- Loading: App: Load 'not found' URLs from error page using default browser
+- Dependencies: update to wabac.js 2.13.2 to support verification, latest wombat (3.3.9)
 
 v1.6.5
 - Loading: Don't ignore hashtag, eg. #.wacz to specify file type when loading (via wabac.js)
