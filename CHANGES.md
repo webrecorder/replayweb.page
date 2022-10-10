@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.7.1
+- Electron App: Fix electron app not loading preload.js, regression in 1.7.0
+- Fidelity: Fixed embedded tweet video issue (via wabac.js)
+- Fidelity: rewrite target="new" to not open new window
+- Dependencies: Update to wabac.js 2.13.3
+
 v1.7.0
 - UI: Support showing WACZ verification stats on info tab, showing hashes verified, observer domain, (or public key and creation software), and certificate fingerprint, and WACZ package digest
 - Embed UI: Add `replay-with-info` embed mode which provides an information dropdown above replay, including verification info and link to download.

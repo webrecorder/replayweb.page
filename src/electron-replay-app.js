@@ -59,7 +59,9 @@ class ElectronReplayApp
       preload: path.join(__dirname, "preload.js"),
       nativeWindowOpen: true,
       contextIsolation: true,
-      enableRemoteModule: false
+      enableRemoteModule: false,
+      sandbox: false,
+      nodeIntegration: false,
     };
   }
 
