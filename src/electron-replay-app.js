@@ -8,15 +8,16 @@ import {app, session, BrowserWindow, ipcMain, screen, shell } from "electron";
 import path from "path";
 import fs from "fs";
 
-import { ArchiveResponse, Rewriter } from "@webrecorder/wabac/src/rewrite";
-import {create as createIPFS} from "auto-js-ipfs";
+import { ArchiveResponse, Rewriter } from "@webrecorder/wabac";
 
-import { PassThrough, Readable } from "stream";
+import { PassThrough } from "stream";
 
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
 
 import mime from "mime-types";
+
+import { registerHandler, registerPrivileges } from "./electron-ipfs-handler.js";
 
 global.Headers = Headers;
 global.fetch = fetch;
@@ -49,8 +50,6 @@ class ElectronReplayApp
     this.openNextFile = null;
 
     this.screenSize = {width: 1024, height: 768};
-
-    this.ipfsClient = null;
   }
 
   get mainWindowWebPreferences() {
@@ -82,6 +81,8 @@ class ElectronReplayApp
         this.createMainWindow(commandLine);
       });
     }
+
+    registerPrivileges();
 
     if (includePlugins) {
       switch (process.platform) {
@@ -155,8 +156,13 @@ class ElectronReplayApp
   }
 
   onAppReady() {
-    const ipfsRepoPath = path.join(app.getPath("userData"), "js-ipfs");
-    console.log("ipfs path", ipfsRepoPath);
+    const ipfsRepoPath = path.join(app.getPath("userData"), "kubo-ipfs");
+    console.log("ipfs repo path", ipfsRepoPath);
+
+    const ipfsBinPath = path.join(__dirname, "prebuilds", `${process.platform}-${process.arch}`, "ipfs");
+    console.log("ipfs bin path", ipfsBinPath);
+
+    registerHandler(ipfsRepoPath, ipfsBinPath);
 
     this.checkUpdates();
 
@@ -248,7 +254,6 @@ class ElectronReplayApp
       const parsedUrl = new URL(request.url);
 
       const filename = parsedUrl.searchParams.get("filename");
-      const ipfsCID = parsedUrl.searchParams.get("ipfs");
 
       const headers = {"Content-Type": "application/octet-stream"};
       const reqHeaders = new Headers(request.headers);
@@ -267,40 +272,6 @@ class ElectronReplayApp
         const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
 
         const data = request.method === "HEAD" ? null : fs.createReadStream(filename, {start, end});
-
-        callback({statusCode, headers, data});
-        return;
-
-      } else if (ipfsCID) {
-        const ipfsURL = `ipfs://${ipfsCID}}`;
-
-        console.log("ipfs serve:", ipfsCID);
-
-        // TODO: Pass in config?
-        this.ipfsClient = await createIPFS();
-
-        console.log("inited");
-
-        let size = await this.ipfsClient.getSize(ipfsURL);
-
-        console.log("got size", size);
-
-        if (size === null) {
-          return this.notFound(ipfsCID, callback);
-        }
-
-        const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
-
-        let data = null;
-
-        if (request.method === "GET") {
-          const offset = start || 0;
-          const length = end ? end - start + 1 : size;
-          data = Readable.from(await this.ipfsClient.get(ipfsURL, {
-            start: offset,
-            end: offset +length
-          }));
-        }
 
         callback({statusCode, headers, data});
         return;

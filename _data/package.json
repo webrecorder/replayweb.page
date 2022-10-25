@@ -15,7 +15,11 @@
     "electron-log": "^4.4.1",
     "electron-updater": "^4.3.9",
     "fetch-ndjson": "^1.1.6",
+    "fetch-to-electron-protocol-handler": "^1.0.0",
     "flexsearch": "^0.7.21",
+    "go-ipfs": "github:ikreymer/npm-go-ipfs",
+    "ipfs-http-client": "^59.0.0",
+    "js-ipfs-fetch": "^4.2.3",
     "keyword-mark-element": "^0.2.0",
     "lit": "^2.1.1",
     "marked": "^4.0.10",
@@ -32,7 +36,7 @@
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "electron": "^20.3.0",
-    "electron-builder": "^23.0.3",
+    "electron-builder": "^23.6.0",
     "electron-notarize": "^1.1.1",
     "eslint": "^8.23.1",
     "http-server": "^13.0.2",
@@ -68,7 +72,8 @@
     "dist": "yarn run build && yarn run pack",
     "dist-dev": "yarn run build-dev && yarn run pack",
     "release": "yarn run build && electron-builder",
-    "lint": "eslint ./src/ webpack.config.js"
+    "lint": "eslint ./src/ webpack.config.js",
+    "postinstall": "node ./src/postinstall.js"
   },
   "build": {
     "afterSign": "build/notarize.js",
@@ -85,7 +90,7 @@
       "dist/prebuilds/${platform}-${arch}/*",
       "dist/build/*",
       "*.js",
-      "*.html",
+      "index.html",
       "ruffle",
       "webmanifest.json",
       {
@@ -118,7 +123,7 @@
       "extraResources": [
         "plugins-mac"
       ],
-      "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**}"
+      "singleArchFiles": "dist/prebuilds/**/*"
     },
     "linux": {
       "category": "Archiving;Utility;",

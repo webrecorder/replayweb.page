@@ -1,6 +1,6 @@
 /*eslint-env node */
 
-import { CollectionLoader } from "@webrecorder/wabac/src/loaders";
+import { CollectionLoader } from "@webrecorder/wabac";
 
 const { ipcRenderer, contextBridge } = require("electron");
 

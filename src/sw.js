@@ -1,8 +1,8 @@
 import INDEX_HTML from "../index.html";
 
-import { SWReplay } from "@webrecorder/wabac/src/swmain";
+import { SWReplay } from "@webrecorder/wabac/src/swmain.js";
 
-import { WorkerLoader } from "@webrecorder/wabac/src/loaders";
+import { WorkerLoader } from "@webrecorder/wabac";
 
 
 if (self.registration) {
