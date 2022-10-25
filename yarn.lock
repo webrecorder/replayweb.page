@@ -878,7 +878,7 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.5.2.tgz#ea584b637ff63c5a477f6f21604b5a205b72c9ec"
   integrity sha512-vgJ5OLWadI8aKjDlOH3rb+dYyPd2GTZuQC/Tihjct6F9GpXGZINo3Y/IVuZVTM1eDQB+/AOsjPUWH/WySDaXvw==
 
-"@webrecorder/wabac@^2.13.4":
+"@webrecorder/wabac@^2.13.5":
   version "2.13.5"
   resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.13.5.tgz#6e67463ce54c9b5dc6b87e512623951f8d5046ff"
   integrity sha512-2gYOF+wN6MP76iTntSomJvX0egJtKG30Sx09ac9tz1fmdBs8cPKZgvp7YabI/2yNyXR2mDnQevbELZDosTGH7w==
@@ -909,7 +909,7 @@
 
 "@webrecorder/wabac@github:webrecorder/wabac.js":
   version "2.13.5"
-  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/1a031d5d35b1dbe581595b8d20be768da9ebf688"
+  resolved "https://codeload.github.com/webrecorder/wabac.js/tar.gz/4f705479cae7d69015eed910a7186921d3a8be68"
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.0"
     "@peculiar/asn1-schema" "^2.3.0"
@@ -933,7 +933,7 @@
     path-parser "^6.1.0"
     process "^0.11.10"
     stream-browserify "^3.0.0"
-    warcio "^1.6.0"
+    warcio "1.6.1"
 
 "@webrecorder/wombat@^3.3.9":
   version "3.3.9"
@@ -6771,6 +6771,16 @@ verror@1.10.0, verror@^1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+warcio@1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/warcio/-/warcio-1.6.1.tgz#4915aa7b50faba246a26c25e791711704bedd859"
+  integrity sha512-VFL9xM+Emhmi70iqFXyxeLlUQtVkX3ZgRw2nK0oi0mdCyLPqEfz+UNB+DKGQ2WoAuPGfPWdPqaB8f/XcFojxZQ==
+  dependencies:
+    hi-base32 "^0.5.0"
+    pako "^1.0.11"
+    uuid-random "^1.3.0"
+    yargs "^15.3.1"
 
 warcio@^1.5.1:
   version "1.5.1"
