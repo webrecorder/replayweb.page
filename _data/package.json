@@ -9,7 +9,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@webrecorder/wabac": "^2.13.4",
+    "@webrecorder/wabac": "github:webrecorder/wabac.js",
     "auto-js-ipfs": "^1.3.9",
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
@@ -65,15 +65,15 @@
     "build-docs": "bundle install; bundle exec jekyll build",
     "start-dev": "webpack serve --mode development",
     "start-prod": "http-server -p 9990",
-    "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
-    "pack-signed": "electron-builder",
+    "install-ipfs": "node ./install-ipfs.js",
+    "pack": "yarn run install-ipfs && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
+    "pack-signed": "yarn run install-ipfs && electron-builder",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
     "start-jekyll": "yarn run build-docs && bundle exec jekyll serve",
     "dist": "yarn run build && yarn run pack",
     "dist-dev": "yarn run build-dev && yarn run pack",
-    "release": "yarn run build && electron-builder",
-    "lint": "eslint ./src/ webpack.config.js",
-    "postinstall": "node ./src/postinstall.js"
+    "release": "yarn run build && yarn run pack-signed",
+    "lint": "eslint ./src/ webpack.config.js"
   },
   "build": {
     "afterSign": "build/notarize.js",
