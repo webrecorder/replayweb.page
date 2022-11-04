@@ -81,11 +81,24 @@ Then you adjust your HTML to reference the new resources:
 <replay-web-page replayBase="/js/" source="/wacz/example.wacz" url="https://webrecorder.net"></replay-web-page>
 ```
 
+### Embed Modes
+
+ReplayWeb.page offers a number of different ways to embed the archived content, including with or without the navigation UI, and with a new archival information dropdown. The embed mode can be set via the `embed` property:
+
+- `default` or not set: Show the replay page and the location bar, allowing navigation to other pages and accessing the page list.
+
+- `full`: Show the full replayweb.page UI and logo.
+
+- `replayonly`: Show just the replayed page, and no additional UI or nav bar buttons. Useful for embedding a single page.
+
+- `replay-with-info`: Show the replayonly mode, but also add an archive info dropdown, which shows a kind of archival 'receipt' with provenance and verification information (new in 1.7.0)
+
+
 ### Examples
 
 <details>
 <summary>
-Here is an example embed added directly to this page:
+Here is an example embed added directly to this page, with <code class="language-plaintext highlighter-rouge">replay-with-info</code> embed mode:
 </summary>
 
 <script src="../ui.js"></script>
@@ -106,7 +119,7 @@ The `<replay-web-page>` tag is a web component that supports a number of additio
 | `url`        | The starting URL to load from the archive. If omitted, will start with the page list or URL search view. |
 | `ts`         | The timestamp of the starting URL to load. If omitted, the latest available version is used. |
 | `deepLink`   | if set, allow 'deep linking' to exact pages in the embed, besides the starting URL. |
-| `embed`      | (`default` / `full` / `replayonly` ) - if set to `full`, will show the replayweb.page nav bar and logo. if set to `default`, omitted, will show the location bar. if set to `replayonly`, will only show the `url` and not location bar or any nav bar buttons, which may be useful for embedding a single page only. |
+| `embed`      | (`default` / `full` / `replayonly` / `replay-with-info` ) - See [Embed Modes](#embed-modes) above.
 | `replayBase` | Location of the `sw.js` file, defaults to `./replay/` as mentioned above, but can be overridden. |
 | `coll`       | Internal id for this collection, usually generated automatically.
 | `config`     | Extra per collection config options (such as custom fuzzy matching rules, TODO add more info!) |

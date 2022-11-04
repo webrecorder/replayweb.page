@@ -35,7 +35,14 @@ This repository contains:
 - Docs hosted at: https://replayweb.page/docs
 - App releases at: https://github.com/webrecorder/replayweb.page/releases
 
-## How to Use This Repo
+## Running ReplayWeb.page
+
+To run ReplayWeb.page and view web archives, a regular HTTP server is all that is needed.
+
+ReplayWeb.page can run with any HTTP server locally. For example, you can run `http-server -p 9990` or `python -m http.server 9990` to run a static web server in the directory of this repository. Then, simply load `http://localhost:9990/` and you'll have replayweb.page running locally.
+
+
+## Developing ReplayWeb.page
 
 ReplayWeb.page is built as a Node package can be installed using yarn:
 
