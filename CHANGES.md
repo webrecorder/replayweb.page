@@ -1,8 +1,12 @@
 ## CHANGES
 
+v1.7.3
+- Fidelity: Misc fidelity improvements via wombat + wabac.js 2.13.6
+
 v1.7.2
 - Fidelity: Fix replay of TikTok
 - Dependencies: Update to wabac.js 2.13.4
+- Docs: Update to embedding guide to mention new embed modes
 
 v1.7.1
 - Electron App: Fix electron app not loading preload.js, regression in 1.7.0
