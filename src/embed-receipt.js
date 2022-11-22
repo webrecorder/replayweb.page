@@ -229,7 +229,7 @@ export class RWPEmbedReceipt extends LitElement
             <p>${software}</p>` : ""}
             ${!domain && publicKey ? html`
             <h3 class="mt-2">Observer Public Key:</h3>
-            <p class="show-key">${publicKey}</p>` : ``}
+            <p class="show-key">${publicKey}</p>` : ""}
             <h3 class="mt-2">Validation:</h3>
             ${numValid > 0 || numInvalid > 0 ? html`
             <p>${numValid} hashes verified${numInvalid ? html`, ${numInvalid} invalid` : ""}</p>` : html`

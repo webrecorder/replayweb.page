@@ -1,7 +1,8 @@
 ## CHANGES
 
 v1.7.3
-- Fidelity: Misc fidelity improvements via wombat + wabac.js 2.13.6
+- Fidelity: Misc fidelity improvements via latest wombat + wabac.js
+- Dependecies: wabac.js 2.13.7, wombat 3.3.11, auto-js-ipfs 1.5.1
 
 v1.7.2
 - Fidelity: Fix replay of TikTok
