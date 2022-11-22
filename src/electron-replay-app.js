@@ -182,7 +182,7 @@ class ElectronReplayApp
 
     const sesh = session.defaultSession;
 
-    sesh.protocol.interceptStreamProtocol("http", (request, callback) => this.doIntercept(request, callback));
+    sesh.protocol.interceptStreamProtocol("http", (request, callback) => this.doIntercept(request, callback, sesh));
 
     this.mainWindow = this.createMainWindow(process.argv);
   }
@@ -194,7 +194,7 @@ class ElectronReplayApp
     return rv;
   }
 
-  async doIntercept(request, callback) {
+  async doIntercept(request, callback, sesh) {
     console.log(`${request.method} ${request.url} from ${request.referrer}`);
 
     // if local server
@@ -315,20 +315,23 @@ class ElectronReplayApp
       return await this.resolveArchiveResponse(request, callback);
     }
 
-    await this.proxyLive(request, callback);
+    await this.proxyLive(request, callback, sesh);
   }
 
-  async proxyLive(request, callback) {
+  async proxyLive(request, callback, sesh=session.defaultSession) {
     let headers = request.headers;
+    const {method, url, uploadData} = request;
 
-    const method = request.method;
-    const response = await fetch(request.url, {method, headers});
+    const body = uploadData ? Readable.from(readBody(uploadData, sesh)) : null;
+
+    const response = await fetch(url, {method, headers, body});
     const data = method === "HEAD" ? null : response.body;
     const statusCode = response.status;
 
     headers = Object.fromEntries(response.headers.entries());
     callback({statusCode, headers, data});
   }
+
 
   notFound(url, callback) {
     console.log("not found: " +  url);
@@ -475,6 +478,18 @@ class ElectronReplayApp
     }
 
     return sourceString;
+  }
+}
+
+async function * readBody (body, session) {
+  for (const chunk of body) {
+    if (chunk.bytes) {
+      yield await Promise.resolve(chunk.bytes);
+    } else if (chunk.blobUUID) {
+      yield await session.getBlobData(chunk.blobUUID);
+    } else if (chunk.file) {
+      yield * Readable.from(fs.createReadStream(chunk.file));
+    }
   }
 }
 
