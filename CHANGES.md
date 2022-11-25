@@ -2,8 +2,8 @@
 
 v1.7.4
 - Embed: Support loading entire WACZ in embed via `load='eager'` flag
-- Dependencies: update to wabac.js 2.13.9 for eager loading support
-- Dependencies: update to electron 21
+- Dependencies: update to wabac.js 2.13.10 for eager loading support
+- Dependencies: update to electron 21.3.1
 
 
 v1.7.3
