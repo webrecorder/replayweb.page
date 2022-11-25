@@ -396,6 +396,10 @@ class ReplayWebApp extends LitElement
       this.loadInfo.hideOffscreen = true;
     }
 
+    if (this.pageParams.get("loading") === "eager") {
+      this.loadInfo.loadEager = true;
+    }
+
     if (IS_APP && this.sourceUrl.startsWith("file://")) {
       // eslint-disable-next-line no-undef
       const url = new URL(__APP_FILE_SERVE_PREFIX__);

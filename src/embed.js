@@ -42,6 +42,7 @@ class Embed extends LitElement
     // deprecated;
     this.noSandbox = null;
     this.logo = rwpLogo;
+    this.loading = "";
   }
 
   static setDefaultReplayFile(replayfile) {
@@ -84,7 +85,9 @@ class Embed extends LitElement
 
       errorMessage: { type: String },
 
-      requireSubdomainIframe: {type: Boolean}
+      requireSubdomainIframe: {type: Boolean},
+
+      loading: { type: String },
     };
   }
 
@@ -238,6 +241,10 @@ class Embed extends LitElement
 
       if (this.hideOffscreen) {
         params.hideOffscreen = "1";
+      }
+
+      if (this.loading === "eager") {
+        params.loading = "eager";
       }
 
       this.paramString = new URLSearchParams(params).toString();

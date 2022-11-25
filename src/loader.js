@@ -182,6 +182,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
     if (this.loadInfo) {
       source.newFullImport = this.loadInfo.newFullImport;
+      source.loadEager = this.loadInfo.loadEager;
       source.noCache = this.loadInfo.noCache;
 
       if (this.loadInfo.extraConfig) {

@@ -653,16 +653,16 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.5.2.tgz#ea584b637ff63c5a477f6f21604b5a205b72c9ec"
   integrity sha512-vgJ5OLWadI8aKjDlOH3rb+dYyPd2GTZuQC/Tihjct6F9GpXGZINo3Y/IVuZVTM1eDQB+/AOsjPUWH/WySDaXvw==
 
-"@webrecorder/wabac@^2.13.8":
-  version "2.13.8"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.13.8.tgz#e77a17d1423829273e3c1a0cf8ac75e0a67ce708"
-  integrity sha512-42WfTZbzU7uALHuMUWED5QvKQbXb9DpooXaRjjo00eU9MkxIGXnbavKgmgucFBIr9Rl854YxUa055F2D95xNVg==
+"@webrecorder/wabac@^2.13.9":
+  version "2.13.9"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.13.9.tgz#7c01777231386c714a984fadfd55340848bfbfca"
+  integrity sha512-ozaO4fs4XwgbueQkwS+8ghHjhpp/iP3R7dCZJ09BWgowI5hMwjJY0KAKjWbFVDH1RQ4cPkh8KPQWAdI+x2wR2g==
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.0"
     "@peculiar/asn1-schema" "^2.3.0"
     "@peculiar/x509" "^1.8.3"
     "@webrecorder/wombat" "^3.3.11"
-    auto-js-ipfs "^1.5.1"
+    auto-js-ipfs "^2.0.0"
     base64-js "^1.5.1"
     brotli "^1.3.3"
     buffer "^6.0.3"
@@ -973,6 +973,11 @@ auto-js-ipfs@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/auto-js-ipfs/-/auto-js-ipfs-1.5.1.tgz#22693c76d678ea12bd296186b8920d1333e8afe6"
   integrity sha512-KMLYrxJA9FJBdmPTSouddPmlF+aZV4hP1E9ZBxbQWQZFMmK8lDjQOxHbuT1z4I8hhQmin3Y1RQNN5/s+om3E9Q==
+
+auto-js-ipfs@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/auto-js-ipfs/-/auto-js-ipfs-2.0.0.tgz#299787949d22abc3d4ae27bdd7b47b71a44df9db"
+  integrity sha512-52BHpc0uZPdetBjFuQJRG2V8DPIpQ/1LdteGXrnU7BSxKCgdaPpxils4M8YJ+jL/Kc2iPMA6xcJ1AvGM3klfjw==
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -1955,10 +1960,10 @@ electron-updater@^4.3.9:
     lodash.isequal "^4.5.0"
     semver "^7.3.5"
 
-electron@^20.3.0:
-  version "20.3.0"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-20.3.0.tgz#1330fe74fd4777f0cb95fc4e0b429b3efe863ba5"
-  integrity sha512-VvzoQErKXUzpPcRdDzIwRvzbrkN5E08fLA/pe2C302vlv7KlUerh5wYyGGHS6kFKRIqTWBaq+StV/KKh9ZBczA==
+electron@^21.3.1:
+  version "21.3.1"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-21.3.1.tgz#02a61053ace79ecdc592afc641ff663dec805b42"
+  integrity sha512-Ik/I9oFHA1h32JRtRm6GMgYdUctFpF/tPnHyATg4r3LXBTUT6habGh3GxSdmmTa5JgtA7uJUEm8EjjZItk7T3g==
   dependencies:
     "@electron/get" "^1.14.1"
     "@types/node" "^16.11.26"

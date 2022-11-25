@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.7.4
+- Embed: Support loading entire WACZ in embed via `load='eager'` flag
+- Dependencies: update to wabac.js 2.13.9 for eager loading support
+- Dependencies: update to electron 21
+
+
 v1.7.3
 - Fidelity: Misc fidelity improvements via latest wombat + wabac.js
 - Dependecies: wabac.js 2.13.8, wombat 3.3.11, auto-js-ipfs 1.5.1

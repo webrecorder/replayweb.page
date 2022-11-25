@@ -129,7 +129,7 @@ The `<replay-web-page>` tag is a web component that supports a number of additio
 | `hideOffscreen` | if set, will unload the embed when it is not visible and reload when scrolled into view. Useful if multiple embeds per-page to avoid loading all at once. |
 | `newWindowBase` | set base replay URL loaded when a page opens a new window, defaults to `https://replayweb.page/` if `deepLink` not enabled, otherwise, to current page with new link. |
 | `requireSubdomainIframe` | if set, will only load embed in an iframe loaded from a subdomain, for increased origin isolation. |
-
+| `loading="eager"` | if set, will load the entire WACZ file at once (regardless of size), and not attempt on-demand range request loading. |
 
 ### Versioning
 
