@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -47,6 +47,7 @@
     "webpack-dev-server": "^4.2.1"
   },
   "files": [
+    "/assets",
     "/src",
     "/ruffle",
     "sw.js",

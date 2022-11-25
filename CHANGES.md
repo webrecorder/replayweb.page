@@ -1,10 +1,13 @@
 ## CHANGES
 
+v1.7.5
+- Library: Readd assets dir to package (needed for archiveweb.page)
+
 v1.7.4
 - Embed: Support loading entire WACZ in embed via `load='eager'` flag
 - Dependencies: update to wabac.js 2.13.10 for eager loading support
 - Dependencies: update to electron 21.3.1
-
+- Library: Remove assets dir from npm package
 
 v1.7.3
 - Fidelity: Misc fidelity improvements via latest wombat + wabac.js
