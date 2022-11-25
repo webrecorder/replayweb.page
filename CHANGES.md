@@ -2,7 +2,8 @@
 
 v1.7.6
 - Bug Fix: Ensure Flash (via ruffle.js) loading is working (via wabac.js 2.13.11)
-- Dependencies: Update wabac.js to 2.13.11, update Ruffle to 2022-11-25 release
+- Bug Fix: Fix occasional issue in window.open (viw wombat)
+- Dependencies: Update wabac.js to 2.13.12, wombat 3.3.12, update Ruffle to 2022-11-25 release
 
 v1.7.5
 - Library: Readd assets dir to package (needed for archiveweb.page)
