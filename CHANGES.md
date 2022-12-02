@@ -1,9 +1,9 @@
 ## CHANGES
 
 v1.7.7
-- Bug Fix: Fix loading issue on first use due to injected script check, cache ruffle.js (via wabac 2.13.13)
+- Bug Fix: Fix loading issue on first use due to injected script check (via wabac 2.13.14)
 - Indexing: Fix video loading, don't index partial 206 in all loading paths (via wabac 2.13.13)
-- Dependencies: Update to wabac.js 2.13.13
+- Dependencies: Update to wabac.js 2.13.14
 
 v1.7.6
 - Bug Fix: Ensure Flash (via ruffle.js) loading is working (via wabac.js 2.13.11)
