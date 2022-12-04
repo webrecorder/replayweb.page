@@ -7,11 +7,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const package_json = require("./package.json");
 
-// fake url used in app to serve files
-// can not use custom scheme due to service worker issues
-const APP_FILE_SERVE_PREFIX = "http://files.replayweb.page/";
-//const APP_FILE_SERVE_PREFIX = "file://files.replayweb.page";
-
 
 // helper proxy URL, run locally for app
 const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
@@ -66,7 +61,6 @@ const electronMainConfig = (/*env, argv*/) => {
     },
     plugins: [
       new webpack.DefinePlugin({
-        __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
         __IPFS_CORE_URL__: JSON.stringify("")
       }),
@@ -152,7 +146,6 @@ const browserConfig = (/*env, argv*/) => {
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({
         __SW_NAME__: JSON.stringify("sw.js"),
-        __APP_FILE_SERVE_PREFIX__ : JSON.stringify(APP_FILE_SERVE_PREFIX),
         __HELPER_PROXY__ : JSON.stringify(HELPER_PROXY),
         __GDRIVE_CLIENT_ID__ : JSON.stringify(GDRIVE_CLIENT_ID),
         __VERSION__: JSON.stringify(package_json.version),

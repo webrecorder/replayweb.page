@@ -3,13 +3,12 @@
 import fetch from "node-fetch";
 import { Headers } from "node-fetch";
 
-import {app, session, BrowserWindow, ipcMain, screen, shell } from "electron";
+import {app, session, BrowserWindow, ipcMain, protocol, screen, shell } from "electron";
 
 import path from "path";
 import fs from "fs";
 
 import { ArchiveResponse, Rewriter } from "@webrecorder/wabac/src/rewrite";
-import {create as createIPFS} from "auto-js-ipfs";
 
 import { PassThrough, Readable } from "stream";
 
@@ -17,6 +16,7 @@ import { autoUpdater } from "electron-updater";
 import log from "electron-log";
 
 import mime from "mime-types";
+import url from "url";
 
 global.Headers = Headers;
 global.fetch = fetch;
@@ -24,6 +24,8 @@ global.fetch = fetch;
 const STATIC_PREFIX = "http://localhost:5471/";
 
 const REPLAY_PREFIX = STATIC_PREFIX + "w/";
+
+const FILE_PROTO = "file2";
 
 const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
@@ -50,7 +52,7 @@ class ElectronReplayApp
 
     this.screenSize = {width: 1024, height: 768};
 
-    this.ipfsClient = null;
+    this.origUA = null;
   }
 
   get mainWindowWebPreferences() {
@@ -69,7 +71,7 @@ class ElectronReplayApp
     return "index.html";
   }
 
-  init(includePlugins = false) {
+  init() {
     // Single instance check
     const gotTheLock = app.requestSingleInstanceLock();
 
@@ -83,35 +85,9 @@ class ElectronReplayApp
       });
     }
 
-    if (includePlugins) {
-      switch (process.platform) {
-      case "win32":
-        this.pluginPath = path.join(this.projPath, "plugins-win", `pepflashplayer-x86${process.arch === "x64" ? "_64" : ""}.dll`);
-        break;
-    
-      case "darwin":
-        this.pluginPath = path.join(this.projPath, "plugins-mac", "PepperFlashPlayer.plugin");
-        break;
-    
-      case "linux":
-        this.pluginPath = path.join(this.projPath, "plugins-mac", "libpepflashplayer.so");
-        break;
-    
-      default:
-        console.log("platform unsupported: " + process.platform);
-        break;
-      }
-
-      app.commandLine.appendSwitch("ppapi-flash-path", this.pluginPath);
-    }
-
     console.log("app path", this.appPath);
     console.log("dir name", __dirname);
     console.log("proj path", this.projPath);
-
-    if (includePlugins) {
-      console.log("plugin path", this.pluginPath);
-    }
 
     console.log("app data", app.getPath("appData"));
     console.log("user data", app.getPath("userData"));
@@ -119,6 +95,19 @@ class ElectronReplayApp
     if (this.profileName) {
       app.setPath("userData", path.join(app.getPath("appData"), this.profileName));
     }
+
+    protocol.registerSchemesAsPrivileged([{
+      scheme: FILE_PROTO,
+      privileges: {
+        standard: false,
+        secure: true,
+        bypassCSP: true,
+        allowServiceWorkers: true,
+        supportFetchAPI: true,
+        corsEnabled: true,
+        stream: true
+      }
+    }]);
 
     app.on("will-finish-launching", () => {
       app.on("open-file", (event, filePath) => {
@@ -155,9 +144,6 @@ class ElectronReplayApp
   }
 
   onAppReady() {
-    const ipfsRepoPath = path.join(app.getPath("userData"), "js-ipfs");
-    console.log("ipfs path", ipfsRepoPath);
-
     this.checkUpdates();
 
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
@@ -184,7 +170,46 @@ class ElectronReplayApp
 
     sesh.protocol.interceptStreamProtocol("http", (request, callback) => this.doIntercept(request, callback));
 
+    protocol.registerStreamProtocol(FILE_PROTO, (request, callback) => this.doHandleFile(request, callback));
+
+    this.origUA = sesh.getUserAgent();
+
     this.mainWindow = this.createMainWindow(process.argv);
+  }
+
+  async doHandleFile(request, callback) {
+    //const parsedUrl = new URL(request.url);
+    //const filename = parsedUrl.searchParams.get("filename");
+
+    if (request.url === FILE_PROTO + "://localhost") {
+      callback({statusCode: 200, data: null});
+      return;
+    }
+
+    const filename = url.fileURLToPath(request.url.replace(FILE_PROTO, "file"));
+
+    const headers = {"Content-Type": "application/octet-stream"};
+    const reqHeaders = new Headers(request.headers);
+
+    if (filename) {
+      const stat = await fs.promises.lstat(filename);
+
+      if (!stat.isFile()) {
+        return this.notFound(filename, callback);
+      }
+
+      const size = stat.size;
+
+      const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
+
+      const data = request.method === "HEAD" ? null : fs.createReadStream(filename, {start, end});
+
+      callback({statusCode, headers, data});
+      return;
+
+    } else {
+      return this.notFound("No Resource Specified", callback);
+    }
   }
 
   _bufferToStream(data) {
@@ -243,73 +268,6 @@ class ElectronReplayApp
       return this.notFound(request.url, callback);
     }
 
-    // eslint-disable-next-line no-undef
-    if (request.url.startsWith(__APP_FILE_SERVE_PREFIX__)) {
-      const parsedUrl = new URL(request.url);
-
-      const filename = parsedUrl.searchParams.get("filename");
-      const ipfsCID = parsedUrl.searchParams.get("ipfs");
-
-      const headers = {"Content-Type": "application/octet-stream"};
-      const reqHeaders = new Headers(request.headers);
-
-      if (filename) {
-        console.log("file serve:", filename);
-
-        const stat = await fs.promises.lstat(filename);
-
-        if (!stat.isFile()) {
-          return this.notFound(filename, callback);
-        }
-
-        const size = stat.size;
-
-        const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
-
-        const data = request.method === "HEAD" ? null : fs.createReadStream(filename, {start, end});
-
-        callback({statusCode, headers, data});
-        return;
-
-      } else if (ipfsCID) {
-        const ipfsURL = `ipfs://${ipfsCID}}`;
-
-        console.log("ipfs serve:", ipfsCID);
-
-        // TODO: Pass in config?
-        this.ipfsClient = await createIPFS();
-
-        console.log("inited");
-
-        let size = await this.ipfsClient.getSize(ipfsURL);
-
-        console.log("got size", size);
-
-        if (size === null) {
-          return this.notFound(ipfsCID, callback);
-        }
-
-        const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
-
-        let data = null;
-
-        if (request.method === "GET") {
-          const offset = start || 0;
-          const length = end ? end - start + 1 : size;
-          data = Readable.from(await this.ipfsClient.get(ipfsURL, {
-            start: offset,
-            end: offset +length
-          }));
-        }
-
-        callback({statusCode, headers, data});
-        return;
-
-      } else {
-        return this.notFound("No Resource Specified", callback);
-      }
-    }
-
     // possible 'live leak' attempt, return archived version, if any
     if (request.referrer && request.referrer.startsWith(REPLAY_PREFIX)) {
       return await this.resolveArchiveResponse(request, callback);
@@ -320,9 +278,24 @@ class ElectronReplayApp
 
   async proxyLive(request, callback) {
     let headers = request.headers;
+    const {method, url, uploadData} = request;
 
-    const method = request.method;
-    const response = await fetch(request.url, {method, headers});
+    const body = uploadData ? Readable.from(readBody(uploadData, session.defaultSession)) : null;
+
+    if (this.origUA) {
+      // pass UA if origUA is set
+      headers["User-Agent"] = this.origUA;
+    }
+
+    let response;
+
+    try {
+      response = await fetch(url, {method, headers, body});
+    } catch (e) {
+      console.warn("fetch failed for: " + url);
+      callback({statusCode: 502, headers: {}, data: null});
+      return;
+    }
     const data = method === "HEAD" ? null : response.body;
     const statusCode = response.status;
 
@@ -475,6 +448,16 @@ class ElectronReplayApp
     }
 
     return sourceString;
+  }
+}
+
+async function * readBody (body, session) {
+  for (const chunk of body) {
+    if (chunk.bytes) {
+      yield await Promise.resolve(chunk.bytes);
+    } else if (chunk.blobUUID) {
+      yield await session.getBlobData(chunk.blobUUID);
+    }
   }
 }
 

@@ -79,9 +79,7 @@ class Chooser extends LitElement
       // file.path only available in electron app
       if (this.file.path) {
         // eslint-disable-next-line no-undef
-        const url = new URL(__APP_FILE_SERVE_PREFIX__);
-        url.searchParams.set("filename", this.file.path);
-        loadInfo.loadUrl = url.href;
+        loadInfo.loadUrl = "file2://" + this.file.path;
         loadInfo.noCache = true;
       } else if (this.fileHandle) {
         loadInfo.loadUrl = this.fileDisplayName;

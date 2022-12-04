@@ -969,11 +969,6 @@ at-least-node@^1.0.0:
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
-auto-js-ipfs@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/auto-js-ipfs/-/auto-js-ipfs-1.5.1.tgz#22693c76d678ea12bd296186b8920d1333e8afe6"
-  integrity sha512-KMLYrxJA9FJBdmPTSouddPmlF+aZV4hP1E9ZBxbQWQZFMmK8lDjQOxHbuT1z4I8hhQmin3Y1RQNN5/s+om3E9Q==
-
 auto-js-ipfs@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/auto-js-ipfs/-/auto-js-ipfs-2.0.0.tgz#299787949d22abc3d4ae27bdd7b47b71a44df9db"
