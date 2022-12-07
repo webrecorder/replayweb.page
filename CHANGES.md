@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.7.8
+- Electron App: simplified IPFS loading in app, can connect to default IPFS Desktop or IPFS in Brave automatically
+- Electron App: clean up unused code, old ipfs loading paths from app, streamlined file loading
+- Dependencies: Update to wabac.js 2.13.15, wombat 3.3.13, auto-js-ipfs 2.1.0, electron 22.0
+
 v1.7.7
 - Bug Fix: Fix loading issue on first use due to injected script check (via wabac 2.13.14)
 - Indexing: Fix video loading, don't index partial 206 in all loading paths (via wabac 2.13.13)
