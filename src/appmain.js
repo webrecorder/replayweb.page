@@ -401,12 +401,9 @@ class ReplayWebApp extends LitElement
     }
 
     if (IS_APP && this.sourceUrl.startsWith("file://")) {
-      // eslint-disable-next-line no-undef
-      const url = new URL(__APP_FILE_SERVE_PREFIX__);
-      url.searchParams.set("filename", this.sourceUrl.slice("file://".length));
       this.loadInfo = {
         sourceUrl: this.sourceUrl,
-        loadUrl: url.href,
+        loadUrl: this.sourceUrl.replace("file://", "file2://")
       };
     }
   }
