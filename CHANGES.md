@@ -1,5 +1,8 @@
 ## CHANGES
 
+v1.7.9
+- Dependencies: Update to wabac.js 2.14.0, wombat 3.4.2, warcio 2.0.1
+
 v1.7.8
 - Electron App: simplified IPFS loading in app, can connect to default IPFS Desktop or IPFS in Brave automatically
 - Electron App: clean up unused code, old ipfs loading paths from app, streamlined file loading

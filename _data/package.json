@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "1.7.8",
+  "version": "1.7.9",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -9,7 +9,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@webrecorder/wabac": "^2.13.15",
+    "@webrecorder/wabac": "^2.14.0",
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
     "electron-updater": "^5.3.0",
@@ -23,7 +23,6 @@
     "node-fetch": "^3.3.0",
     "pretty-bytes": "^5.6.0",
     "process": "^0.11.10",
-    "querystring-es3": "^0.2.1",
     "register-service-worker": "^1.7.2",
     "split.js": "^1.6.4",
     "stream-browserify": "^3.0.0"
@@ -42,7 +41,6 @@
     "sass-loader": "^12.1.0",
     "style-loader": "^3.2.1",
     "svg-inline-loader": "^0.8.2",
-    "url": "^0.11.0",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
