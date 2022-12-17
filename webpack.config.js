@@ -15,15 +15,7 @@ const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
 const GDRIVE_CLIENT_ID = "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.googleusercontent.com";
 
 // Copyright banner text
-const BANNER_TEXT = "'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020-2021, Webrecorder Software. Licensed under the Affero General Public License v3.'";
-
-const fallback = {
-  "stream": require.resolve("stream-browserify"),
-  "querystring": require.resolve("querystring-es3"),
-  "url": require.resolve("url/"),
-  "buffer": false,
-  "process": false
-};
+const BANNER_TEXT = `'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020-${new Date().getFullYear()}, Webrecorder Software. Licensed under the Affero General Public License v3.'`;
 
 const optimization = {
   minimize: true,
@@ -43,14 +35,6 @@ const electronMainConfig = (/*env, argv*/) => {
       "electron": "./src/electron-main.js", 
     },
     optimization,
-    resolve: {
-      alias: {
-        "abort-controller": "abort-controller/dist/abort-controller.js",
-        "dlv": "dlv/dist/dlv.js",
-        "bignumber.js": "bignumber.js/bignumber.js",
-        //"multiformats/hashes/sha2": "multiformats/cjs/src/hashes/sha2.js"
-      }
-    },
     output: {
       path: path.join(__dirname, "dist"),
       filename: "[name].js",
@@ -70,13 +54,7 @@ const electronMainConfig = (/*env, argv*/) => {
           { from: "build/extra_prebuilds/", to: "prebuilds" }
         ],
       }),
-      //new webpack.NormalModuleReplacementPlugin(/\.\/http\/fetch/, "./http/fetch.node"),
-      //new webpack.NormalModuleReplacementPlugin(/\.\.\/fetch$/, "electron-fetch"),
     ],
-    externals: {
-      "bufferutil": "bufferutil",
-      "utf-8-validate": "utf-8-validate"
-    }
   };
 };
 
@@ -88,6 +66,7 @@ const electronPreloadConfig = (/*env, argv*/) => {
     entry: {
       "preload": "./src/electron-preload.js", 
     },
+
     optimization,
     plugins: [
       new webpack.BannerPlugin(BANNER_TEXT),
@@ -107,7 +86,6 @@ const browserConfig = (/*env, argv*/) => {
     },
 
     optimization,
-    resolve: {fallback},
 
     output: {
       path: path.join(__dirname),
@@ -115,10 +93,6 @@ const browserConfig = (/*env, argv*/) => {
       libraryTarget: "self",
       globalObject: "self",
       publicPath: "/"
-    },
-
-    externals: {
-      electron: "electron",
     },
 
     devServer: {
@@ -130,6 +104,17 @@ const browserConfig = (/*env, argv*/) => {
     },
 
     plugins: [
+      new webpack.NormalModuleReplacementPlugin(
+        /^node:*/,
+        (resource) => {
+          switch (resource.request) {
+          case "node:stream":
+            resource.request = "stream-browserify";
+            break;
+          }
+        },
+      ),
+
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1,
       }),
