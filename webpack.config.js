@@ -105,14 +105,14 @@ const browserConfig = (/*env, argv*/) => {
 
     plugins: [
       new webpack.NormalModuleReplacementPlugin(
-          /^node:*/,
-          (resource) => {
-            switch (resource.request) {
-              case "node:stream":
-                resource.request = "stream-browserify";
-                break;
-            }
-          },
+        /^node:*/,
+        (resource) => {
+          switch (resource.request) {
+          case "node:stream":
+            resource.request = "stream-browserify";
+            break;
+          }
+        },
       ),
 
       new webpack.optimize.LimitChunkCountPlugin({
