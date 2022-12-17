@@ -1,6 +1,7 @@
 ## CHANGES
 
 v1.7.9
+- Fidelity: Various fidelity improvements via new wabac.js / wombat
 - Dependencies: Update to wabac.js 2.14.0, wombat 3.4.2, warcio 2.0.1
 
 v1.7.8
