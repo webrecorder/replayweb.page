@@ -190,7 +190,7 @@ export class RWPEmbedReceipt extends LitElement
 
     const sourceUrl = this.collInfo.sourceUrl;
 
-    const certFingerprintUrl = certFingerprint ? `https://search.censys.io/certificates/${certFingerprint}` : "";
+    const certFingerprintUrl = certFingerprint ? `https://crt.sh/?q=${certFingerprint}` : "";
 
     const dateStr = tsToDate(this.ts).toLocaleString();
 
