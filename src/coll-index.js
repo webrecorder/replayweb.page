@@ -443,7 +443,7 @@ class CollInfo extends LitElement
     numValid = numValid || 0;
     numInvalid = numInvalid || 0;
 
-    const certFingerprintUrl = certFingerprint ? `https://search.censys.io/certificates/${certFingerprint}` : "";
+    const certFingerprintUrl = certFingerprint ? `https://crt.sh/?q=${certFingerprint}` : "";
 
     return html`
       <div class="columns">
