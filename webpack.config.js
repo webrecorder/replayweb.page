@@ -80,6 +80,7 @@ const browserConfig = (/*env, argv*/) => {
   return {
     target: "web",
     mode: "production",
+    resolve: {fallback: { "crypto": false }},
     entry: {
       "ui": "./src/ui.js",
       "sw": "./src/sw.js"

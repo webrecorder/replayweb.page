@@ -1,5 +1,13 @@
 ## CHANGES
 
+v1.7.11
+- Loading: Support loading URLs without extension (including blob: urls), automated type detection of WACZ, WARC, compressed and uncompressed (via wabac.js)
+- Fidelity: Improved handling of ESM modules, cookies, Vimeo videos (via wabac.js)
+- Dependencies: Update to wabac.js 2.15.0, wombat 3.4.3
+
+v1.7.10
+- Verification: Change site used for cert verification to https://crt.sh/
+
 v1.7.9
 - Fidelity: Various fidelity improvements via new wabac.js / wombat
 - Dependencies: Update to wabac.js 2.14.0, wombat 3.4.2, warcio 2.0.1
