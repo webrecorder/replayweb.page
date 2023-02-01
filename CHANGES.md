@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.7.12
+- Fidelity: Improved replay of facebook/instagram pages (via wabac.js 2.15.1)
+- Loading: Fix issue with loading certain WACZ files (incorrect SURT detection fixed, via wabac.js 2.15.2)
+- Dependencies: Update to wabac.js 2.15.2
+
 v1.7.11
 - Loading: Support loading URLs without extension (including blob: urls), automated type detection of WACZ, WARC, compressed and uncompressed (via wabac.js)
 - Fidelity: Improved handling of ESM modules, cookies, Vimeo videos (via wabac.js)
