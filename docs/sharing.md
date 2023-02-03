@@ -54,7 +54,7 @@ for small files.
 
 To share a Google Drive web archive with colleagues and friends:
 
-1. Ensure they you have [loaded the web archive from Google Drive](loading#loading-remote-archives-from-google-drive)
+1. Ensure they you have [loaded the web archive from Google Drive](loading_online#loading-remote-archives-from-google-drive)
 
 2. Ensure that your friends/colleagues also have the [ReplayWeb.page Google Drive Integration](https://gsuite.google.com/u/2/marketplace/app/replaywebpage/160798412227) installed.
 
