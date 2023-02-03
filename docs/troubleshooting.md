@@ -23,7 +23,7 @@ The initial archive view should load almost instantly as a result.
 
 We recommend converting larger WARC files to WACZ files.
 
-This is currently possible by using the `wacz` python library, see [py-wacz documentation](https://github.com/webrecorder/wacz-format/tree/main/py-wacz)
+This is currently possible by using the `wacz` python library, see [py-wacz documentation](https://github.com/webrecorder/py-wacz)
 for more info.
 
 While we've recently made improvements to large WARC loading, for very large files, this may still take some time and occasionally the browser may not load the full file.

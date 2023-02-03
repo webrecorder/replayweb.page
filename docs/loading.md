@@ -31,7 +31,7 @@ The archive will be identified by a `file://` URL and is not accessible outside 
 this URL is not shareable.
 
 {:  .fs-3 .pad .bg-grey-lt-100}
-This behavior is similar to how [Webrecorder Player](https://github.com/webrecorder/webrecorder-player) worked, but happens entirely in the browser. <br>The [ReplayWeb.page App](https://github.com/webrecorder/replayweb.page/releases) is also an option for [opening local files when offline](offline#replaywebpage-as-standalone-desktop-electron-app)
+This behavior is similar to how [Webrecorder Player](https://github.com/webrecorder/webrecorder-player) worked, but happens entirely in the browser. <br>The [ReplayWeb.page App](https://github.com/webrecorder/replayweb.page/releases) is also an option for [opening local files when offline](loading_offline#replaywebpage-as-standalone-desktop-electron-app)
 
 <img alt="screenshot of replayweb.page (online)" src="/docs/assets/replaywebpage-online-local.png">
 
