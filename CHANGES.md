@@ -1,5 +1,10 @@
 ## CHANGES
 
+v1.7.13
+- Fidelity: Improved replay via unrewriting fixes of style urls, request/response urls (via wabac.js 2.15.3)
+- Embeds: Support updating auth headers if custom headers provided in embed 'config'
+- Dependencies: Update to wabac.js 2.15.3, wombat 3.4.6, Electron 23.1.1
+
 v1.7.12
 - Fidelity: Improved replay of facebook/instagram pages (via wabac.js 2.15.1)
 - Loading: Fix issue with loading certain WACZ files (incorrect SURT detection fixed, via wabac.js 2.15.2)

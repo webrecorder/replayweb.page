@@ -289,6 +289,14 @@ class Coll extends LitElement
       ...json
     };
 
+    if (this.loadInfo && this.loadInfo.extraConfig && this.loadInfo.extraConfig.headers) {
+      const headers = this.loadInfo.extraConfig.headers;
+      await fetch(`${collApiPrefix}/updateAuth`, {
+        method: "POST",
+        body: JSON.stringify({headers})
+      });
+    }
+
     if (!this.collInfo.title) {
       this.collInfo.title = this.collInfo.filename;
     }
