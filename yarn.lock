@@ -761,15 +761,15 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-2.0.1.tgz#34bdc31727a1889198855913db2f270ace6d7bf8"
   integrity sha512-0G7tNyS+yW8TdgHwZKlDWYXFA6OJQnoLCQvYKkQP0Q2X205PSQ6RNUj0M+1OB/9gRQaUZ/ccYfaxd0nhaWKfjw==
 
-"@webrecorder/wabac@^2.15.2":
-  version "2.15.2"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.15.2.tgz#548675a8299858cdf428984acadb9ac0f708fe42"
-  integrity sha512-RoAe40LVBlHaEojjBRiGJUA/SzfrqRBxBTAkJ6uyepCUQUxXBJ4rq9IklpeH3NiOT3lLoSqtFJNrHXrZoZEZaA==
+"@webrecorder/wabac@^2.15.3":
+  version "2.15.3"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.15.3.tgz#3328f8a0baeffb244e9e88424dbc1559ee2bcd84"
+  integrity sha512-WXYXbCkq79Bark9895wNKmx13mQCQLEYsjNyKLp/l7IbUbV3ZLDbumqIGAyFZvdbU/2B6O9L9YeoPdyHhCv/Gw==
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.4"
     "@peculiar/asn1-schema" "^2.3.3"
     "@peculiar/x509" "^1.9.2"
-    "@webrecorder/wombat" "^3.4.4"
+    "@webrecorder/wombat" "^3.4.6"
     auto-js-ipfs "^2.1.0"
     base64-js "^1.5.1"
     brotli "^1.3.3"
@@ -789,10 +789,10 @@
     stream-browserify "^3.0.0"
     warcio "^2.0.1"
 
-"@webrecorder/wombat@^3.4.4":
-  version "3.4.4"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.4.4.tgz#f01105f06eaa52f72b1ad7ecfe8290c5f5fa4ee9"
-  integrity sha512-2n7fG4YVs4kg1iTX84iNsV8sOrQe/Gce/1mguLdnTrNp9mW843bkKOaSPvuFjM8sa7pr3a9faVbvA3nBZZ9R3Q==
+"@webrecorder/wombat@^3.4.6":
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.4.6.tgz#48c8a03b1d47789fd799f6d9d49ec1ca6c610a1f"
+  integrity sha512-YMGKT78B6nDOIV8irIvIPtcWGOa44/FxFXN6LqeUM8WwJrvLL3YI+pXfKYd7GYJFULNqir3Ao+nSNNrjy9PtJg==
   dependencies:
     warcio "^2.0.1"
 
@@ -2088,10 +2088,10 @@ electron-updater@^5.3.0:
     semver "^7.3.5"
     typed-emitter "^2.1.0"
 
-electron@^22.0.0:
-  version "22.0.0"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-22.0.0.tgz#ef84ab9cf23aa3f8c2f42a1e8e000ad7fd941058"
-  integrity sha512-cgRc4wjyM+81A0E8UGv1HNJjL1HBI5cWNh/DUIjzYvoUuiEM0SS0hAH/zaFQ18xOz2ced6Yih8SybpOiOYJhdg==
+electron@^23.1.1:
+  version "23.1.1"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-23.1.1.tgz#20b603e69919b263ef9e4a51b72a9615ce86dc5b"
+  integrity sha512-junV1NzPx5T8Mx9+o8fMWK1Q5WOtG5vggiM09PGYg/6zTcGDL3DjGVHeUa/97gx7ErXL37DrFnxNg6+ePWprDg==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^16.11.26"
