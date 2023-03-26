@@ -16,6 +16,7 @@ class ReplayWebApp extends LitElement
     this.sourceUrl = null;
     this.collTitle = null;
     this.showAbout = false;
+    this.showFileDropOverlay = false;
     this.pageParams = new URLSearchParams();
 
     this.inited = false;
@@ -31,6 +32,37 @@ class ReplayWebApp extends LitElement
     this.swmanager.register().catch(() => this.swErrorMsg = this.swmanager.renderErrorReport(this.mainLogo));
 
     this.safariKeyframes();
+
+    this.addEventListener("dragenter", (dragEvent) => {
+      this.maybeStartFileDrop(dragEvent);
+    });
+
+    this.addEventListener("dragover", (dragEvent) => {
+      this.maybeStartFileDrop(dragEvent);
+    });
+
+    this.addEventListener("dragleave", () => {
+      this.showFileDropOverlay = false;
+    });
+
+    this.addEventListener("dragend", () => {
+      this.showFileDropOverlay = false;
+    });
+
+    this.addEventListener("drop", (dragEvent) => {
+      this.droppedFile = dragEvent.dataTransfer.files[0];
+      this.showFileDropOverlay = false;
+      dragEvent.preventDefault();
+    });
+
+    this.maybeStartFileDrop = (dragEvent) => {
+      if (this.sourceUrl) {
+        // A source is already loaded. Don't allow dropping a file.
+        return;
+      }
+      this.showFileDropOverlay = true;
+      dragEvent.preventDefault();
+    };
   }
 
   get appName() {
@@ -48,6 +80,7 @@ class ReplayWebApp extends LitElement
       sourceUrl: { type: String },
       navMenuShown: { type: Boolean },
       showAbout: { type: Boolean },
+      showFileDropOverlay: { type: Boolean },
       collTitle: { type: String },
       loadInfo: { type: Object },
       embed: { type: String },
@@ -110,6 +143,29 @@ class ReplayWebApp extends LitElement
     }
     .tagline {
       margin-top: 1.0rem;
+    }
+
+    .drop-file-overlay {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      font-weight: bold;
+      font-size: 1.5rem;
+      background: rgba(255,255,255,.5);
+      backdrop-filter: blur(2px);
+    }
+
+    .drop-file-overlay:after {
+      pointer-events: none;
+      content: " ";
+      position: absolute;
+      inset: 0;
+      border: 5px dashed #aaa;
+      margin: 15px;
     }
 
     @media screen and (min-width: 840px) {
@@ -239,7 +295,7 @@ class ReplayWebApp extends LitElement
       ${!IS_APP ? html`
       <p slot="header" class="tagline is-size-5 has-text-centered">Explore and Replay Interactive Archived Webpages Directly in your Browser. <i><a target="_blank" href="./docs/examples">(See Examples)</a></i></p>
       ` : ""}
-      <wr-chooser slot="header" @load-start=${this.onStartLoad}></wr-chooser>
+      <wr-chooser slot="header" .droppedFile=${this.droppedFile} @did-drop-file="${() => this.droppedFile = null}" @load-start=${this.onStartLoad}></wr-chooser>
     </wr-coll-index>`;
   }
 
@@ -258,6 +314,8 @@ class ReplayWebApp extends LitElement
       ${this.sourceUrl ? this.renderColl() : this.renderHomeIndex()}
 
       ${this.showAbout ? this.renderAbout() : ""}
+
+      ${this.showFileDropOverlay ? this.renderDropFileOverlay() : ""}
     `;
   }
 
@@ -535,6 +593,12 @@ class ReplayWebApp extends LitElement
 
   onAboutClose() {
     this.showAbout = false;
+  }
+
+  renderDropFileOverlay() {
+    return html`
+      <div class="drop-file-overlay">Drop to load web archive</div>
+    `;
   }
 }
 

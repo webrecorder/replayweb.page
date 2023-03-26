@@ -12,38 +12,15 @@ class Chooser extends LitElement
 
     this.fileDisplayName = "";
     this.file = null;
+    this.droppedFile = null;
 
     this.hasNativeFS = !!window.showOpenFilePicker && !IS_APP;
 
     this.newFullImport = false;
 
     this.noHead = false;
-  }
 
-  static get properties() {
-    return {
-      fileDisplayName: { type: String },
-      newFullImport: { type: Boolean },
-      noHead: { type: Boolean }
-    };
-  }
-
-  onChooseFile(event) {
-    if (event.currentTarget.files.length === 0) {
-      return;
-    }
-
-    this.file = event.currentTarget.files[0];
-    // file.path only available in electron app
-    this.fileDisplayName = "file://" + (this.file.path || this.file.name);
-  }
-
-  async onChooseNativeFile() {
-    if (!this.hasNativeFS) {
-      return;
-    }
-
-    const options = {
+    this.showOpenFilePickerOptions = {
       types: [
         {
           description: "WARC, WACZ, HAR and WBN Files",
@@ -57,8 +34,54 @@ class Chooser extends LitElement
         }
       ]
     };
+  }
 
-    const [fileHandle] = await window.showOpenFilePicker(options);
+  static get properties() {
+    return {
+      fileDisplayName: { type: String },
+      droppedFile: { type: File },
+      newFullImport: { type: Boolean },
+      noHead: { type: Boolean }
+    };
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("droppedFile") && this.droppedFile) {
+      this.onDropFile();
+    }
+  }
+
+  onDropFile() {
+    const allowedFileExtensions = this.showOpenFilePickerOptions.types.map(type => type.accept).map(Object.values).flat(2);
+
+    const fileHasAllowedExtension = allowedFileExtensions.some(extension => this.droppedFile.name.endsWith(extension));
+
+    if (fileHasAllowedExtension) {
+      this.setFile(this.droppedFile);
+      this.dispatchEvent(new CustomEvent("did-drop-file", { bubbles: true, composed: true }));
+      this.onStartLoad(); // Automatically load the file
+    }
+  }
+
+  onChooseFile(event) {
+    if (event.currentTarget.files.length === 0) {
+      return;
+    }
+    this.setFile(event.currentTarget.files[0]);
+  }
+
+  setFile(file) {
+    this.file = file;
+    // file.path only available in electron app
+    this.fileDisplayName = "file://" + (this.file.path || this.file.name);
+  }
+
+  async onChooseNativeFile() {
+    if (!this.hasNativeFS) {
+      return;
+    }
+
+    const [fileHandle] = await window.showOpenFilePicker(this.showOpenFilePickerOptions);
     this.fileHandle = fileHandle;
 
     this.file = await fileHandle.getFile();
@@ -70,7 +93,9 @@ class Chooser extends LitElement
   }
 
   onStartLoad(event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
 
     const loadInfo = {sourceUrl: this.fileDisplayName};
 
