@@ -853,6 +853,13 @@ class Pages extends LitElement
   }
 
   formatResults() {
+    // Default behavior: Count all available pages
+    if (!this.query) {
+      const length = this.collInfo.pages.length
+      return `${length} Page${length ? 's' : ''} Found`;
+    }
+
+    // ... unless they were filtered
     if (this.sortedPages.length === 1) {
       return "1 Page Found";
     } else {
