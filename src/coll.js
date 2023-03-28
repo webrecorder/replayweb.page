@@ -412,6 +412,7 @@ class Coll extends LitElement
       flex-direction: column;
       height: 100%;
       min-width: 0px;
+      background-color: white;
     }
 
     .icon {
