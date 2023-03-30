@@ -412,7 +412,6 @@ class Coll extends LitElement
       flex-direction: column;
       height: 100%;
       min-width: 0px;
-      background-color: white;
     }
 
     .icon {
@@ -477,6 +476,7 @@ class Coll extends LitElement
       flex-direction: column;
       min-height: 0px;
       flex: auto;
+      background-color: white;
     }
 
     #tabContents {

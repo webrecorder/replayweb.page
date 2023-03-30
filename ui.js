@@ -971,6 +971,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
       flex-direction: column;
       min-height: 0px;
       flex: auto;
+      background-color: white;
     }
 
     #tabContents {
