@@ -476,6 +476,7 @@ class Coll extends LitElement
       flex-direction: column;
       min-height: 0px;
       flex: auto;
+      background-color: white;
     }
 
     #tabContents {
