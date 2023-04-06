@@ -855,8 +855,12 @@ class Pages extends LitElement
   formatResults() {
     // Default behavior: Count all available pages
     if (!this.query) {
-      const length = this.collInfo.pages.length
-      return `${length} Page${length ? 's' : ''} Found`;
+      const length = this.collInfo.pages.length;
+      if (length === this.sortedPages.length) {
+        return `${length} Page${length ? 's' : ''} Found`;
+      } else {
+        return `${this.sortedPages.length} of ${length} Pages Found`;
+      }
     }
 
     // ... unless they were filtered
