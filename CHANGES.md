@@ -2,7 +2,8 @@
 
 v1.7.14
 - Fidelity: Support dynamic 'import()' in non-module JS (via wabac.js 2.15.4)
-- Fidelity: Fix dynamic iframes (via document.write / srcdoc) that fallthrough (via wombat 3.5.0, wabac.js 2.15.4)
+- Fidelity: Fix dynamic iframes (via document.write / srcdoc) that fallthrough (via wombat 3.5.1, wabac.js 2.15.5)
+- Fidelity: Fix loading WARCs with duplicate revisit records overriding non-revisit records (via wabac.js 2.15.5)
 - UI: Fix sidebar background color in fullscreen mode to default to white. (thanks to @matteocargnelutti)
 - UI: Support drag-and-drop loading of archives (thanks to @curtgrimes)
 - UI: Show total number of pages on pages list (thanks to @matteocargnelutti)
