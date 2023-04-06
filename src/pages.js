@@ -857,7 +857,7 @@ class Pages extends LitElement
     if (!this.query) {
       const length = this.collInfo.pages.length;
       if (length === this.sortedPages.length) {
-        return `${length} Page${length ? 's' : ''} Found`;
+        return `${length} Page${length ? "s" : ""} Found`;
       } else {
         return `${this.sortedPages.length} of ${length} Pages Found`;
       }
