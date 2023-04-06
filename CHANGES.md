@@ -5,7 +5,8 @@ v1.7.14
 - Fidelity: Fix dynamic iframes (via document.write / srcdoc) that fallthrough (via wombat 3.5.0, wabac.js 2.15.4)
 - UI: Fix sidebar background color in fullscreen mode to default to white. (thanks to @matteocargnelutti)
 - UI: Support drag-and-drop loading of archives (thanks to @curtgrimes)
-- Dependencies: Update to wabac.js 2.15.4, wombat 3.5.0
+- UI: Show total number of pages on pages list (thanks to @matteocargnelutti)
+- Dependencies: Update to wabac.js 2.15.5, wombat 3.5.1
 
 v1.7.13
 - Fidelity: Improved replay via unrewriting fixes of style urls, request/response urls (via wabac.js 2.15.3)
