@@ -756,10 +756,10 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-2.0.1.tgz#34bdc31727a1889198855913db2f270ace6d7bf8"
   integrity sha512-0G7tNyS+yW8TdgHwZKlDWYXFA6OJQnoLCQvYKkQP0Q2X205PSQ6RNUj0M+1OB/9gRQaUZ/ccYfaxd0nhaWKfjw==
 
-"@webrecorder/wabac@^2.15.5":
-  version "2.15.5"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.15.5.tgz#1bba3b23cf76634fb947446e68e168bdc61327dc"
-  integrity sha512-ETCCwcOxKz9FVfLzUWDr5GZtSqZaAhnzXoqltp4eqT7PT1dTWUNrEFCzwebEdaWoe/hgB/cZGLGzJtxWd1TrfA==
+"@webrecorder/wabac@^2.16.0":
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.16.0.tgz#6130b1cecc74205e3cfa4583bd8c0c33c47ba74d"
+  integrity sha512-ZaJtsuVy5Nn33sKEoLcQwS/I6pYNAoMv2hmnsSJypCpJrQ+R2Xq78KJb1Fi3Z03Ug3k5NCq/PijEAO39PxvmXA==
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.4"
     "@peculiar/asn1-schema" "^2.3.3"
@@ -782,7 +782,7 @@
     path-parser "^6.1.0"
     process "^0.11.10"
     stream-browserify "^3.0.0"
-    warcio "^2.0.1"
+    warcio "^2.1.0"
 
 "@webrecorder/wombat@^3.5.1":
   version "3.5.1"
@@ -5732,6 +5732,16 @@ warcio@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/warcio/-/warcio-2.0.1.tgz#b806849b155b9b4667a066b9903c829999f08227"
   integrity sha512-+1AyOQJ3hjLkZwT0mIn2xGrg+RRbyu+fWXuCpU1A/VG25bVzrcsvj8T0lWToylJU4Xf9Q8W57Jej/iUxGxaHKg==
+  dependencies:
+    base32-encode "^2.0.0"
+    pako "^1.0.11"
+    uuid-random "^1.3.2"
+    yargs "^17.6.2"
+
+warcio@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/warcio/-/warcio-2.1.0.tgz#7feca0278d43008bd3dd41b51904470421eecb41"
+  integrity sha512-NQPvYkNZhZOqcFhAHn2iuFhEQmiUv+mE1KI8BD+J3emgkdNGRv3P1o+gBCE6Nxnzk7bEkBreoAjhZ4osl+Ps1Q==
   dependencies:
     base32-encode "^2.0.0"
     pako "^1.0.11"

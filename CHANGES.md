@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.7.15
+- UI: Loading: support URLs that have query/hashes after extension
+- Dependencies: Update to wabac.js 2.16.0 -- improved support for Multi WACZ files
+
 v1.7.14
 - Fidelity: Support dynamic 'import()' in non-module JS (via wabac.js 2.15.4)
 - Fidelity: Fix dynamic iframes (via document.write / srcdoc) that fallthrough (via wombat 3.5.1, wabac.js 2.15.5)
