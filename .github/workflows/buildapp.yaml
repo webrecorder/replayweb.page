@@ -8,10 +8,10 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-10.15, ubuntu-latest]
+        os: [macos-11, ubuntu-latest]
         platform: [windows, linux]
         exclude:
-          - os: macos-10.15
+          - os: macos-11
             platform: windows
 
     steps:
@@ -45,10 +45,10 @@ jobs:
 
         run: |
 
-              if [ "$RUNNER_OS" != "Linux" ]; then
-                sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-                sudo xcode-select -s "/Applications/Xcode_12.3.app"
-              fi
+              #if [ "$RUNNER_OS" != "Linux" ]; then
+              #  sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+              #  sudo xcode-select -s "/Applications/Xcode_12.3.app"
+              #fi
 
               if [ "$GITHUB_REF" == "refs/heads/main" ] || [ -f ./force_release ]; then
                 export YARN_BUILD_CMD="release"
