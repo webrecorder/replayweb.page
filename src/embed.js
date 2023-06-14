@@ -247,6 +247,7 @@ class Embed extends LitElement
         params.loading = "eager";
       }
 
+      // eslint-disable-next-line no-undef
       if (this.swName !== __SW_NAME__) {
         params.swName = this.swName;
       }
