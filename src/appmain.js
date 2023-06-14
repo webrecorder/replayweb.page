@@ -28,8 +28,8 @@ class ReplayWebApp extends LitElement
 
     this.loadInfo = null;
 
-    this.swmanager = new SWManager({name: swName, appName: this.appName});
-    this.swmanager.register().catch(() => this.swErrorMsg = this.swmanager.renderErrorReport(this.mainLogo));
+    this.swName = swName;
+    this.swmanager = null;
 
     this.safariKeyframes();
 
@@ -282,6 +282,7 @@ class ReplayWebApp extends LitElement
     sourceUrl="${this.sourceUrl}"
     embed="${this.embed}"
     appName="${this.appName}"
+    swName="${this.swName}"
     .appLogo="${this.mainLogo}"
     @replay-favicons=${this.onFavIcons}
     @update-title=${this.onTitle}
@@ -321,6 +322,10 @@ class ReplayWebApp extends LitElement
 
   firstUpdated() {
     this.initRoute();
+
+    this.swmanager = new SWManager({name: this.swName, appName: this.appName});
+    this.swmanager.register().catch(() => this.swErrorMsg = this.swmanager.renderErrorReport(this.mainLogo));
+
     window.addEventListener("popstate", () => {
       this.initRoute();
     });
@@ -456,6 +461,10 @@ class ReplayWebApp extends LitElement
 
     if (this.pageParams.get("loading") === "eager") {
       this.loadInfo.loadEager = true;
+    }
+
+    if (this.pageParams.get("swName")) {
+      this.swName = this.pageParams.get("swName");
     }
 
     if (IS_APP && this.sourceUrl.startsWith("file://")) {

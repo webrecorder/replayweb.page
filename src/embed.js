@@ -247,6 +247,10 @@ class Embed extends LitElement
         params.loading = "eager";
       }
 
+      if (this.swName !== __SW_NAME__) {
+        params.swName = this.swName;
+      }
+
       this.paramString = new URLSearchParams(params).toString();
 
       this.hashString = new URLSearchParams({

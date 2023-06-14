@@ -48,7 +48,8 @@ class Loader extends LitElement
       embed: { type: String },
       tryFileHandle: { type: Boolean },
       errorAllowRetry: { type: Boolean },
-      extraMsg: { type: String }
+      extraMsg: { type: String },
+      swName: { type: String },
     };
   }
 
@@ -62,7 +63,7 @@ class Loader extends LitElement
 
     if (!this.noWebWorker) {
       // eslint-disable-next-line no-undef
-      this.worker = new Worker(__SW_NAME__);
+      this.worker = new Worker(this.swName);
     } else {
       if (!navigator.serviceWorker) {
         return;

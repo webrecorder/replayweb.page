@@ -120,7 +120,8 @@ The `<replay-web-page>` tag is a web component that supports a number of additio
 | `ts`         | The timestamp of the starting URL to load. If omitted, the latest available version is used. |
 | `deepLink`   | if set, allow 'deep linking' to exact pages in the embed, besides the starting URL. |
 | `embed`      | (`default` / `full` / `replayonly` / `replay-with-info` ) - See [Embed Modes](#embed-modes) above.
-| `replayBase` | Location of the `sw.js` file, defaults to `./replay/` as mentioned above, but can be overridden. |
+| `swName`     | Service Worker filename (default: `sw.js`). Set if using different name, don't include path, only filename |
+| `replayBase` | Location of the service worker file (eg. sw.js), defaults to `./replay/` as mentioned above, but can be overridden. |
 | `coll`       | Internal id for this collection, usually generated automatically.
 | `config`     | Extra per collection config options (such as custom fuzzy matching rules, TODO add more info!) |
 | `sandbox`    | if set, will iframe in `sandbox`. Provides extra isolation, but prevents PDFs from loading in an embed, and may result in links opening in new windows. |
