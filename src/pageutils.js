@@ -64,7 +64,7 @@ async function sourceToId(url) {
     new URL(url);
   } catch (e) {
     // if source is not a valid url, resolve as relative filename to current URL
-    url = new URL(url, window.location.href).href;
+    url = new URL(url, document.baseURI).href;
   }
 
   const digest = await digestMessage(url, "SHA-256");
