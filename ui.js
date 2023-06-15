@@ -1919,7 +1919,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
       </div>
     </div>
     <div class="main columns">
-      <div class="column index-bar is-one-fifth">
+      <div class="column index-bar is-one-fifth ${this.isSidebar?"is-hidden-mobile":""}">
 
         ${this.editable&&this.editing?T`
         <form @submit="${this.onUpdateTitle}"><input id="titleEdit" class="input" value="${this.collInfo.title}" @blur="${this.onUpdateTitle}"></form>

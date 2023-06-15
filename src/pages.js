@@ -539,7 +539,7 @@ class Pages extends LitElement
       </div>
     </div>
     <div class="main columns">
-      <div class="column index-bar is-one-fifth">
+      <div class="column index-bar is-one-fifth ${this.isSidebar ? "is-hidden-mobile" : ""}">
 
         ${this.editable && this.editing ? html`
         <form @submit="${this.onUpdateTitle}"><input id="titleEdit" class="input" value="${this.collInfo.title}" @blur="${this.onUpdateTitle}"></form>
