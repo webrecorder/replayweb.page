@@ -60,6 +60,13 @@ function getReplayLink(view, url, ts) {
 
 // ===========================================================================
 async function sourceToId(url) {
+  try {
+    new URL(url);
+  } catch (e) {
+    // if source is not a valid url, resolve as relative filename to current URL
+    url = new URL(url, document.baseURI).href;
+  }
+
   const digest = await digestMessage(url, "SHA-256");
   const coll = "id-" + digest.slice(0, 12);
   return {url, coll};

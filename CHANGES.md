@@ -1,5 +1,8 @@
 ## CHANGES
 
+v1.8.1
+- Loading: Resolve sourceUrl to absolute url when computing default id
+
 v1.8.0
 - UI: Add 'Show All Pages' option to show non-seed pages that are previously only available via search
 - Embeds: add 'swName' option to allow customizing 'sw.js' to a different filename
