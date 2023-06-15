@@ -29,6 +29,9 @@ class Pages extends LitElement
     this.loading = false;
     this.updatingSearch = false;
 
+    this.showAllPages = false;
+    this.hasExtraPages = false;
+
     this.currList = 0;
 
     this.active = false;
@@ -77,6 +80,8 @@ class Pages extends LitElement
       filteredPages: { type: Array },
       sortedPages: { type: Array },
 
+      showAllPages: { type: Boolean },
+
       query: { type: String },
       defaultKey: { type: String },
 
@@ -120,7 +125,10 @@ class Pages extends LitElement
 
     } else if (changedProperties.has("currList")) {
       this.filter();
+    } else if (changedProperties.has("showAllPages")) {
+      this.filter();
     }
+
     if (changedProperties.has("active") && this.active) {
       if (this.changeNeeded) {
         this.filter();
@@ -173,6 +181,8 @@ class Pages extends LitElement
     if (this.flex && this.query && this.textPages) {
       const results = await this.flex.searchAsync(this.query, 25);
       this.filteredPages = results.map(inx => this.textPages[inx]);
+    } else if (this.showAllPages && this.hasExtraPages) {
+      this.filteredPages = [...this.textPages];
     } else {
       this.filteredPages = [...this.collInfo.pages];
     }
@@ -213,6 +223,9 @@ class Pages extends LitElement
     this.flex = flex;
     this.textPages = pages;
 
+    this.hasExtraPages = this.textPages && this.collInfo && this.collInfo.pages &&
+    this.textPages.length > this.collInfo.pages.length;
+    
     return Promise.all(pages.map((page, index) => {
       let text = page.url;
       if (page.title) {
@@ -526,7 +539,7 @@ class Pages extends LitElement
       </div>
     </div>
     <div class="main columns">
-      <div class="column index-bar is-one-fifth is-hidden-mobile">
+      <div class="column index-bar is-one-fifth">
 
         ${this.editable && this.editing ? html`
         <form @submit="${this.onUpdateTitle}"><input id="titleEdit" class="input" value="${this.collInfo.title}" @blur="${this.onUpdateTitle}"></form>
@@ -535,7 +548,15 @@ class Pages extends LitElement
 
         ${this.editable ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>` : html``}
 
-        <span class="num-results" aria-live="polite" aria-atomic="true">${this.formatResults()}</span>
+        ${this.hasExtraPages ? html`
+        <span class="check-select">
+          <label class="checkbox">
+          <input @change=${e => this.showAllPages = e.currentTarget.checked} type="checkbox" .checked="${this.showAllPages}">
+          Show Non-Seed Pages
+          </label>
+        </span>` : ""}
+
+        <span class="num-results is-hidden-mobile" aria-live="polite" aria-atomic="true">${this.formatResults()}</span>
 
         ${this.editable ? html`
         <div class="index-bar-actions">
@@ -855,19 +876,19 @@ class Pages extends LitElement
   formatResults() {
     // Default behavior: Count all available pages
     if (!this.query) {
-      const length = this.collInfo.pages.length;
+      const length = this.filteredPages.length;
       if (length === this.sortedPages.length) {
-        return `${length} Page${length ? "s" : ""} Found`;
+        return `${length} Page${length !== 1 ? "s" : ""}`;
       } else {
-        return `${this.sortedPages.length} of ${length} Pages Found`;
+        return `${this.sortedPages.length} of ${length} Pages Shown`;
       }
     }
 
     // ... unless they were filtered
     if (this.sortedPages.length === 1) {
-      return "1 Page Found";
+      return "1 Page";
     } else {
-      return `${this.sortedPages.length} Pages Found`;
+      return `${this.sortedPages.length} Pages`;
     }
   }
 
