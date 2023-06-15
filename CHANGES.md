@@ -4,6 +4,7 @@ v1.8.0
 - UI: Add 'Show All Pages' option to show non-seed pages that are previously only available via search
 - Embeds: add 'swName' option to allow customizing 'sw.js' to a different filename
 - Dependencies: Update to wabac.js 2.16.1 -- varioues loading improvements related to surt
+- Dependencies: Update to electron 25.5.1, ruffle 2023-06-14
 
 v1.7.15
 - UI: Loading: support URLs that have query/hashes after extension
