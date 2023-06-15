@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
