@@ -123,7 +123,9 @@ class Coll extends LitElement
       appVersion: { type: String },
       appLogo: { type: String },
 
-      autoUpdateInterval: { type: Number }
+      autoUpdateInterval: { type: Number },
+
+      swName: { type: String }
     };
   }
 
@@ -672,7 +674,7 @@ class Coll extends LitElement
 
     if (this.collInfo && !this.collInfo.coll) {
       return html`
-      <wr-loader .loadInfo="${this.loadInfo}" embed="${this.embed}"
+      <wr-loader .loadInfo="${this.loadInfo}" embed="${this.embed}" swName="${this.swName}"
       .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
     } else if (this.collInfo) {
       return html`
