@@ -2,6 +2,7 @@
 
 v1.8.1
 - Loading: Resolve sourceUrl to absolute url when computing default id
+- Dependencies: Switch to ruffle 2023-05-13 due to issues in later versions
 
 v1.8.0
 - UI: Add 'Show All Pages' option to show non-seed pages that are previously only available via search
