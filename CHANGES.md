@@ -2,6 +2,7 @@
 
 v1.8.1
 - Loading: Resolve sourceUrl to absolute url when computing default id
+- Loading: Disable ruffle on embeds by default, can enable with 'useruffle', enable on standalone by default, can disable with 'skipruffle' attr
 - Dependencies: Switch to ruffle 2023-05-13 due to issues in later versions
 
 v1.8.0
