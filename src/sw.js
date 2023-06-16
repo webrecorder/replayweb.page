@@ -18,7 +18,7 @@ if (self.registration) {
   const defaultConfig = {};
 
   if (sp.get("ruffle") == "1") {
-    defaultConfig.injectScripts = ["ruffle/ruffle.js"]
+    defaultConfig.injectScripts = ["ruffle/ruffle.js"];
   }
 
   self.sw = new SWReplay({staticData, defaultConfig});
