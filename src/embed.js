@@ -43,6 +43,7 @@ class Embed extends LitElement
     this.noSandbox = null;
     this.logo = rwpLogo;
     this.loading = "";
+    this.useRuffle = false;
   }
 
   static setDefaultReplayFile(replayfile) {
@@ -88,6 +89,8 @@ class Embed extends LitElement
       requireSubdomainIframe: {type: Boolean},
 
       loading: { type: String },
+
+      useRuffle: { type: Boolean },
     };
   }
 
@@ -250,6 +253,10 @@ class Embed extends LitElement
       // eslint-disable-next-line no-undef
       if (this.swName !== __SW_NAME__) {
         params.swName = this.swName;
+      }
+
+      if (this.useRuffle) {
+        params.ruffle = "1";
       }
 
       this.paramString = new URLSearchParams(params).toString();
