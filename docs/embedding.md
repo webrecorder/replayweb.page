@@ -131,6 +131,7 @@ The `<replay-web-page>` tag is a web component that supports a number of additio
 | `newWindowBase` | set base replay URL loaded when a page opens a new window, defaults to `https://replayweb.page/` if `deepLink` not enabled, otherwise, to current page with new link. |
 | `requireSubdomainIframe` | if set, will only load embed in an iframe loaded from a subdomain, for increased origin isolation. |
 | `loading="eager"` | if set, will load the entire WACZ file at once (regardless of size), and not attempt on-demand range request loading. |
+| `useRuffle` | if set, will enable include Ruffle Flash emulator. Must include the `ruffle/` directory in `replayBase`. |
 
 ### Versioning
 

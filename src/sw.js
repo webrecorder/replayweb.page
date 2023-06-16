@@ -12,15 +12,15 @@ if (self.registration) {
 
   staticData.set(prefix, {type: "text/html", content: INDEX_HTML});
   staticData.set(prefix + "index.html", {type: "text/html", content: INDEX_HTML});
-  //staticData.set(prefix + "ui.js", {type: "application/javascript", content: UI_JS});
 
-  //const { SWReplay } = require('@webrecorder/wabac/src/swmain');
+  const sp = new URLSearchParams(self.location.search);
 
-  const defaultConfig = {
-    injectScripts: ["ruffle/ruffle.js"],
-  };
+  const defaultConfig = {};
 
-  self.ipfsCustomPreload = true;
+  if (sp.get("ruffle") == "1") {
+    defaultConfig.injectScripts = ["ruffle/ruffle.js"];
+  }
+
   self.sw = new SWReplay({staticData, defaultConfig});
 } else {
   new WorkerLoader(self);

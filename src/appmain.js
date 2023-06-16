@@ -17,6 +17,7 @@ class ReplayWebApp extends LitElement
     this.collTitle = null;
     this.showAbout = false;
     this.showFileDropOverlay = false;
+
     this.pageParams = new URLSearchParams();
 
     this.inited = false;
@@ -30,6 +31,9 @@ class ReplayWebApp extends LitElement
 
     this.swName = swName;
     this.swmanager = null;
+
+    this.skipRuffle = false;
+    this.useRuffle = false;
 
     this.safariKeyframes();
 
@@ -88,6 +92,7 @@ class ReplayWebApp extends LitElement
       pageTitle: { type: String },
       pageReplay: { type: Boolean },
       source: { type: String },
+      skipRuffle: { type: Boolean },
 
       swErrorMsg: { type: Object },
     };
@@ -323,7 +328,10 @@ class ReplayWebApp extends LitElement
   firstUpdated() {
     this.initRoute();
 
-    this.swmanager = new SWManager({name: this.swName, appName: this.appName});
+    // service worker name
+    const name = this.swName + (this.useRuffle ? "?ruffle=1" : "");
+
+    this.swmanager = new SWManager({name, appName: this.appName});
     this.swmanager.register().catch(() => this.swErrorMsg = this.swmanager.renderErrorReport(this.mainLogo));
 
     window.addEventListener("popstate", () => {
@@ -413,6 +421,12 @@ class ReplayWebApp extends LitElement
 
     this.sourceUrl = this.pageParams.get("source") || "";
     this.embed = this.pageParams.get("embed") || "";
+
+    if (!this.embed) {
+      this.useRuffle = !this.skipRuffle;
+    } else {
+      this.useRuffle = this.pageParams.get("ruffle") === "1";
+    }
 
     if (this.pageParams.has("terms")) {
       this.showAbout = true;
