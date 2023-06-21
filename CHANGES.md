@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.8.2
+- Loading: fix redirect loop on 404s (via wabac.js 2.16.2)
+- Misc: additional check before autoupdate, update build deps to support Node 20
+
 v1.8.1
 - Loading: Resolve sourceUrl to absolute url when computing default id
 - Loading: Disable ruffle on embeds by default, can enable with 'useruffle', enable on standalone by default, can disable with 'skipruffle' attr

@@ -149,7 +149,7 @@ class Coll extends LitElement
   async runUpdateLoop() {
     try {
       // only autoupdate if interval is set, and number of pages < 100 to avoid messing up scrolling
-      while (this.editable && this.autoUpdateInterval && (!this.collInfo || this.collInfo.pages.length < 100)) {
+      while (this.editable && this.autoUpdateInterval && (!this.collInfo || !this.collInfo.pages || this.collInfo.pages.length < 100)) {
         await new Promise(resolve => setTimeout(resolve, this.autoUpdateInterval * 1000));
         await this.doUpdateInfo(true);
       }
