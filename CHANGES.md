@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.8.3
+- Loading: fix 'Show Non-Seed Pages' for Multi WACZ collections and after reload
+- Dependencies: Switch to wabac.js 2.16.3
+
 v1.8.2
 - Loading: fix redirect loop on 404s (via wabac.js 2.16.2)
 - Misc: additional check before autoupdate, update build deps to support Node 20

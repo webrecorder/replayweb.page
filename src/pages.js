@@ -254,7 +254,7 @@ class Pages extends LitElement
       let resp = await cache.match(indexUrl);
 
       if (!resp || !Number(resp.headers.get("Content-Length"))) {
-        resp = await fetch(`${this.collInfo.apiPrefix}/textIndex`);
+        resp = await fetch(indexUrl);
         if (resp.status === 200 && Number(resp.headers.get("Content-Length"))) {
           cache.put(indexUrl, resp.clone());
         }
@@ -263,7 +263,7 @@ class Pages extends LitElement
       const lines = [];
 
       for await (const line of ndjson(resp.body.getReader())) {
-        if (!line.text) {
+        if (!line.url) {
           continue;
         }
 
