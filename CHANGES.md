@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.8.4
+- Fidelity: improved replay of pages with top-level 'let' and 'const' globals via script parsing (via wabac.js)
+- Dependencies: Switch to wabac.js 2.16.4
+
 v1.8.3
 - Loading: fix 'Show Non-Seed Pages' for Multi WACZ collections and after reload
 - Dependencies: Switch to wabac.js 2.16.3
