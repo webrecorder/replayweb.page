@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.8.5
+- Loading: Improved handling of multi-wacz collections, support loading URLs cross-WACZ to support patching
+- Dependencies: Switch to wabac.js 2.16.5
+
 v1.8.4
 - Fidelity: improved replay of pages with top-level 'let' and 'const' globals via script parsing (via wabac.js)
 - Dependencies: Switch to wabac.js 2.16.4

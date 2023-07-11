@@ -756,10 +756,10 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-2.0.1.tgz#34bdc31727a1889198855913db2f270ace6d7bf8"
   integrity sha512-0G7tNyS+yW8TdgHwZKlDWYXFA6OJQnoLCQvYKkQP0Q2X205PSQ6RNUj0M+1OB/9gRQaUZ/ccYfaxd0nhaWKfjw==
 
-"@webrecorder/wabac@^2.16.4":
-  version "2.16.4"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.16.4.tgz#18a7b33947bd4ed038c7a60f1d43f561b247f52f"
-  integrity sha512-ZlP8csompVd24MJQnSDkLCQStbv0GpbNy0JsTFlV0Podp8GQ5nKOp8ktx5tOvp62M90kdl3jeb+khY+9KeAdFg==
+"@webrecorder/wabac@^2.16.5":
+  version "2.16.5"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.16.5.tgz#cc4949175319313e0e34fded57169d1276fa9c2d"
+  integrity sha512-JaW6Qs+Y07eMhY/nl/ydGz4pnbyv1US73iNO5Zk6PI0GIfceT5leXGnGCYXBRJiRxd5PYeQ/WxuPmORXCauRmQ==
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.4"
     "@peculiar/asn1-schema" "^2.3.3"
