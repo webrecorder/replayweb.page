@@ -217,7 +217,7 @@ export class RWPEmbedReceipt extends LitElement
           <p class="mt-2">After downloading, this web archive can be loaded and viewed directly in your browser via <a style="white-space: nowrap;" target="_blank" href="https://replayweb.page">replayweb.page</a>.</p>
           <a href="${sourceUrl}" class="button is-primary mt-4" @keyup="${clickOnSpacebarPress}">
             <span class="icon is-small">
-              <fa-icon size="1.0em" class="has-text-white" aria-hidden="true" .svg="${fasDownload}"></fa-icon>
+              <fa-icon size="1.0em" aria-hidden="true" .svg="${fasDownload}"></fa-icon>
             </span>
             <span>Download Archive</span>
           </a>
