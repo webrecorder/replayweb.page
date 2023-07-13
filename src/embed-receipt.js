@@ -213,6 +213,15 @@ export class RWPEmbedReceipt extends LitElement
           Even if the original page goes offline or is changed, the content below will remain unchanged as it is loaded from a web archive.
           </p>
           <hr class="dropdown-divider">
+          <h2 mt-4">Get A Copy!</h2>
+          <p class="mt-2">After downloading, this web archive can be loaded and viewed directly in your browser via <a style="white-space: nowrap;" target="_blank" href="https://replayweb.page">replayweb.page</a>.</p>
+          <a href="${sourceUrl}" class="button is-primary mt-4" @keyup="${clickOnSpacebarPress}">
+            <span class="icon is-small">
+              <fa-icon size="1.0em" class="has-text-white" aria-hidden="true" .svg="${fasDownload}"></fa-icon>
+            </span>
+            <span>Download Archive</span>
+          </a>
+          <hr class="dropdown-divider mt-4">
           <h2 mt-4">Technical Information</h2>
           <div class="embed-info-drop-statscontainer mb-4">
             <h3>Original URL:</h3>
@@ -241,15 +250,6 @@ export class RWPEmbedReceipt extends LitElement
             <p>${prettyBytes(Number(this.collInfo.size || 0))}</p>
           </div>
           ${sourceUrl ? html`
-          <hr class="dropdown-divider">
-          <h2 mt-4">Get A Copy!</h2>
-          <p class="mt-2">After downloading, this web archive can be loaded and viewed directly in your browser via <a style="white-space: nowrap;" target="_blank" href="https://replayweb.page">replayweb.page</a>.</p>
-          <a href="${sourceUrl}" class="button mt-4" @keyup="${clickOnSpacebarPress}">
-            <span class="icon is-small">
-              <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasDownload}"></fa-icon>
-            </span>
-            <span>Download Archive</span>
-          </a>
           ` : ""}
           <p class="is-size-7 is-flex is-justify-content-space-between" style="margin-top: 40px">
             <span>
