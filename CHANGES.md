@@ -4,6 +4,8 @@ v1.8.6
 - Loading: Fix improved handling of multi-wacz collections (via wabac.js 2.16.6)
 - Loading: Allow embedded video/audio to play inline instead of being downloaded (via wabac.js 2.16.6)
 - Fidelity: Add missing ruffle.js files to fix ruffle
+- UI: Add 'Observer Public Key' field to Info tab
+- Embed UI: Move download about technical info on 'receipts' dropdown
 - Dependencies: Switch to wabac.js 2.16.6
 
 v1.8.5
