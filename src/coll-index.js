@@ -439,7 +439,7 @@ class CollInfo extends LitElement
   renderDetailed() {
     const coll = this.coll;
 
-    let {numValid, numInvalid, domain, certFingerprint, datapackageHash, software} = this.coll.verify || {};
+    let {numValid, numInvalid, domain, certFingerprint, datapackageHash, publicKey, software} = this.coll.verify || {};
     numValid = numValid || 0;
     numInvalid = numInvalid || 0;
 
@@ -484,6 +484,11 @@ class CollInfo extends LitElement
         <div class="column">
           <p class="minihead">Package Hash</p>
         ${datapackageHash || "Not Available"}
+        </div>
+
+        <div class="column">
+          <p class="minihead">Observer Public Key</p>
+        ${publicKey || "Not Available"}
         </div>
 
         <div class="column">
