@@ -1122,6 +1122,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
       width: 100%;
       height: 100%;
       display: flex;
+      overflow: auto;
     }
 
     .is-list {
