@@ -606,6 +606,7 @@ class Coll extends LitElement
     .is-list {
       margin: 1.0em;
       background-color: whitesmoke;
+      height: fit-content;
     }
 
     #contents.full-pages {
