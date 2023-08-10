@@ -1,5 +1,11 @@
 ## CHANGES
 
+v1.8.7
+- UI: Fix info tab overflow being hidden
+- Loading: Improved support for live proxy via wabac.js 2.16.7
+- Fidelity: Improved support for document.write() overrides with wabac.js 2.16.7
+- Dependencies: Switch to wabac.js 2.16.7
+
 v1.8.6
 - Loading: Fix improved handling of multi-wacz collections (via wabac.js 2.16.6)
 - Loading: Allow embedded video/audio to play inline instead of being downloaded (via wabac.js 2.16.6)
