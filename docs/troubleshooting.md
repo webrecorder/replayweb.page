@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Troubleshooting
-nav_order: 4
+nav_order: 5
 description: Troubleshooting ReplayWeb.page
 permalink: /docs/troubleshooting
 
