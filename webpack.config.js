@@ -80,9 +80,12 @@ const browserConfig = (/*env, argv*/) => {
   return {
     target: "web",
     mode: "production",
-    resolve: {fallback: { "crypto": false }},
+    resolve: {
+      fallback: { "crypto": false },
+      extensions: [".ts", ".js"],
+    },
     entry: {
-      "ui": "./src/ui.js",
+      "ui": "./src/ui.ts",
       "sw": "./src/sw.js"
     },
 
@@ -139,6 +142,14 @@ const browserConfig = (/*env, argv*/) => {
 
     module: {
       rules: [
+        {
+          test: /\.tsx?$/,
+          loader: "ts-loader",
+          include: path.resolve(__dirname, "src"),
+          options: {
+            onlyCompileBundledFiles: true,
+          },
+        },
         {
           test:  /\.svg$/,
           use: ["svg-inline-loader"],
