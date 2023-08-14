@@ -16,7 +16,7 @@
     "fetch-ndjson": "^1.1.6",
     "flexsearch": "^0.7.31",
     "keyword-mark-element": "^0.2.0",
-    "lit": "^2.1.1",
+    "lit": "^2.8.0",
     "marked": "^4.0.10",
     "mime-types": "^2.1.32",
     "minimist": "^1.2.5",
