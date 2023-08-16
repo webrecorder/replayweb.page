@@ -9,6 +9,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "@shoelace-style/shoelace": "^2.7.0",
     "@webrecorder/wabac": "^2.16.10",
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
@@ -16,7 +17,7 @@
     "fetch-ndjson": "^1.1.6",
     "flexsearch": "^0.7.31",
     "keyword-mark-element": "^0.2.0",
-    "lit": "^2.1.1",
+    "lit": "^2.8.0",
     "marked": "^4.0.10",
     "mime-types": "^2.1.32",
     "minimist": "^1.2.5",
@@ -46,6 +47,8 @@
     "sass-loader": "^13.3.2",
     "style-loader": "^3.2.1",
     "svg-inline-loader": "^0.8.2",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"

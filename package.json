@@ -9,6 +9,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "@shoelace-style/shoelace": "^2.7.0",
     "@webrecorder/wabac": "^2.16.10",
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
@@ -16,7 +17,7 @@
     "fetch-ndjson": "^1.1.6",
     "flexsearch": "^0.7.31",
     "keyword-mark-element": "^0.2.0",
-    "lit": "^2.1.1",
+    "lit": "^2.8.0",
     "marked": "^4.0.10",
     "mime-types": "^2.1.32",
     "minimist": "^1.2.5",

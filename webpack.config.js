@@ -80,7 +80,7 @@ const browserConfig = (/*env, argv*/) => {
   const isDevServer = process.env.WEBPACK_SERVE;
 
   const entry = {
-    "ui": "./src/ui.js"
+    "ui": "./src/ui.ts"
   };
 
   const patterns = [
