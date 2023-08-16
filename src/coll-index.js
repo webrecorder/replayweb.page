@@ -292,12 +292,11 @@ class CollIndex extends LitElement {
                       class="input is-small"
                       @input="${(e) => (this.query = e.currentTarget.value)}"
                       .value="${this.query}"
-                      type="text"
                       placeholder="Search by Archive Title or Source"
                     />
-                    <span class="icon is-left is-small"
-                      ><fa-icon .svg="${fasSearch}"
-                    /></span>
+                    <span class="icon is-left is-small">
+                      <fa-icon .svg="${fasSearch}"></fa-icon>
+                    </span>
                   </div>
                   <wr-sorter
                     id="index"
@@ -327,8 +326,10 @@ class CollIndex extends LitElement {
                                 @click="${this.onDeleteColl}"
                               ></button>
                             `
-                          : html`
-              <span class="button delete-button is-loading is-static">Deleting</span`}
+                          : html` <span
+                              class="button delete-button is-loading is-static"
+                              >Deleting</span
+                            >`}
                       </div>
                     `,
                   )}
@@ -446,9 +447,9 @@ class CollInfo extends LitElement {
             : html` ${coll.sourceUrl}&nbsp;`}
         </span>
 
-        <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy"
-          ><fa-icon .svg="${fasCopy}"
-        /></a>
+        <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy">
+          <fa-icon .svg="${fasCopy}"></fa-icon>
+        </a>
         ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://")
           ? html` <p><i>(${coll.filename})</i></p>`
           : ""}

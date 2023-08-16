@@ -699,12 +699,11 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
                       class="input is-small"
                       @input="${e=>this.query=e.currentTarget.value}"
                       .value="${this.query}"
-                      type="text"
                       placeholder="Search by Archive Title or Source"
                     />
-                    <span class="icon is-left is-small"
-                      ><fa-icon .svg="${He()}"
-                    /></span>
+                    <span class="icon is-left is-small">
+                      <fa-icon .svg="${He()}"></fa-icon>
+                    </span>
                   </div>
                   <wr-sorter
                     id="index"
@@ -721,8 +720,10 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
                   ${this.sortedColls&&this.sortedColls.map(((e,t)=>T`
                       <div class="coll-block panel-block">
                         ${this.renderCollInfo(e)}
-                        ${this._deleting[e.sourceUrl]?T`
-              <span class="button delete-button is-loading is-static">Deleting</span`:T`
+                        ${this._deleting[e.sourceUrl]?T` <span
+                              class="button delete-button is-loading is-static"
+                              >Deleting</span
+                            >`:T`
                               <button
                                 class="delete delete-button"
                                 aria-label="Unload Collection"
@@ -803,9 +804,9 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
           ${e.sourceUrl&&(e.sourceUrl.startsWith("http://")||e.sourceUrl.startsWith("https://"))?T` <a href="${e.sourceUrl}">${e.sourceUrl}&nbsp;</a>`:T` ${e.sourceUrl}&nbsp;`}
         </span>
 
-        <a @click="${t=>this.onCopy(t,e.sourceUrl)}" class="copy"
-          ><fa-icon .svg="${Me()}"
-        /></a>
+        <a @click="${t=>this.onCopy(t,e.sourceUrl)}" class="copy">
+          <fa-icon .svg="${Me()}"></fa-icon>
+        </a>
         ${e.sourceUrl&&e.sourceUrl.startsWith("googledrive://")?T` <p><i>(${e.filename})</i></p>`:""}
       </div>
       <div class="column is-2">
@@ -1025,40 +1026,76 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
         line-height: 0.5em;
       }
     `}render(){let{numValid:e,numInvalid:t,domain:i,certFingerprint:a,datapackageHash:r,publicKey:o,software:n}=this.collInfo.verify||{};e=e||0,t=t||0;const s=this.collInfo.sourceUrl,l=a?`https://crt.sh/?q=${a}`:"",d=Ke(this.ts).toLocaleString();return T`
-    <div class="dropdown mb-4 ${this.active?"is-active":""}">
-      <div class="dropdown-trigger embed-info-container">
-        <button class="embed-info is-small is-rounded mt-4" aria-haspopup="true" aria-controls="embed-dropdown" @click="${this.onEmbedDrop}">
-          <fa-icon class="menu-logo mr-2 embed-globe" size="1rem" aria-hidden="true" .svg=${St()}></fa-icon>
-          <span class="embed-info-buttontext">
-            This embed is part of a web archive. Click here to learn more.
-          </span>
-          <span class="icon is-small mr-4 ml-2">
-            <fa-icon title="Toggle" .svg="${this.active?Dt():Ct()}" aria-hidden="true"></fa-icon>
-          </span>
-        </button>
-      </div>
-      <div class="dropdown-menu embed-info-container" id="embed-dropdown" role="menu">
-        <div class="dropdown-content embed-info-drop">
-          <p class="mb-4">
-          Even if the original page goes offline or is changed, the content below will remain unchanged as it is loaded from a web archive.
-          </p>
-          <hr class="dropdown-divider">
-          <h2 mt-4">Get A Copy!</h2>
-          <p class="mt-2">After downloading, this web archive can be loaded and viewed directly in your browser via <a style="white-space: nowrap;" target="_blank" href="https://replayweb.page">replayweb.page</a>.</p>
-          <a href="${s}" class="button is-primary mt-4" @keyup="${ge}">
-            <span class="icon is-small">
-              <fa-icon size="1.0em" aria-hidden="true" .svg="${tt()}"></fa-icon>
+      <div class="dropdown mb-4 ${this.active?"is-active":""}">
+        <div class="dropdown-trigger embed-info-container">
+          <button
+            class="embed-info is-small is-rounded mt-4"
+            aria-haspopup="true"
+            aria-controls="embed-dropdown"
+            @click="${this.onEmbedDrop}"
+          >
+            <fa-icon
+              class="menu-logo mr-2 embed-globe"
+              size="1rem"
+              aria-hidden="true"
+              .svg=${St()}
+            ></fa-icon>
+            <span class="embed-info-buttontext">
+              This embed is part of a web archive. Click here to learn more.
             </span>
-            <span>Download Archive</span>
-          </a>
-          <hr class="dropdown-divider mt-4">
-          <h2 mt-4">Technical Information</h2>
-          <div class="embed-info-drop-statscontainer mb-4">
-            <h3>Original URL:</h3>
-            <p><a target="_blank" href="${this.url}">${this.url}</a></p>
-            <h3 class="mt-2">Archived On:</h3>
-            <p>${d}</p>
-            ${i?T`
+            <span class="icon is-small mr-4 ml-2">
+              <fa-icon
+                title="Toggle"
+                .svg="${this.active?Dt():Ct()}"
+                aria-hidden="true"
+              ></fa-icon>
+            </span>
+          </button>
+        </div>
+        <div
+          class="dropdown-menu embed-info-container"
+          id="embed-dropdown"
+          role="menu"
+        >
+          <div class="dropdown-content embed-info-drop">
+            <p class="mb-4">
+              Even if the original page goes offline or is changed, the content
+              below will remain unchanged as it is loaded from a web archive.
+            </p>
+            <hr class="dropdown-divider" />
+            <h2 class="mt-4">Get A Copy!</h2>
+            <p class="mt-2">
+              After downloading, this web archive can be loaded and viewed
+              directly in your browser via
+              <a
+                style="white-space: nowrap;"
+                target="_blank"
+                href="https://replayweb.page"
+                >replayweb.page</a
+              >.
+            </p>
+            <a
+              href="${s}"
+              class="button is-primary mt-4"
+              @keyup="${ge}"
+            >
+              <span class="icon is-small">
+                <fa-icon
+                  size="1.0em"
+                  aria-hidden="true"
+                  .svg="${tt()}"
+                ></fa-icon>
+              </span>
+              <span>Download Archive</span>
+            </a>
+            <hr class="dropdown-divider mt-4" />
+            <h2 class="mt-4">Technical Information</h2>
+            <div class="embed-info-drop-statscontainer mb-4">
+              <h3>Original URL:</h3>
+              <p><a target="_blank" href="${this.url}">${this.url}</a></p>
+              <h3 class="mt-2">Archived On:</h3>
+              <p>${d}</p>
+              ${i?T`
                     <h3 class="mt-2">Observed By:</h3>
                     <p>${i}</p>
                     ${l?T` <p>
@@ -1068,35 +1105,56 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
                         </p>`:""}
                   `:n?T` <h3 class="mt-2">Created With:</h3>
                     <p>${n}</p>`:""}
-            ${!i&&o?T` <h3 class="mt-2">Observer Public Key:</h3>
+              ${!i&&o?T` <h3 class="mt-2">Observer Public Key:</h3>
                     <p class="show-key">${o}</p>`:""}
-            <h3 class="mt-2">Validation:</h3>
-            ${e>0||t>0?T` <p>
+              <h3 class="mt-2">Validation:</h3>
+              ${e>0||t>0?T` <p>
                     ${e} hashes
                     verified${t?T`, ${t} invalid`:""}
                   </p>`:T` <p>Not Available</p> `}
-            <h3 class="mt-2">Package Hash:</h3>
-            <p class="show-hash">${r}</p>
-            <h3 class="mt-2">Size</h3>
-            <p>${Re()(Number(this.collInfo.size||0))}</p>
+              <h3 class="mt-2">Package Hash:</h3>
+              <p class="show-hash">${r}</p>
+              <h3 class="mt-2">Size</h3>
+              <p>${Re()(Number(this.collInfo.size||0))}</p>
+            </div>
+            ${s?T``:""}
+            <p
+              class="is-size-7 is-flex is-justify-content-space-between"
+              style="margin-top: 40px"
+            >
+              <span>
+                <a
+                  class="has-text-black"
+                  target="_blank"
+                  href="https://github.com/webrecorder/replayweb.page"
+                >
+                  <fa-icon
+                    class="menu-logo mr-1"
+                    size="1.0rem"
+                    aria-hidden="true"
+                    .svg=${this.appLogo}
+                  ></fa-icon>
+                  Powered by ReplayWeb.page
+                </a>
+              </span>
+              <span>
+                <a
+                  class="has-text-black"
+                  target="_blank"
+                  href="https://github.com/webrecorder/replayweb.page"
+                  >Source Code
+                  <fa-icon
+                    class="menu-logo ml-1"
+                    size="1.0rem"
+                    aria-hidden="true"
+                    .svg=${It()}
+                  ></fa-icon>
+                </a>
+              </span>
+            </p>
           </div>
-          ${s?T``:""}
-          <p class="is-size-7 is-flex is-justify-content-space-between" style="margin-top: 40px">
-            <span>
-              <a class="has-text-black" target="_blank" href="https://github.com/webrecorder/replayweb.page">
-                <fa-icon class="menu-logo mr-1" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
-                Powered by ReplayWeb.page
-              </a>
-            </span>
-            <span>
-              <a class="has-text-black" target="_blank" href="https://github.com/webrecorder/replayweb.page">Source Code
-                <fa-icon class="menu-logo ml-1" size="1.0rem" aria-hidden="true" .svg=${It()}></fa-icon>
-              </a>
-            </span>
-          </p>
         </div>
       </div>
-    </div>
     `}onEmbedDrop(e){e.stopPropagation(),this.active=!this.active}}customElements.define("rwp-embed-receipt",Pt);var Lt="undefined"!=typeof window?window:null,Tt=null===Lt,Ut=Tt?void 0:Lt.document,Rt="horizontal",qt=function(){return!1},Mt=Tt?"calc":["","-webkit-","-moz-","-o-"].filter((function(e){var t=Ut.createElement("div");return t.style.cssText="width:"+e+"calc(9px)",!!t.style.length})).shift()+"calc",Nt=function(e){return"string"==typeof e||e instanceof String},Ot=function(e){if(Nt(e)){var t=Ut.querySelector(e);if(!t)throw new Error("Selector "+e+" did not match a DOM element");return t}return e},jt=function(e,t,i){var a=e[t];return void 0!==a?a:i},Bt=function(e,t,i,a){if(t){if("end"===a)return 0;if("center"===a)return e/2}else if(i){if("start"===a)return 0;if("center"===a)return e/2}return e},Ft=function(e,t){var i=Ut.createElement("div");return i.className="gutter gutter-"+t,i},Ht=function(e,t,i){var a={};return Nt(t)?a[e]=t:a[e]=Mt+"("+t+"% - "+i+"px)",a},Wt=function(e,t){var i;return(i={})[e]=t+"px",i};const Gt=function(e,t){if(void 0===t&&(t={}),Tt)return{};var i,a,r,o,n,s,l=e;Array.from&&(l=Array.from(l));var d=Ot(l[0]).parentNode,c=getComputedStyle?getComputedStyle(d):null,h=c?c.flexDirection:null,f=jt(t,"sizes")||l.map((function(){return 100/l.length})),b=jt(t,"minSize",100),u=Array.isArray(b)?b:l.map((function(){return b})),p=jt(t,"maxSize",1/0),m=Array.isArray(p)?p:l.map((function(){return p})),g=jt(t,"expandToMin",!1),v=jt(t,"gutterSize",10),w=jt(t,"gutterAlign","center"),x=jt(t,"snapOffset",30),k=jt(t,"dragInterval",1),y=jt(t,"direction",Rt),_=jt(t,"cursor",y===Rt?"col-resize":"row-resize"),$=jt(t,"gutter",Ft),S=jt(t,"elementStyle",Ht),z=jt(t,"gutterStyle",Wt);function C(e,t,a,r){var o=S(i,t,a,r);Object.keys(o).forEach((function(t){e.style[t]=o[t]}))}function A(){return s.map((function(e){return e.size}))}function D(e){return"touches"in e?e.touches[0][a]:e[a]}function E(e){var t=s[this.a],i=s[this.b],a=t.size+i.size;t.size=e/this.size*a,i.size=a-e/this.size*a,C(t.element,t.size,this._b,t.i),C(i.element,i.size,this._c,i.i)}function I(e){var i,a=s[this.a],r=s[this.b];this.dragging&&(i=D(e)-this.start+(this._b-this.dragOffset),k>1&&(i=Math.round(i/k)*k),i<=a.minSize+x+this._b?i=a.minSize+this._b:i>=this.size-(r.minSize+x+this._c)&&(i=this.size-(r.minSize+this._c)),i>=a.maxSize-x+this._b?i=a.maxSize+this._b:i<=this.size-(r.maxSize-x+this._c)&&(i=this.size-(r.maxSize+this._c)),E.call(this,i),jt(t,"onDrag",qt)(A()))}function P(){var e=s[this.a].element,t=s[this.b].element,a=e.getBoundingClientRect(),n=t.getBoundingClientRect();this.size=a[i]+n[i]+this._b+this._c,this.start=a[r],this.end=a[o]}function L(e){var t=function(e){if(!getComputedStyle)return null;var t=getComputedStyle(e);if(!t)return null;var i=e[n];return 0===i?null:i-=y===Rt?parseFloat(t.paddingLeft)+parseFloat(t.paddingRight):parseFloat(t.paddingTop)+parseFloat(t.paddingBottom)}(d);if(null===t)return e;if(u.reduce((function(e,t){return e+t}),0)>t)return e;var i=0,a=[],r=e.map((function(r,o){var n=t*r/100,s=Bt(v,0===o,o===e.length-1,w),l=u[o]+s;return n<l?(i+=l-n,a.push(0),l):(a.push(n-l),n)}));return 0===i?e:r.map((function(e,r){var o=e;if(i>0&&a[r]-i>0){var n=Math.min(i,a[r]-i);i-=n,o=e-n}return o/t*100}))}function T(){var e=this,i=s[e.a].element,a=s[e.b].element;e.dragging&&jt(t,"onDragEnd",qt)(A()),e.dragging=!1,Lt.removeEventListener("mouseup",e.stop),Lt.removeEventListener("touchend",e.stop),Lt.removeEventListener("touchcancel",e.stop),Lt.removeEventListener("mousemove",e.move),Lt.removeEventListener("touchmove",e.move),e.stop=null,e.move=null,i.removeEventListener("selectstart",qt),i.removeEventListener("dragstart",qt),a.removeEventListener("selectstart",qt),a.removeEventListener("dragstart",qt),i.style.userSelect="",i.style.webkitUserSelect="",i.style.MozUserSelect="",i.style.pointerEvents="",a.style.userSelect="",a.style.webkitUserSelect="",a.style.MozUserSelect="",a.style.pointerEvents="",e.gutter.style.cursor="",e.parent.style.cursor="",Ut.body.style.cursor=""}function U(e){if(!("button"in e)||0===e.button){var i=this,a=s[i.a].element,r=s[i.b].element;i.dragging||jt(t,"onDragStart",qt)(A()),e.preventDefault(),i.dragging=!0,i.move=I.bind(i),i.stop=T.bind(i),Lt.addEventListener("mouseup",i.stop),Lt.addEventListener("touchend",i.stop),Lt.addEventListener("touchcancel",i.stop),Lt.addEventListener("mousemove",i.move),Lt.addEventListener("touchmove",i.move),a.addEventListener("selectstart",qt),a.addEventListener("dragstart",qt),r.addEventListener("selectstart",qt),r.addEventListener("dragstart",qt),a.style.userSelect="none",a.style.webkitUserSelect="none",a.style.MozUserSelect="none",a.style.pointerEvents="none",r.style.userSelect="none",r.style.webkitUserSelect="none",r.style.MozUserSelect="none",r.style.pointerEvents="none",i.gutter.style.cursor=_,i.parent.style.cursor=_,Ut.body.style.cursor=_,P.call(i),i.dragOffset=D(e)-i.end}}y===Rt?(i="width",a="clientX",r="left",o="right",n="clientWidth"):"vertical"===y&&(i="height",a="clientY",r="top",o="bottom",n="clientHeight"),f=L(f);var R=[];function q(e){var t=e.i===R.length,i=t?R[e.i-1]:R[e.i];P.call(i);var a=t?i.size-e.minSize-i._c:e.minSize+i._b;E.call(i,a)}return s=l.map((function(e,t){var a,r={element:Ot(e),size:f[t],minSize:u[t],maxSize:m[t],i:t};if(t>0&&((a={a:t-1,b:t,dragging:!1,direction:y,parent:d})._b=Bt(v,t-1==0,!1,w),a._c=Bt(v,!1,t===l.length-1,w),"row-reverse"===h||"column-reverse"===h)){var o=a.a;a.a=a.b,a.b=o}if(t>0){var n=$(t,y,r.element);!function(e,t,a){var r=z(i,t,a);Object.keys(r).forEach((function(t){e.style[t]=r[t]}))}(n,v,t),a._a=U.bind(a),n.addEventListener("mousedown",a._a),n.addEventListener("touchstart",a._a),d.insertBefore(n,r.element),a.gutter=n}return C(r.element,r.size,Bt(v,0===t,t===l.length-1,w),t),t>0&&R.push(a),r})),s.forEach((function(e){var t=e.element.getBoundingClientRect()[i];t<e.minSize&&(g?q(e):e.minSize=t)})),{setSizes:function(e){var t=L(e);t.forEach((function(e,i){if(i>0){var a=R[i-1],r=s[a.a],o=s[a.b];r.size=t[i-1],o.size=e,C(r.element,r.size,a._b,r.i),C(o.element,o.size,a._c,o.i)}}))},getSizes:A,collapse:function(e){q(s[e])},destroy:function(e,t){R.forEach((function(a){if(!0!==t?a.parent.removeChild(a.gutter):(a.gutter.removeEventListener("mousedown",a._a),a.gutter.removeEventListener("touchstart",a._a)),!0!==e){var r=S(i,a.a.size,a._b);Object.keys(r).forEach((function(e){s[a.a].element.style[e]="",s[a.b].element.style[e]=""}))}}))},parent:d,pairs:R}},Kt="search://";class Vt extends X{constructor(){super(),this.sourceUrl=null,this.inited=!1,this.isLoading=!1,this.coll="",this.collInfo=null,this._replaceLoc=!1,this._locUpdateNeeded=!1,this._locationHash="",this.tabData={},this.url="",this.ts="",this.tabNames=["pages","story","resources","info"],this.tabLabels={pages:"Pages",story:"Story",resources:"URLs",info:"Archive Info"},this.menuActive=!1,this.embedDropdownActive=!1,this.hasStory=!1,this.editable=!1,this.browsable=!0,this.clearable=!0,this.showSidebar="1"===localStorage.getItem("pages:showSidebar"),this.splitter=null,this.isVisible=!0,this.favIconUrl="",this.autoUpdateInterval=10,this._autoUpdater=null,this.appName="ReplayWeb.page",this.appVersion=me,this.appLogo=fe()}static get properties(){return{inited:{type:Boolean},sourceUrl:{type:String},loadInfo:{type:Object,attribute:!1},showSidebar:{type:Boolean},collInfo:{type:Object,attribute:!1},coll:{type:String},hasStory:{type:Boolean},isLoading:{type:Boolean},tabData:{type:Object,attribute:!1},url:{type:String},ts:{type:String},isFullscreen:{type:Boolean},menuActive:{type:Boolean},embed:{type:String},embedDropdownActive:{type:Boolean},editable:{type:Boolean},browsable:{type:Boolean},clearable:{type:Boolean},isVisible:{type:Boolean},favIconUrl:{type:String},appName:{type:String},appVersion:{type:String},appLogo:{type:String},autoUpdateInterval:{type:Number},swName:{type:String}}}firstUpdated(){this.inited=!0,window.addEventListener("hashchange",(e=>this.onHashChange(e))),this.addEventListener("fullscreenchange",(()=>{this.isFullscreen=!!document.fullscreenElement})),this.embed&&this.loadInfo&&this.loadInfo.hideOffscreen&&(this.observer=new IntersectionObserver((e=>{this.isVisible=e[0].isIntersecting})),this.observer.observe(this))}async runUpdateLoop(){try{for(;this.editable&&this.autoUpdateInterval&&(!this.collInfo||!this.collInfo.pages||this.collInfo.pages.length<100);)await new Promise((e=>setTimeout(e,1e3*this.autoUpdateInterval))),await this.doUpdateInfo(!0)}finally{this._autoUpdater=null}}updated(e){if(e.has("sourceUrl")&&this.doUpdateInfo(),e.has("editable")&&this.editable&&this.autoUpdateInterval&&!this._autoUpdater&&(this._autoUpdater=this.runUpdateLoop()),e.has("tabData")){if(!this.collInfo||!this.collInfo.coll)return;Object.keys(this.tabData).forEach((e=>!this.tabData[e]&&delete this.tabData[e]));const t="#"+new URLSearchParams(this.tabData).toString();if(this.tabData.url||(this.url=Kt+decodeURIComponent(this._paramsToString(this.tabData))),t!==this._locationHash){if(this._locationHash=t,this._replaceLoc||0===Object.keys(e.get("tabData")).length){const e=new URL(window.location.href);e.hash=this._locationHash,window.history.replaceState({},"",e.href),this._replaceLoc=!1}else if(window.location.hash=this._locationHash,!this.showSidebar){const e=this.renderRoot.querySelector("wr-coll-replay");e&&e.focus()}this.embed&&window.parent!==window&&window.parent.postMessage(this.tabData,"*")}this._locUpdateNeeded=!1}e.has("showSidebar")&&(this.embed||localStorage.setItem("pages:showSidebar",this.showSidebar?"1":"0")),(e.has("tabData")||e.has("showSidebar"))&&this.configureSplitter()}configureSplitter(){if(this.tabData.url&&this.showSidebar){const e=this.renderRoot.querySelector("#contents"),t=this.renderRoot.querySelector("wr-coll-replay");if(e&&t&&!this.splitter){const i={sizes:[30,70],minSize:[300,300],gutterSize:4,onDragStart(){t.setDisablePointer(!0)},onDragEnd(){t.setDisablePointer(!1)}};this.splitter=Gt([e,t],i)}}else if(this.splitter){try{this.splitter.destroy()}catch(e){}this.splitter=null}}async doUpdateInfo(e=!1){if(e&&this.tabData.url&&!this.showSidebar)return;let t=this.loadInfo&&this.loadInfo.customColl;if(!t){t=(await Je(this.sourceUrl)).coll}this.coll=t;const i="./w/api/c/"+t,a="./w/"+t,r=await fetch(i+"?all=1");if(200!=r.status)return void(this.collInfo={});const o=await r.json();if(this.collInfo={apiPrefix:i,replayPrefix:a,coll:t,...o},this.loadInfo&&this.loadInfo.extraConfig&&this.loadInfo.extraConfig.headers){const e=this.loadInfo.extraConfig.headers;await fetch(`${i}/updateAuth`,{method:"POST",body:JSON.stringify({headers:e})})}this.collInfo.title||(this.collInfo.title=this.collInfo.filename),"replayonly"!==this.embed&&"replay-with-info"!==this.embed||(this.showSidebar=!1),this.hasStory=this.collInfo.desc||this.collInfo.lists.length,this.dispatchEvent(new CustomEvent("coll-loaded",{detail:{collInfo:this.collInfo,alreadyLoaded:!0}})),this.onHashChange()}onCollLoaded(e){this.doUpdateInfo(),this.loadInfo=null,e.detail.sourceUrl&&(this.sourceUrl=e.detail.sourceUrl),this.dispatchEvent(new CustomEvent("coll-loaded",{detail:{sourceUrl:this.sourceUrl,collInfo:this.collInfo}}))}onCollUpdate(e){this.editable&&(this.collInfo={...this.collInfo,...e.detail})}onHashChange(){const e=window.location.hash;if(e&&e!==this._locationHash&&(this.tabData=Object.fromEntries(new URLSearchParams(e.slice(1)).entries()),this._locationHash=e),this.collInfo.coll&&!this.tabNames.includes(this.tabData.view)){const e=this.hasStory?"story":this.editable||this.collInfo.pages.length?"pages":"resources";this.tabData={...this.tabData,view:e}}if(this.tabData.url&&this.tabData.url.startsWith("page:")){const e=Number(this.tabData.url.slice("page:".length));if(!isNaN(e)&&e<this.collInfo.pages.length){const t=this.collInfo.pages[e];this.tabData.url=t.url,this.tabData.ts=Ve(t).timestamp}}this.hasStory||"story"!==this.tabData.view||(this.tabData.view="pages"),this.tabData.url&&this.tabData.query&&(this.showSidebar=!0)}onTabClick(e){e.preventDefault();const t=e.currentTarget.getAttribute("href");return this.tabData={...this.tabData,view:t.slice(1)},!1}onCollTabNav(e){e.detail.reload?this.onRefresh(null,!0):e.target.id===this.tabData.view||"replay"===e.target.id&&this.tabData.url?this.updateTabData(e.detail.data,e.detail.replaceLoc,!1):this.showSidebar&&this.tabData.url&&this.updateTabData(e.detail.data,e.detail.replaceLoc,!0)}updateTabData(e,t=!1){this.tabData={...this.tabData,...e},this.tabData.url&&(this.url=this.tabData.url||""),this.tabData.ts&&(this.ts=this.tabData.ts||""),this._replaceLoc=!this._locUpdateNeeded&&t,this._locUpdateNeeded=!0}static get styles(){return ue(Vt.compStyles)}static get compStyles(){return o`
       :host {
         display: flex;
@@ -2111,7 +2169,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
     `)}render(){return T`
       <section class="container">
         <div class="has-text-centered is-flex">
-          <wr-anim-logo class="logo" size="96px" />
+          <wr-anim-logo class="logo" size="96px"></wr-anim-logo>
         </div>
         ${this.embed?"":T` <div class="level">
               <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
@@ -2125,7 +2183,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
     `}renderContent(){switch(this.state){case"googledrive":return T`<wr-gdrive
           .sourceUrl=${this.sourceUrl}
           @load-ready=${this.onLoadReady}
-        />`;case"started":return T` <div class="progress-div">
+        ></wr-gdrive>`;case"started":return T` <div class="progress-div">
           <progress
             id="progress"
             class="progress is-primary is-large"
@@ -2163,7 +2221,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
         </div>`;default:return T`<progress
           class="progress is-primary is-large"
           style="max-width: 400px"
-        />`}}async onAskPermission(){"granted"===await this.fileHandle.requestPermission({mode:"read"})&&this.doLoad()}}customElements.define("wr-loader",qi);var Mi=__webpack_require__(9746),Ni=__webpack_require__.n(Mi),Oi=__webpack_require__(6304),ji=__webpack_require__(6442),Bi=__webpack_require__.n(ji),Fi=__webpack_require__(9638),Hi=__webpack_require__.n(Fi);class Wi extends X{constructor(){super(),this.filteredPages=[],this.sortedPages=[],this.query="",this.flex=null,this.textPages=null,this.newQuery=null,this.loading=!1,this.updatingSearch=!1,this.showAllPages=!1,this.hasExtraPages=!1,this.currList=0,this.active=!1,this.editable=!1,this.changeNeeded=!1,this.selectedPages=new Set,this.menuActive=!1,this.sortKey="date",this.sortDesc=!0,this.isSidebar=!1,this.url="",this.ts="",this.editing=!1,this.toDeletePages=null,this.toDeletePage=null}static get sortKeys(){return[{key:"",name:"Best Match"},{key:"title",name:"Title"},{key:"date",name:"Date"}]}static get properties(){return{active:{type:Boolean},collInfo:{type:Object},currList:{type:Number},filteredPages:{type:Array},sortedPages:{type:Array},showAllPages:{type:Boolean},query:{type:String},defaultKey:{type:String},loading:{type:Boolean},updatingSearch:{type:Boolean},editable:{type:Boolean},selectedPages:{type:Set},allSelected:{type:Boolean},menuActive:{type:Boolean},sortKey:{type:String},sortDesc:{type:Boolean},isSidebar:{type:Boolean},url:{type:String},ts:{type:String},editing:{type:Boolean},toDeletePages:{type:Object},toDeletePage:{type:Object}}}_timedUpdate(){null!==this.newQuery&&(this.query=this.newQuery,this.newQuery=null,this.filter())}async updated(e){if(e.has("collInfo")?this.updateTextSearch():(e.has("query")||e.has("currList")||e.has("showAllPages"))&&this.filter(),e.has("active")&&this.active&&this.changeNeeded&&this.filter(),e.has("query")){this.query?(this.sortKey="",this.sortDesc=!1):(this.sortKey="date",this.sortDesc=!0);const e=this.renderRoot.querySelector("wr-sorter");e&&(e.sortKey=this.sortKey,e.sortDesc=this.sortDesc)}if(e.has("sortedPages")&&this.isSidebar){const e=this.renderRoot.querySelector(".current");if(e){const t={behavior:"smooth",block:"nearest",inline:"nearest"};setTimeout((()=>e.scrollIntoView(t)),100)}}}onChangeQuery(e){this.newQuery=e.currentTarget.value,this._ival&&window.clearTimeout(this._ival),this._ival=window.setTimeout((()=>this._timedUpdate()),250)}async filter(){if(this.loading)return;if(this.active||(this.changeNeeded=!0),this.loading=!0,this.flex&&this.query&&this.textPages){const e=await this.flex.searchAsync(this.query,25);this.filteredPages=e.map((e=>this.textPages[e]))}else this.showAllPages&&this.hasExtraPages?this.filteredPages=[...this.textPages]:this.filteredPages=[...this.collInfo.pages];0!==this.currList&&await this.filterCurated();for(const e of this.filteredPages){const{timestamp:t,date:i}=Ve(e);e.timestamp=t,e.date=i}this.loading=!1,this.changeNeeded=!1;const e={query:this.query,currList:this.currList};this.sendChangeEvent(e)}async filterCurated(){const e=await fetch(`${this.collInfo.apiPrefix}/curated/${this.currList}`),t=(await e.json()).curated;this.filteredPages=t}sendChangeEvent(e){this.dispatchEvent(new CustomEvent("coll-tab-nav",{detail:{data:e}}))}addPages(e){const t=new Oi.Index;return this.flex=t,this.textPages=e,this.hasExtraPages=this.textPages&&this.collInfo&&this.collInfo.pages&&this.textPages.length>this.collInfo.pages.length,Promise.all(e.map(((e,i)=>{let a=e.url;return e.title&&(a+=" "+e.title),e.text&&(a+=" "+e.text),t.addAsync(i,a)})))}async updateTextSearch(){if(this.updatingSearch)return;this.updatingSearch=!0;let e=0;try{const t=await caches.open("cache:"+this.collInfo.coll),i=`${this.collInfo.apiPrefix}/textIndex`;let a=await t.match(i);a&&Number(a.headers.get("Content-Length"))||(a=await fetch(i),200===a.status&&Number(a.headers.get("Content-Length"))&&t.put(i,a.clone()));const r=[];for await(const t of Ni()(a.body.getReader()))t.url&&(t.id=++e,r.push(t));await this.addPages(r)}catch(e){console.warn(e)}finally{0===e&&await this.addPages(this.collInfo.pages),this.updatingSearch=!1}await this.filter()}static get styles(){return ue(o`
+        ></progress>`}}async onAskPermission(){"granted"===await this.fileHandle.requestPermission({mode:"read"})&&this.doLoad()}}customElements.define("wr-loader",qi);var Mi=__webpack_require__(9746),Ni=__webpack_require__.n(Mi),Oi=__webpack_require__(6304),ji=__webpack_require__(6442),Bi=__webpack_require__.n(ji),Fi=__webpack_require__(9638),Hi=__webpack_require__.n(Fi);class Wi extends X{constructor(){super(),this.filteredPages=[],this.sortedPages=[],this.query="",this.flex=null,this.textPages=null,this.newQuery=null,this.loading=!1,this.updatingSearch=!1,this.showAllPages=!1,this.hasExtraPages=!1,this.currList=0,this.active=!1,this.editable=!1,this.changeNeeded=!1,this.selectedPages=new Set,this.menuActive=!1,this.sortKey="date",this.sortDesc=!0,this.isSidebar=!1,this.url="",this.ts="",this.editing=!1,this.toDeletePages=null,this.toDeletePage=null}static get sortKeys(){return[{key:"",name:"Best Match"},{key:"title",name:"Title"},{key:"date",name:"Date"}]}static get properties(){return{active:{type:Boolean},collInfo:{type:Object},currList:{type:Number},filteredPages:{type:Array},sortedPages:{type:Array},showAllPages:{type:Boolean},query:{type:String},defaultKey:{type:String},loading:{type:Boolean},updatingSearch:{type:Boolean},editable:{type:Boolean},selectedPages:{type:Set},allSelected:{type:Boolean},menuActive:{type:Boolean},sortKey:{type:String},sortDesc:{type:Boolean},isSidebar:{type:Boolean},url:{type:String},ts:{type:String},editing:{type:Boolean},toDeletePages:{type:Object},toDeletePage:{type:Object}}}_timedUpdate(){null!==this.newQuery&&(this.query=this.newQuery,this.newQuery=null,this.filter())}async updated(e){if(e.has("collInfo")?this.updateTextSearch():(e.has("query")||e.has("currList")||e.has("showAllPages"))&&this.filter(),e.has("active")&&this.active&&this.changeNeeded&&this.filter(),e.has("query")){this.query?(this.sortKey="",this.sortDesc=!1):(this.sortKey="date",this.sortDesc=!0);const e=this.renderRoot.querySelector("wr-sorter");e&&(e.sortKey=this.sortKey,e.sortDesc=this.sortDesc)}if(e.has("sortedPages")&&this.isSidebar){const e=this.renderRoot.querySelector(".current");if(e){const t={behavior:"smooth",block:"nearest",inline:"nearest"};setTimeout((()=>e.scrollIntoView(t)),100)}}}onChangeQuery(e){this.newQuery=e.currentTarget.value,this._ival&&window.clearTimeout(this._ival),this._ival=window.setTimeout((()=>this._timedUpdate()),250)}async filter(){if(this.loading)return;if(this.active||(this.changeNeeded=!0),this.loading=!0,this.flex&&this.query&&this.textPages){const e=await this.flex.searchAsync(this.query,25);this.filteredPages=e.map((e=>this.textPages[e]))}else this.showAllPages&&this.hasExtraPages?this.filteredPages=[...this.textPages]:this.filteredPages=[...this.collInfo.pages];0!==this.currList&&await this.filterCurated();for(const e of this.filteredPages){const{timestamp:t,date:i}=Ve(e);e.timestamp=t,e.date=i}this.loading=!1,this.changeNeeded=!1;const e={query:this.query,currList:this.currList};this.sendChangeEvent(e)}async filterCurated(){const e=await fetch(`${this.collInfo.apiPrefix}/curated/${this.currList}`),t=(await e.json()).curated;this.filteredPages=t}sendChangeEvent(e){this.dispatchEvent(new CustomEvent("coll-tab-nav",{detail:{data:e}}))}addPages(e){const t=new Oi.Index;return this.flex=t,this.textPages=e,this.hasExtraPages=this.textPages&&this.collInfo&&this.collInfo.pages&&this.textPages.length>this.collInfo.pages.length,Promise.all(e.map(((e,i)=>{let a=e.url;return e.title&&(a+=" "+e.title),e.text&&(a+=" "+e.text),t.addAsync(i,a)})))}async updateTextSearch(){if(this.updatingSearch)return;this.updatingSearch=!0;let e=0;try{const t=await caches.open("cache:"+this.collInfo.coll),i=`${this.collInfo.apiPrefix}/textIndex`;let a=await t.match(i);a&&Number(a.headers.get("Content-Length"))||(a=await fetch(i),200===a.status&&Number(a.headers.get("Content-Length"))&&t.put(i,a.clone()));const r=[];for await(const t of Ni()(a.body.getReader()))t.url&&(t.id=++e,r.push(t));await this.addPages(r)}catch(e){console.warn(e)}finally{0===e&&await this.addPages(this.collInfo.pages),this.updatingSearch=!1}await this.filter()}static get styles(){return ue(o`
       :host {
         width: 100%;
         height: 100%;
@@ -2397,7 +2455,6 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
             class="control has-icons-left ${this.loading?"is-loading":""}"
           >
             <input
-              type="search"
               class="input"
               @input="${this.onChangeQuery}"
               .value="${this.query}"
@@ -2489,39 +2546,56 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
         </div>
       </div>
       ${this.renderDeleteModal()}
-    `}renderDownloadMenu(){return T`
-      <div class="dropdown ${this.menuActive?"is-active":""}">
-        <div class="dropdown-trigger">
-          <button @click="${this.onMenu}" class="button is-small" aria-haspopup="true" aria-expanded="${this.menuActive}" aria-controls="dropdown-menu">
-            <span>Download</span>
-            <span class="icon is-small">
-              <fa-icon .svg="${Bi()} aria-hidden="true"></fa-icon>
-            </span>
-          </button>
+    `}renderDownloadMenu(){return T` <div class="dropdown ${this.menuActive?"is-active":""}">
+      <div class="dropdown-trigger">
+        <button
+          @click="${this.onMenu}"
+          class="button is-small"
+          aria-haspopup="true"
+          aria-expanded="${this.menuActive}"
+          aria-controls="dropdown-menu"
+        >
+          <span>Download</span>
+          <span class="icon is-small">
+            <fa-icon .svg="${Bi()}" aria-hidden="true"></fa-icon>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu">
+        <div class="dropdown-content">
+          <a
+            role="button"
+            href="#"
+            @click="${e=>this.onDownload(e,"wacz")}"
+            @keyup="${ge}"
+            class="dropdown-item"
+          >
+            Download ${0===this.selectedPages.size?"All":"Selected"} as
+            WACZ (Web Archive Collection Zip)
+          </a>
+          <a
+            role="button"
+            href="#"
+            @click="${e=>this.onDownload(e,"warc")}"
+            @keyup="${ge}"
+            class="dropdown-item"
+          >
+            Download ${0===this.selectedPages.size?"All":"Selected"} as
+            WARC 1.1 Only
+          </a>
+          <a
+            role="button"
+            href="#"
+            @click="${e=>this.onDownload(e,"warc1.0")}"
+            @keyup="${ge}"
+            class="dropdown-item"
+          >
+            Download ${0===this.selectedPages.size?"All":"Selected"} as
+            WARC 1.0 Only
+          </a>
         </div>
-        <div class="dropdown-menu" id="dropdown-menu">
-          <div class="dropdown-content">
-            <a role="button" href="#"
-             @click="${e=>this.onDownload(e,"wacz")}"
-             @keyup="${ge}"
-             class="dropdown-item">
-              Download ${0===this.selectedPages.size?"All":"Selected"} as WACZ (Web Archive Collection Zip)
-            </a>
-            <a role="button" href="#"
-             @click="${e=>this.onDownload(e,"warc")}"
-             @keyup="${ge}"
-             class="dropdown-item">
-              Download ${0===this.selectedPages.size?"All":"Selected"} as WARC 1.1 Only
-            </a>
-            <a role="button" href="#"
-              @click="${e=>this.onDownload(e,"warc1.0")}"
-              @keyup="${ge}"
-              class="dropdown-item">
-              Download ${0===this.selectedPages.size?"All":"Selected"} as WARC 1.0 Only
-            </a>
-          </div>
-        </div>
-      </div>`}renderPageHeader(){return T`
+      </div>
+    </div>`}renderPageHeader(){return T`
       ${!this.isSidebar&&this.editable&&this.filteredPages.length?T` <div class="check-select">
             <label class="checkbox">
               <input
@@ -2921,7 +2995,7 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
                                 .state="trymanual"
                                 .reauth="${!0}"
                                 @load-ready="${this.onReAuthed}"
-                              />`}
+                              ></wr-gdrive>`}
                         </div>
                       </div>
                     </div>
@@ -3053,100 +3127,202 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
         font-style: italic;
       }
     `)}render(){return T`
-    <div role="heading" aria-level="${this.isSidebar?"2":"1"}" class="is-sr-only">URLs in ${this.collInfo.title}</div>
+      <div
+        role="heading"
+        aria-level="${this.isSidebar?"2":"1"}"
+        class="is-sr-only"
+      >
+        URLs in ${this.collInfo.title}
+      </div>
 
-    <div role="heading" aria-level="${this.isSidebar?"3":"2"}" class="is-sr-only">Search and Filter</div>
-    <div class="notification level is-marginless">
-      <div class="level-left flex-auto">
-        <div class="level-item flex-auto">
-          <span class="is-hidden-mobile">Search:&nbsp;&nbsp;</span>
-          <div class="select">
-            <select @change="${this.onChangeTypeSearch}">
-            ${ia.filters.map((e=>T`
-                <option
-                  value="${e.filter}"
-                  ?selected="${e.filter===this.currMime}"
-                >
-                  ${e.name}
-                </option>
-              `))}
-            </select>
-          </div>
-          <div class="field flex-auto">
-            <div class="control has-icons-left ${this.loading?"is-loading":""}">
-              <input type="text" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text" placeholder="Enter URL to Search">
-              <span class="icon is-left"><fa-icon .svg="${He()}"/></span>
+      <div
+        role="heading"
+        aria-level="${this.isSidebar?"3":"2"}"
+        class="is-sr-only"
+      >
+        Search and Filter
+      </div>
+      <div class="notification level is-marginless">
+        <div class="level-left flex-auto">
+          <div class="level-item flex-auto">
+            <span class="is-hidden-mobile">Search:&nbsp;&nbsp;</span>
+            <div class="select">
+              <select @change="${this.onChangeTypeSearch}">
+                ${ia.filters.map((e=>T`
+                    <option
+                      value="${e.filter}"
+                      ?selected="${e.filter===this.currMime}"
+                    >
+                      ${e.name}
+                    </option>
+                  `))}
+              </select>
+            </div>
+            <div class="field flex-auto">
+              <div
+                class="control has-icons-left ${this.loading?"is-loading":""}"
+              >
+                <input
+                  type="text"
+                  class="input"
+                  @input="${this.onChangeQuery}"
+                  .value="${this.query}"
+                  placeholder="Enter URL to Search"
+                />
+                <span class="icon is-left"
+                  ><fa-icon .svg="${He()}"></fa-icon
+                ></span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="control level-right">
-        <div style="margin-left: 1em" class="control">
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="contains" ?checked="${"contains"===this.urlSearchType}" @click="${this.onClickUrlType}">&nbsp;Contains</label>
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="prefix" ?checked="${"prefix"===this.urlSearchType}" @click="${this.onClickUrlType}">&nbsp;Prefix</label>
-          <label class="radio has-text-left"><input type="radio" name="urltype" value="exact" ?checked="${"exact"===this.urlSearchType}" @click="${this.onClickUrlType}">&nbsp;Exact</label>
-          <span id="num-results" class="num-results" is-pulled-right" aria-live="polite" aria-atomic="true">${this.filteredResults.length} Result(s)</span>
+        <div class="control level-right">
+          <div style="margin-left: 1em" class="control">
+            <label class="radio has-text-left"
+              ><input
+                type="radio"
+                name="urltype"
+                value="contains"
+                ?checked="${"contains"===this.urlSearchType}"
+                @click="${this.onClickUrlType}"
+              />&nbsp;Contains</label
+            >
+            <label class="radio has-text-left"
+              ><input
+                type="radio"
+                name="urltype"
+                value="prefix"
+                ?checked="${"prefix"===this.urlSearchType}"
+                @click="${this.onClickUrlType}"
+              />&nbsp;Prefix</label
+            >
+            <label class="radio has-text-left"
+              ><input
+                type="radio"
+                name="urltype"
+                value="exact"
+                ?checked="${"exact"===this.urlSearchType}"
+                @click="${this.onClickUrlType}"
+              />&nbsp;Exact</label
+            >
+            <span
+              id="num-results"
+              class="num-results"
+              is-pulled-right
+              aria-live="polite"
+              aria-atomic="true"
+              >${this.filteredResults.length} Result(s)</span
+            >
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="sort-header is-hidden-tablet">
-      <wr-sorter id="urls"
-        .sortKey="${this.sortKey}"
-        .sortDesc="${this.sortDesc}"
-        .sortKeys="${ia.sortKeys}"
-        .data="${this.filteredResults}"
-        @sort-changed="${this.onSortChanged}">
-      </wr-sorter>
-    </div>
+      <div class="sort-header is-hidden-tablet">
+        <wr-sorter
+          id="urls"
+          .sortKey="${this.sortKey}"
+          .sortDesc="${this.sortDesc}"
+          .sortKeys="${ia.sortKeys}"
+          .data="${this.filteredResults}"
+          @sort-changed="${this.onSortChanged}"
+        >
+        </wr-sorter>
+      </div>
 
-    <div role="heading" aria-level="${this.isSidebar?"3":"2"}" id="results-heading" class="is-sr-only">Results</div>
+      <div
+        role="heading"
+        aria-level="${this.isSidebar?"3":"2"}"
+        id="results-heading"
+        class="is-sr-only"
+      >
+        Results
+      </div>
 
-    <table class="all-results" aria-labelledby="results-heading num-results">
-      <thead>
-        <tr class="columns results-head has-text-weight-bold">
-          <th scope="col" class="column col-url is-6 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${ge}" data-key="url" class="${"url"===this.sortKey?this.sortDesc?"desc":"asc":""}">URL</a></th>
-          <th scope="col" class="column col-ts is-2 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${ge}" data-key="ts" class="${"ts"===this.sortKey?this.sortDesc?"desc":"asc":""}">Date</a></th>
-          <th scope="col" class="column col-mime is-3 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${ge}" data-key="mime" class="${"mime"===this.sortKey?this.sortDesc?"desc":"asc":""}">Mime Type</a></th>
-          <th scope="col" class="column col-status is-1 is-hidden-mobile"><a role="button" href="#" @click="${this.onSort}" @keyup="${ge}" data-key="status" class="${"status"===this.sortKey?this.sortDesc?"desc":"asc":""}">Status</a></th>
-        </tr>
-      </thead>
+      <table class="all-results" aria-labelledby="results-heading num-results">
+        <thead>
+          <tr class="columns results-head has-text-weight-bold">
+            <th scope="col" class="column col-url is-6 is-hidden-mobile">
+              <a
+                role="button"
+                href="#"
+                @click="${this.onSort}"
+                @keyup="${ge}"
+                data-key="url"
+                class="${"url"===this.sortKey?this.sortDesc?"desc":"asc":""}"
+                >URL</a
+              >
+            </th>
+            <th scope="col" class="column col-ts is-2 is-hidden-mobile">
+              <a
+                role="button"
+                href="#"
+                @click="${this.onSort}"
+                @keyup="${ge}"
+                data-key="ts"
+                class="${"ts"===this.sortKey?this.sortDesc?"desc":"asc":""}"
+                >Date</a
+              >
+            </th>
+            <th scope="col" class="column col-mime is-3 is-hidden-mobile">
+              <a
+                role="button"
+                href="#"
+                @click="${this.onSort}"
+                @keyup="${ge}"
+                data-key="mime"
+                class="${"mime"===this.sortKey?this.sortDesc?"desc":"asc":""}"
+                >Mime Type</a
+              >
+            </th>
+            <th scope="col" class="column col-status is-1 is-hidden-mobile">
+              <a
+                role="button"
+                href="#"
+                @click="${this.onSort}"
+                @keyup="${ge}"
+                data-key="status"
+                class="${"status"===this.sortKey?this.sortDesc?"desc":"asc":""}"
+                >Status</a
+              >
+            </th>
+          </tr>
+        </thead>
 
-      <tbody class="main-scroll" @scroll="${this.onScroll}">
-      ${this.sortedResults.length?this.sortedResults.map((e=>T`
-                <tr class="columns result">
-                  <td class="column col-url is-6">
-                    <p class="minihead is-hidden-tablet">URL</p>
-                    <a
-                      @click="${this.onReplay}"
-                      data-url="${e.url}"
-                      data-ts="${e.ts}"
-                      href="${Qe("resources",e.url,e.ts)}"
-                    >
-                      <keyword-mark keywords="${this.query}"
-                        >${e.url}</keyword-mark
+        <tbody class="main-scroll" @scroll="${this.onScroll}">
+          ${this.sortedResults.length?this.sortedResults.map((e=>T`
+                  <tr class="columns result">
+                    <td class="column col-url is-6">
+                      <p class="minihead is-hidden-tablet">URL</p>
+                      <a
+                        @click="${this.onReplay}"
+                        data-url="${e.url}"
+                        data-ts="${e.ts}"
+                        href="${Qe("resources",e.url,e.ts)}"
                       >
-                    </a>
-                  </td>
-                  <td class="column col-ts is-2">
-                    <p class="minihead is-hidden-tablet">Date</p>
-                    ${new Date(e.date).toLocaleString()}
-                  </td>
-                  <td class="column col-mime is-3">
-                    <p class="minihead is-hidden-tablet">Mime Type</p>
-                    ${e.mime}
-                  </td>
-                  <td class="column col-status is-1">
-                    <p class="minihead is-hidden-tablet">Status</p>
-                    ${e.status}
-                  </td>
-                </tr>
-              `)):T`<tr class="section">
-              <td colspan="4"><i>No Results Found.</i></td>
-            </tr>`}
-      </tbody>
-    </table>
-      `}onSort(e){e.preventDefault();const t=e.currentTarget.getAttribute("data-key");t===this.sortKey?this.sortDesc=!this.sortDesc:(this.sortDesc=!1,this.sortKey=t)}onSortChanged(e){this.sortedResults=e.detail.sortedData,this.sortKey=e.detail.sortKey,this.sortDesc=e.detail.sortDesc}onReplay(e){e.preventDefault();const t={url:e.currentTarget.getAttribute("data-url"),ts:e.currentTarget.getAttribute("data-ts")};return this.dispatchEvent(new CustomEvent("coll-tab-nav",{detail:{data:t}})),!1}}customElements.define("wr-coll-resources",ia);var aa=document.currentScript&&document.currentScript.src,ra="";class oa extends X{constructor(){super(),this.replaybase="./replay/",this.replayfile=ra,this.swName="sw.js",this.mainElementName="replay-app-main",this.appName="ReplayWeb.page",this.view="replay",this.ts="",this.url="",this.query="",this.config="",this.customConfig=null,this.coll="",this.paramString=null,this.deepLink=!1,this.newWindowBase="",this.inited=!1,this.embed=null,this.reloadCount=0,this.sandbox=!1,this.noWebWorker=!1,this.noCache=!1,this.noSandbox=null,this.logo=fe(),this.loading="",this.useRuffle=!1}static setDefaultReplayFile(e){ra=e}static get properties(){return{url:{type:String},ts:{type:String},query:{type:String},source:{type:String},src:{type:String},view:{type:String},embed:{type:String},replaybase:{type:String},swName:{type:String},title:{type:String},coll:{type:String},config:{type:String},inited:{type:Boolean},paramString:{type:String},hashString:{type:String},deepLink:{type:Boolean},sandbox:{type:Boolean},noSandbox:{type:Boolean},noWebWorker:{type:Boolean},noCache:{type:Boolean},hideOffscreen:{type:Boolean},newWindowBase:{type:String},errorMessage:{type:String},requireSubdomainIframe:{type:Boolean},loading:{type:String},useRuffle:{type:Boolean}}}async doRegister(){const e=new URL(this.replaybase,window.location.href);if(this.isCrossOrigin=e.origin!==window.location.origin,this.isCrossOrigin)return void(this.inited=!0);const t=this.swName,i=this.appName,a=this.replaybase,r=this.requireSubdomainIframe;this.swmanager=new Ee({name:t,scope:a,requireSubdomainIframe:r,appName:i});try{await this.swmanager.register(),this.inited=!0}catch(e){this.errorMessage=this.swmanager.renderErrorReport(this.logo)}}handleMessage(e){const t=this.renderRoot.querySelector("iframe");if(t&&e.source===t.contentWindow){if(!e.data.view)return;if(e.data.title&&(this.title=e.data.title),!this.deepLink)return;const t=new URLSearchParams(e.data),i=new URL(window.location.href);i.hash="#"+t.toString(),window.history.replaceState({},"",i)}}firstUpdated(){this.noSandbox&&console.warn("The noSandbox flag is deprecated. ReplayWeb.page does not add a sandbox by default. To enable sandboxing, use 'sandbox' flag instead. This may result in PDFs not loading and pages opening in new windows, but may be more secure in some situations"),this.doRegister(),window.addEventListener("message",(e=>this.handleMessage(e))),this.deepLink&&(this.updateFromHash(),window.addEventListener("hashchange",(()=>this.updateFromHash()))),this.loadBrowserDefaults()}loadBrowserDefaults(){void 0!==window.GestureEvent&&void 0===window.SharedWorker&&(this.noWebWorker=!0),navigator.storage&&navigator.storage.estimate||(this.noCache=!0)}updateFromHash(){const e=new URLSearchParams(window.location.hash.slice(1));e.has("url")&&(this.url=e.get("url")),e.has("ts")&&(this.ts=e.get("ts")),e.has("query")&&(this.query=e.get("query")),e.has("view")&&(this.view=e.get("view"))}mergeConfigs(){if(!this.customConfig)return this.config;if(this.config){const e={...this.customConfig,...JSON.parse(this.config)};return JSON.stringify(e)}return JSON.stringify(this.customConfig)}updated(e){if(e.has("url")||e.has("ts")||e.has("query")||e.has("view")||e.has("source")||e.has("src")){this.embed=this.embed||"default",this.src&&(this.source=this.src);const e=new URL(this.source,document.baseURI),t=this.mergeConfigs(),i={source:e,customColl:this.coll,config:t,basePageUrl:window.location.href.split("#")[0],baseUrlSourcePrefix:this.newWindowBase,embed:this.embed};this.deepLink||i.baseUrlSourcePrefix||(i.baseUrlSourcePrefix="https://replayweb.page/"),this.noWebWorker&&(i.noWebWorker="1"),this.noCache&&(i.noCache="1"),this.hideOffscreen&&(i.hideOffscreen="1"),"eager"===this.loading&&(i.loading="eager"),"sw.js"!==this.swName&&(i.swName=this.swName),this.useRuffle&&(i.ruffle="1"),this.paramString=new URLSearchParams(i).toString(),this.hashString=new URLSearchParams({url:this.url,ts:this.ts,query:this.query,view:this.view}).toString()}}static get styles(){return ue(o`
+                        <keyword-mark keywords="${this.query}"
+                          >${e.url}</keyword-mark
+                        >
+                      </a>
+                    </td>
+                    <td class="column col-ts is-2">
+                      <p class="minihead is-hidden-tablet">Date</p>
+                      ${new Date(e.date).toLocaleString()}
+                    </td>
+                    <td class="column col-mime is-3">
+                      <p class="minihead is-hidden-tablet">Mime Type</p>
+                      ${e.mime}
+                    </td>
+                    <td class="column col-status is-1">
+                      <p class="minihead is-hidden-tablet">Status</p>
+                      ${e.status}
+                    </td>
+                  </tr>
+                `)):T`<tr class="section">
+                <td colspan="4"><i>No Results Found.</i></td>
+              </tr>`}
+        </tbody>
+      </table>
+    `}onSort(e){e.preventDefault();const t=e.currentTarget.getAttribute("data-key");t===this.sortKey?this.sortDesc=!this.sortDesc:(this.sortDesc=!1,this.sortKey=t)}onSortChanged(e){this.sortedResults=e.detail.sortedData,this.sortKey=e.detail.sortKey,this.sortDesc=e.detail.sortDesc}onReplay(e){e.preventDefault();const t={url:e.currentTarget.getAttribute("data-url"),ts:e.currentTarget.getAttribute("data-ts")};return this.dispatchEvent(new CustomEvent("coll-tab-nav",{detail:{data:t}})),!1}}customElements.define("wr-coll-resources",ia);var aa=document.currentScript&&document.currentScript.src,ra="";class oa extends X{constructor(){super(),this.replaybase="./replay/",this.replayfile=ra,this.swName="sw.js",this.mainElementName="replay-app-main",this.appName="ReplayWeb.page",this.view="replay",this.ts="",this.url="",this.query="",this.config="",this.customConfig=null,this.coll="",this.paramString=null,this.deepLink=!1,this.newWindowBase="",this.inited=!1,this.embed=null,this.reloadCount=0,this.sandbox=!1,this.noWebWorker=!1,this.noCache=!1,this.noSandbox=null,this.logo=fe(),this.loading="",this.useRuffle=!1}static setDefaultReplayFile(e){ra=e}static get properties(){return{url:{type:String},ts:{type:String},query:{type:String},source:{type:String},src:{type:String},view:{type:String},embed:{type:String},replaybase:{type:String},swName:{type:String},title:{type:String},coll:{type:String},config:{type:String},inited:{type:Boolean},paramString:{type:String},hashString:{type:String},deepLink:{type:Boolean},sandbox:{type:Boolean},noSandbox:{type:Boolean},noWebWorker:{type:Boolean},noCache:{type:Boolean},hideOffscreen:{type:Boolean},newWindowBase:{type:String},errorMessage:{type:String},requireSubdomainIframe:{type:Boolean},loading:{type:String},useRuffle:{type:Boolean}}}async doRegister(){const e=new URL(this.replaybase,window.location.href);if(this.isCrossOrigin=e.origin!==window.location.origin,this.isCrossOrigin)return void(this.inited=!0);const t=this.swName,i=this.appName,a=this.replaybase,r=this.requireSubdomainIframe;this.swmanager=new Ee({name:t,scope:a,requireSubdomainIframe:r,appName:i});try{await this.swmanager.register(),this.inited=!0}catch(e){this.errorMessage=this.swmanager.renderErrorReport(this.logo)}}handleMessage(e){const t=this.renderRoot.querySelector("iframe");if(t&&e.source===t.contentWindow){if(!e.data.view)return;if(e.data.title&&(this.title=e.data.title),!this.deepLink)return;const t=new URLSearchParams(e.data),i=new URL(window.location.href);i.hash="#"+t.toString(),window.history.replaceState({},"",i)}}firstUpdated(){this.noSandbox&&console.warn("The noSandbox flag is deprecated. ReplayWeb.page does not add a sandbox by default. To enable sandboxing, use 'sandbox' flag instead. This may result in PDFs not loading and pages opening in new windows, but may be more secure in some situations"),this.doRegister(),window.addEventListener("message",(e=>this.handleMessage(e))),this.deepLink&&(this.updateFromHash(),window.addEventListener("hashchange",(()=>this.updateFromHash()))),this.loadBrowserDefaults()}loadBrowserDefaults(){void 0!==window.GestureEvent&&void 0===window.SharedWorker&&(this.noWebWorker=!0),navigator.storage&&navigator.storage.estimate||(this.noCache=!0)}updateFromHash(){const e=new URLSearchParams(window.location.hash.slice(1));e.has("url")&&(this.url=e.get("url")),e.has("ts")&&(this.ts=e.get("ts")),e.has("query")&&(this.query=e.get("query")),e.has("view")&&(this.view=e.get("view"))}mergeConfigs(){if(!this.customConfig)return this.config;if(this.config){const e={...this.customConfig,...JSON.parse(this.config)};return JSON.stringify(e)}return JSON.stringify(this.customConfig)}updated(e){if(e.has("url")||e.has("ts")||e.has("query")||e.has("view")||e.has("source")||e.has("src")){this.embed=this.embed||"default",this.src&&(this.source=this.src);const e=new URL(this.source,document.baseURI),t=this.mergeConfigs(),i={source:e,customColl:this.coll,config:t,basePageUrl:window.location.href.split("#")[0],baseUrlSourcePrefix:this.newWindowBase,embed:this.embed};this.deepLink||i.baseUrlSourcePrefix||(i.baseUrlSourcePrefix="https://replayweb.page/"),this.noWebWorker&&(i.noWebWorker="1"),this.noCache&&(i.noCache="1"),this.hideOffscreen&&(i.hideOffscreen="1"),"eager"===this.loading&&(i.loading="eager"),"sw.js"!==this.swName&&(i.swName=this.swName),this.useRuffle&&(i.ruffle="1"),this.paramString=new URLSearchParams(i).toString(),this.hashString=new URLSearchParams({url:this.url,ts:this.ts,query:this.query,view:this.view}).toString()}}static get styles(){return ue(o`
       .logo {
         margin: 1em;
         flex-grow: 1;
