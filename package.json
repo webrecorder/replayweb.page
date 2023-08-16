@@ -170,5 +170,8 @@
         "role": "Viewer"
       }
     ]
+  },
+  "lint-staged": {
+    "*.ts": "prettier --write"
   }
 }
