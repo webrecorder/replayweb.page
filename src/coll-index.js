@@ -1,4 +1,5 @@
 import { LitElement, html, css } from "lit";
+import {map} from 'lit/directives/map.js';
 import { wrapCss, apiPrefix } from "./misc";
 
 import prettyBytes from "pretty-bytes";
@@ -418,7 +419,7 @@ class CollInfo extends LitElement
       <p><i>(${coll.filename})</i></p>` : ""}
   </div>
   <div class="column is-2"><p class="minihead">Date Loaded</p>${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}</div>
-  <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.size || 0))}</div>
+  <div class="column is-2"><p class="minihead">Total Size</p>${prettyBytes(Number(coll.totalSize || coll.size || 0))}</div>
   `;
   }
 
@@ -449,7 +450,7 @@ class CollInfo extends LitElement
       <div class="columns">
         <div class="column col-title is-4">
           <span class="subtitle has-text-weight-bold">
-            ${coll.title || coll.filename}
+            ${coll.name || coll.title || coll.filename}
           </span>
         </div>
         ${coll.desc ? html`
@@ -458,7 +459,20 @@ class CollInfo extends LitElement
             ${coll.desc}
           </div>` : html`
         `}
-        <div class="column"><p class="minihead">Filename</p>${coll.filename}</div>
+        <div class="column">
+					<p class="minihead">Filename</p>
+					${coll.filename}
+				</div>
+				${coll.resources ? 
+						html`
+						<div class="column">
+							<p class="minihead">Files</p>
+								<ul>
+									${map(coll.resources, (resource) => 
+										html`<li><a href="${resource.path}">${resource.name + '\n'}</a></li>`)}
+								</ul>
+						</div>`
+					: html``}
         ${this.renderSource(coll)}
 
         ${domain ? html`

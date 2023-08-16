@@ -544,7 +544,7 @@ class Pages extends LitElement
         ${this.editable && this.editing ? html`
         <form @submit="${this.onUpdateTitle}"><input id="titleEdit" class="input" value="${this.collInfo.title}" @blur="${this.onUpdateTitle}"></form>
         ` : html`
-        <div class="index-bar-title" @dblclick="${() => this.editing = true}">${this.collInfo.title}</div>`}
+        <div class="index-bar-title" @dblclick="${() => this.editing = true}">${this.collInfo.name || this.collInfo.title}</div><div class="index-bar-description" @dblclick="${() => this.editing = true}">${this.collInfo.description || ""}</div>`}
 
         ${this.editable ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>` : html``}
 
