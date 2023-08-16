@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { wrapCss, apiPrefix } from "./misc";
+import { map } from "lit/directives/map.js";
 
 import prettyBytes from "pretty-bytes";
 
@@ -503,7 +504,7 @@ class CollInfo extends LitElement {
     return html` <div class="columns">
       <div class="column col-title is-4">
         <span class="subtitle has-text-weight-bold">
-          ${coll.title || coll.filename}
+          ${coll.name || coll.title || coll.filename}
         </span>
       </div>
       ${coll.desc
@@ -516,6 +517,20 @@ class CollInfo extends LitElement {
         <p class="minihead">Filename</p>
         ${coll.filename}
       </div>
+      ${coll.resources
+        ? html`<div class="column">
+            <p class="minihead">Files</p>
+            <ul>
+              ${map(
+                coll.resources,
+                (resource) =>
+                  html`<li>
+                    <a href="${resource.path}">${resource.name + "\n"}</a>
+                  </li>`,
+              )}
+            </ul>
+          </div>`
+        : html``}
       ${this.renderSource(coll)}
       ${domain
         ? html`
