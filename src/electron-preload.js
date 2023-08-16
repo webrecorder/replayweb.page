@@ -4,7 +4,7 @@ import { CollectionLoader } from "@webrecorder/wabac/src/loaders";
 
 const { ipcRenderer, contextBridge } = require("electron");
 
-contextBridge.exposeInMainWorld("electron", {"IS_APP": true});
+contextBridge.exposeInMainWorld("electron", { IS_APP: true });
 
 const dbs = {};
 
@@ -27,9 +27,9 @@ async function getDB(name) {
 async function getResponse(event, request, coll, ts, channel) {
   const db = await getDB(coll);
 
-  const req = {request, url: request.url, timestamp: ts};
+  const req = { request, url: request.url, timestamp: ts };
 
-  const result = await db.getResource(req, "", {request});
+  const result = await db.getResource(req, "", { request });
 
   if (!result) {
     ipcRenderer.send(channel, 404);
@@ -46,7 +46,3 @@ async function getResponse(event, request, coll, ts, channel) {
 ipcRenderer.on("getresponse", getResponse);
 
 export { getDB, getColl, loader };
-
-
-
-

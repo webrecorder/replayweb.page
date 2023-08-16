@@ -1,11 +1,14 @@
 import { html } from "lit";
 import { register } from "register-service-worker";
 
-
 // ===========================================================================
-export class SWManager
-{
-  constructor({name = "sw.js", scope = "./", appName = "ReplayWeb.page", requireSubdomainIframe = false} = {}) {
+export class SWManager {
+  constructor({
+    name = "sw.js",
+    scope = "./",
+    appName = "ReplayWeb.page",
+    requireSubdomainIframe = false,
+  } = {}) {
     this.name = name;
     this.scope = scope;
     this.appName = appName;
@@ -20,7 +23,7 @@ export class SWManager
 
   register() {
     let resolve, reject;
-    
+
     const p = new Promise((res, rej) => {
       resolve = res;
       reject = rej;
@@ -37,20 +40,24 @@ export class SWManager
       console.error("Error during service worker registration:", error);
       this.errorMsg = this.getCrossOriginIframeMsg();
       if (!this.errorMsg) {
-        this.errorMsg = `${this.appName} could not be loaded due to the following error:\n${error.toString()}`;
+        this.errorMsg = `${
+          this.appName
+        } could not be loaded due to the following error:\n${error.toString()}`;
       }
-    
+
       reject(this.errorMsg);
     };
-    
+
     register(this.scope + this.name, {
       registrationOptions: { scope: this.scope },
-      registered () {
+      registered() {
         console.log("Service worker is registered");
         resolve();
       },
 
-      error(errMsg) { handleError(errMsg); }
+      error(errMsg) {
+        handleError(errMsg);
+      },
     });
 
     return p;
@@ -81,7 +88,6 @@ export class SWManager
 
   getSWErrorMsg() {
     if (navigator.serviceWorker) {
-
       // must be loaded from a cross-origin (eg. subdomain)
       if (this.requireSubdomainIframe && !this.isCrossOriginIframe()) {
         return `Sorry, due to security settings, this ${this.appName} embed only be viewed within a subdomain iframe.`;
@@ -109,7 +115,6 @@ export class SWManager
 
     return `Sorry, ${this.appName} won't work in this browser as Service Workers are not supported in this window.
   Please try a different browser.`;
-
   }
 
   renderErrorReport(logo, override) {
@@ -120,13 +125,18 @@ export class SWManager
     }
 
     return html`
-    <section class="is-fullwidth">
-    <div class="has-text-centered">
-      <fa-icon style="margin: 1em;flex-grow: 1;" id="wrlogo" size="2.5rem" .svg=${logo} aria-hidden="true"></fa-icon>
-    </div>
-    <div style="white-space: pre-wrap; text-align: center" >${msg}</div>
-  </section>
+      <section class="is-fullwidth">
+        <div class="has-text-centered">
+          <fa-icon
+            style="margin: 1em;flex-grow: 1;"
+            id="wrlogo"
+            size="2.5rem"
+            .svg=${logo}
+            aria-hidden="true"
+          ></fa-icon>
+        </div>
+        <div style="white-space: pre-wrap; text-align: center">${msg}</div>
+      </section>
     `;
   }
 }
-

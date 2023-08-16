@@ -1,11 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { wrapCss, rwpLogo } from "./misc";
 
-
-
 // ===========================================================================
-class Replay extends LitElement
-{
+class Replay extends LitElement {
   constructor() {
     super();
     this.replayUrl = "";
@@ -23,7 +20,7 @@ class Replay extends LitElement
 
   static get properties() {
     return {
-      collInfo: {type: Object },
+      collInfo: { type: Object },
       sourceUrl: { type: String },
 
       // external url set from parent
@@ -39,21 +36,30 @@ class Replay extends LitElement
       iframeUrl: { type: String },
 
       showAuth: { type: Boolean },
-      authFileHandle: { type: Object }
+      authFileHandle: { type: Object },
     };
   }
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
-    navigator.serviceWorker.addEventListener("message", (event) => this.handleAuthMessage(event));
+    navigator.serviceWorker.addEventListener("message", (event) =>
+      this.handleAuthMessage(event),
+    );
   }
 
   async handleAuthMessage(event) {
-    if (event.data.type === "authneeded" && this.collInfo && event.data.coll === this.collInfo.coll) {
+    if (
+      event.data.type === "authneeded" &&
+      this.collInfo &&
+      event.data.coll === this.collInfo.coll
+    ) {
       if (event.data.fileHandle) {
         this.authFileHandle = event.data.fileHandle;
         try {
-          if (await this.authFileHandle.requestPermission({mode: "read"}) === "granted") {
+          if (
+            (await this.authFileHandle.requestPermission({ mode: "read" })) ===
+            "granted"
+          ) {
             this.showAuth = false;
             this.reauthWait = null;
             this.refresh();
@@ -61,7 +67,7 @@ class Replay extends LitElement
           }
         } catch (e) {
           console.warn(e);
-        } 
+        }
       } else {
         this.authFileHandle = null;
       }
@@ -75,18 +81,24 @@ class Replay extends LitElement
   }
 
   doSetIframeUrl() {
-    this.iframeUrl = this.url ? `${this.collInfo.replayPrefix}/${this.ts || ""}mp_/${this.url}` : "";
+    this.iframeUrl = this.url
+      ? `${this.collInfo.replayPrefix}/${this.ts || ""}mp_/${this.url}`
+      : "";
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("sourceUrl") || changedProperties.has("collInfo")) {
+    if (
+      changedProperties.has("sourceUrl") ||
+      changedProperties.has("collInfo")
+    ) {
       this.reauthWait = null;
     }
 
-    if (this.url &&
-        ((this.replayUrl != this.url) || (this.replayTS != this.ts)) &&
-        (changedProperties.has("url") || changedProperties.has("ts"))) {
-
+    if (
+      this.url &&
+      (this.replayUrl != this.url || this.replayTS != this.ts) &&
+      (changedProperties.has("url") || changedProperties.has("ts"))
+    ) {
       this.replayUrl = this.url;
       this.replayTS = this.ts;
       this.showAuth = false;
@@ -97,30 +109,49 @@ class Replay extends LitElement
     if (this.iframeUrl && changedProperties.has("iframeUrl")) {
       this.waitForLoad();
 
-      const detail = {title: "Archived Page", replayTitle: false};
-      this.dispatchEvent(new CustomEvent("update-title", {bubbles: true, composed: true, detail}));
+      const detail = { title: "Archived Page", replayTitle: false };
+      this.dispatchEvent(
+        new CustomEvent("update-title", {
+          bubbles: true,
+          composed: true,
+          detail,
+        }),
+      );
     }
 
-    if ((this.replayUrl && changedProperties.has("replayUrl")) || 
-        (this.replayTS && changedProperties.has("replayTS"))) {
+    if (
+      (this.replayUrl && changedProperties.has("replayUrl")) ||
+      (this.replayTS && changedProperties.has("replayTS"))
+    ) {
       const data = {
         url: this.replayUrl,
         ts: this.replayTS,
       };
 
-      this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {replaceLoc: true, data}}));
+      this.dispatchEvent(
+        new CustomEvent("coll-tab-nav", { detail: { replaceLoc: true, data } }),
+      );
     }
 
-    if (this.title && (changedProperties.has("title") || changedProperties.has("actualTS"))) {
+    if (
+      this.title &&
+      (changedProperties.has("title") || changedProperties.has("actualTS"))
+    ) {
       const detail = {
         title: this.title,
         url: this.replayUrl,
         // send actual ts even if live
         ts: this.actualTS,
 
-        replayTitle: true
+        replayTitle: true,
       };
-      this.dispatchEvent(new CustomEvent("update-title", {bubbles: true, composed: true, detail}));
+      this.dispatchEvent(
+        new CustomEvent("update-title", {
+          bubbles: true,
+          composed: true,
+          detail,
+        }),
+      );
     }
   }
 
@@ -136,7 +167,10 @@ class Replay extends LitElement
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe && event.source === iframe.contentWindow) {
-      if (event.data.wb_type === "load" || event.data.wb_type === "replace-url") {
+      if (
+        event.data.wb_type === "load" ||
+        event.data.wb_type === "replace-url"
+      ) {
         this.replayTS = event.data.is_live ? "" : event.data.ts;
         this.actualTS = event.data.ts;
         this.replayUrl = event.data.url;
@@ -145,7 +179,13 @@ class Replay extends LitElement
 
         if (event.data.icons) {
           const icons = event.data.icons;
-          this.dispatchEvent(new CustomEvent("replay-favicons", {bubbles: true, composed: true, detail: {icons}}));
+          this.dispatchEvent(
+            new CustomEvent("replay-favicons", {
+              bubbles: true,
+              composed: true,
+              detail: { icons },
+            }),
+          );
         }
       } else if (event.data.wb_type === "title") {
         this.title = event.data.title;
@@ -155,17 +195,19 @@ class Replay extends LitElement
 
   onReAuthed(event) {
     this.reauthWait = (async () => {
-
       if (!this.authFileHandle) {
         // google drive reauth
         const headers = event.detail.headers;
 
         await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
           method: "POST",
-          body: JSON.stringify({headers})
+          body: JSON.stringify({ headers }),
         });
       } else {
-        if (await this.authFileHandle.requestPermission({mode: "read"}) !== "granted") {
+        if (
+          (await this.authFileHandle.requestPermission({ mode: "read" })) !==
+          "granted"
+        ) {
           this.reauthWait = null;
           return;
         }
@@ -184,15 +226,22 @@ class Replay extends LitElement
     this.setLoading();
     this._loadPoll = window.setInterval(() => {
       const iframe = this.renderRoot.querySelector("iframe");
-      if (!iframe || !iframe.contentDocument || !iframe.contentWindow ||
-        (iframe.contentDocument.readyState === "complete" && !iframe.contentWindow._WBWombat)) {
+      if (
+        !iframe ||
+        !iframe.contentDocument ||
+        !iframe.contentWindow ||
+        (iframe.contentDocument.readyState === "complete" &&
+          !iframe.contentWindow._WBWombat)
+      ) {
         this.clearLoading(iframe && iframe.contentWindow);
       }
     }, 5000);
   }
 
   clearLoading(iframeWin) {
-    this.dispatchEvent(new CustomEvent("replay-loading", {detail: {loading: false}}));
+    this.dispatchEvent(
+      new CustomEvent("replay-loading", { detail: { loading: false } }),
+    );
 
     if (this._loadPoll) {
       window.clearInterval(this._loadPoll);
@@ -207,7 +256,9 @@ class Replay extends LitElement
   }
 
   setLoading() {
-    this.dispatchEvent(new CustomEvent("replay-loading", {detail: {loading: true}}));
+    this.dispatchEvent(
+      new CustomEvent("replay-loading", { detail: { loading: true } }),
+    );
   }
 
   refresh() {
@@ -252,13 +303,13 @@ class Replay extends LitElement
       }
 
       .intro-panel .panel-heading {
-        font-size: 1.0em;
+        font-size: 1em;
         display: inline-block;
       }
 
       .iframe-main.modal-bg {
         z-index: 200;
-        background-color: rgba(10, 10, 10, 0.70)
+        background-color: rgba(10, 10, 10, 0.7);
       }
 
       #wrlogo {
@@ -266,7 +317,7 @@ class Replay extends LitElement
       }
 
       .intro-panel .panel-block {
-        padding: 1.0em;
+        padding: 1em;
         flex-direction: column;
         line-height: 2.5em;
       }
@@ -282,49 +333,78 @@ class Replay extends LitElement
   }
 
   render() {
-    const title = `Replay of ${this.title ? `${this.title}:` :""} ${this.url}`;
+    const title = `Replay of ${this.title ? `${this.title}:` : ""} ${this.url}`;
 
-    return html`
+    return html` <h1 id="replay-heading" class="is-sr-only">${title}</h1>
 
-    <h1 id="replay-heading" class="is-sr-only">${title}</h1>
-
-    ${!this.iframeUrl ? html`
-      <div class="panel intro-panel">
-        <p class="panel-heading">Replay Web Page</p>
-        <div class="panel-block">
-          <p>Enter a URL above to replay it from the web archive!</p>
-          <p>(Or, check out <a href="#view=pages">Pages</a> or <a href="#view=resources">URLs</a> to explore the contents of this archive.)</p>
-        </div>
-      </div>` : html`
-
-      <div class="iframe-container">
-        <iframe class="iframe-main" name="___wb_replay_top_frame" @message="${this.onReplayMessage}" allow="autoplay 'self'; fullscreen" allowfullscreen
-        src="${this.iframeUrl}" title="${title}"></iframe>
-
-        ${this.showAuth ? html`
-        <div class="iframe-main modal-bg">
-          <div class="panel intro-panel">
-            <p class="panel-heading">
-              <fa-icon id="wrlogo" size="1.5rem" .svg=${rwpLogo} aria-hidden="true"></fa-icon>
-              Authorization Needed
-            </p>
+      ${!this.iframeUrl
+        ? html` <div class="panel intro-panel">
+            <p class="panel-heading">Replay Web Page</p>
             <div class="panel-block">
-              ${this.authFileHandle ? html`
-              <p>This archive is loaded from a local file: <b>${this.authFileHandle.name}</b></p>
-              <p>The browser needs to confirm your permission to continue loading from this file.</p>
-              <button class="button is-warning is-rounded" @click="${this.onReAuthed}">Show Confirmation</button>
-              ` : html`
-              <wr-gdrive
-                .sourceUrl="${this.sourceUrl}"
-                .state="trymanual"
-                .reauth="${true}"
-                @load-ready="${this.onReAuthed}"/>`}
+              <p>Enter a URL above to replay it from the web archive!</p>
+              <p>
+                (Or, check out <a href="#view=pages">Pages</a> or
+                <a href="#view=resources">URLs</a> to explore the contents of
+                this archive.)
+              </p>
             </div>
-          </div>
-        </div>
-        `: ""}
-      </div>
-    `}`;
+          </div>`
+        : html`
+            <div class="iframe-container">
+              <iframe
+                class="iframe-main"
+                name="___wb_replay_top_frame"
+                @message="${this.onReplayMessage}"
+                allow="autoplay 'self'; fullscreen"
+                allowfullscreen
+                src="${this.iframeUrl}"
+                title="${title}"
+              ></iframe>
+
+              ${this.showAuth
+                ? html`
+                    <div class="iframe-main modal-bg">
+                      <div class="panel intro-panel">
+                        <p class="panel-heading">
+                          <fa-icon
+                            id="wrlogo"
+                            size="1.5rem"
+                            .svg=${rwpLogo}
+                            aria-hidden="true"
+                          ></fa-icon>
+                          Authorization Needed
+                        </p>
+                        <div class="panel-block">
+                          ${this.authFileHandle
+                            ? html`
+                                <p>
+                                  This archive is loaded from a local file:
+                                  <b>${this.authFileHandle.name}</b>
+                                </p>
+                                <p>
+                                  The browser needs to confirm your permission
+                                  to continue loading from this file.
+                                </p>
+                                <button
+                                  class="button is-warning is-rounded"
+                                  @click="${this.onReAuthed}"
+                                >
+                                  Show Confirmation
+                                </button>
+                              `
+                            : html` <wr-gdrive
+                                .sourceUrl="${this.sourceUrl}"
+                                .state="trymanual"
+                                .reauth="${true}"
+                                @load-ready="${this.onReAuthed}"
+                              />`}
+                        </div>
+                      </div>
+                    </div>
+                  `
+                : ""}
+            </div>
+          `}`;
   }
 }
 

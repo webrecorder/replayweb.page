@@ -8,11 +8,8 @@ import { getTS, getReplayLink } from "./pageutils";
 
 import Split from "split.js";
 
-
-
 // ===========================================================================
-class Story extends LitElement
-{
+class Story extends LitElement {
   constructor() {
     super();
 
@@ -42,18 +39,19 @@ class Story extends LitElement
       currList: { type: Number },
 
       isSidebar: { type: Boolean },
-      splitDirection: { type: Boolean }
+      splitDirection: { type: Boolean },
     };
   }
 
   recalcSplitter(width) {
-    this.splitDirection = this.isSidebar || width < 769 ? "vertical" : "horizontal";
+    this.splitDirection =
+      this.isSidebar || width < 769 ? "vertical" : "horizontal";
   }
 
   firstUpdated() {
     this.recalcSplitter(document.documentElement.clientWidth);
 
-    this.obs = new ResizeObserver((entries/*, observer*/) => {
+    this.obs = new ResizeObserver((entries /*, observer*/) => {
       this.recalcSplitter(entries[0].contentRect.width);
     });
 
@@ -65,7 +63,10 @@ class Story extends LitElement
       this.doLoadCurated();
     }
 
-    if (changedProperties.has("collInfo") || changedProperties.has("isSidebar")) {
+    if (
+      changedProperties.has("collInfo") ||
+      changedProperties.has("isSidebar")
+    ) {
       this.recalcSplitter(document.documentElement.clientWidth);
     }
 
@@ -99,11 +100,11 @@ class Story extends LitElement
 
         gutterSize: 4,
 
-        direction: this.splitDirection
+        direction: this.splitDirection,
       };
 
       this.splitter = Split([sidebar, content], opts);
-    } 
+    }
   }
 
   async doLoadCurated() {
@@ -134,7 +135,7 @@ class Story extends LitElement
       const title = page.title || page.url;
       const desc = curated.desc;
 
-      this.curatedPageMap[curated.list].push({url, ts, title, desc});
+      this.curatedPageMap[curated.list].push({ url, ts, title, desc });
     }
 
     this.scrollToList();
@@ -142,161 +143,182 @@ class Story extends LitElement
 
   static get styles() {
     return wrapCss(css`
-    :host {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      min-width: 0px;
+      :host {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        min-width: 0px;
 
-      justify-content: flex-start;
-      align-items: center;
-    }
+        justify-content: flex-start;
+        align-items: center;
+      }
 
-    :host(.sidebar) .columns {
-      display: flex !important;
-      flex-direction: column;
-    }
+      :host(.sidebar) .columns {
+        display: flex !important;
+        flex-direction: column;
+      }
 
-    :host(.sidebar) .column.sidebar.is-one-fifth {
-      width: 100% !important;
-    }
+      :host(.sidebar) .column.sidebar.is-one-fifth {
+        width: 100% !important;
+      }
 
-    ${Story.sidebarStyles(unsafeCSS(":host(.sidebar)"))}
+      ${Story.sidebarStyles(unsafeCSS(":host(.sidebar)"))}
 
-    .desc p {
-      margin-bottom: 1.0em;
-    }
+      .desc p {
+        margin-bottom: 1em;
+      }
 
-    .columns {
-      width: 100%;
-      height: 100%;
-      justify-self: stretch;
-      margin: 1.0em 0 0 0 !important;
-      min-height: 0;
-    }
-
-    .column.main-content {
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      padding: 0px;
-      margin-left: 0.75em;
-    }
-
-    .column.main-content.main-scroll {
-      padding-right: 0.75em;
-      word-break: break-all;
-    }
-
-    ul.menu-list a.is-active {
-      background-color: #55be6f;
-    }
-    ol {
-      margin-left: 30px;
-    }
-
-    @media screen and (min-width: 769px) {
       .columns {
-        margin-top: 0.75em;
+        width: 100%;
+        height: 100%;
+        justify-self: stretch;
+        margin: 1em 0 0 0 !important;
+        min-height: 0;
       }
 
-      .column.sidebar {
-        max-height: 100%;
-        overflow-y: auto;
+      .column.main-content {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 0px;
+        margin-left: 0.75em;
       }
-    }
 
-    @media screen and (max-width: 768px) {
-      ${Story.sidebarStyles()}
-    }
+      .column.main-content.main-scroll {
+        padding-right: 0.75em;
+        word-break: break-all;
+      }
 
-    .gutter.gutter-vertical:hover {
-      cursor: row-resize;
-    }
+      ul.menu-list a.is-active {
+        background-color: #55be6f;
+      }
+      ol {
+        margin-left: 30px;
+      }
 
-    .gutter.gutter-horizontal:hover {
-      cursor: col-resize;
-    }
+      @media screen and (min-width: 769px) {
+        .columns {
+          margin-top: 0.75em;
+        }
 
+        .column.sidebar {
+          max-height: 100%;
+          overflow-y: auto;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        ${Story.sidebarStyles()}
+      }
+
+      .gutter.gutter-vertical:hover {
+        cursor: row-resize;
+      }
+
+      .gutter.gutter-horizontal:hover {
+        cursor: col-resize;
+      }
     `);
   }
 
   static sidebarStyles(prefix = css``) {
     return css`
-    ${prefix} .columns {
-      position: relative;
-    }
+      ${prefix} .columns {
+        position: relative;
+      }
 
-    ${prefix} .column.sidebar {
-      overflow-y: auto;
-      margin-top: 0.75em;
-    }
+      ${prefix} .column.sidebar {
+        overflow-y: auto;
+        margin-top: 0.75em;
+      }
 
-    ${prefix} .column.main-content {
-      position: relative;
-      overflow-y: auto;
+      ${prefix} .column.main-content {
+        position: relative;
+        overflow-y: auto;
 
-      border-top: 1px solid black;
+        border-top: 1px solid black;
 
-      height: 100%;
-    }
+        height: 100%;
+      }
 
-    ${prefix} .menu {
-      font-size: 0.80rem;
-    }`;
+      ${prefix} .menu {
+        font-size: 0.8rem;
+      }
+    `;
   }
 
   render() {
     const currListNum = this.currList;
 
     return html`
-    <div class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">
-      Story for ${this.collInfo.title}
-    </div>
-    <div class="columns">
-      <div class="column sidebar is-one-fifth">
-        <aside class="menu">
-          <ul class="menu-list">
-            <li>
-              <a href="#list-0" data-list="0" class="${currListNum === 0 ? "is-active" : ""} menu-label is-size-4"
-                @click=${this.onClickScroll}>${this.collInfo.title}</a>
-              <ul class="menu-list">${this.collInfo.lists.map(list => html`
-                <li>
-                  <a @click=${this.onClickScroll} href="#list-${list.id}"
-                  data-list="${list.id}" 
-                  class="${currListNum === list.id ? "is-active" : ""}">${list.title}</a>
-                </li>`)}
-              </ul>
-            </li>
-          </ul>
-        </aside>
+      <div
+        class="is-sr-only"
+        role="heading"
+        aria-level="${this.isSidebar ? "2" : "1"}"
+      >
+        Story for ${this.collInfo.title}
       </div>
-      <div @scroll=${this.onScroll} class="column main-content main-scroll">
-        <section id="list-0" class="desc">
-          <h2 class="has-text-centered title is-3">${this.collInfo.title}</h2>
-          ${this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ""}
-        </section>
-        ${this.renderLists()}
+      <div class="columns">
+        <div class="column sidebar is-one-fifth">
+          <aside class="menu">
+            <ul class="menu-list">
+              <li>
+                <a
+                  href="#list-0"
+                  data-list="0"
+                  class="${currListNum === 0
+                    ? "is-active"
+                    : ""} menu-label is-size-4"
+                  @click=${this.onClickScroll}
+                  >${this.collInfo.title}</a
+                >
+                <ul class="menu-list">
+                  ${this.collInfo.lists.map(
+                    (list) =>
+                      html` <li>
+                        <a
+                          @click=${this.onClickScroll}
+                          href="#list-${list.id}"
+                          data-list="${list.id}"
+                          class="${currListNum === list.id ? "is-active" : ""}"
+                          >${list.title}</a
+                        >
+                      </li>`,
+                  )}
+                </ul>
+              </li>
+            </ul>
+          </aside>
+        </div>
+        <div @scroll=${this.onScroll} class="column main-content main-scroll">
+          <section id="list-0" class="desc">
+            <h2 class="has-text-centered title is-3">${this.collInfo.title}</h2>
+            ${this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ""}
+          </section>
+          ${this.renderLists()}
+        </div>
       </div>
-    </div>
-  `;
+    `;
   }
 
   renderLists() {
-    return html`
-    ${this.collInfo.lists.map((list) => html`
-    <article id="list-${list.id}">
-      <div class="content">
-        <hr/>
-        <h3>${list.title}</h3>
-        <p>${list.desc}</p>
-        <ol>
-          ${this.curatedPageMap[list.id] ? this.curatedPageMap[list.id].map((p) => this.renderCPage(p)) : html``}
-        </ol>
-      </div>
-    </article>
-    `)}`;
+    return html` ${this.collInfo.lists.map(
+      (list) => html`
+        <article id="list-${list.id}">
+          <div class="content">
+            <hr />
+            <h3>${list.title}</h3>
+            <p>${list.desc}</p>
+            <ol>
+              ${this.curatedPageMap[list.id]
+                ? this.curatedPageMap[list.id].map((p) => this.renderCPage(p))
+                : html``}
+            </ol>
+          </div>
+        </article>
+      `,
+    )}`;
   }
 
   renderCPage(p) {
@@ -304,18 +326,21 @@ class Story extends LitElement
 
     const ts = getTS(date.toISOString());
 
-    return html`
-    <li>
+    return html` <li>
       <div class="content">
-        <a @click="${this.onReplay}" data-url="${p.url}" data-ts="${ts}"
-          href="${getReplayLink("story", p.url, ts)}">
+        <a
+          @click="${this.onReplay}"
+          data-url="${p.url}"
+          data-ts="${ts}"
+          href="${getReplayLink("story", p.url, ts)}"
+        >
           <p class="is-size-6 has-text-weight-bold has-text-link">${p.title}</p>
           <p class="has-text-dark">${p.url}</p>
         </a>
         <p>${date.toLocaleString()}</p>
         <p>${p.desc}</p>
       </div>
-      <hr/>
+      <hr />
     </li>`;
   }
 
@@ -330,7 +355,7 @@ class Story extends LitElement
   }
 
   sendChangeEvent(data) {
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
   }
 
   onClickScroll(event) {
@@ -347,7 +372,7 @@ class Story extends LitElement
       this.currList = 0;
     }
 
-    const opts = {behavior: "smooth", block: "nearest", inline: "nearest"};
+    const opts = { behavior: "smooth", block: "nearest", inline: "nearest" };
     this.clickTime = new Date().getTime();
     const curr = this.renderRoot.getElementById("list-" + this.currList);
     if (curr) {
@@ -368,11 +393,17 @@ class Story extends LitElement
     const currST = scrollable.scrollTop;
 
     if (currST > this.lastST) {
-      while (next.nextElementSibling && next.nextElementSibling.getBoundingClientRect().top < target) {
+      while (
+        next.nextElementSibling &&
+        next.nextElementSibling.getBoundingClientRect().top < target
+      ) {
         next = next.nextElementSibling;
       }
     } else {
-      while (next.previousElementSibling && next.previousElementSibling.getBoundingClientRect().bottom >= target) {
+      while (
+        next.previousElementSibling &&
+        next.previousElementSibling.getBoundingClientRect().bottom >= target
+      ) {
         next = next.previousElementSibling;
       }
     }
@@ -383,13 +414,15 @@ class Story extends LitElement
       }
     }
 
-    if ((new Date().getTime() - this.clickTime) < 1000) {
+    if (new Date().getTime() - this.clickTime < 1000) {
       return;
     }
 
-    const sel = this.renderRoot.querySelector(`a[data-list="${this.currList}"]`);
+    const sel = this.renderRoot.querySelector(
+      `a[data-list="${this.currList}"]`,
+    );
     if (sel) {
-      const opts = {behavior: "smooth", block: "nearest", inline: "nearest"};
+      const opts = { behavior: "smooth", block: "nearest", inline: "nearest" };
       sel.scrollIntoView(opts);
     }
   }

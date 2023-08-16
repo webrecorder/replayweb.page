@@ -3,10 +3,8 @@ import { wrapCss } from "./misc";
 
 import fabGoogleDrive from "@fortawesome/fontawesome-free/svgs/brands/google-drive.svg";
 
-
 // ===========================================================================
-class GDrive extends LitElement
-{
+class GDrive extends LitElement {
   constructor() {
     super();
     this.state = "trypublic";
@@ -20,7 +18,7 @@ class GDrive extends LitElement
       state: { type: String },
       sourceUrl: { type: String },
       error: { type: Boolean },
-      reauth: { type: Boolean }
+      reauth: { type: Boolean },
     };
   }
 
@@ -65,22 +63,25 @@ class GDrive extends LitElement
       try {
         const abort = new AbortController();
         const signal = abort.signal;
-        resp = await fetch(publicUrl, {signal});
+        resp = await fetch(publicUrl, { signal });
         abort.abort();
         if (resp.status != 200) {
           return false;
         }
-      } catch(e) {
+      } catch (e) {
         return false;
       }
 
       const name = json.name;
-      const extra = {publicUrl};
+      const extra = { publicUrl };
       const size = Number(json.size);
-  
-      this.dispatchEvent(new CustomEvent("load-ready", {detail: {name, extra, size, sourceUrl}}));
-      return true;
 
+      this.dispatchEvent(
+        new CustomEvent("load-ready", {
+          detail: { name, extra, size, sourceUrl },
+        }),
+      );
+      return true;
     } catch (e) {
       return false;
     }
@@ -112,11 +113,14 @@ class GDrive extends LitElement
     const fileId = sourceUrl.slice("googledrive://".length);
     const metadataUrl = `https://www.googleapis.com/drive/v3/files/${fileId}`;
     const authToken = response.access_token;
-    const headers = {"Authorization": `Bearer ${authToken}`};
+    const headers = { Authorization: `Bearer ${authToken}` };
 
-    const resp = await fetch(metadataUrl + "?fields=name,size&supportsAllDrives=true", {headers});
+    const resp = await fetch(
+      metadataUrl + "?fields=name,size&supportsAllDrives=true",
+      { headers },
+    );
 
-    if ((resp.status === 404 || resp.status == 403)) {
+    if (resp.status === 404 || resp.status == 403) {
       if (this.state !== "implicitonly") {
         this.state = "trymanual";
       }
@@ -130,7 +134,11 @@ class GDrive extends LitElement
     const name = metadata.name;
     const size = Number(metadata.size);
 
-    this.dispatchEvent(new CustomEvent("load-ready", {detail: {sourceUrl, headers, size, name}}));
+    this.dispatchEvent(
+      new CustomEvent("load-ready", {
+        detail: { sourceUrl, headers, size, name },
+      }),
+    );
   }
 
   static get styles() {
@@ -138,24 +146,36 @@ class GDrive extends LitElement
   }
 
   render() {
-    return html`
-    ${this.script()}
-    ${this.state !== "trymanual" ? html`
-    <p>Connecting to Google Drive...</p>
-    ` : html`
-    ${this.error ? html`
-    <div class="error has-text-danger">
-      <p>${this.reauth ? "Some resources are loaded on demand from Google Drive, which requires reauthorization." :
-    "Could not access this file with the current Google Drive account."}</p>
-      <p>If you have multiple Google Drive accounts, be sure to select the correct one.</p>
-    </div>
-    <br/>
-    ` : ""}
-    <button class="button is-warning is-rounded" @click="${this.onClickAuth}">
-    <span class="icon"><fa-icon .svg="${fabGoogleDrive}"></fa-icon></span>
-    <span>Authorize Google Drive</span>
-    </button>
-    `}`;
+    return html` ${this.script()}
+    ${this.state !== "trymanual"
+      ? html` <p>Connecting to Google Drive...</p> `
+      : html`
+          ${this.error
+            ? html`
+                <div class="error has-text-danger">
+                  <p>
+                    ${this.reauth
+                      ? "Some resources are loaded on demand from Google Drive, which requires reauthorization."
+                      : "Could not access this file with the current Google Drive account."}
+                  </p>
+                  <p>
+                    If you have multiple Google Drive accounts, be sure to
+                    select the correct one.
+                  </p>
+                </div>
+                <br />
+              `
+            : ""}
+          <button
+            class="button is-warning is-rounded"
+            @click="${this.onClickAuth}"
+          >
+            <span class="icon"
+              ><fa-icon .svg="${fabGoogleDrive}"></fa-icon
+            ></span>
+            <span>Authorize Google Drive</span>
+          </button>
+        `}`;
   }
 
   script() {
@@ -163,20 +183,23 @@ class GDrive extends LitElement
       return html``;
     }
     const script = document.createElement("script");
-    script.onload = (() => this.onLoad());
+    script.onload = () => this.onLoad();
     script.src = "https://apis.google.com/js/platform.js";
     return script;
   }
 
   gauth(prompt, callback) {
     self.gapi.load("auth2", () => {
-      self.gapi.auth2.authorize({
-        // eslint-disable-next-line no-undef
-        client_id: __GDRIVE_CLIENT_ID__,
-        scope: "https://www.googleapis.com/auth/drive.file",
-        response_type: "token",
-        prompt
-      }, callback);
+      self.gapi.auth2.authorize(
+        {
+          // eslint-disable-next-line no-undef
+          client_id: __GDRIVE_CLIENT_ID__,
+          scope: "https://www.googleapis.com/auth/drive.file",
+          response_type: "token",
+          prompt,
+        },
+        callback,
+      );
     });
   }
 }

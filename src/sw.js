@@ -4,14 +4,16 @@ import { SWReplay } from "@webrecorder/wabac/src/swmain";
 
 import { WorkerLoader } from "@webrecorder/wabac/src/loaders";
 
-
 if (self.registration) {
   const staticData = new Map();
 
   const prefix = self.registration.scope;
 
-  staticData.set(prefix, {type: "text/html", content: INDEX_HTML});
-  staticData.set(prefix + "index.html", {type: "text/html", content: INDEX_HTML});
+  staticData.set(prefix, { type: "text/html", content: INDEX_HTML });
+  staticData.set(prefix + "index.html", {
+    type: "text/html",
+    content: INDEX_HTML,
+  });
 
   const sp = new URLSearchParams(self.location.search);
 
@@ -21,10 +23,7 @@ if (self.registration) {
     defaultConfig.injectScripts = ["ruffle/ruffle.js"];
   }
 
-  self.sw = new SWReplay({staticData, defaultConfig});
+  self.sw = new SWReplay({ staticData, defaultConfig });
 } else {
   new WorkerLoader(self);
 }
-
-
-

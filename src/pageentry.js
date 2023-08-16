@@ -8,10 +8,8 @@ import { getReplayLink } from "./pageutils";
 
 import { wrapCss } from "./misc";
 
-
 // ===========================================================================
-class PageEntry extends LitElement
-{
+class PageEntry extends LitElement {
   constructor() {
     super();
     this.query = "";
@@ -63,7 +61,7 @@ class PageEntry extends LitElement
       }
 
       .check-select {
-        padding: 0 1.0em 0 0.5em;
+        padding: 0 1em 0 0.5em;
         height: 100%;
         margin: auto 0 auto 0;
       }
@@ -79,7 +77,6 @@ class PageEntry extends LitElement
       .columns:last-child {
         margin-bottom: calc(-0.75rem + 2px);
       }
-
 
       .favicon {
         width: 24px !important;
@@ -143,27 +140,27 @@ class PageEntry extends LitElement
 
   static sidebarStyles(prefix = css``) {
     return css`
-    ${prefix} .col-date {
-      margin-left: calc(24px + 1rem);
-      display: none;
-    }
-    ${prefix} .col-date div {
-      display: inline;
-    }
-    ${prefix} .col-index {
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      margin-top: -0.75em;
-    }
-    ${prefix} .columns {
-      display: flex;
-      flex-direction: column-reverse;
-    }
-    ${prefix} .is-inline-date {
-      display: initial !important;
-      font-style: italic;
-    }
+      ${prefix} .col-date {
+        margin-left: calc(24px + 1rem);
+        display: none;
+      }
+      ${prefix} .col-date div {
+        display: inline;
+      }
+      ${prefix} .col-index {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        margin-top: -0.75em;
+      }
+      ${prefix} .columns {
+        display: flex;
+        flex-direction: column-reverse;
+      }
+      ${prefix} .is-inline-date {
+        display: initial !important;
+        font-style: italic;
+      }
     `;
   }
 
@@ -180,72 +177,114 @@ class PageEntry extends LitElement
     const p = this.page;
     const date = this.page.date;
 
-    const hasSize = typeof(p.size) === "number";
+    const hasSize = typeof p.size === "number";
 
     const editable = this.editable && !this.isSidebar;
 
     return html`
-    ${editable ? html`
-    <div class="check-select">
-      <label class="checkbox">
-      <input @change=${this.onSendSelToggle} type="checkbox" .checked="${this.selected}">
-      </label>
-    </div>` : ""}
+      ${editable
+        ? html` <div class="check-select">
+            <label class="checkbox">
+              <input
+                @change=${this.onSendSelToggle}
+                type="checkbox"
+                .checked="${this.selected}"
+              />
+            </label>
+          </div>`
+        : ""}
 
-    <div class="columns">
-      ${this.index ? html`
-      <div class="column col-index is-1 is-size-7">${this.index}.</div>
-      ` : ""}
-      <div class="column col-date is-2">
-        <div>${date ? date.toLocaleDateString() : ""}</div>
-        <div>${date ? date.toLocaleTimeString() : ""}</div>
-      </div>
-      <div class="column">
-        <div class="media">
-          <figure class="media-left">
-            <p class="">
-            ${this.iconValid ? html`
-              <img class="favicon" @error="${() => this.iconValid = false}" src="${this.replayPrefix}/${this.page.timestamp}id_/${p.favIconUrl}"/>` : html`
-              <span class="favicon"></span>`}
-            </p>
-          </figure>
-          <div class="media-content ${this.isCurrent ? "current" : ""}">
-            <div role="heading" aria-level="${this.isSidebar ? "4": "3"}">
-              <a @dblclick="${this.onReload}" @click="${this.onReplay}" href="${getReplayLink("pages", this.page.url, this.page.timestamp)}">
-              <p class="is-size-6 has-text-weight-bold has-text-link text">
-              <keyword-mark keywords="${this.query}">${p.title || p.url}</keyword-mark>
-              </p>
-              <p class="has-text-dark text"><keyword-mark keywords="${this.query}">${p.url}</keyword-mark></p>
-              <p class="has-text-grey-dark text is-inline-date">
-                ${date ? date.toLocaleString(): ""}
-              </p>
-            </a>
-            ${this.textSnippet ? html`
-              <div class="text"><keyword-mark keywords="${this.query}">${this.textSnippet}</keyword-mark></div>` : html``}
-          </div>
-          ${hasSize ? html`
-          <div class="media-right" style="margin-right: 2em">
-            ${prettyBytes(p.size)}
-          </div>` : ""}
+      <div class="columns">
+        ${this.index
+          ? html`
+              <div class="column col-index is-1 is-size-7">${this.index}.</div>
+            `
+          : ""}
+        <div class="column col-date is-2">
+          <div>${date ? date.toLocaleDateString() : ""}</div>
+          <div>${date ? date.toLocaleTimeString() : ""}</div>
         </div>
-      </div>
-    </div>
+        <div class="column">
+          <div class="media">
+            <figure class="media-left">
+              <p class="">
+                ${this.iconValid
+                  ? html` <img
+                      class="favicon"
+                      @error="${() => (this.iconValid = false)}"
+                      src="${this.replayPrefix}/${this.page
+                        .timestamp}id_/${p.favIconUrl}"
+                    />`
+                  : html` <span class="favicon"></span>`}
+              </p>
+            </figure>
+            <div class="media-content ${this.isCurrent ? "current" : ""}">
+              <div role="heading" aria-level="${this.isSidebar ? "4" : "3"}">
+                <a
+                  @dblclick="${this.onReload}"
+                  @click="${this.onReplay}"
+                  href="${getReplayLink(
+                    "pages",
+                    this.page.url,
+                    this.page.timestamp,
+                  )}"
+                >
+                  <p class="is-size-6 has-text-weight-bold has-text-link text">
+                    <keyword-mark keywords="${this.query}"
+                      >${p.title || p.url}</keyword-mark
+                    >
+                  </p>
+                  <p class="has-text-dark text">
+                    <keyword-mark keywords="${this.query}"
+                      >${p.url}</keyword-mark
+                    >
+                  </p>
+                  <p class="has-text-grey-dark text is-inline-date">
+                    ${date ? date.toLocaleString() : ""}
+                  </p>
+                </a>
+                ${this.textSnippet
+                  ? html` <div class="text">
+                      <keyword-mark keywords="${this.query}"
+                        >${this.textSnippet}</keyword-mark
+                      >
+                    </div>`
+                  : html``}
+              </div>
+              ${hasSize
+                ? html` <div class="media-right" style="margin-right: 2em">
+                    ${prettyBytes(p.size)}
+                  </div>`
+                : ""}
+            </div>
+          </div>
+        </div>
 
-    ${editable ? html`
-      ${!this.deleting ? html`
-      <button @click="${this.onSendDeletePage}" class="delete delete-button"></button>` : html`
-      <button class="button is-loading delete-button is-static"></button>
-      `}` : ""}
+        ${editable
+          ? html` ${!this.deleting
+              ? html` <button
+                  @click="${this.onSendDeletePage}"
+                  class="delete delete-button"
+                ></button>`
+              : html`
+                  <button
+                    class="button is-loading delete-button is-static"
+                  ></button>
+                `}`
+          : ""}
+      </div>
     `;
   }
 
   async updateFavIcon() {
-    if (!this.page.favIconUrl)  {
+    if (!this.page.favIconUrl) {
       this.favIconData = null;
       return;
     }
 
-    const resp = await fetch(`${this.replayPrefix}/${this.page.timestamp}id_/${this.page.favIconUrl}`);
+    const resp = await fetch(
+      `${this.replayPrefix}/${this.page.timestamp}id_/${this.page.favIconUrl}`,
+    );
 
     if (resp.status != 200) {
       this.favIconData = null;
@@ -256,7 +295,9 @@ class PageEntry extends LitElement
     const mime = resp.headers.get("content-type");
 
     try {
-      this.favIconData = `data:${mime};base64,${btoa(String.fromCharCode.apply(null, payload))}`;
+      this.favIconData = `data:${mime};base64,${btoa(
+        String.fromCharCode.apply(null, payload),
+      )}`;
     } catch (e) {
       console.log(e);
       this.favIconData = null;
@@ -324,18 +365,26 @@ class PageEntry extends LitElement
   }
 
   sendChangeEvent(data, reload) {
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {bubbles: true, composed: true, detail: {data, reload}}));
+    this.dispatchEvent(
+      new CustomEvent("coll-tab-nav", {
+        bubbles: true,
+        composed: true,
+        detail: { data, reload },
+      }),
+    );
   }
 
   onSendDeletePage() {
     const page = this.page;
-    this.dispatchEvent(new CustomEvent("delete-page", {detail: {page}}));
+    this.dispatchEvent(new CustomEvent("delete-page", { detail: { page } }));
   }
 
   onSendSelToggle(event) {
     const page = this.page.id;
     const selected = event.currentTarget.checked;
-    this.dispatchEvent(new CustomEvent("sel-page", {detail: {page, selected}}));
+    this.dispatchEvent(
+      new CustomEvent("sel-page", { detail: { page, selected } }),
+    );
   }
 }
 

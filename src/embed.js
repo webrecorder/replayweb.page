@@ -4,17 +4,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { wrapCss, rwpLogo } from "./misc";
 import { SWManager } from "./swmanager";
 
-
 var scriptSrc = document.currentScript && document.currentScript.src;
 
 var defaultReplayFile = "";
 
 const DEFAULT_REPLAY_BASE = "https://replayweb.page/";
 
-
 // ===========================================================================
-class Embed extends LitElement
-{
+class Embed extends LitElement {
   constructor() {
     super();
     this.replaybase = "./replay/";
@@ -86,7 +83,7 @@ class Embed extends LitElement
 
       errorMessage: { type: String },
 
-      requireSubdomainIframe: {type: Boolean},
+      requireSubdomainIframe: { type: Boolean },
 
       loading: { type: String },
 
@@ -109,7 +106,12 @@ class Embed extends LitElement
     const scope = this.replaybase;
     const requireSubdomainIframe = this.requireSubdomainIframe;
 
-    this.swmanager = new SWManager({name, scope, requireSubdomainIframe, appName});
+    this.swmanager = new SWManager({
+      name,
+      scope,
+      requireSubdomainIframe,
+      appName,
+    });
 
     try {
       await this.swmanager.register();
@@ -144,7 +146,9 @@ class Embed extends LitElement
 
   firstUpdated() {
     if (this.noSandbox) {
-      console.warn("The noSandbox flag is deprecated. ReplayWeb.page does not add a sandbox by default. To enable sandboxing, use 'sandbox' flag instead. This may result in PDFs not loading and pages opening in new windows, but may be more secure in some situations");
+      console.warn(
+        "The noSandbox flag is deprecated. ReplayWeb.page does not add a sandbox by default. To enable sandboxing, use 'sandbox' flag instead. This may result in PDFs not loading and pages opening in new windows, but may be more secure in some situations",
+      );
     }
     this.doRegister();
 
@@ -163,7 +167,10 @@ class Embed extends LitElement
     // https://lil.law.harvard.edu/blog/2022/09/15/opportunities-and-challenges-of-client-side-playback/
 
     // likely safari < 16, don't use web workers due to issues with split storage state
-    if (window.GestureEvent !== undefined && window.SharedWorker === undefined ){
+    if (
+      window.GestureEvent !== undefined &&
+      window.SharedWorker === undefined
+    ) {
       this.noWebWorker = true;
     }
 
@@ -196,7 +203,7 @@ class Embed extends LitElement
     }
 
     if (this.config) {
-      const config = {...this.customConfig, ...JSON.parse(this.config)};
+      const config = { ...this.customConfig, ...JSON.parse(this.config) };
       return JSON.stringify(config);
     } else {
       return JSON.stringify(this.customConfig);
@@ -204,13 +211,14 @@ class Embed extends LitElement
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("url") ||
-        changedProperties.has("ts") ||
-        changedProperties.has("query") ||
-        changedProperties.has("view") ||
-        changedProperties.has("source") ||
-        changedProperties.has("src")) {
-
+    if (
+      changedProperties.has("url") ||
+      changedProperties.has("ts") ||
+      changedProperties.has("query") ||
+      changedProperties.has("view") ||
+      changedProperties.has("source") ||
+      changedProperties.has("src")
+    ) {
       this.embed = this.embed || "default";
 
       if (this.src) {
@@ -265,7 +273,7 @@ class Embed extends LitElement
         url: this.url,
         ts: this.ts,
         query: this.query,
-        view: this.view
+        view: this.view,
       }).toString();
     }
   }
@@ -300,18 +308,26 @@ class Embed extends LitElement
 
   render() {
     return html`
-    ${this.paramString && this.hashString && this.inited ? html`
-      <iframe sandbox="${ifDefined(this.sandbox ?
-    "allow-downloads allow-modals allow-orientation-lock allow-pointer-lock\
+      ${this.paramString && this.hashString && this.inited
+        ? html`
+            <iframe
+              sandbox="${ifDefined(
+                this.sandbox
+                  ? "allow-downloads allow-modals allow-orientation-lock allow-pointer-lock\
          allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts\
-         allow-same-origin allow-forms" : undefined)}"
-
-      @load="${this.onLoad}" src="${this.replaybase}${this.replayfile}?${this.paramString}#${this.hashString}" allow="autoplay *; fullscreen"
-      title="Replay of ${this.title ? `${this.title}:` :""} ${this.url}"></iframe>
-
-      ` : html``}
-
-    ${this.errorMessage}
+         allow-same-origin allow-forms"
+                  : undefined,
+              )}"
+              @load="${this.onLoad}"
+              src="${this.replaybase}${this.replayfile}?${this
+                .paramString}#${this.hashString}"
+              allow="autoplay *; fullscreen"
+              title="Replay of ${this.title ? `${this.title}:` : ""} ${this
+                .url}"
+            ></iframe>
+          `
+        : html``}
+      ${this.errorMessage}
     `;
   }
 
@@ -323,7 +339,11 @@ class Embed extends LitElement
     const win = event.target.contentWindow;
     const doc = event.target.contentDocument;
 
-    if (win.navigator.serviceWorker && !win.navigator.serviceWorker.controller && this.reloadCount <= 2) {
+    if (
+      win.navigator.serviceWorker &&
+      !win.navigator.serviceWorker.controller &&
+      this.reloadCount <= 2
+    ) {
       this.reloadCount++;
       setTimeout(() => win.location.reload(), 100);
       return;
