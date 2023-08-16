@@ -176,40 +176,11 @@ html, body {
 </style>
 ```
 
-### CORS restrictions
+### Loading Errors
 
-Browsers restrict access to files hosted on a different domain than the websites that is trying to load them.
-If you are loading web archives hosted on a different domain (for example, S3 or other cloud storage) and your site is hosted on a different domain,
-the site hosting the file needs to 'allow' the website to load the file using special CORS (Cross-Origin Resource Sharing) headers.
+If you see errors such as `TypeError: failed to load` or similar errors, the issue may have to do with Cross-Origin Resource Sharing (CORS) errors.
 
-If you are hosting from S3 or S3-compatible service, here is a potential CORS bucket configuration that should work.
+See [CORS Settings](./cors-settings) for more info on how to configure CORS for ReplayWeb.page
 
-Replace `https://myarchive.example.com` with the server (origin) of the URL where the `<replay-web-page>` embed is hosted.
 
-```xml
-<CORSConfiguration
-xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
-<CORSRule>
-  <AllowedMethod>GET</AllowedMethod>
-  <AllowedMethod>HEAD</AllowedMethod>
-  <AllowedOrigin>https://myarchive.example.com</AllowedOrigin>
-  <AllowedHeader>*</AllowedHeader>
-  <ExposeHeader>Content-Range</ExposeHeader>
-  <ExposeHeader>Content-Encoding</ExposeHeader>
-  <ExposeHeader>Content-Length</ExposeHeader>
-</CORSRule>
-</CORSConfiguration>
-```
-
-One way to set this policy is to use the popular [s3cmd](https://s3tools.org/usage) command-line tool:
-
-1) Paste the above snippet into a file, eg. `cors.xml`
-2) Be sure to set the 'Allowed Origin' to the site hosting the embed. You can add as many of these as necessary.
-3) Run `s3cmd setcors ./cors.xml s3://<your-bucket>`
-
-See the s3cmd docs for how to configure it s3cmd to work with your setup.
-
-See [S3 Docs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ManageCorsUsing.html) for more info on how to set this policy.
-
-Other cloud providers may have a similar settings for configuring CORS.
 
