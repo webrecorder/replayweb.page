@@ -1,2 +1,3398 @@
-(()=>{"use strict";var e,t,n={899:(e,t,n)=>{e.exports=n.p+"9609ef2907fc51a5c223.wasm"},878:(e,t,n)=>{e.exports=n.p+"78993198e943ac45dcb0.wasm"}},r={};function i(e){var t=r[e];if(void 0!==t)return t.exports;var a=r[e]={id:e,loaded:!1,exports:{}};return n[e](a,a.exports,i),a.loaded=!0,a.exports}i.m=n,i.d=(e,t)=>{for(var n in t)i.o(t,n)&&!i.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:t[n]})},i.f={},i.e=e=>Promise.all(Object.keys(i.f).reduce(((t,n)=>(i.f[n](e,t),t)),[])),i.u=e=>"core.ruffle."+{159:"b2b392bcfd8f4bacb933",339:"1e9196b890c02cf8a18d"}[e]+".js",i.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(e){if("object"==typeof window)return window}}(),i.hmd=e=>((e=Object.create(e)).children||(e.children=[]),Object.defineProperty(e,"exports",{enumerable:!0,set:()=>{throw new Error("ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: "+e.id)}}),e),i.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),e={},t="ruffle-selfhosted:",i.l=(n,r,a,o)=>{if(e[n])e[n].push(r);else{var s,l;if(void 0!==a)for(var c=document.getElementsByTagName("script"),u=0;u<c.length;u++){var d=c[u];if(d.getAttribute("src")==n||d.getAttribute("data-webpack")==t+a){s=d;break}}s||(l=!0,(s=document.createElement("script")).charset="utf-8",s.timeout=120,i.nc&&s.setAttribute("nonce",i.nc),s.setAttribute("data-webpack",t+a),s.src=n),e[n]=[r];var f=(t,r)=>{s.onerror=s.onload=null,clearTimeout(h);var i=e[n];if(delete e[n],s.parentNode&&s.parentNode.removeChild(s),i&&i.forEach((e=>e(r))),t)return t(r)},h=setTimeout(f.bind(null,void 0,{type:"timeout",target:s}),12e4);s.onerror=f.bind(null,s.onerror),s.onload=f.bind(null,s.onload),l&&document.head.appendChild(s)}},i.r=e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},i.p="",(()=>{i.b=document.baseURI||self.location.href;var e={179:0};i.f.j=(t,n)=>{var r=i.o(e,t)?e[t]:void 0;if(0!==r)if(r)n.push(r[2]);else{var a=new Promise(((n,i)=>r=e[t]=[n,i]));n.push(r[2]=a);var o=i.p+i.u(t),s=new Error;i.l(o,(n=>{if(i.o(e,t)&&(0!==(r=e[t])&&(e[t]=void 0),r)){var a=n&&("load"===n.type?"missing":n.type),o=n&&n.target&&n.target.src;s.message="Loading chunk "+t+" failed.\n("+a+": "+o+")",s.name="ChunkLoadError",s.type=a,s.request=o,r[1](s)}}),"chunk-"+t,t)}};var t=(t,n)=>{var r,a,[o,s,l]=n,c=0;if(o.some((t=>0!==e[t]))){for(r in s)i.o(s,r)&&(i.m[r]=s[r]);l&&l(i)}for(t&&t(n);c<o.length;c++)a=o[c],i.o(e,a)&&e[a]&&e[a][0](),e[a]=0},n=self.webpackChunkruffle_selfhosted=self.webpackChunkruffle_selfhosted||[];n.forEach(t.bind(null,0)),n.push=t.bind(null,n.push.bind(n))})(),(()=>{class e{constructor(e,t,n,r,i){this.major=e,this.minor=t,this.patch=n,this.prIdent=r,this.buildIdent=i}static fromSemver(t){const n=t.split("+"),r=n[0].split("-"),i=r[0].split("."),a=parseInt(i[0],10);let o=0,s=0,l=null,c=null;return void 0!==i[1]&&(o=parseInt(i[1],10)),void 0!==i[2]&&(s=parseInt(i[2],10)),void 0!==r[1]&&(l=r[1].split(".")),void 0!==n[1]&&(c=n[1].split(".")),new e(a,o,s,l,c)}isCompatibleWith(e){return 0!==this.major&&this.major===e.major||0===this.major&&0===e.major&&0!==this.minor&&this.minor===e.minor||0===this.major&&0===e.major&&0===this.minor&&0===e.minor&&0!==this.patch&&this.patch===e.patch}hasPrecedenceOver(e){if(this.major>e.major)return!0;if(this.major<e.major)return!1;if(this.minor>e.minor)return!0;if(this.minor<e.minor)return!1;if(this.patch>e.patch)return!0;if(this.patch<e.patch)return!1;if(null===this.prIdent&&null!==e.prIdent)return!0;if(null!==this.prIdent&&null!==e.prIdent){const t=/^[0-9]*$/;for(let n=0;n<this.prIdent.length&&n<e.prIdent.length;n+=1){if(!t.test(this.prIdent[n])&&t.test(e.prIdent[n]))return!0;if(t.test(this.prIdent[n])&&t.test(e.prIdent[n])){if(parseInt(this.prIdent[n],10)>parseInt(e.prIdent[n],10))return!0;if(parseInt(this.prIdent[n],10)<parseInt(e.prIdent[n],10))return!1}else{if(t.test(this.prIdent[n])&&!t.test(e.prIdent[n]))return!1;if(!t.test(this.prIdent[n])&&!t.test(e.prIdent[n])){if(this.prIdent[n]>e.prIdent[n])return!0;if(this.prIdent[n]<e.prIdent[n])return!1}}}return this.prIdent.length>e.prIdent.length}return!1}isEqual(e){return this.major===e.major&&this.minor===e.minor&&this.patch===e.patch}isStableOrCompatiblePrerelease(e){return null===e.prIdent||this.major===e.major&&this.minor===e.minor&&this.patch===e.patch}}class t{constructor(e){this.requirements=e}satisfiedBy(e){for(const t of this.requirements){let n=!0;for(const{comparator:r,version:i}of t)n=n&&i.isStableOrCompatiblePrerelease(e),""===r||"="===r?n=n&&i.isEqual(e):">"===r?n=n&&e.hasPrecedenceOver(i):">="===r?n=n&&(e.hasPrecedenceOver(i)||i.isEqual(e)):"<"===r?n=n&&i.hasPrecedenceOver(e):"<="===r?n=n&&(i.hasPrecedenceOver(e)||i.isEqual(e)):"^"===r&&(n=n&&i.isCompatibleWith(e));if(n)return!0}return!1}static fromRequirementString(n){const r=n.split(" ");let i=[];const a=[];for(const t of r)if("||"===t)i.length>0&&(a.push(i),i=[]);else if(t.length>0){const n=/[0-9]/.exec(t);if(n){const r=t.slice(0,n.index).trim(),a=e.fromSemver(t.slice(n.index).trim());i.push({comparator:r,version:a})}}return i.length>0&&a.push(i),new t(a)}}const n=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,5,3,1,0,1,10,14,1,12,0,65,0,65,0,65,0,252,10,0,0,11])),r=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,10,7,1,5,0,208,112,26,11])),a=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,10,12,1,10,0,67,0,0,0,0,252,0,26,11])),o=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,10,8,1,6,0,65,0,192,26,11])),s=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,5,1,96,0,1,123,3,2,1,0,10,10,1,8,0,65,0,253,15,253,98,11]));function l(e){const t="function"==typeof Function.prototype.toString?Function.prototype.toString():null;return"string"==typeof t&&t.indexOf("[native code]")>=0&&Function.prototype.toString.call(e).indexOf("[native code]")>=0}let c="";try{if(void 0!==document.currentScript&&null!==document.currentScript&&"src"in document.currentScript&&""!==document.currentScript.src){let e=document.currentScript.src;e.endsWith(".js")||e.endsWith("/")||(e+="/"),c=new URL(".",e).href}}catch(e){console.warn("Unable to get currentScript URL")}function u(e){let t=c;return"publicPath"in e&&null!==e.publicPath&&void 0!==e.publicPath&&(t=e.publicPath),""===t||t.endsWith("/")||(t+="/"),t}let d=null;function f(e,t){return null===d&&(d=async function(e,t){"function"==typeof Array.prototype.reduce&&l(Array.prototype.reduce)||Object.defineProperty(Array.prototype,"reduce",{value(...e){if(0===e.length&&window.Prototype&&window.Prototype.Version&&window.Prototype.Version<"1.6.1")return this.length>1?this:this[0];const t=e[0];if(null===this)throw new TypeError("Array.prototype.reduce called on null or undefined");if("function"!=typeof t)throw new TypeError(`${t} is not a function`);const n=Object(this),r=n.length>>>0;let i,a=0;if(e.length>=2)i=e[1];else{for(;a<r&&!(a in n);)a++;if(a>=r)throw new TypeError("Reduce of empty array with no initial value");i=n[a++]}for(;a<r;)a in n&&(i=t(i,n[a],a,n)),a++;return i}}),"function"==typeof Window&&l(Window)||"function"==typeof window.constructor&&l(window.constructor)&&(window.Window=window.constructor),void 0!==window.Reflect&&null!==window.Reflect||(window.Reflect={}),"function"!=typeof Reflect.get&&Object.defineProperty(Reflect,"get",{value:(e,t)=>e[t]}),"function"!=typeof Reflect.set&&Object.defineProperty(Reflect,"set",{value(e,t,n){e[t]=n}}),"function"!=typeof Reflect.has&&Object.defineProperty(Reflect,"has",{value:(e,t)=>t in e}),"function"!=typeof Reflect.ownKeys&&Object.defineProperty(Reflect,"ownKeys",{value:e=>[...Object.getOwnPropertyNames(e),...Object.getOwnPropertySymbols(e)]});const c=(await Promise.all([n(),s(),a(),o(),r()])).every(Boolean);c||console.log("Some WebAssembly extensions are NOT available, falling back to the vanilla WebAssembly module"),i.p=u(e);const{default:d,Ruffle:f}=await(c?i.e(339).then(i.bind(i,339)):i.e(159).then(i.bind(i,159)));let h;const p=c?new URL(i(899),i.b):new URL(i(878),i.b),m=await fetch(p);if(t){const e=m.headers.get("content-length")||"";let n=0;const r=parseInt(e);h=new Response(new ReadableStream({async start(e){var i;const a=null===(i=m.body)||void 0===i?void 0:i.getReader();if(!a)throw"Response had no body";for(t(n,r);;){const{done:i,value:o}=await a.read();if(i)break;(null==o?void 0:o.byteLength)&&(n+=null==o?void 0:o.byteLength),e.enqueue(o),t(n,r)}e.close()}}),m)}else h=m;return await d(h),f}(e,t)),d}const h=document.createElement("template");h.innerHTML='\n    <style>\n        :host {\n            all: initial;\n\n            --ruffle-blue: #37528c;\n            --ruffle-orange: #ffad33;\n\n            display: inline-block;\n            position: relative;\n            /* Default width/height; this will get overridden by user styles/attributes. */\n            width: 550px;\n            height: 400px;\n            font-family: Arial, sans-serif;\n            letter-spacing: 0.4px;\n            touch-action: none;\n            user-select: none;\n            -webkit-user-select: none;\n            -webkit-tap-highlight-color: transparent;\n        }\n\n        /* Ruffle\'s width/height CSS interferes with Safari\'s fullscreen CSS. */\n        /* Ensure that Safari\'s fullscreen mode actually fills the screen. */\n        :host(:-webkit-full-screen) {\n            display: block;\n            width: 100% !important;\n            height: 100% !important;\n        }\n\n        .hidden {\n            display: none !important;\n        }\n\n        /* All of these use the dimensions specified by the embed. */\n        #container,\n        #play_button,\n        #unmute_overlay,\n        #unmute_overlay .background,\n        #panic,\n        #splash-screen,\n        #message_overlay {\n            position: absolute;\n            top: 0;\n            bottom: 0;\n            left: 0;\n            right: 0;\n        }\n\n        #container {\n            overflow: hidden;\n        }\n\n        #container canvas {\n            width: 100%;\n            height: 100%;\n        }\n\n        #play_button,\n        #unmute_overlay {\n            cursor: pointer;\n            display: none;\n        }\n\n        #unmute_overlay .background {\n            background: black;\n            opacity: 0.7;\n        }\n\n        #play_button .icon,\n        #unmute_overlay .icon {\n            position: absolute;\n            top: 50%;\n            left: 50%;\n            width: 50%;\n            height: 50%;\n            max-width: 384px;\n            max-height: 384px;\n            transform: translate(-50%, -50%);\n            opacity: 0.8;\n        }\n\n        #play_button:hover .icon,\n        #unmute_overlay:hover .icon {\n            opacity: 1;\n        }\n\n        #panic {\n            font-size: 20px;\n            text-align: center;\n            /* Inverted colors from play button! */\n            background: linear-gradient(180deg, #fd3a40 0%, #fda138 100%);\n            color: white;\n            display: flex;\n            flex-flow: column;\n            justify-content: space-around;\n        }\n\n        #panic a {\n            color: var(--ruffle-blue);\n            font-weight: bold;\n        }\n\n        #panic-title {\n            font-size: xxx-large;\n            font-weight: bold;\n        }\n\n        #panic-body.details {\n            flex: 0.9;\n            margin: 0 10px;\n        }\n\n        #panic-body textarea {\n            width: 100%;\n            height: 100%;\n            resize: none;\n        }\n\n        #panic ul {\n            padding: 0;\n            display: flex;\n            list-style-type: none;\n            justify-content: space-evenly;\n        }\n\n        #message_overlay {\n            position: absolute;\n            background: var(--ruffle-blue);\n            color: var(--ruffle-orange);\n            opacity: 1;\n            z-index: 2;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            overflow: auto;\n        }\n\n        #message_overlay .message {\n            text-align: center;\n            max-height: 100%;\n            max-width: 100%;\n            padding: 5%;\n            font-size: 20px;\n        }\n\n        #message_overlay p {\n            margin: 0.5em 0;\n        }\n\n        #message_overlay .message div {\n            display: flex;\n            justify-content: center;\n            flex-wrap: wrap;\n            column-gap: 1em;\n        }\n\n        #message_overlay a, #message_overlay button {\n            cursor: pointer;\n            background: var(--ruffle-blue);\n            color: var(--ruffle-orange);\n            border: 2px solid var(--ruffle-orange);\n            font-weight: bold;\n            font-size: 1.25em;\n            border-radius: 0.6em;\n            padding: 10px;\n            text-decoration: none;\n            margin: 2% 0;\n        }\n\n        #message_overlay a:hover, #message_overlay button:hover {\n            background: #ffffff4c;\n        }\n\n        #continue-btn {\n             cursor: pointer;\n             background: var(--ruffle-blue);\n             color: var(--ruffle-orange);\n             border: 2px solid var(--ruffle-orange);\n             font-weight: bold;\n             font-size: 20px;\n             border-radius: 20px;\n             padding: 10px;\n        }\n\n        #continue-btn:hover {\n            background: #ffffff4c;\n        }\n\n        #context-menu {\n            display: none;\n            color: black;\n            background: #fafafa;\n            border: 1px solid gray;\n            box-shadow: 0px 5px 10px -5px black;\n            position: absolute;\n            font-size: 14px;\n            text-align: left;\n            list-style: none;\n            padding: 0;\n            margin: 0;\n        }\n\n        #context-menu .menu_item {\n            padding: 5px 10px;\n            cursor: pointer;\n            color: black;\n        }\n\n        #context-menu .menu_item.disabled {\n            cursor: default;\n            color: gray;\n        }\n\n        #context-menu .menu_item:not(.disabled):hover {\n            background: lightgray;\n        }\n\n        #context-menu .menu_separator hr {\n            border: none;\n            border-bottom: 1px solid lightgray;\n            margin: 2px;\n        }\n\n        #splash-screen {\n            display: flex;\n            flex-direction: column;\n            background: var(--splash-screen-background, var(--preloader-background, var(--ruffle-blue)));\n            align-items: center;\n            justify-content: center;\n        }\n\n        .loadbar {\n            width: 100%;\n            max-width: 316px;\n            max-height: 10px;\n            height: 20%;\n            background: #253559;\n        }\n\n        .loadbar-inner {\n            width: 0px;\n            max-width: 100%;\n            height: 100%;\n            background: var(--ruffle-orange);\n        }\n            \n        .logo {\n            display: var(--logo-display, block);\n            max-width: 380px;\n            max-height: 150px;\n        }\n\n        .loading-animation {\n            max-width: 28px;\n            max-height: 28px;\n            margin-bottom: 2%;\n            width: 10%;\n            aspect-ratio: 1;\n        }\n\n        .spinner {\n            stroke-dasharray: 180;\n            stroke-dashoffset: 135;\n            stroke: var(--ruffle-orange);\n            transform-origin: 50% 50%;\n            animation: rotate 1.5s linear infinite;\n        }\n\n        @keyframes rotate {\n            to {\n                transform: rotate(360deg);\n            }\n        }\n\n        #virtual-keyboard {\n            position: absolute;\n            opacity: 0;\n            top: -100px;\n            width: 1px;\n            height: 1px;\n        }\n\n        #save-manager {\n            height: inherit;\n            user-select: text;\n        }\n        #modal-area {\n            position: sticky;\n            background: white;\n            width: fit-content;\n            padding: 16px;\n            border: 3px solid black;\n            margin: auto;\n            height: 500px;\n            max-height: calc(100% - 38px);\n            min-height: 80px;\n        }\n\n        #restore-save {\n            display: none;\n        }\n\n        .replace-save {\n            display: none;\n        }\n\n        .save-option {\n            display: inline-block;\n            padding: 3px 10px;\n            margin: 5px 2px;\n            cursor: pointer;\n            border-radius: 50px;\n            background-color: var(--ruffle-blue);\n            color: white;\n        }\n\n        #close-modal {\n            position: absolute;\n            top: 5px;\n            right: 10px;\n            cursor: pointer;\n            font-size: x-large;\n        }\n\n        .general-save-options {\n            text-align: center;\n            padding-bottom: 8px;\n            border-bottom: 2px solid #888;\n        }\n\n        #local-saves {\n            border-collapse: collapse;\n            overflow-y: auto;\n            display: block;\n            padding-right: 16px;\n            height: calc(100% - 45px);\n            min-height: 30px;\n        }\n\n        #local-saves td {\n            border-bottom: 1px solid #bbb;\n            height: 30px;\n        }\n\n        #local-saves tr td:nth-child(1) {\n            padding-right: 1em;\n            word-break: break-all;\n        }\n\n        #local-saves tr:nth-child(even) {\n            background-color: #f2f2f2;\n        }\n    </style>\n    <style id="dynamic_styles"></style>\n\n    <div id="container">\n        <div id="play_button"><div class="icon"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" viewBox="0 0 250 250" width="100%" height="100%"><defs><linearGradient id="a" gradientUnits="userSpaceOnUse" x1="125" y1="0" x2="125" y2="250" spreadMethod="pad"><stop offset="0%" stop-color="#FDA138"/><stop offset="100%" stop-color="#FD3A40"/></linearGradient><g id="b"><path fill="url(#a)" d="M250 125q0-52-37-88-36-37-88-37T37 37Q0 73 0 125t37 88q36 37 88 37t88-37q37-36 37-88M87 195V55l100 70-100 70z"/><path fill="#FFF" d="M87 55v140l100-70L87 55z"/></g></defs><use xlink:href="#b"/></svg></div></div>\n        <div id="unmute_overlay"><div class="background"></div><div class="icon"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" viewBox="0 0 512 584"  width="100%" height="100%" scale="0.8" id="unmute_overlay_svg"><path fill="#FFF" stroke="#FFF" d="m457.941 256 47.029-47.029c9.372-9.373 9.372-24.568 0-33.941-9.373-9.373-24.568-9.373-33.941 0l-47.029 47.029-47.029-47.029c-9.373-9.373-24.568-9.373-33.941 0-9.372 9.373-9.372 24.568 0 33.941l47.029 47.029-47.029 47.029c-9.372 9.373-9.372 24.568 0 33.941 4.686 4.687 10.827 7.03 16.97 7.03s12.284-2.343 16.971-7.029l47.029-47.03 47.029 47.029c4.687 4.687 10.828 7.03 16.971 7.03s12.284-2.343 16.971-7.029c9.372-9.373 9.372-24.568 0-33.941z"/><path fill="#FFF" stroke="#FFF" d="m99 160h-55c-24.301 0-44 19.699-44 44v104c0 24.301 19.699 44 44 44h55c2.761 0 5-2.239 5-5v-182c0-2.761-2.239-5-5-5z"/><path fill="#FFF" stroke="#FFF" d="m280 56h-24c-5.269 0-10.392 1.734-14.578 4.935l-103.459 79.116c-1.237.946-1.963 2.414-1.963 3.972v223.955c0 1.557.726 3.026 1.963 3.972l103.459 79.115c4.186 3.201 9.309 4.936 14.579 4.936h23.999c13.255 0 24-10.745 24-24v-352.001c0-13.255-10.745-24-24-24z"/><text x="256" y="560" text-anchor="middle" font-size="60px" fill="#FFF" stroke="#FFF" id="unmute_text"></text></svg></div></div>\n        <input id="virtual-keyboard" type="text" autocapitalize="off" autocomplete="off" autocorrect="off">\n    </div>\n    <div class="hidden" id="splash-screen">\n        <svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" viewBox="0 0 380 150"><g><path fill="#966214" d="M58.75 85.6q.75-.1 1.5-.35.85-.25 1.65-.75.55-.35 1.05-.8.5-.45.95-1 .5-.5.75-1.2-.05.05-.15.1-.1.15-.25.25l-.1.2q-.15.05-.25.1-.4 0-.8.05-.5-.25-.9-.5-.3-.1-.55-.3l-.6-.6-4.25-6.45-1.5 11.25h3.45m83.15-.2h3.45q.75-.1 1.5-.35.25-.05.45-.15.35-.15.65-.3l.5-.3q.25-.15.5-.35.45-.35.9-.75.45-.35.75-.85l.1-.1q.1-.2.2-.35.2-.3.35-.6l-.3.4-.15.15q-.5.15-1.1.1-.25 0-.4-.05-.5-.15-.8-.4-.15-.1-.25-.25-.3-.3-.55-.6l-.05-.05v-.05l-4.25-6.4-1.5 11.25m-21.15-3.95q-.3-.3-.55-.6l-.05-.05v-.05l-4.25-6.4-1.5 11.25h3.45q.75-.1 1.5-.35.85-.25 1.6-.75.75-.5 1.4-1.1.45-.35.75-.85.35-.5.65-1.05l-.45.55q-.5.15-1.1.1-.9 0-1.45-.7m59.15.3q-.75-.5-1.4-1-3.15-2.55-3.5-6.4l-1.5 11.25h21q-3.1-.25-5.7-.75-5.6-1.05-8.9-3.1m94.2 3.85h3.45q.6-.1 1.2-.3.4-.1.75-.2.35-.15.65-.3.7-.35 1.35-.8.75-.55 1.3-1.25.1-.15.25-.3-2.55-.25-3.25-1.8l-4.2-6.3-1.5 11.25m-45.3-4.85q-.5-.4-.9-.8-2.3-2.35-2.6-5.6l-1.5 11.25h21q-11.25-.95-16-4.85m97.7 4.85q-.3-.05-.6-.05-10.8-1-15.4-4.8-3.15-2.55-3.5-6.35l-1.5 11.2h21Z"/><path fill="var(--ruffle-orange)" d="M92.6 54.8q-1.95-1.4-4.5-1.4H60.35q-1.35 0-2.6.45-1.65.55-3.15 1.8-2.75 2.25-3.25 5.25l-1.65 12h.05v.3l5.85 1.15h-9.5q-.5.05-1 .15-.5.15-1 .35-.5.2-.95.45-.5.3-.95.7-.45.35-.85.8-.35.4-.65.85-.3.45-.5.9-.15.45-.3.95l-5.85 41.6H50.3l5-35.5 1.5-11.25 4.25 6.45.6.6q.25.2.55.3.4.25.9.5.4-.05.8-.05.1-.05.25-.1l.1-.2q.15-.1.25-.25.1-.05.15-.1l.3-1.05 1.75-12.3h11.15L75.8 82.6h16.5l2.3-16.25h-.05l.8-5.7q.4-2.45-1-4.2-.35-.4-.75-.8-.25-.25-.55-.5-.2-.2-.45-.35m16.2 18.1h.05l-.05.3 5.85 1.15H105.2q-.5.05-1 .15-.5.15-1 .35-.5.2-.95.45-.5.3-1 .65-.4.4-.8.85-.25.3-.55.65-.05.1-.15.2-.25.45-.4.9-.2.45-.3.95-.1.65-.2 1.25-.2 1.15-.4 2.25l-4.3 30.6q-.25 3 1.75 5.25 1.6 1.8 4 2.15.6.1 1.25.1h27.35q3.25 0 6-2.25.35-.35.7-.55l.3-.2q2-2 2.25-4.5l1.65-11.6q.05-.05.1-.05l1.65-11.35h.05l.7-5.2 1.5-11.25 4.25 6.4v.05l.05.05q.25.3.55.6.1.15.25.25.3.25.8.4.15.05.4.05.6.05 1.1-.1l.15-.15.3-.4.3-1.05 1.3-9.05h-.05l.7-5.05h-.05l.15-1.25h-.05l1.65-11.7h-16.25l-2.65 19.5h.05v.2l-.05.1h.05l5.8 1.15H132.7q-.5.05-1 .15-.5.15-1 .35-.15.05-.3.15-.3.1-.55.25-.05 0-.1.05-.5.3-1 .65-.4.35-.7.7-.55.7-.95 1.45-.35.65-.55 1.4-.15.7-.25 1.4v.05q-.15 1.05-.35 2.05l-1.2 8.75v.1l-2.1 14.7H111.4l2.25-15.55h.05l.7-5.2 1.5-11.25 4.25 6.4v.05l.05.05q.25.3.55.6.55.7 1.45.7.6.05 1.1-.1l.45-.55.3-1.05 1.3-9.05h-.05l.7-5.05h-.05l.15-1.25h-.05l1.65-11.7h-16.25l-2.65 19.5m106.5-41.75q-2.25-2.25-5.5-2.25h-27.75q-3 0-5.75 2.25-1.3.95-2.05 2.1-.45.6-.7 1.2-.2.5-.35 1-.1.45-.15.95l-4.15 29.95h-.05l-.7 5.2h-.05l-.2 1.35h.05l-.05.3 5.85 1.15h-9.45q-2.1.05-3.95 1.6-1.9 1.55-2.25 3.55l-.5 3.5h-.05l-5.3 38.1h16.25l5-35.5 1.5-11.25q.35 3.85 3.5 6.4.65.5 1.4 1 3.3 2.05 8.9 3.1 2.6.5 5.7.75l1.75-11.25h-12.2l.4-2.95h-.05l.7-5.05h-.05q.1-.9.3-1.9.1-.75.2-1.6.85-5.9 2.15-14.9 0-.15.05-.25l.1-.9q.2-1.55.45-3.15h11.25l-3.1 20.8h16.5l4.1-28.05q.15-1.7-.4-3.15-.5-1.1-1.35-2.1m46.65 44.15q-.5.3-1 .65-.4.4-.8.85-.35.4-.7.85-.25.45-.45.9-.15.45-.3.95l-5.85 41.6h16.25l5-35.5 1.5-11.25 4.2 6.3q.7 1.55 3.25 1.8l.05-.1q.25-.4.35-.85l.3-1.05 1.8-14.05v-.05l5.35-37.45h-16.25l-6.15 44.3 5.85 1.15h-9.45q-.5.05-1 .15-.5.15-1 .35-.5.2-.95.45m5.4-38.9q.15-1.7-.4-3.15-.5-1.1-1.35-2.1-2.25-2.25-5.5-2.25h-27.75q-2.3 0-4.45 1.35-.65.35-1.3.9-1.3.95-2.05 2.1-.45.6-.7 1.2-.4.9-.5 1.95l-4.15 29.95h-.05l-.7 5.2h-.05l-.2 1.35h.05l-.05.3 5.85 1.15h-9.45q-2.1.05-3.95 1.6-1.9 1.55-2.25 3.55l-.5 3.5h-.05l-1.2 8.75v.1l-4.1 29.25h16.25l5-35.5 1.5-11.25q.3 3.25 2.6 5.6.4.4.9.8 4.75 3.9 16 4.85l1.75-11.25h-12.2l.4-2.95h-.05l.7-5.05h-.05q.15-.9.3-1.9.1-.75.25-1.6.15-1.25.35-2.65v-.05q.95-6.7 2.35-16.5h11.25l-3.1 20.8h16.5l4.1-28.05M345 66.35h-.05l1.15-8.2q.5-3-1.75-5.25-1.25-1.25-3-1.75-1-.5-2.25-.5h-27.95q-.65 0-1.3.1-2.5.35-4.7 2.15-2.75 2.25-3.25 5.25l-1.95 14.7v.05l-.05.3 5.85 1.15h-9.45q-1.9.05-3.6 1.35-.2.1-.35.25-1.9 1.55-2.25 3.55l-4.85 34.1q-.25 3 1.75 5.25 1.25 1.4 3 1.95 1.05.3 2.25.3H320q3.25 0 6-2.25 2.75-2 3.25-5l2.75-18.5h-16.5l-1.75 11H302.5l2.1-14.75h.05l.85-6 1.5-11.2q.35 3.8 3.5 6.35 4.6 3.8 15.4 4.8.3 0 .6.05h15.75L345 66.35m-16.4-.95-1.25 8.95h-11.3l.4-2.95h-.05l.7-5.05h-.1l.15-.95h11.45Z"/></g></svg>\n        <svg class="loading-animation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66 66">\n            <circle class="spinner" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>\n        </svg>        \n        <div class="loadbar"><div class="loadbar-inner"></div></div>\n    </div>\n\n    <div id="save-manager" class="hidden">\n        <div id="modal-area">\n            <span id="close-modal">&times;</span>\n            <div class="general-save-options">\n                <span class="save-option" id="backup-saves"></span>\n            </div>\n            <table id="local-saves"></table>\n        </div>\n    </div>\n    <ul id="context-menu"></ul>\n';const p={};function m(e,t){const n=p[e];if(void 0!==n){if(n.class!==t)throw new Error("Internal naming conflict on "+e);return n.name}let r=0;if(void 0!==window.customElements)for(;r<999;){let n=e;if(r>0&&(n=n+"-"+r),void 0===window.customElements.get(n))return window.customElements.define(n,t),p[e]={class:t,name:n,internalName:e},n;r+=1}throw new Error("Failed to assign custom element "+e)}const g={allowScriptAccess:!1,parameters:{},autoplay:"auto",backgroundColor:null,letterbox:"fullscreen",unmuteOverlay:"visible",upgradeToHttps:!0,compatibilityRules:!0,warnOnUnsupportedContent:!0,logLevel:"error",showSwfDownload:!1,contextMenu:"on",preloader:!0,splashScreen:!0,maxExecutionDuration:15,base:null,menu:!0,salign:"",quality:"high",scale:"showAll",forceScale:!1,frameRate:null,wmode:"opaque",publicPath:null,polyfills:!0,playerVersion:null,preferredRenderer:null,openUrlMode:"allow",allowNetworking:"all"},v="application/x-shockwave-flash",w="application/futuresplash",b="application/x-shockwave-flash2-preview",y="application/vnd.adobe.flash.movie";function x(e){if(e){let t="";try{t=new URL(e,"https://example.com").pathname}catch(e){}if(t&&t.length>=4){const e=t.slice(-4).toLowerCase();if(".swf"===e||".spl"===e)return!0}}return!1}function k(e){switch(e.toLowerCase()){case v.toLowerCase():case w.toLowerCase():case b.toLowerCase():case y.toLowerCase():return!0;default:return!1}}const R="0.1.0",S="nightly 2023-05-13",E="2023-05-13T00:20:38.156Z";class C{constructor(e){this.value=e}valueOf(){return this.value}}class I extends C{constructor(e="???"){super(e)}toString(e){return`{${this.value}}`}}class A extends C{constructor(e,t={}){super(e),this.opts=t}toString(e){try{return e.memoizeIntlObject(Intl.NumberFormat,this.opts).format(this.value)}catch(t){return e.reportError(t),this.value.toString(10)}}}class _ extends C{constructor(e,t={}){super(e),this.opts=t}toString(e){try{return e.memoizeIntlObject(Intl.DateTimeFormat,this.opts).format(this.value)}catch(t){return e.reportError(t),new Date(this.value).toISOString()}}}const $=100,j="⁨",P="⁩";function O(e,t,n){return n===t||(n instanceof A&&t instanceof A&&n.value===t.value||t instanceof A&&"string"==typeof n&&n===e.memoizeIntlObject(Intl.PluralRules,t.opts).select(t.value))}function F(e,t,n){return t[n]?D(e,t[n].value):(e.reportError(new RangeError("No default")),new I)}function M(e,t){const n=[],r=Object.create(null);for(const i of t)"narg"===i.type?r[i.name]=L(e,i.value):n.push(L(e,i));return{positional:n,named:r}}function L(e,t){switch(t.type){case"str":return t.value;case"num":return new A(t.value,{minimumFractionDigits:t.precision});case"var":return function(e,{name:t}){let n;if(e.params){if(!Object.prototype.hasOwnProperty.call(e.params,t))return new I(`$${t}`);n=e.params[t]}else{if(!e.args||!Object.prototype.hasOwnProperty.call(e.args,t))return e.reportError(new ReferenceError(`Unknown variable: $${t}`)),new I(`$${t}`);n=e.args[t]}if(n instanceof C)return n;switch(typeof n){case"string":return n;case"number":return new A(n);case"object":if(n instanceof Date)return new _(n.getTime());default:return e.reportError(new TypeError(`Variable type not supported: $${t}, ${typeof n}`)),new I(`$${t}`)}}(e,t);case"mesg":return function(e,{name:t,attr:n}){const r=e.bundle._messages.get(t);if(!r)return e.reportError(new ReferenceError(`Unknown message: ${t}`)),new I(t);if(n){const i=r.attributes[n];return i?D(e,i):(e.reportError(new ReferenceError(`Unknown attribute: ${n}`)),new I(`${t}.${n}`))}return r.value?D(e,r.value):(e.reportError(new ReferenceError(`No value: ${t}`)),new I(t))}(e,t);case"term":return function(e,{name:t,attr:n,args:r}){const i=`-${t}`,a=e.bundle._terms.get(i);if(!a)return e.reportError(new ReferenceError(`Unknown term: ${i}`)),new I(i);if(n){const t=a.attributes[n];if(t){e.params=M(e,r).named;const n=D(e,t);return e.params=null,n}return e.reportError(new ReferenceError(`Unknown attribute: ${n}`)),new I(`${i}.${n}`)}e.params=M(e,r).named;const o=D(e,a.value);return e.params=null,o}(e,t);case"func":return function(e,{name:t,args:n}){let r=e.bundle._functions[t];if(!r)return e.reportError(new ReferenceError(`Unknown function: ${t}()`)),new I(`${t}()`);if("function"!=typeof r)return e.reportError(new TypeError(`Function ${t}() is not callable`)),new I(`${t}()`);try{let t=M(e,n);return r(t.positional,t.named)}catch(n){return e.reportError(n),new I(`${t}()`)}}(e,t);case"select":return function(e,{selector:t,variants:n,star:r}){let i=L(e,t);if(i instanceof I)return F(e,n,r);for(const t of n)if(O(e,i,L(e,t.key)))return D(e,t.value);return F(e,n,r)}(e,t);default:return new I}}function T(e,t){if(e.dirty.has(t))return e.reportError(new RangeError("Cyclic reference")),new I;e.dirty.add(t);const n=[],r=e.bundle._useIsolating&&t.length>1;for(const i of t)if("string"!=typeof i){if(e.placeables++,e.placeables>$)throw e.dirty.delete(t),new RangeError(`Too many placeables expanded: ${e.placeables}, max allowed is ${$}`);r&&n.push(j),n.push(L(e,i).toString(e)),r&&n.push(P)}else n.push(e.bundle._transform(i));return e.dirty.delete(t),n.join("")}function D(e,t){return"string"==typeof t?e.bundle._transform(t):T(e,t)}class U{constructor(e,t,n){this.dirty=new WeakSet,this.params=null,this.placeables=0,this.bundle=e,this.errors=t,this.args=n}reportError(e){if(!(this.errors&&e instanceof Error))throw e;this.errors.push(e)}memoizeIntlObject(e,t){let n=this.bundle._intls.get(e);n||(n={},this.bundle._intls.set(e,n));let r=JSON.stringify(t);return n[r]||(n[r]=new e(this.bundle.locales,t)),n[r]}}function q(e,t){const n=Object.create(null);for(const[r,i]of Object.entries(e))t.includes(r)&&(n[r]=i.valueOf());return n}const N=["unitDisplay","currencyDisplay","useGrouping","minimumIntegerDigits","minimumFractionDigits","maximumFractionDigits","minimumSignificantDigits","maximumSignificantDigits"];function z(e,t){let n=e[0];if(n instanceof I)return new I(`NUMBER(${n.valueOf()})`);if(n instanceof A)return new A(n.valueOf(),{...n.opts,...q(t,N)});if(n instanceof _)return new A(n.valueOf(),{...q(t,N)});throw new TypeError("Invalid argument to NUMBER")}const B=["dateStyle","timeStyle","fractionalSecondDigits","dayPeriod","hour12","weekday","era","year","month","day","hour","minute","second","timeZoneName"];function W(e,t){let n=e[0];if(n instanceof I)return new I(`DATETIME(${n.valueOf()})`);if(n instanceof _)return new _(n.valueOf(),{...n.opts,...q(t,B)});if(n instanceof A)return new _(n.valueOf(),{...q(t,B)});throw new TypeError("Invalid argument to DATETIME")}const H=new Map;class V{constructor(e,{functions:t,useIsolating:n=!0,transform:r=(e=>e)}={}){this._terms=new Map,this._messages=new Map,this.locales=Array.isArray(e)?e:[e],this._functions={NUMBER:z,DATETIME:W,...t},this._useIsolating=n,this._transform=r,this._intls=function(e){const t=Array.isArray(e)?e.join(" "):e;let n=H.get(t);return void 0===n&&(n=new Map,H.set(t,n)),n}(e)}hasMessage(e){return this._messages.has(e)}getMessage(e){return this._messages.get(e)}addResource(e,{allowOverrides:t=!1}={}){const n=[];for(let r=0;r<e.body.length;r++){let i=e.body[r];if(i.id.startsWith("-")){if(!1===t&&this._terms.has(i.id)){n.push(new Error(`Attempt to override an existing term: "${i.id}"`));continue}this._terms.set(i.id,i)}else{if(!1===t&&this._messages.has(i.id)){n.push(new Error(`Attempt to override an existing message: "${i.id}"`));continue}this._messages.set(i.id,i)}}return n}formatPattern(e,t=null,n=null){if("string"==typeof e)return this._transform(e);let r=new U(this,n,t);try{return T(r,e).toString(r)}catch(e){if(r.errors&&e instanceof Error)return r.errors.push(e),(new I).toString(r);throw e}}}const Z=/^(-?[a-zA-Z][\w-]*) *= */gm,K=/\.([a-zA-Z][\w-]*) *= */y,J=/\*?\[/y,Y=/(-?[0-9]+(?:\.([0-9]+))?)/y,G=/([a-zA-Z][\w-]*)/y,Q=/([$-])?([a-zA-Z][\w-]*)(?:\.([a-zA-Z][\w-]*))?/y,X=/^[A-Z][A-Z0-9_-]*$/,ee=/([^{}\n\r]+)/y,te=/([^\\"\n\r]*)/y,ne=/\\([\\"])/y,re=/\\u([a-fA-F0-9]{4})|\\U([a-fA-F0-9]{6})/y,ie=/^\n+/,ae=/ +$/,oe=/ *\r?\n/g,se=/( *)$/,le=/{\s*/y,ce=/\s*}/y,ue=/\[\s*/y,de=/\s*] */y,fe=/\s*\(\s*/y,he=/\s*->\s*/y,pe=/\s*:\s*/y,me=/\s*,?\s*/y,ge=/\s+/y;class ve{constructor(e){this.body=[],Z.lastIndex=0;let t=0;for(;;){let n=Z.exec(e);if(null===n)break;t=Z.lastIndex;try{this.body.push(s(n[1]))}catch(e){if(e instanceof SyntaxError)continue;throw e}}function n(n){return n.lastIndex=t,n.test(e)}function r(n,r){if(e[t]===n)return t++,!0;if(r)throw new r(`Expected ${n}`);return!1}function i(e,r){if(n(e))return t=e.lastIndex,!0;if(r)throw new r(`Expected ${e.toString()}`);return!1}function a(n){n.lastIndex=t;let r=n.exec(e);if(null===r)throw new SyntaxError(`Expected ${n.toString()}`);return t=n.lastIndex,r}function o(e){return a(e)[1]}function s(e){let t=l(),r=function(){let e=Object.create(null);for(;n(K);){let t=o(K),n=l();if(null===n)throw new SyntaxError("Expected attribute value");e[t]=n}return e}();if(null===t&&0===Object.keys(r).length)throw new SyntaxError("Expected message value or attributes");return{id:e,value:t,attributes:r}}function l(){let r;if(n(ee)&&(r=o(ee)),"{"===e[t]||"}"===e[t])return c(r?[r]:[],1/0);let i=v();return i?r?c([r,i],i.length):(i.value=w(i.value,ie),c([i],i.length)):r?w(r,ae):null}function c(r=[],i){for(;;){if(n(ee)){r.push(o(ee));continue}if("{"===e[t]){r.push(u());continue}if("}"===e[t])throw new SyntaxError("Unbalanced closing brace");let a=v();if(!a)break;r.push(a),i=Math.min(i,a.length)}let a=r.length-1,s=r[a];"string"==typeof s&&(r[a]=w(s,ae));let l=[];for(let e of r)e instanceof we&&(e=e.value.slice(0,e.value.length-i)),e&&l.push(e);return l}function u(){i(le,SyntaxError);let e=d();if(i(ce))return e;if(i(he)){let t=function(){let e,t=[],i=0;for(;n(J);){r("*")&&(e=i);let n=h(),a=l();if(null===a)throw new SyntaxError("Expected variant value");t[i++]={key:n,value:a}}if(0===i)return null;if(void 0===e)throw new SyntaxError("Expected default variant");return{variants:t,star:e}}();return i(ce,SyntaxError),{type:"select",selector:e,...t}}throw new SyntaxError("Unclosed placeable")}function d(){if("{"===e[t])return u();if(n(Q)){let[,n,r,o=null]=a(Q);if("$"===n)return{type:"var",name:r};if(i(fe)){let a=function(){let n=[];for(;;){switch(e[t]){case")":return t++,n;case void 0:throw new SyntaxError("Unclosed argument list")}n.push(f()),i(me)}}();if("-"===n)return{type:"term",name:r,attr:o,args:a};if(X.test(r))return{type:"func",name:r,args:a};throw new SyntaxError("Function names must be all upper-case")}return"-"===n?{type:"term",name:r,attr:o,args:[]}:{type:"mesg",name:r,attr:o}}return p()}function f(){let e=d();return"mesg"!==e.type?e:i(pe)?{type:"narg",name:e.name,value:p()}:e}function h(){let e;return i(ue,SyntaxError),e=n(Y)?m():{type:"str",value:o(G)},i(de,SyntaxError),e}function p(){if(n(Y))return m();if('"'===e[t])return function(){r('"',SyntaxError);let n="";for(;;){if(n+=o(te),"\\"!==e[t]){if(r('"'))return{type:"str",value:n};throw new SyntaxError("Unclosed string literal")}n+=g()}}();throw new SyntaxError("Invalid expression")}function m(){let[,e,t=""]=a(Y),n=t.length;return{type:"num",value:parseFloat(e),precision:n}}function g(){if(n(ne))return o(ne);if(n(re)){let[,e,t]=a(re),n=parseInt(e||t,16);return n<=55295||57344<=n?String.fromCodePoint(n):"�"}throw new SyntaxError("Unknown escape sequence")}function v(){let n=t;switch(i(ge),e[t]){case".":case"[":case"*":case"}":case void 0:return!1;case"{":return b(e.slice(n,t))}return" "===e[t-1]&&b(e.slice(n,t))}function w(e,t){return e.replace(t,"")}function b(e){let t=e.replace(oe,"\n"),n=se.exec(e)[1].length;return new we(t,n)}}}class we{constructor(e,t){this.value=e,this.length=t}}const be=new RegExp("^([a-z]{2,3}|\\*)(?:-([a-z]{4}|\\*))?(?:-([a-z]{2}|\\*))?(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))?$","i");class ye{constructor(e){const t=be.exec(e.replace(/_/g,"-"));if(!t)return void(this.isWellFormed=!1);let[,n,r,i,a]=t;n&&(this.language=n.toLowerCase()),r&&(this.script=r[0].toUpperCase()+r.slice(1)),i&&(this.region=i.toUpperCase()),this.variant=a,this.isWellFormed=!0}isEqual(e){return this.language===e.language&&this.script===e.script&&this.region===e.region&&this.variant===e.variant}matches(e,t=!1,n=!1){return(this.language===e.language||t&&void 0===this.language||n&&void 0===e.language)&&(this.script===e.script||t&&void 0===this.script||n&&void 0===e.script)&&(this.region===e.region||t&&void 0===this.region||n&&void 0===e.region)&&(this.variant===e.variant||t&&void 0===this.variant||n&&void 0===e.variant)}toString(){return[this.language,this.script,this.region,this.variant].filter((e=>void 0!==e)).join("-")}clearVariants(){this.variant=void 0}clearRegion(){this.region=void 0}addLikelySubtags(){const e=function(e){if(Object.prototype.hasOwnProperty.call(xe,e))return new ye(xe[e]);const t=new ye(e);return t.language&&ke.includes(t.language)?(t.region=t.language.toUpperCase(),t):null}(this.toString().toLowerCase());return!!e&&(this.language=e.language,this.script=e.script,this.region=e.region,this.variant=e.variant,!0)}}const xe={ar:"ar-arab-eg","az-arab":"az-arab-ir","az-ir":"az-arab-ir",be:"be-cyrl-by",da:"da-latn-dk",el:"el-grek-gr",en:"en-latn-us",fa:"fa-arab-ir",ja:"ja-jpan-jp",ko:"ko-kore-kr",pt:"pt-latn-br",sr:"sr-cyrl-rs","sr-ru":"sr-latn-ru",sv:"sv-latn-se",ta:"ta-taml-in",uk:"uk-cyrl-ua",zh:"zh-hans-cn","zh-hant":"zh-hant-tw","zh-hk":"zh-hant-hk","zh-mo":"zh-hant-mo","zh-tw":"zh-hant-tw","zh-gb":"zh-hant-gb","zh-us":"zh-hant-us"},ke=["az","bg","cs","de","es","fi","fr","hu","it","lt","lv","nl","pl","ro","ru"];const Re={"ca-ES":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"de-DE":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"en-US":{"context_menu.ftl":"context-menu-download-swf = Download .swf\ncontext-menu-copy-debug-info = Copy debug info\ncontext-menu-open-save-manager = Open Save Manager\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] About Ruffle Extension ({$version})\n        *[other] About Ruffle ({$version})\n    }\ncontext-menu-hide = Hide this menu\ncontext-menu-exit-fullscreen = Exit fullscreen\ncontext-menu-enter-fullscreen = Enter fullscreen","messages.ftl":'message-unsupported-avm2 =\n    The Ruffle emulator may not yet fully support all of ActionScript 3 used by this content.\n    Some parts of the content may not work as expected.\nmessage-cant-embed =\n    Ruffle wasn\'t able to run the Flash embedded in this page.\n    You can try to open the file in a separate tab, to sidestep this issue.\npanic-title = Something went wrong :(\nmore-info = More info\nrun-anyway = Run anyway\ncontinue = Continue\nreport-bug = Report Bug\nupdate-ruffle = Update Ruffle\nruffle-demo = Web Demo\nruffle-desktop = Desktop Application\nruffle-wiki = View Ruffle Wiki\nview-error-details = View Error Details\nopen-in-new-tab = Open in a new tab\nclick-to-unmute = Click to unmute\nerror-file-protocol =\n    It appears you are running Ruffle on the "file:" protocol.\n    This doesn\'t work as browsers block many features from working for security reasons.\n    Instead, we invite you to setup a local server or either use the web demo or the desktop application.\nerror-javascript-config =\n    Ruffle has encountered a major issue due to an incorrect JavaScript configuration.\n    If you are the server administrator, we invite you to check the error details to find out which parameter is at fault.\n    You can also consult the Ruffle wiki for help.\nerror-wasm-not-found =\n    Ruffle failed to load the required ".wasm" file component.\n    If you are the server administrator, please ensure the file has correctly been uploaded.\n    If the issue persists, you may need to use the "publicPath" setting: please consult the Ruffle wiki for help.\nerror-wasm-mime-type =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    This web server is not serving ".wasm" files with the correct MIME type.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-swf-fetch =\n    Ruffle failed to load the Flash SWF file.\n    The most likely reason is that the file no longer exists, so there is nothing for Ruffle to load.\n    Try contacting the website administrator for help.\nerror-swf-cors =\n    Ruffle failed to load the Flash SWF file.\n    Access to fetch has likely been blocked by CORS policy.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-wasm-cors =\n    Ruffle failed to load the required ".wasm" file component.\n    Access to fetch has likely been blocked by CORS policy.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-wasm-invalid =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    It seems like this page has missing or invalid files for running Ruffle.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-wasm-download =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    This can often resolve itself, so you can try reloading the page.\n    Otherwise, please contact the website administrator.\nerror-wasm-disabled-on-edge =\n    Ruffle failed to load the required ".wasm" file component.\n    To fix this, try opening your browser\'s settings, clicking "Privacy, search, and services", scrolling down, and turning off "Enhance your security on the web".\n    This will allow your browser to load the required ".wasm" files.\n    If the issue persists, you might have to use a different browser.\nerror-javascript-conflict =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    It seems like this page uses JavaScript code that conflicts with Ruffle.\n    If you are the server administrator, we invite you to try loading the file on a blank page.\nerror-javascript-conflict-outdated = You can also try to upload a more recent version of Ruffle that may circumvent the issue (current build is outdated: {$buildDate}).\nerror-csp-conflict =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    This web server\'s Content Security Policy does not allow the required ".wasm" component to run.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-unknown =\n    Ruffle has encountered a major issue whilst trying to display this Flash content.\n    {$outdated ->\n        [true] If you are the server administrator, please try to upload a more recent version of Ruffle (current build is outdated: {$buildDate}).\n        *[false] This isn\'t supposed to happen, so we\'d really appreciate if you could file a bug!\n    }',"save-manager.ftl":"save-delete-prompt = Are you sure you want to delete this save file?\nsave-reload-prompt =\n    The only way to {$action ->\n    [delete] delete\n    *[replace] replace\n    } this save file without potential conflict is to reload this content. Do you wish to continue anyway?\nsave-download = Download\nsave-replace = Replace\nsave-delete = Delete\nsave-backup-all = Download all save files"},"es-ES":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"fr-FR":{"context_menu.ftl":"context-menu-download-swf = Télécharger en tant que .swf\ncontext-menu-copy-debug-info = Copier les infos de débogage\ncontext-menu-open-save-manager = Ouvrir le gestionnaire de stockage\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] À propos de Ruffle Extension ({ $version })\n       *[other] À propos de Ruffle ({ $version })\n    }\ncontext-menu-hide = Masquer ce menu\ncontext-menu-exit-fullscreen = Sortir du mode plein écran\ncontext-menu-enter-fullscreen = Afficher en plein écran\n","messages.ftl":"message-unsupported-avm2 =\n    L'émulateur Ruffle ne prend pas encore en charge toutes les fonctionnalités du langage ActionScript 3.\n    Certaines parties de ce contenu pourraient ainsi ne pas fonctionner correctement.\nmessage-cant-embed =\n    Ruffle n'a pas été en mesure de lire le fichier Flash intégré dans cette page.\n    Vous pouvez essayer d'ouvrir le fichier dans un onglet isolé, pour contourner le problème.\nmore-info = Plus d'infos\nrun-anyway = Exécuter quand même\ncontinue = Continuer\nopen-in-new-tab = Ouvrir dans un nouvel onglet\nclick-to-unmute = Cliquez pour activer le son\n","save-manager.ftl":"save-delete-prompt = Voulez-vous vraiment supprimer ce fichier de sauvegarde ?\nsave-reload-prompt =\n    La seule façon de { $action ->\n        [delete] supprimer\n       *[replace] remplacer\n    } ce fichier de sauvegarde sans conflit potentiel est de recharger ce contenu. Souhaitez-vous quand même continuer ?\nsave-download = Télécharger\nsave-replace = Remplacer\nsave-delete = Supprimer\n"},"hu-HU":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"it-IT":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"ja-JP":{"context_menu.ftl":"context-menu-download-swf = .swfをダウンロード\ncontext-menu-copy-debug-info = デバッグ情報をコピー\ncontext-menu-open-save-manager = セーブマネージャーを開く\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] Ruffle拡張機能について ({ $version })\n       *[other] Ruffleについて ({ $version })\n    }\ncontext-menu-hide = メニューを隠す\ncontext-menu-exit-fullscreen = フルスクリーンを終了\ncontext-menu-enter-fullscreen = フルスクリーンにする\n","messages.ftl":'message-unsupported-avm2 = Ruffleは、このコンテンツで使用されているActionScript3の一部をサポートしていない可能性があり、コンテンツの一部が期待どおりに動作しない場合があります。\nmessage-cant-embed =\n    Ruffleはこのページに埋め込まれた Flash を実行できませんでした。\n    別のタブでファイルを開くことで、この問題を解決できるかもしれません。\npanic-title = エラーが発生しました :(\nmore-info = 詳細情報\nrun-anyway = とにかく実行する\ncontinue = 続行\nreport-bug = バグを報告\nupdate-ruffle = Ruffleを更新\nruffle-demo = Webデモ\nruffle-desktop = デスクトップアプリ\nruffle-wiki = Ruffle Wikiを見る\nview-error-details = エラーの詳細を表示\nopen-in-new-tab = 新しいタブで開く\nclick-to-unmute = クリックでミュートを解除\nerror-file-protocol =\n    Ruffleを"file:"プロトコルで使用しているようです。\n    ブラウザはセキュリティ上の理由から殆どの機能を制限しているため、正しく動作しません。\n    ローカルサーバーをセットアップするか、ウェブデモまたはデスクトップアプリをご利用ください。\nerror-javascript-config =\n    JavaScriptの設定が正しくないため、Ruffleで問題が発生しました。\n    サーバー管理者の方は、エラーの詳細から、どのパラメーターに問題があるのかを確認してください。\n    Ruffleのwikiを参照することで、解決方法が見つかるかもしれません。\nerror-swf-cors =\n    RuffleはSWFファイルの読み込みに失敗しました。\n    CORSポリシーの設定により、fetchへのアクセスがブロックされている可能性があります。\n    サーバー管理者の方は、Ruffleのwikiを参照してください。\nerror-unknown =\n    Flashコンテンツを表示する際にRuffleで問題が発生しました。\n    { $outdated ->\n        [true] 現在使用しているビルドは最新ではないため、サーバー管理者の方は、最新版のRuffleに更新してみてください(現在利用中のビルド: { $buildDate })。\n       *[false] 想定外の問題なので、バグとして報告していただけると嬉しいです!\n    }\n',"save-manager.ftl":"save-delete-prompt = このセーブファイルを削除してもよろしいですか?\nsave-reload-prompt =\n    セーブファイルを競合の可能性なく { $action ->\n        [delete] 削除する\n       *[replace] 置き換える\n    } ために、このコンテンツを再読み込みすることを推奨します。続行しますか？\nsave-download = ダウンロード\nsave-replace = 置き換え\nsave-delete = 削除\nsave-backup-all = 全てのセーブをバックアップ(全てのsolsファイルをダウンロード)\n"},"ko-KR":{"context_menu.ftl":"context-menu-download-swf = .swf 다운로드\ncontext-menu-copy-debug-info = 디버그 정보 복사\ncontext-menu-open-save-manager = 저장 관리자 열기\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] Ruffle 확장 프로그램 정보 ({ $version })\n       *[other] Ruffle 정보 ({ $version })\n    }\ncontext-menu-hide = 이 메뉴 숨기기\ncontext-menu-exit-fullscreen = 전체화면 나가기\ncontext-menu-enter-fullscreen = 전체화면으로 열기\n","messages.ftl":'message-unsupported-avm2 = Ruffle 에뮬레이터는 액션스크립트 3이 사용된 이 콘텐츠를 아직 완벽하게 지원하지 않을 수 있습니다. 콘텐츠의 일부 동작이 예상대로 작동하지 않을 수 있습니다.\nmessage-cant-embed = Ruffle이 이 페이지에 포함된 플래시를 실행할 수 없었습니다. 별도의 탭에서 파일을 열어봄으로서 이 문제를 해결할 수 있습니다.\npanic-title = 문제가 발생했습니다 :(\nmore-info = 추가 정보\nrun-anyway = 그래도 실행하기\ncontinue = 계속하기\nreport-bug = 버그 제보\nupdate-ruffle = Ruffle 업데이트\nruffle-demo = 웹 데모\nruffle-desktop = 데스크톱 애플리케이션\nruffle-wiki = Ruffle 위키 보기\nview-error-details = 오류 세부 정보 보기\nopen-in-new-tab = 새 탭에서 열기\nclick-to-unmute = 클릭하여 음소거 해제\nerror-file-protocol =\n    Ruffle을 "file:" 프로토콜에서 실행하고 있는 것으로 보입니다.\n    브라우저에서는 이 프로토콜을 보안상의 이유로 많은 기능을 작동하지 않게 차단하므로 이 방법은 작동하지 않습니다.\n    대신, 로컬 서버를 직접 열어서 설정하거나 웹 데모 또는 데스크톱 애플리케이션을 사용하시기 바랍니다.\nerror-javascript-config =\n    잘못된 자바스크립트 설정으로 인해 Ruffle에서 중대한 문제가 발생했습니다.\n    만약 당신이 서버 관리자인 경우, 오류 세부사항을 확인하여 어떤 매개변수가 잘못되었는지 알아보세요.\n    또는 Ruffle 위키를 통해 도움을 받아 볼 수도 있습니다.\nerror-wasm-not-found =\n    Ruffle이 ".wasm" 필수 파일 구성요소를 로드하지 못했습니다.\n    만약 당신이 서버 관리자라면 파일이 올바르게 업로드되었는지 확인하세요.\n    문제가 지속된다면 "publicPath" 옵션을 사용해야 할 수도 있습니다: Ruffle 위키를 참조하여 도움을 받으세요.\nerror-wasm-mime-type =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 웹 서버는 올바른 MIME 유형의 ".wasm" 파일을 제공하지 않습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 통해 도움을 받으세요.\nerror-swf-fetch =\n    Ruffle이 플래시 SWF 파일을 로드하는 데 실패하였습니다.\n    이는 주로 파일이 더 이상 존재하지 않아 Ruffle이 로드할 수 있는 것이 없을 가능성이 높습니다.\n    웹사이트 관리자에게 문의하여 도움을 받아보세요.\nerror-swf-cors =\n    Ruffle이 플래시 SWF 파일을 로드하는 데 실패하였습니다.\n    CORS 정책에 의해 데이터 가져오기에 대한 액세스가 차단되었을 수 있습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 참조하여 도움을 받아볼 수 있습니다.\nerror-wasm-cors =\n    Ruffle이 ".wasm" 필수 파일 구성요소를 로드하지 못했습니다.\n    CORS 정책에 의해 데이터 가져오기에 대한 액세스가 차단되었을 수 있습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 참조하여 도움을 받아볼 수 있습니다.\nerror-wasm-invalid =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 페이지에 Ruffle을 실행하기 위한 파일이 누락되었거나 잘못된 것 같습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 참조하여 도움을 받아볼 수 있습니다.\nerror-wasm-download =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 문제는 때때로 바로 해결될 수 있으므로 페이지를 새로고침하여 다시 시도해보세요.\n    그래도 문제가 지속된다면, 웹사이트 관리자에게 문의해주세요.\nerror-wasm-disabled-on-edge =\n    Ruffle이 ".wasm" 필수 파일 구성요소를 로드하지 못했습니다.\n    이를 해결하려면 브라우저 설정에서 "개인 정보, 검색 및 서비스"를 클릭한 후, 하단으로 스크롤하여 "웹에서 보안 강화" 기능을 꺼야 합니다.\n    이는 필요한 ".wasm" 파일을 브라우저에서 로드할 수 있도록 허용합니다.\n    이 문제가 지속될 경우 다른 브라우저를 사용해야 할 수 있습니다.\nerror-javascript-conflict =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 페이지에서 사용되는 자바스크립트 코드가 Ruffle과 충돌하는 것으로 보입니다.\n    만약 당신이 서버 관리자라면 빈 페이지에서 파일을 로드해보세요.\nerror-javascript-conflict-outdated = 또한 Ruffle의 최신 버전을 업로드하는 것을 시도하여 문제를 우회해볼 수 있습니다. (현재 빌드가 오래되었습니다: { $buildDate }).\nerror-csp-conflict =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 웹 서버의 CSP(Content Security Policy) 정책이 ".wasm" 필수 구성요소를 실행하는 것을 허용하지 않습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 참조하여 도움을 받아볼 수 있습니다.\nerror-unknown =\n    Ruffle이 플래시 콘텐츠를 표시하려고 시도하는 동안 중대한 문제가 발생했습니다.\n    { $outdated ->\n        [true] 만약 당신이 서버 관리자라면, Ruffle의 최신 버전을 업로드하여 다시 시도해보세요. (현재 빌드가 오래되었습니다: { $buildDate }).\n       *[false] 이런 현상이 발생해서는 안되므로, 버그를 제보해주신다면 감사하겠습니다!\n    }\n',"save-manager.ftl":"save-delete-prompt = 정말로 이 세이브 파일을 삭제하시겠습니까?\nsave-reload-prompt =\n    \b이 파일을 잠재적인 충돌 없이 { $action ->\n        [delete] 삭제\n       *[replace] 교체\n    }하려면 콘텐츠를 다시 로드해야 합니다. 그래도 계속하시겠습니까?\nsave-download = 다운로드\nsave-replace = 교체\nsave-delete = 삭제\nsave-backup-all = 모든 저장 데이터 백업 (모든 sol 다운로드)\n"},"nl-NL":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"pt-PT":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"ro-RO":{"context_menu.ftl":"context-menu-download-swf = Descarcă .swf\ncontext-menu-copy-debug-info = Copiați informațiile de depanare\ncontext-menu-open-save-manager = Deschide manager de salvări\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] Despre extensia Ruffle ({ $version })\n       *[other] Despre Ruffle ({ $version })\n    }\ncontext-menu-hide = Ascunde acest meniu\ncontext-menu-exit-fullscreen = Ieșiți din ecranul complet\ncontext-menu-enter-fullscreen = Intră în ecran complet\n","messages.ftl":'message-unsupported-avm2 =\n    Emulatorul Ruffle poate să nu accepte încă pe deplin tot ActionScript 3 folosit de acest conţinut.\n    Este posibil ca unele părți ale conținutului să nu funcționeze conform așteptărilor.\nmessage-cant-embed =\n    Ruffle nu a putut rula Flash încorporat în această pagină.\n    Puteți încerca să deschideți fișierul într-o filă separată, pentru a evita această problemă.\npanic-title = Ceva a mers prost :(\nmore-info = Mai multe informatii\nrun-anyway = Rulează oricum\ncontinue = Continuare\nreport-bug = Raportează o eroare\nupdate-ruffle = Actualizează\nruffle-demo = Demo Web\nruffle-desktop = Aplicație desktop\nruffle-wiki = Vezi Ruffle Wiki\nview-error-details = Vezi detaliile de eroare\nopen-in-new-tab = Deschidere in filă nouă\nclick-to-unmute = Înlătură amuțirea\nerror-file-protocol =\n    Se pare că rulați Ruffle pe protocolul "fișier:".\n    Aceasta nu funcționează ca browsere blochează multe caracteristici din motive de securitate.\n    În schimb, vă invităm să configurați un server local sau să folosiți aplicația web demo sau desktop.\nerror-javascript-config =\n    Ruffle a întâmpinat o problemă majoră din cauza unei configurări incorecte a JavaScript.\n    Dacă sunteți administratorul serverului, vă invităm să verificați detaliile de eroare pentru a afla care parametru este defect.\n    Puteți consulta și Ruffle wiki pentru ajutor.\nerror-wasm-not-found =\n    Ruffle a eșuat la încărcarea componentei de fișier ".wasm".\n    Dacă sunteți administratorul serverului, vă rugăm să vă asigurați că fișierul a fost încărcat corect.\n    Dacă problema persistă, poate fi necesar să utilizaţi setarea "publicPath": vă rugăm să consultaţi Ruffle wiki pentru ajutor.\nerror-wasm-mime-type =\n    Ruffle a întâmpinat o problemă majoră în timp ce se încerca inițializarea.\n    Acest server web nu servește ". asm" fișiere cu tipul corect MIME.\n    Dacă sunteți administrator de server, vă rugăm să consultați Ruffle wiki pentru ajutor.\nerror-swf-fetch =\n    Ruffle a eșuat la încărcarea fișierului Flash SWF.\n    Motivul cel mai probabil este că fişierul nu mai există, deci nu există nimic pentru Ruffle să se încarce.\n    Încercați să contactați administratorul site-ului web pentru ajutor.\nerror-swf-cors =\n    Ruffle a eșuat la încărcarea fișierului Flash SWF.\n    Accesul la preluare a fost probabil blocat de politica CORS.\n    Dacă sunteţi administratorul serverului, vă rugăm să consultaţi Ruffle wiki pentru ajutor.\nerror-wasm-cors =\n    Ruffle a eșuat în încărcarea componentei de fișier ".wasm".\n    Accesul la preluare a fost probabil blocat de politica CORS.\n    Dacă sunteţi administratorul serverului, vă rugăm să consultaţi Ruffle wiki pentru ajutor.\nerror-wasm-invalid =\n    Ruffle a întâmpinat o problemă majoră în timp ce se încearcă inițializarea.\n    Se pare că această pagină are fișiere lipsă sau invalide pentru rularea Ruffle.\n    Dacă sunteţi administratorul serverului, vă rugăm să consultaţi Ruffle wiki pentru ajutor.\nerror-wasm-download =\n    Ruffle a întâmpinat o problemă majoră în timp ce încerca să inițializeze.\n    Acest lucru se poate rezolva adesea, astfel încât puteţi încerca să reîncărcaţi pagina.\n    Altfel, vă rugăm să contactaţi administratorul site-ului.\nerror-wasm-disabled-on-edge =\n    Ruffle nu a putut încărca componenta de fișier ".wasm".\n    Pentru a remedia acest lucru, încercați să deschideți setările browser-ului dvs., apăsând pe "Confidențialitate, căutare și servicii", derulând în jos și închizând "Îmbunătățește-ți securitatea pe web".\n    Acest lucru va permite browser-ului să încarce fișierele ".wasm" necesare.\n    Dacă problema persistă, ar putea fi necesar să folosiți un browser diferit.\nerror-javascript-conflict =\n    Ruffle a întâmpinat o problemă majoră în timp ce încerca să inițializeze.\n    Se pare că această pagină folosește codul JavaScript care intră în conflict cu Ruffle.\n    Dacă sunteţi administratorul serverului, vă invităm să încărcaţi fişierul pe o pagină goală.\nerror-javascript-conflict-outdated = De asemenea, poți încerca să încarci o versiune mai recentă de Ruffle care poate ocoli problema (versiunea curentă este expirată: { $buildDate }).\nerror-csp-conflict =\n    Ruffle a întâmpinat o problemă majoră în timp ce se încerca inițializarea.\n    Politica de securitate a conținutului acestui server web nu permite serviciul necesar". asm" componentă pentru a rula.\n    Dacă sunteți administratorul de server, consultați Ruffle wiki pentru ajutor.\nerror-unknown =\n    Ruffle a întâmpinat o problemă majoră în timp ce se încerca afișarea conținutului Flash.\n    { $outdated ->\n        [true] Dacă sunteți administratorul de server, vă rugăm să încercaţi să încărcaţi o versiune mai recentă de Ruffle (versiunea curentă este depăşită: { $buildDate }).\n       *[false] Acest lucru nu ar trebui să se întâmple, așa că am aprecia foarte mult dacă ai putea trimite un bug!\n    }\n',"save-manager.ftl":"save-delete-prompt = Sunteţi sigur că doriţi să ştergeţi acest fişier salvat?\nsave-reload-prompt =\n    Singura cale de a { $action ->\n        [delete] șterge\n       *[replace] înlocuiește\n    } acest fișier de salvare fără un conflict potențial este de a reîncărca acest conținut. Doriți să continuați oricum?\nsave-download = Descărcare\nsave-replace = Înlocuiește\nsave-delete = Ștergere\nsave-backup-all = Copie de rezervă toate salvările (descarcă toate sols?)\n"},"ru-RU":{"context_menu.ftl":"context-menu-download-swf = Скачать .swf\ncontext-menu-copy-debug-info = Копировать отладочную информацию\ncontext-menu-open-save-manager = Менеджер сохранений\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] О расширении Ruffle ({ $version })\n       *[other] О Ruffle ({ $version })\n    }\ncontext-menu-hide = Скрыть это меню\ncontext-menu-exit-fullscreen = Оконный режим\ncontext-menu-enter-fullscreen = Полноэкранный режим\n","messages.ftl":'message-unsupported-avm2 =\n    Эмулятор Ruffle ещё не полностью поддерживает ActionScript 3, используемый в этом файле.\n    Некоторое содержимое может отображаться некорректно или работать с ошибками.\nmessage-cant-embed =\n    Ruffle не смог запустить Flash, используемый на этой странице.\n    Чтобы обойти эту проблему, вы можете попробовать открыть файл в отдельной вкладке.\npanic-title = Что-то пошло не так :(\nmore-info = Подробнее\nrun-anyway = Всё равно запустить\ncontinue = Продолжить\nreport-bug = Сообщить об ошибке\nupdate-ruffle = Обновить Ruffle\nruffle-demo = Веб-демо\nruffle-desktop = Настольное приложение\nruffle-wiki = Открыть вики Ruffle\nview-error-details = Сведения об ошибке\nopen-in-new-tab = Открыть в новой вкладке\nclick-to-unmute = Включить звук\nerror-file-protocol =\n    Похоже, что вы запускаете Ruffle по протоколу "file:".\n    Это не работает, поскольку браузеры блокируют работу многих функций по соображениям безопасности.\n    Вместо этого мы предлагаем вам использовать настольное приложение, веб-демо или настроить локальный сервер.\nerror-javascript-config =\n    Возникла серьёзная ошибка из-за неправильной конфигурации JavaScript.\n    Если вы являетесь администратором сервера, мы предлагаем вам проверить детали ошибки, чтобы выяснить, какой параметр дал сбой.\n    Вы также можете обратиться за помощью к вики Ruffle.\nerror-wasm-not-found =\n    Ruffle не удалось запустить необходимый компонент файла ".wasm".\n    Если вы администратор сервера, пожалуйста, убедитесь, что файл был загружен правильно.\n    Если проблема не устраняется, вам может потребоваться использовать настройку "publicPath": обратитесь к вики Ruffle.\nerror-wasm-mime-type =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Этот веб-сервер не предоставляет файлы ".wasm" с правильным типом MIME.\n    Если вы администратор сервера, обратитесь за помощью к вики Ruffle.\nerror-swf-fetch =\n    Ruffle не удалось запустить SWF-файл Flash.\n    Вероятнее всего, файл больше не существует, поэтому Ruffle нечего загружать.\n    Попробуйте связаться с администратором сайта для получения помощи.\nerror-swf-cors =\n    Ruffle не удалось запустить SWF-файл Flash.\n    Скорее всего, доступ к файлу был заблокирован политикой CORS.\n    Если вы администратор сервера, обратитесь за помощью к вики Ruffle.\nerror-wasm-cors =\n    Ruffle не удалось загрузить необходимый компонент файла ".wasm".\n    Скорее всего, доступ к файлу был заблокирован политикой CORS.\n    Если вы администратор сервера, обратитесь за помощью к вики Ruffle.\nerror-wasm-invalid =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Похоже, что на этой странице отсутствуют файлы для запуска Ruffle или они недействительны.\n    Если вы администратор сервера, обратитесь за помощью к вики Ruffle.\nerror-wasm-download =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Чаще всего эта проблема устраняется сама собою, поэтому вы можете просто перезагрузить страницу.\n    Если ошибка продолжает появляться, свяжитесь с администратором сайта.\nerror-wasm-disabled-on-edge =\n    Ruffle не удалось загрузить необходимый компонент файла ".wasm".\n    Чтобы исправить эту ошибку, попробуйте отключить в настройках браузера дополнительную конфиденциальность. Это позволит браузеру загрузить необходимые WASM-файлы.\n    Если проблема осталась, вам может потребоваться другой браузер.\nerror-javascript-conflict =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Похоже, что эта страница использует конфликтующий с Ruffle код JavaScript.\n    Если вы являетесь администратором сервера, мы предлагаем вам попробовать запустить файл на пустой странице.\nerror-javascript-conflict-outdated = Вы также можете попробовать загрузить последнюю версию Ruffle, которая может обойти проблему (текущая версия устарела: { $buildDate }).\nerror-csp-conflict =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Политика безопасности содержимого этого веб-сервера не позволяет использовать требуемые компоненты для запуска ".wasm".\n    Если вы являетесь администратором сервера, обратитесь за помощью к вики Ruffle.\nerror-unknown =\n    Ruffle столкнулся с серьёзной проблемой при попытке отобразить этот Flash-контент.\n    { $outdated ->\n        [true] Если вы администратор сервера, попробуйте загрузить более новую версию Ruffle (текущая версия устарела: { $buildDate }).\n       *[false] Этого не должно происходить, поэтому мы будем очень признательны, если вы сообщите нам об ошибке!\n    }\n',"save-manager.ftl":"save-delete-prompt = Удалить этот файл сохранения?\nsave-reload-prompt =\n    Единственный способ { $action ->\n        [delete] удалить\n       *[replace] заменить\n    } этот файл сохранения без потенциального конфликта – перезапустить запущенный контент. Всё равно продолжить?\nsave-download = Скачать\nsave-replace = Заменить\nsave-delete = Удалить\nsave-backup-all = Скачать все сохранения\n"},"sv-SE":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"tr-TR":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"zh-CN":{"context_menu.ftl":"","messages.ftl":"","save-manager.ftl":""},"zh-TW":{"context_menu.ftl":"context-menu-download-swf = 下載SWF檔案\ncontext-menu-copy-debug-info = 複製除錯資訊\ncontext-menu-open-save-manager = 打開存檔管理器\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] 關於Ruffle擴充功能 ({ $version })\n       *[other] 關於Ruffle ({ $version })\n    }\ncontext-menu-hide = 隱藏菜單\ncontext-menu-exit-fullscreen = 退出全螢幕\ncontext-menu-enter-fullscreen = 進入全螢幕\n","messages.ftl":'message-unsupported-avm2 =\n    目前Ruffle還沒辦法完整模擬所有的ActionScript 3內容。\n    有些地方還沒辦法正常顯示。\nmessage-cant-embed =\n    目前Ruffle沒辦法執行嵌入式Flash。\n    你可以在新分頁中開啟來解決這個問題。\npanic-title = 完蛋，出問題了 :(\nmore-info = 更多資訊\nrun-anyway = 直接執行\ncontinue = 繼續\nreport-bug = 回報BUG\nupdate-ruffle = 更新Ruffle\nruffle-demo = 網頁展示\nruffle-desktop = 桌面應用程式\nruffle-wiki = 查看Ruffle Wiki\nview-error-details = 檢視錯誤詳細資料\nopen-in-new-tab = 開啟新增分頁\nclick-to-unmute = 點擊以取消靜音\nerror-file-protocol =\n    看起來你想要用Ruffle來執行"file:"的協議。\n    因為瀏覽器禁了很多功能以資安的理由來講。\n    我們建議你建立本地伺服器或著直接使用網頁展示或桌面應用程式。\nerror-javascript-config =\n    目前Ruffle遇到不正確的JavaScript配置。\n    如果你是伺服器管理員，我們建議你檢查哪個環節出錯。\n    你可以查詢Ruffle wiki得到需求幫助。\nerror-wasm-not-found =\n    目前Ruffle找不到".wasm"檔案。\n    如果你是伺服器管理員，確保檔案是否放對位置。\n    如果還是有問題的話，你要用"publicPath"來設定: 請查詢Ruffle wiki得到需求幫助。\n',"save-manager.ftl":""}},Se={};for(const e in Re){const t=new V(e),n=Re[e];if(n)for(const r in n){const i=n[r];if(i)for(const n in t.addResource(new ve(i)))console.error(`Error in text for ${e} ${r}: ${n}`)}Se[e]=t}function Ee(e,t,n){const r=Se[e];if(void 0!==r){const e=r.getMessage(t);if(void 0!==e&&e.value)return r.formatPattern(e.value,n)}return null}function Ce(e,t){const n=function(e,t,{strategy:n="filtering",defaultLocale:r}={}){const i=function(e,t,n){const r=new Set,i=new Map;for(let e of t)new ye(e).isWellFormed&&i.set(e,new ye(e));e:for(const t of e){const e=t.toLowerCase(),a=new ye(e);if(void 0!==a.language){for(const t of i.keys())if(e===t.toLowerCase()){if(r.add(t),i.delete(t),"lookup"===n)return Array.from(r);if("filtering"===n)continue;continue e}for(const[e,t]of i.entries())if(t.matches(a,!0,!1)){if(r.add(e),i.delete(e),"lookup"===n)return Array.from(r);if("filtering"===n)continue;continue e}if(a.addLikelySubtags())for(const[e,t]of i.entries())if(t.matches(a,!0,!1)){if(r.add(e),i.delete(e),"lookup"===n)return Array.from(r);if("filtering"===n)continue;continue e}a.clearVariants();for(const[e,t]of i.entries())if(t.matches(a,!0,!0)){if(r.add(e),i.delete(e),"lookup"===n)return Array.from(r);if("filtering"===n)continue;continue e}if(a.clearRegion(),a.addLikelySubtags())for(const[e,t]of i.entries())if(t.matches(a,!0,!1)){if(r.add(e),i.delete(e),"lookup"===n)return Array.from(r);if("filtering"===n)continue;continue e}a.clearRegion();for(const[e,t]of i.entries())if(t.matches(a,!0,!0)){if(r.add(e),i.delete(e),"lookup"===n)return Array.from(r);if("filtering"===n)continue;continue e}}}return Array.from(r)}(Array.from(null!=e?e:[]).map(String),Array.from(null!=t?t:[]).map(String),n);if("lookup"===n){if(void 0===r)throw new Error("defaultLocale cannot be undefined for strategy `lookup`");0===i.length&&i.push(r)}else r&&!i.includes(r)&&i.push(r);return i}(navigator.languages,Object.keys(Se),{defaultLocale:"en-US"});for(const r in n){const i=Ee(n[r],e,t);if(i)return i}return console.error(`Unknown text key '${e}'`),e}function Ie(e,t){const n=document.createElement("div");return Ce(e,t).split("\n").forEach((e=>{const t=document.createElement("p");t.innerText=e,n.appendChild(t)})),n.innerHTML}const Ae="https://ruffle.rs",_e=/^\s*(\d+(\.\d+)?(%)?)/;let $e=!1;function je(e){if(null==e)return{};e instanceof URLSearchParams||(e=new URLSearchParams(e));const t={};for(const[n,r]of e)t[n]=r.toString();return t}class Pe{constructor(e,t){this.x=e,this.y=t}distanceTo(e){const t=e.x-this.x,n=e.y-this.y;return Math.sqrt(t*t+n*n)}}class Oe extends HTMLElement{get readyState(){return this._readyState}get metadata(){return this._metadata}constructor(){super(),this.contextMenuForceDisabled=!1,this.contextMenuSupported=!1,this.panicked=!1,this.rendererDebugInfo="",this.isExtension=!1,this.longPressTimer=null,this.pointerDownPosition=null,this.pointerMoveMaxDistance=0,this.config={},this.shadow=this.attachShadow({mode:"open"}),this.shadow.appendChild(h.content.cloneNode(!0)),this.dynamicStyles=this.shadow.getElementById("dynamic_styles"),this.container=this.shadow.getElementById("container"),this.playButton=this.shadow.getElementById("play_button"),this.playButton.addEventListener("click",(()=>this.play())),this.unmuteOverlay=this.shadow.getElementById("unmute_overlay"),this.splashScreen=this.shadow.getElementById("splash-screen"),this.virtualKeyboard=this.shadow.getElementById("virtual-keyboard"),this.virtualKeyboard.addEventListener("input",this.virtualKeyboardInput.bind(this)),this.saveManager=this.shadow.getElementById("save-manager"),this.saveManager.addEventListener("click",(()=>this.saveManager.classList.add("hidden")));const e=this.saveManager.querySelector("#modal-area");e&&e.addEventListener("click",(e=>e.stopPropagation()));const t=this.saveManager.querySelector("#close-modal");t&&t.addEventListener("click",(()=>this.saveManager.classList.add("hidden")));const n=this.saveManager.querySelector("#backup-saves");n&&(n.addEventListener("click",this.backupSaves.bind(this)),n.innerText=Ce("save-backup-all"));const r=this.unmuteOverlay.querySelector("#unmute_overlay_svg");r&&(r.querySelector("#unmute_text").textContent=Ce("click-to-unmute")),this.contextMenuElement=this.shadow.getElementById("context-menu"),this.addEventListener("contextmenu",this.showContextMenu.bind(this)),this.container.addEventListener("pointerdown",this.pointerDown.bind(this)),this.container.addEventListener("pointermove",this.checkLongPressMovement.bind(this)),this.container.addEventListener("pointerup",this.checkLongPress.bind(this)),this.container.addEventListener("pointercancel",this.clearLongPressTimer.bind(this)),this.addEventListener("fullscreenchange",this.fullScreenChange.bind(this)),this.addEventListener("webkitfullscreenchange",this.fullScreenChange.bind(this)),this.instance=null,this.onFSCommand=null,this._readyState=0,this._metadata=null,this.lastActivePlayingState=!1,this.setupPauseOnTabHidden()}setupPauseOnTabHidden(){document.addEventListener("visibilitychange",(()=>{this.instance&&(document.hidden&&(this.lastActivePlayingState=this.instance.is_playing(),this.instance.pause()),document.hidden||!0!==this.lastActivePlayingState||this.instance.play())}),!1)}connectedCallback(){this.updateStyles()}static get observedAttributes(){return["width","height"]}attributeChangedCallback(e,t,n){"width"!==e&&"height"!==e||this.updateStyles()}disconnectedCallback(){this.destroy()}updateStyles(){if(this.dynamicStyles.sheet){if(this.dynamicStyles.sheet.rules)for(let e=0;e<this.dynamicStyles.sheet.rules.length;e++)this.dynamicStyles.sheet.deleteRule(e);const e=this.attributes.getNamedItem("width");if(null!=e){const t=Oe.htmlDimensionToCssDimension(e.value);null!==t&&this.dynamicStyles.sheet.insertRule(`:host { width: ${t}; }`)}const t=this.attributes.getNamedItem("height");if(null!=t){const e=Oe.htmlDimensionToCssDimension(t.value);null!==e&&this.dynamicStyles.sheet.insertRule(`:host { height: ${e}; }`)}}}isUnusedFallbackObject(){const e=function(e){const t=p[e];return void 0!==t?{internalName:e,name:t.name,class:t.class}:null}("ruffle-object");if(null!==e){let t=this.parentNode;for(;t!==document&&null!==t;){if(t.nodeName===e.name)return!0;t=t.parentNode}}return!1}async ensureFreshInstance(){var e;this.destroy(),this.loadedConfig&&!1!==this.loadedConfig.splashScreen&&!1!==this.loadedConfig.preloader&&this.showSplashScreen(),this.loadedConfig&&!1===this.loadedConfig.preloader&&console.warn("The configuration option preloader has been replaced with splashScreen. If you own this website, please update the configuration."),this.loadedConfig&&this.loadedConfig.maxExecutionDuration&&"number"!=typeof this.loadedConfig.maxExecutionDuration&&console.warn("Configuration: An obsolete format for duration for 'maxExecutionDuration' was used, please use a single number indicating seconds instead. For instance '15' instead of '{secs: 15, nanos: 0}'."),this.loadedConfig&&"boolean"==typeof this.loadedConfig.contextMenu&&console.warn('The configuration option contextMenu no longer takes a boolean. Use "on", "off", or "rightClickOnly".');const t=await f(this.loadedConfig||{},this.onRuffleDownloadProgress.bind(this)).catch((e=>{if(console.error(`Serious error loading Ruffle: ${e}`),"file:"===window.location.protocol)e.ruffleIndexError=2;else{e.ruffleIndexError=9;const t=String(e.message).toLowerCase();t.includes("mime")?e.ruffleIndexError=8:t.includes("networkerror")||t.includes("failed to fetch")?e.ruffleIndexError=6:t.includes("disallowed by embedder")?e.ruffleIndexError=1:"CompileError"===e.name?e.ruffleIndexError=3:t.includes("could not download wasm module")&&"TypeError"===e.name?e.ruffleIndexError=7:"TypeError"===e.name?e.ruffleIndexError=5:navigator.userAgent.includes("Edg")&&t.includes("webassembly is not defined")&&(e.ruffleIndexError=10)}throw this.panic(e),e}));this.instance=await new t(this.container,this,this.loadedConfig),this.rendererDebugInfo=this.instance.renderer_debug_info();const n=this.instance.renderer_name();if(console.log("%cNew Ruffle instance created (WebAssembly extensions: "+(t.is_wasm_simd_used()?"ON":"OFF")+" | Used renderer: "+(null!=n?n:"")+")","background: #37528C; color: #FFAD33"),"running"!==this.audioState()&&(this.container.style.visibility="hidden",await new Promise((e=>{window.setTimeout((()=>{e()}),200)})),this.container.style.visibility=""),this.unmuteAudioContext(),navigator.userAgent.toLowerCase().includes("android")&&this.container.addEventListener("click",(()=>this.virtualKeyboard.blur())),!this.loadedConfig||"on"===this.loadedConfig.autoplay||"off"!==this.loadedConfig.autoplay&&"running"===this.audioState()){if(this.play(),"running"!==this.audioState()){this.loadedConfig&&"hidden"===this.loadedConfig.unmuteOverlay||(this.unmuteOverlay.style.display="block"),this.container.addEventListener("click",this.unmuteOverlayClicked.bind(this),{once:!0});const t=null===(e=this.instance)||void 0===e?void 0:e.audio_context();t&&(t.onstatechange=()=>{"running"===t.state&&this.unmuteOverlayClicked(),t.onstatechange=null})}}else this.playButton.style.display="block"}onRuffleDownloadProgress(e,t){const n=this.splashScreen.querySelector(".loadbar-inner"),r=this.splashScreen.querySelector(".loadbar");Number.isNaN(t)?r&&(r.style.display="none"):n.style.width=e/t*100+"%"}destroy(){this.instance&&(this.instance.destroy(),this.instance=null,this._metadata=null,this._readyState=0,console.log("Ruffle instance destroyed."))}checkOptions(e){if("string"==typeof e)return{url:e};const t=(e,t)=>{if(!e){const e=new TypeError(t);throw e.ruffleIndexError=4,this.panic(e),e}};return t(null!==e&&"object"==typeof e,"Argument 0 must be a string or object"),t("url"in e||"data"in e,"Argument 0 must contain a `url` or `data` key"),t(!("url"in e)||"string"==typeof e.url,"`url` must be a string"),e}getExtensionConfig(){var e;return window.RufflePlayer&&window.RufflePlayer.conflict&&("extension"===window.RufflePlayer.conflict.newestName||"extension"===window.RufflePlayer.newestName)?null===(e=window.RufflePlayer)||void 0===e?void 0:e.conflict.config:{}}async load(e){var t,n;if(e=this.checkOptions(e),this.isConnected&&!this.isUnusedFallbackObject()){if(!De(this))try{const r=this.getExtensionConfig();if(this.loadedConfig=Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({},g),r),null!==(n=null===(t=window.RufflePlayer)||void 0===t?void 0:t.config)&&void 0!==n?n:{}),this.config),e),this.loadedConfig.allowScriptAccess=!0===e.allowScriptAccess,this.loadedConfig.backgroundColor&&"transparent"!==this.loadedConfig.wmode&&(this.container.style.backgroundColor=this.loadedConfig.backgroundColor),await this.ensureFreshInstance(),"url"in e){console.log(`Loading SWF file ${e.url}`),this.swfUrl=new URL(e.url,document.baseURI);const t=Object.assign(Object.assign({},je(e.url.substring(e.url.indexOf("?")))),je(e.parameters));this.instance.stream_from(this.swfUrl.href,t)}else"data"in e&&(console.log("Loading SWF data"),this.instance.load_data(new Uint8Array(e.data),je(e.parameters),e.swfFileName||"movie.swf"))}catch(e){console.error(`Serious error occurred loading SWF file: ${e}`);const t=new Error(e);throw t.message.includes("Error parsing config")&&(t.ruffleIndexError=4),this.panic(t),t}}else console.warn("Ignoring attempt to play a disconnected or suspended Ruffle element")}play(){this.instance&&(this.instance.play(),this.playButton.style.display="none")}get isPlaying(){return!!this.instance&&this.instance.is_playing()}get volume(){return this.instance?this.instance.volume():1}set volume(e){this.instance&&this.instance.set_volume(e)}get fullscreenEnabled(){return!(!document.fullscreenEnabled&&!document.webkitFullscreenEnabled)}get isFullscreen(){return(document.fullscreenElement||document.webkitFullscreenElement)===this}setFullscreen(e){this.fullscreenEnabled&&(e?this.enterFullscreen():this.exitFullscreen())}enterFullscreen(){const e={navigationUI:"hide"};this.requestFullscreen?this.requestFullscreen(e):this.webkitRequestFullscreen?this.webkitRequestFullscreen(e):this.webkitRequestFullScreen&&this.webkitRequestFullScreen(e)}exitFullscreen(){document.exitFullscreen?document.exitFullscreen():document.webkitExitFullscreen?document.webkitExitFullscreen():document.webkitCancelFullScreen&&document.webkitCancelFullScreen()}fullScreenChange(){var e;null===(e=this.instance)||void 0===e||e.set_fullscreen(this.isFullscreen)}base64ToBlob(e,t){const n=atob(e),r=new ArrayBuffer(n.length),i=new Uint8Array(r);for(let e=0;e<n.length;e++)i[e]=n.charCodeAt(e);return new Blob([r],{type:t})}saveFile(e,t,n){const r=this.base64ToBlob(e,t),i=URL.createObjectURL(r),a=document.createElement("a");a.href=i,a.style.display="none",a.download=n,document.body.appendChild(a),a.click(),document.body.removeChild(a),URL.revokeObjectURL(i)}isB64SOL(e){try{return"TCSO"===atob(e).slice(6,10)}catch(e){return!1}}confirmReloadSave(e,t,n){if(this.isB64SOL(t)&&localStorage[e]){if(!n&&!confirm(Ce("save-delete-prompt")))return;const r=this.swfUrl?this.swfUrl.pathname:"",i=this.swfUrl?this.swfUrl.hostname:document.location.hostname,a=e.split("/").slice(1,-1).join("/");if(r.includes(a)&&e.startsWith(i))return void(confirm(Ce("save-reload-prompt",{action:n?"replace":"delete"}))&&this.loadedConfig&&(this.destroy(),n?localStorage.setItem(e,t):localStorage.removeItem(e),this.load(this.loadedConfig),this.populateSaves(),this.saveManager.classList.add("hidden")));n?localStorage.setItem(e,t):localStorage.removeItem(e),this.populateSaves(),this.saveManager.classList.add("hidden")}}replaceSOL(e,t){const n=e.target,r=new FileReader;r.addEventListener("load",(()=>{if(r.result&&"string"==typeof r.result){const e=new RegExp("data:.*;base64,"),n=r.result.replace(e,"");this.confirmReloadSave(t,n,!0)}})),n&&n.files&&n.files.length>0&&n.files[0]&&r.readAsDataURL(n.files[0])}deleteSave(e){const t=localStorage.getItem(e);t&&this.confirmReloadSave(e,t,!1)}populateSaves(){const e=this.saveManager.querySelector("#local-saves");if(e){try{localStorage}catch(e){return}e.textContent="",Object.keys(localStorage).forEach((t=>{const n=t.split("/").pop(),r=localStorage.getItem(t);if(n&&r&&this.isB64SOL(r)){const i=document.createElement("TR"),a=document.createElement("TD");a.textContent=n,a.title=t;const o=document.createElement("TD"),s=document.createElement("SPAN");s.textContent=Ce("save-download"),s.className="save-option",s.addEventListener("click",(()=>this.saveFile(r,"application/octet-stream",n+".sol"))),o.appendChild(s);const l=document.createElement("TD"),c=document.createElement("INPUT");c.type="file",c.accept=".sol",c.className="replace-save",c.id="replace-save-"+t;const u=document.createElement("LABEL");u.htmlFor="replace-save-"+t,u.textContent=Ce("save-replace"),u.className="save-option",c.addEventListener("change",(e=>this.replaceSOL(e,t))),l.appendChild(c),l.appendChild(u);const d=document.createElement("TD"),f=document.createElement("SPAN");f.textContent=Ce("save-delete"),f.className="save-option",f.addEventListener("click",(()=>this.deleteSave(t))),d.appendChild(f),i.appendChild(a),i.appendChild(o),i.appendChild(l),i.appendChild(d),e.appendChild(i)}}))}}backupSaves(){Object.keys(localStorage).forEach((e=>{const t=e.split("/").pop(),n=localStorage.getItem(e);n&&this.isB64SOL(n)&&this.saveFile(n,"application/octet-stream",t+".sol")}))}openSaveManager(){this.saveManager.classList.remove("hidden")}async downloadSwf(){try{if(this.swfUrl){console.log("Downloading SWF: "+this.swfUrl);const e=await fetch(this.swfUrl.href);if(!e.ok)return void console.error("SWF download failed");const t=await e.blob(),n=URL.createObjectURL(t),r=document.createElement("a");r.style.display="none",r.href=n,r.download=function(e){const t=e.pathname;return t.substring(t.lastIndexOf("/")+1)}(this.swfUrl),document.body.appendChild(r),r.click(),document.body.removeChild(r),URL.revokeObjectURL(n)}else console.error("SWF download failed")}catch(e){console.error("SWF download failed")}}virtualKeyboardInput(){const e=this.virtualKeyboard,t=e.value;for(const e of t)for(const t of["keydown","keyup"])this.dispatchEvent(new KeyboardEvent(t,{key:e,bubbles:!0}));e.value=""}openVirtualKeyboard(){navigator.userAgent.toLowerCase().includes("android")?setTimeout((()=>{this.virtualKeyboard.focus({preventScroll:!0})}),100):this.virtualKeyboard.focus({preventScroll:!0})}contextMenuItems(e){const t=String.fromCharCode(10003),n=[],r=()=>{n.length>0&&null!==n[n.length-1]&&n.push(null)};this.instance&&(this.instance.prepare_context_menu().forEach(((e,i)=>{e.separatorBefore&&r(),n.push({text:e.caption+(e.checked?` (${t})`:""),onClick:()=>{var e;return null===(e=this.instance)||void 0===e?void 0:e.run_context_menu_callback(i)},enabled:e.enabled})})),r()),this.fullscreenEnabled&&(this.isFullscreen?n.push({text:Ce("context-menu-exit-fullscreen"),onClick:()=>{var e;return null===(e=this.instance)||void 0===e?void 0:e.set_fullscreen(!1)}}):n.push({text:Ce("context-menu-enter-fullscreen"),onClick:()=>{var e;return null===(e=this.instance)||void 0===e?void 0:e.set_fullscreen(!0)}})),this.instance&&this.swfUrl&&this.loadedConfig&&!0===this.loadedConfig.showSwfDownload&&(r(),n.push({text:Ce("context-menu-download-swf"),onClick:this.downloadSwf.bind(this)})),window.isSecureContext&&n.push({text:Ce("context-menu-copy-debug-info"),onClick:()=>navigator.clipboard.writeText(this.getPanicData())}),this.populateSaves();const i=this.saveManager.querySelector("#local-saves");i&&""!==i.textContent&&n.push({text:Ce("context-menu-open-save-manager"),onClick:this.openSaveManager.bind(this)}),r();const a=this.isExtension?"extension":"";return n.push({text:Ce("context-menu-about-ruffle",{flavor:a,version:S}),onClick(){window.open(Ae,"_blank")}}),e&&(r(),n.push({text:Ce("context-menu-hide"),onClick:()=>this.contextMenuForceDisabled=!0})),n}pointerDown(e){this.pointerDownPosition=new Pe(e.pageX,e.pageY),this.pointerMoveMaxDistance=0,this.startLongPressTimer()}clearLongPressTimer(){this.longPressTimer&&(clearTimeout(this.longPressTimer),this.longPressTimer=null)}startLongPressTimer(){this.clearLongPressTimer(),this.longPressTimer=setTimeout((()=>this.clearLongPressTimer()),800)}checkLongPressMovement(e){if(null!==this.pointerDownPosition){const t=new Pe(e.pageX,e.pageY),n=this.pointerDownPosition.distanceTo(t);n>this.pointerMoveMaxDistance&&(this.pointerMoveMaxDistance=n)}}checkLongPress(e){this.longPressTimer?this.clearLongPressTimer():!this.contextMenuSupported&&"mouse"!==e.pointerType&&this.pointerMoveMaxDistance<15&&this.showContextMenu(e)}showContextMenu(e){var t,n,r;e.preventDefault(),"contextmenu"===e.type?(this.contextMenuSupported=!0,window.addEventListener("click",this.hideContextMenu.bind(this),{once:!0})):(window.addEventListener("pointerup",this.hideContextMenu.bind(this),{once:!0}),e.stopPropagation());const i=e instanceof PointerEvent&&("touch"===e.pointerType||"pen"===e.pointerType);if([!1,"off"].includes(null!==(n=null===(t=this.loadedConfig)||void 0===t?void 0:t.contextMenu)&&void 0!==n?n:"on")||i&&"rightClickOnly"===(null===(r=this.loadedConfig)||void 0===r?void 0:r.contextMenu)||this.contextMenuForceDisabled)return;for(;this.contextMenuElement.firstChild;)this.contextMenuElement.removeChild(this.contextMenuElement.firstChild);for(const e of this.contextMenuItems(i))if(null===e){const e=document.createElement("li");e.className="menu_separator";const t=document.createElement("hr");e.appendChild(t),this.contextMenuElement.appendChild(e)}else{const{text:t,onClick:n,enabled:r}=e,i=document.createElement("li");i.className="menu_item",i.textContent=t,this.contextMenuElement.appendChild(i),!1!==r?i.addEventListener(this.contextMenuSupported?"click":"pointerup",n):i.classList.add("disabled")}this.contextMenuElement.style.left="0",this.contextMenuElement.style.top="0",this.contextMenuElement.style.display="block";const a=this.getBoundingClientRect(),o=e.clientX-a.x,s=e.clientY-a.y,l=a.width-this.contextMenuElement.clientWidth-1,c=a.height-this.contextMenuElement.clientHeight-1;this.contextMenuElement.style.left=Math.floor(Math.min(o,l))+"px",this.contextMenuElement.style.top=Math.floor(Math.min(s,c))+"px"}hideContextMenu(){var e;null===(e=this.instance)||void 0===e||e.clear_custom_menu_items(),this.contextMenuElement.style.display="none"}pause(){this.instance&&(this.instance.pause(),this.playButton.style.display="block")}audioState(){if(this.instance){const e=this.instance.audio_context();return e&&e.state||"running"}return"suspended"}unmuteOverlayClicked(){if(this.instance){if("running"!==this.audioState()){const e=this.instance.audio_context();e&&e.resume()}this.unmuteOverlay.style.display="none"}}unmuteAudioContext(){$e||(navigator.maxTouchPoints<1?$e=!0:this.container.addEventListener("click",(()=>{var e;if($e)return;const t=null===(e=this.instance)||void 0===e?void 0:e.audio_context();if(!t)return;const n=new Audio;n.src=(()=>{const e=new ArrayBuffer(10),n=new DataView(e),r=t.sampleRate;return n.setUint32(0,r,!0),n.setUint32(4,r,!0),n.setUint16(8,1,!0),`data:audio/wav;base64,UklGRisAAABXQVZFZm10IBAAAAABAAEA${window.btoa(String.fromCharCode(...new Uint8Array(e))).slice(0,13)}AgAZGF0YQcAAACAgICAgICAAAA=`})(),n.load(),n.play().then((()=>{$e=!0})).catch((e=>{console.warn(`Failed to play dummy sound: ${e}`)}))}),{once:!0}))}copyElement(e){if(e){for(const t of e.attributes)if(t.specified){if("title"===t.name&&"Adobe Flash Player"===t.value)continue;try{this.setAttribute(t.name,t.value)}catch(e){console.warn(`Unable to set attribute ${t.name} on Ruffle instance`)}}for(const t of Array.from(e.children))this.appendChild(t)}}static htmlDimensionToCssDimension(e){if(e){const t=e.match(_e);if(t){let e=t[1];return t[3]||(e+="px"),e}}return null}onCallbackAvailable(e){const t=this.instance;this[e]=(...n)=>null==t?void 0:t.call_exposed_callback(e,n)}set traceObserver(e){var t;null===(t=this.instance)||void 0===t||t.set_trace_observer(e)}getPanicData(){let e="\n# Player Info\n";if(e+=`Allows script access: ${!!this.loadedConfig&&this.loadedConfig.allowScriptAccess}\n`,e+=`${this.rendererDebugInfo}\n`,e+=this.debugPlayerInfo(),e+="\n# Page Info\n",e+=`Page URL: ${document.location.href}\n`,this.swfUrl&&(e+=`SWF URL: ${this.swfUrl}\n`),e+="\n# Browser Info\n",e+=`User Agent: ${window.navigator.userAgent}\n`,e+=`Platform: ${window.navigator.platform}\n`,e+=`Has touch support: ${window.navigator.maxTouchPoints>0}\n`,e+="\n# Ruffle Info\n",e+=`Version: ${R}\n`,e+=`Name: ${S}\n`,e+="Channel: nightly\n",e+=`Built: ${E}\n`,e+="Commit: a023e11098d9f4dc1fe4a8c6768d7e3c47140dc8\n",e+=`Is extension: ${this.isExtension}\n`,e+="\n# Metadata\n",this.metadata)for(const[t,n]of Object.entries(this.metadata))e+=`${t}: ${n}\n`;return e}panic(e){var t;if(this.panicked)return;if(this.panicked=!0,this.hideSplashScreen(),e instanceof Error&&("AbortError"===e.name||e.message.includes("AbortError")))return;const n=null!==(t=null==e?void 0:e.ruffleIndexError)&&void 0!==t?t:0,r=Object.assign([],{stackIndex:-1,avmStackIndex:-1});if(r.push("# Error Info\n"),e instanceof Error){if(r.push(`Error name: ${e.name}\n`),r.push(`Error message: ${e.message}\n`),e.stack){const t=r.push(`Error stack:\n\`\`\`\n${e.stack}\n\`\`\`\n`)-1;if(e.avmStack){const t=r.push(`AVM2 stack:\n\`\`\`\n    ${e.avmStack.trim().replace(/\t/g,"    ")}\n\`\`\`\n`)-1;r.avmStackIndex=t}r.stackIndex=t}}else r.push(`Error: ${e}\n`);r.push(this.getPanicData());const i=r.join(""),a=new Date(E),o=new Date;o.setMonth(o.getMonth()-6);const s=o>a;let l,c,u;if(s)l=`<a target="_top" href="${Ae}#downloads">${Ce("update-ruffle")}</a>`;else{const e=document.location.href.split(/[?#]/)[0];let t=`https://github.com/ruffle-rs/ruffle/issues/new?title=${encodeURIComponent(`Error on ${e}`)}&template=error_report.md&labels=error-report&body=`,n=encodeURIComponent(i);r.stackIndex>-1&&String(t+n).length>8195&&(r[r.stackIndex]=null,r.avmStackIndex>-1&&(r[r.avmStackIndex]=null),n=encodeURIComponent(r.join(""))),t+=n,l=`<a target="_top" href="${t}">${Ce("report-bug")}</a>`}switch(n){case 2:c=Ie("error-file-protocol"),u=`\n                    <li><a target="_top" href="${Ae}/demo">${Ce("ruffle-demo")}</a></li>\n                    <li><a target="_top" href="${Ae}#downloads">${Ce("ruffle-desktop")}</a></li>\n                `;break;case 4:c=Ie("error-javascript-config"),u=`\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#javascript-api">${Ce("ruffle-wiki")}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 9:c=Ie("error-wasm-not-found"),u=`\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configuration-options">${Ce("ruffle-wiki")}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 8:c=Ie("error-wasm-mime-type"),u=`\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configure-webassembly-mime-type">${Ce("ruffle-wiki")}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 11:c=Ie("error-swf-fetch"),u=`\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 12:c=Ie("error-swf-cors"),u=`\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configure-cors-header">${Ce("ruffle-wiki")}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 6:c=Ie("error-wasm-cors"),u=`\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configure-cors-header">${Ce("ruffle-wiki")}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 3:c=Ie("error-wasm-invalid"),u=`\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#addressing-a-compileerror">${Ce("ruffle-wiki")}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 7:c=Ie("error-wasm-download"),u=`\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 10:c=Ie("error-wasm-disabled-on-edge"),u=`\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Frequently-Asked-Questions-For-Users#edge-webassembly-error">${Ce("more-info")}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 5:c=Ie("error-javascript-conflict"),s&&(c+=Ie("error-javascript-conflict-outdated",{buildDate:E})),u=`\n                    <li>${l}</li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;case 1:c=Ie("error-csp-conflict"),u=`\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configure-wasm-csp">${Ce("ruffle-wiki")}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `;break;default:c=Ie("error-unknown",{buildDate:E,outdated:String(s)}),u=`\n                    <li>${l}</li>\n                    <li><a href="#" id="panic-view-details">${Ce("view-error-details")}</a></li>\n                `}this.container.innerHTML=`\n            <div id="panic">\n                <div id="panic-title">${Ce("panic-title")}</div>\n                <div id="panic-body">${c}</div>\n                <div id="panic-footer">\n                    <ul>${u}</ul>\n                </div>\n            </div>\n        `;const d=this.container.querySelector("#panic-view-details");d&&(d.onclick=()=>{const e=this.container.querySelector("#panic-body");e.classList.add("details");const t=document.createElement("textarea");return t.readOnly=!0,t.value=i,e.replaceChildren(t),!1}),this.destroy()}displayRootMovieDownloadFailedMessage(){if(this.isExtension&&window.location.origin!==this.swfUrl.origin){this.hideSplashScreen();const e=document.createElement("div");e.id="message_overlay",e.innerHTML=`<div class="message">\n                ${Ie("message-cant-embed")}\n                <div>\n                    <a target="_blank" href="${this.swfUrl}">${Ce("open-in-new-tab")}</a>\n                </div>\n            </div>`,this.container.prepend(e)}else{const e=new Error("Failed to fetch: "+this.swfUrl);this.swfUrl.protocol.includes("http")?window.location.origin===this.swfUrl.origin?e.ruffleIndexError=11:e.ruffleIndexError=12:e.ruffleIndexError=2,this.panic(e)}}displayUnsupportedMessage(){const e=document.createElement("div");e.id="message_overlay",e.innerHTML=`<div class="message">\n            ${Ie("message-unsupported-avm2")}\n            <div>\n                <a target="_blank" class="more-info-link" href="https://github.com/ruffle-rs/ruffle/wiki/Frequently-Asked-Questions-For-Users">${Ce("more-info")}</a>\n                <button id="run-anyway-btn">${Ce("run-anyway")}</button>\n            </div>\n        </div>`,this.container.prepend(e),e.querySelector("#run-anyway-btn").onclick=()=>{e.parentNode.removeChild(e)}}displayMessage(e){const t=document.createElement("div");t.id="message_overlay",t.innerHTML=`<div class="message">\n            <p>${e}</p>\n            <div>\n                <button id="continue-btn">${Ce("continue")}</button>\n            </div>\n        </div>`,this.container.prepend(t),this.container.querySelector("#continue-btn").onclick=()=>{t.parentNode.removeChild(t)}}debugPlayerInfo(){return""}hideSplashScreen(){this.splashScreen.classList.add("hidden"),this.container.classList.remove("hidden")}showSplashScreen(){this.splashScreen.classList.remove("hidden"),this.container.classList.add("hidden")}setMetadata(e){this._metadata=e,this._readyState=2,this.hideSplashScreen(),this.dispatchEvent(new Event(Oe.LOADED_METADATA)),this.dispatchEvent(new Event(Oe.LOADED_DATA))}setIsExtension(e){this.isExtension=e}}function Fe(e,t){switch(e||(e="sameDomain"),e.toLowerCase()){case"always":return!0;case"never":return!1;default:try{return new URL(window.location.href).origin===new URL(t,window.location.href).origin}catch(e){return!1}}}function Me(e){return null===e||"true"===e.toLowerCase()}function Le(e){if(e){let t="",n="";try{const r=new URL(e,Ae);t=r.pathname,n=r.hostname.replace("www.","")}catch(e){}if(t.startsWith("/v/")&&("youtube.com"===n||"youtube-nocookie.com"===n))return!0}return!1}function Te(e,t){var n,r;const i=e.getAttribute(t),a=null!==(r=null===(n=window.RufflePlayer)||void 0===n?void 0:n.config)&&void 0!==r?r:{};if(i)try{const n=new URL(i);"http:"!==n.protocol||"https:"!==window.location.protocol||"upgradeToHttps"in a&&!1===a.upgradeToHttps||(n.protocol="https:",e.setAttribute(t,n.toString()))}catch(e){}}function De(e){let t=e.parentElement;for(;null!==t;){switch(t.tagName){case"AUDIO":case"VIDEO":return!0}t=t.parentElement}return!1}Oe.LOADED_METADATA="loadedmetadata",Oe.LOADED_DATA="loadeddata";class Ue extends Oe{constructor(){super()}connectedCallback(){var e,t,n,r,i,a,o,s,l,c,u,d,f,h,p,m,g,v,w,b;super.connectedCallback();const y=this.attributes.getNamedItem("src");if(y){const x=null!==(t=null===(e=this.attributes.getNamedItem("allowScriptAccess"))||void 0===e?void 0:e.value)&&void 0!==t?t:null,k=null!==(r=null===(n=this.attributes.getNamedItem("menu"))||void 0===n?void 0:n.value)&&void 0!==r?r:null;this.load({url:y.value,allowScriptAccess:Fe(x,y.value),parameters:null!==(a=null===(i=this.attributes.getNamedItem("flashvars"))||void 0===i?void 0:i.value)&&void 0!==a?a:null,backgroundColor:null!==(s=null===(o=this.attributes.getNamedItem("bgcolor"))||void 0===o?void 0:o.value)&&void 0!==s?s:null,base:null!==(c=null===(l=this.attributes.getNamedItem("base"))||void 0===l?void 0:l.value)&&void 0!==c?c:null,menu:Me(k),salign:null!==(d=null===(u=this.attributes.getNamedItem("salign"))||void 0===u?void 0:u.value)&&void 0!==d?d:"",quality:null!==(h=null===(f=this.attributes.getNamedItem("quality"))||void 0===f?void 0:f.value)&&void 0!==h?h:"high",scale:null!==(m=null===(p=this.attributes.getNamedItem("scale"))||void 0===p?void 0:p.value)&&void 0!==m?m:"showAll",wmode:null!==(v=null===(g=this.attributes.getNamedItem("wmode"))||void 0===g?void 0:g.value)&&void 0!==v?v:"window",allowNetworking:null!==(b=null===(w=this.attributes.getNamedItem("allowNetworking"))||void 0===w?void 0:w.value)&&void 0!==b?b:"all"})}}get src(){var e;return null===(e=this.attributes.getNamedItem("src"))||void 0===e?void 0:e.value}set src(e){if(e){const t=document.createAttribute("src");t.value=e,this.attributes.setNamedItem(t)}else this.attributes.removeNamedItem("src")}static get observedAttributes(){return["src","width","height"]}attributeChangedCallback(e,t,n){var r,i,a,o;if(super.attributeChangedCallback(e,t,n),this.isConnected&&"src"===e){const e=this.attributes.getNamedItem("src");e&&this.load({url:e.value,parameters:null!==(i=null===(r=this.attributes.getNamedItem("flashvars"))||void 0===r?void 0:r.value)&&void 0!==i?i:null,base:null!==(o=null===(a=this.attributes.getNamedItem("base"))||void 0===a?void 0:a.value)&&void 0!==o?o:null})}}static isInterdictable(e){if(De(e))return!1;if(!e.getAttribute("src"))return!1;if(Le(e.getAttribute("src")))return Te(e,"src"),!1;const t=e.getAttribute("type");return t?k(t):x(e.getAttribute("src"))}static fromNativeEmbedElement(e){const t=m("ruffle-embed",Ue),n=document.createElement(t);return n.copyElement(e),n}}function qe(e,t,n){t=t.toLowerCase();for(const[n,r]of Object.entries(e))if(n.toLowerCase()===t)return r;return n}function Ne(e){var t,n;const r={};for(const i of e.children)if(i instanceof HTMLParamElement){const e=null===(t=i.attributes.getNamedItem("name"))||void 0===t?void 0:t.value,a=null===(n=i.attributes.getNamedItem("value"))||void 0===n?void 0:n.value;e&&a&&(r[e]=a)}return r}class ze extends Oe{constructor(){super(),this.params={}}connectedCallback(){var e;super.connectedCallback(),this.params=Ne(this);let t=null;this.attributes.getNamedItem("data")?t=null===(e=this.attributes.getNamedItem("data"))||void 0===e?void 0:e.value:this.params.movie&&(t=this.params.movie);const n=qe(this.params,"allowScriptAccess",null),r=qe(this.params,"flashvars",this.getAttribute("flashvars")),i=qe(this.params,"bgcolor",this.getAttribute("bgcolor")),a=qe(this.params,"allowNetworking",this.getAttribute("allowNetworking")),o=qe(this.params,"base",this.getAttribute("base")),s=qe(this.params,"menu",null),l=qe(this.params,"salign",""),c=qe(this.params,"quality","high"),u=qe(this.params,"scale","showAll"),d=qe(this.params,"wmode","window");if(t){const e={url:t};e.allowScriptAccess=Fe(n,t),r&&(e.parameters=r),i&&(e.backgroundColor=i),o&&(e.base=o),e.menu=Me(s),l&&(e.salign=l),c&&(e.quality=c),u&&(e.scale=u),d&&(e.wmode=d),a&&(e.allowNetworking=a),this.load(e)}}debugPlayerInfo(){var e;let t="Player type: Object\n",n=null;return this.attributes.getNamedItem("data")?n=null===(e=this.attributes.getNamedItem("data"))||void 0===e?void 0:e.value:this.params.movie&&(n=this.params.movie),t+=`SWF URL: ${n}\n`,Object.keys(this.params).forEach((e=>{t+=`Param ${e}: ${this.params[e]}\n`})),Object.keys(this.attributes).forEach((e=>{var n;t+=`Attribute ${e}: ${null===(n=this.attributes.getNamedItem(e))||void 0===n?void 0:n.value}\n`})),t}get data(){return this.getAttribute("data")}set data(e){if(e){const t=document.createAttribute("data");t.value=e,this.attributes.setNamedItem(t)}else this.attributes.removeNamedItem("data")}static isInterdictable(e){var t,n;if(De(e))return!1;if(e.getElementsByTagName("ruffle-object").length>0||e.getElementsByTagName("ruffle-embed").length>0)return!1;const r=null===(t=e.attributes.getNamedItem("data"))||void 0===t?void 0:t.value.toLowerCase(),i=Ne(e);let a;if(r){if(Le(r))return Te(e,"data"),!1;a=x(r)}else{if(!i||!i.movie)return!1;if(Le(i.movie)){const t=e.querySelector("param[name='movie']");if(t){Te(t,"value");const n=t.getAttribute("value");n&&e.setAttribute("data",n)}return!1}a=x(i.movie)}const o=null===(n=e.attributes.getNamedItem("classid"))||void 0===n?void 0:n.value.toLowerCase();if(o==="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000".toLowerCase())return!Array.from(e.getElementsByTagName("object")).some(ze.isInterdictable)&&!Array.from(e.getElementsByTagName("embed")).some(Ue.isInterdictable);if(o)return!1;const s=e.attributes.getNamedItem("type");return s?k(s.value):a}static fromNativeObjectElement(e){const t=m("ruffle-object",ze),n=document.createElement(t);for(const t of Array.from(e.getElementsByTagName("embed")))Ue.isInterdictable(t)&&t.remove();for(const t of Array.from(e.getElementsByTagName("object")))ze.isInterdictable(t)&&t.remove();return n.copyElement(e),n}}class Be{constructor(e){if(this.__mimeTypes=[],this.__namedMimeTypes={},e)for(let t=0;t<e.length;t++)this.install(e[t])}install(e){const t=this.__mimeTypes.length;this.__mimeTypes.push(e),this.__namedMimeTypes[e.type]=e,this[e.type]=e,this[t]=e}item(e){return this.__mimeTypes[e>>>0]}namedItem(e){return this.__namedMimeTypes[e]}get length(){return this.__mimeTypes.length}[Symbol.iterator](){return this.__mimeTypes[Symbol.iterator]()}}class We extends Be{constructor(e,t,n){super(),this.name=e,this.description=t,this.filename=n}}class He{constructor(e){this.__plugins=[],this.__namedPlugins={};for(let t=0;t<e.length;t++)this.install(e[t])}install(e){const t=this.__plugins.length;this.__plugins.push(e),this.__namedPlugins[e.name]=e,this[e.name]=e,this[t]=e}item(e){return this.__plugins[e>>>0]}namedItem(e){return this.__namedPlugins[e]}refresh(){}[Symbol.iterator](){return this.__plugins[Symbol.iterator]()}get length(){return this.__plugins.length}}const Ve=new We("Shockwave Flash","Shockwave Flash 32.0 r0","ruffle.js"),Ze=new We("Ruffle Extension","Ruffle Extension","ruffle.js");var Ke,Je;let Ye;Ve.install({type:w,description:"Shockwave Flash",suffixes:"spl",enabledPlugin:Ve}),Ve.install({type:v,description:"Shockwave Flash",suffixes:"swf",enabledPlugin:Ve}),Ve.install({type:b,description:"Shockwave Flash",suffixes:"swf",enabledPlugin:Ve}),Ve.install({type:y,description:"Shockwave Flash",suffixes:"swf",enabledPlugin:Ve}),Ze.install({type:"",description:"Ruffle Detection",suffixes:"",enabledPlugin:Ze});const Ge=null!==(Je=null===(Ke=window.RufflePlayer)||void 0===Ke?void 0:Ke.config)&&void 0!==Je?Je:{},Qe=u(Ge)+"ruffle.js";let Xe,et,tt,nt;function rt(){try{Xe=null!=Xe?Xe:document.getElementsByTagName("object"),et=null!=et?et:document.getElementsByTagName("embed");for(const e of Array.from(Xe))if(ze.isInterdictable(e)){const t=ze.fromNativeObjectElement(e);t.setIsExtension(Ye),e.replaceWith(t)}for(const e of Array.from(et))if(Ue.isInterdictable(e)){const t=Ue.fromNativeEmbedElement(e);t.setIsExtension(Ye),e.replaceWith(t)}}catch(e){console.error(`Serious error encountered when polyfilling native Flash elements: ${e}`)}}function it(){tt=null!=tt?tt:document.getElementsByTagName("iframe"),nt=null!=nt?nt:document.getElementsByTagName("frame"),[tt,nt].forEach((e=>{for(const t of e){if(void 0!==t.dataset.rufflePolyfilled)continue;t.dataset.rufflePolyfilled="";const e=t.contentWindow,n=`Couldn't load Ruffle into ${t.tagName}[${t.src}]: `;try{"complete"===e.document.readyState&&at(e,n)}catch(e){Ye||console.warn(n+e)}t.addEventListener("load",(()=>{at(e,n)}),!1)}}))}async function at(e,t){var n;let r;await new Promise((e=>{window.setTimeout((()=>{e()}),100)}));try{if(r=e.document,!r)return}catch(e){return void(Ye||console.warn(t+e))}if(Ye||void 0===r.documentElement.dataset.ruffleOptout)if(Ye)e.RufflePlayer||(e.RufflePlayer={}),e.RufflePlayer.config=Object.assign(Object.assign({},Ge),null!==(n=e.RufflePlayer.config)&&void 0!==n?n:{});else if(!e.RufflePlayer){const t=r.createElement("script");t.setAttribute("src",Qe),t.onload=()=>{e.RufflePlayer={},e.RufflePlayer.config=Ge},r.head.appendChild(t)}}const ot={version:R,polyfill(e){!function(e){var t;Ye=e;const n="ruffle.js"===(null===(t=navigator.plugins.namedItem("Ruffle Extension"))||void 0===t?void 0:t.filename);!Ye&&n||(rt(),it(),new MutationObserver((function(e){e.some((e=>e.addedNodes.length>0))&&(rt(),it())})).observe(document,{childList:!0,subtree:!0}))}(e)},pluginPolyfill(){!function(e){"install"in navigator.plugins&&navigator.plugins.install||Object.defineProperty(navigator,"plugins",{value:new He(navigator.plugins),writable:!1}),navigator.plugins.install(e),!(e.length>0)||"install"in navigator.mimeTypes&&navigator.mimeTypes.install||Object.defineProperty(navigator,"mimeTypes",{value:new Be(navigator.mimeTypes),writable:!1});const t=navigator.mimeTypes;for(let n=0;n<e.length;n+=1)t.install(e[n])}(Ve)},createPlayer(){const e=m("ruffle-player",Oe);return document.createElement(e)}};class st{constructor(e){this.sources={},this.config={},this.invoked=!1,this.newestName=null,this.conflict=null,null!=e&&(e instanceof st?(this.sources=e.sources,this.config=e.config,this.invoked=e.invoked,this.conflict=e.conflict,this.newestName=e.newestName,e.superseded()):e.constructor===Object&&e.config instanceof Object?this.config=e.config:this.conflict=e),"loading"===document.readyState?document.addEventListener("readystatechange",this.init.bind(this)):window.setTimeout(this.init.bind(this),0)}get version(){return"0.1.0"}registerSource(e){this.sources[e]=ot}newestSourceName(){let t=null,n=e.fromSemver("0.0.0");for(const r in this.sources)if(Object.prototype.hasOwnProperty.call(this.sources,r)){const i=e.fromSemver(this.sources[r].version);i.hasPrecedenceOver(n)&&(t=r,n=i)}return t}init(){if(!this.invoked){if(this.invoked=!0,this.newestName=this.newestSourceName(),null===this.newestName)throw new Error("No registered Ruffle source!");!1!==(!("polyfills"in this.config)||this.config.polyfills)&&this.sources[this.newestName].polyfill("extension"===this.newestName)}}newest(){const e=this.newestSourceName();return null!==e?this.sources[e]:null}satisfying(n){const r=t.fromRequirementString(n);let i=null;for(const t in this.sources)if(Object.prototype.hasOwnProperty.call(this.sources,t)){const n=e.fromSemver(this.sources[t].version);r.satisfiedBy(n)&&(i=this.sources[t])}return i}localCompatible(){return void 0!==this.sources.local?this.satisfying("^"+this.sources.local.version):this.newest()}local(){return void 0!==this.sources.local?this.satisfying("="+this.sources.local.version):this.newest()}superseded(){this.invoked=!0}static negotiate(e,t){let n;return n=e instanceof st?e:new st(e),void 0!==t&&(n.registerSource(t),!1!==(!("polyfills"in n.config)||n.config.polyfills)&&ot.pluginPolyfill()),n}}window.RufflePlayer=st.negotiate(window.RufflePlayer,"local")})()})();
+(() => {
+  "use strict";
+  var e,
+    t,
+    n = {
+      899: (e, t, n) => {
+        e.exports = n.p + "9609ef2907fc51a5c223.wasm";
+      },
+      878: (e, t, n) => {
+        e.exports = n.p + "78993198e943ac45dcb0.wasm";
+      },
+    },
+    r = {};
+  function i(e) {
+    var t = r[e];
+    if (void 0 !== t) return t.exports;
+    var a = (r[e] = { id: e, loaded: !1, exports: {} });
+    return n[e](a, a.exports, i), (a.loaded = !0), a.exports;
+  }
+  (i.m = n),
+    (i.d = (e, t) => {
+      for (var n in t)
+        i.o(t, n) &&
+          !i.o(e, n) &&
+          Object.defineProperty(e, n, { enumerable: !0, get: t[n] });
+    }),
+    (i.f = {}),
+    (i.e = (e) =>
+      Promise.all(Object.keys(i.f).reduce((t, n) => (i.f[n](e, t), t), []))),
+    (i.u = (e) =>
+      "core.ruffle." +
+      { 159: "b2b392bcfd8f4bacb933", 339: "1e9196b890c02cf8a18d" }[e] +
+      ".js"),
+    (i.g = (function () {
+      if ("object" == typeof globalThis) return globalThis;
+      try {
+        return this || new Function("return this")();
+      } catch (e) {
+        if ("object" == typeof window) return window;
+      }
+    })()),
+    (i.hmd = (e) => (
+      (e = Object.create(e)).children || (e.children = []),
+      Object.defineProperty(e, "exports", {
+        enumerable: !0,
+        set: () => {
+          throw new Error(
+            "ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: " +
+              e.id,
+          );
+        },
+      }),
+      e
+    )),
+    (i.o = (e, t) => Object.prototype.hasOwnProperty.call(e, t)),
+    (e = {}),
+    (t = "ruffle-selfhosted:"),
+    (i.l = (n, r, a, o) => {
+      if (e[n]) e[n].push(r);
+      else {
+        var s, l;
+        if (void 0 !== a)
+          for (
+            var c = document.getElementsByTagName("script"), u = 0;
+            u < c.length;
+            u++
+          ) {
+            var d = c[u];
+            if (
+              d.getAttribute("src") == n ||
+              d.getAttribute("data-webpack") == t + a
+            ) {
+              s = d;
+              break;
+            }
+          }
+        s ||
+          ((l = !0),
+          ((s = document.createElement("script")).charset = "utf-8"),
+          (s.timeout = 120),
+          i.nc && s.setAttribute("nonce", i.nc),
+          s.setAttribute("data-webpack", t + a),
+          (s.src = n)),
+          (e[n] = [r]);
+        var f = (t, r) => {
+            (s.onerror = s.onload = null), clearTimeout(h);
+            var i = e[n];
+            if (
+              (delete e[n],
+              s.parentNode && s.parentNode.removeChild(s),
+              i && i.forEach((e) => e(r)),
+              t)
+            )
+              return t(r);
+          },
+          h = setTimeout(
+            f.bind(null, void 0, { type: "timeout", target: s }),
+            12e4,
+          );
+        (s.onerror = f.bind(null, s.onerror)),
+          (s.onload = f.bind(null, s.onload)),
+          l && document.head.appendChild(s);
+      }
+    }),
+    (i.r = (e) => {
+      "undefined" != typeof Symbol &&
+        Symbol.toStringTag &&
+        Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }),
+        Object.defineProperty(e, "__esModule", { value: !0 });
+    }),
+    (i.p = ""),
+    (() => {
+      i.b = document.baseURI || self.location.href;
+      var e = { 179: 0 };
+      i.f.j = (t, n) => {
+        var r = i.o(e, t) ? e[t] : void 0;
+        if (0 !== r)
+          if (r) n.push(r[2]);
+          else {
+            var a = new Promise((n, i) => (r = e[t] = [n, i]));
+            n.push((r[2] = a));
+            var o = i.p + i.u(t),
+              s = new Error();
+            i.l(
+              o,
+              (n) => {
+                if (i.o(e, t) && (0 !== (r = e[t]) && (e[t] = void 0), r)) {
+                  var a = n && ("load" === n.type ? "missing" : n.type),
+                    o = n && n.target && n.target.src;
+                  (s.message =
+                    "Loading chunk " + t + " failed.\n(" + a + ": " + o + ")"),
+                    (s.name = "ChunkLoadError"),
+                    (s.type = a),
+                    (s.request = o),
+                    r[1](s);
+                }
+              },
+              "chunk-" + t,
+              t,
+            );
+          }
+      };
+      var t = (t, n) => {
+          var r,
+            a,
+            [o, s, l] = n,
+            c = 0;
+          if (o.some((t) => 0 !== e[t])) {
+            for (r in s) i.o(s, r) && (i.m[r] = s[r]);
+            l && l(i);
+          }
+          for (t && t(n); c < o.length; c++)
+            (a = o[c]), i.o(e, a) && e[a] && e[a][0](), (e[a] = 0);
+        },
+        n = (self.webpackChunkruffle_selfhosted =
+          self.webpackChunkruffle_selfhosted || []);
+      n.forEach(t.bind(null, 0)), (n.push = t.bind(null, n.push.bind(n)));
+    })(),
+    (() => {
+      class e {
+        constructor(e, t, n, r, i) {
+          (this.major = e),
+            (this.minor = t),
+            (this.patch = n),
+            (this.prIdent = r),
+            (this.buildIdent = i);
+        }
+        static fromSemver(t) {
+          const n = t.split("+"),
+            r = n[0].split("-"),
+            i = r[0].split("."),
+            a = parseInt(i[0], 10);
+          let o = 0,
+            s = 0,
+            l = null,
+            c = null;
+          return (
+            void 0 !== i[1] && (o = parseInt(i[1], 10)),
+            void 0 !== i[2] && (s = parseInt(i[2], 10)),
+            void 0 !== r[1] && (l = r[1].split(".")),
+            void 0 !== n[1] && (c = n[1].split(".")),
+            new e(a, o, s, l, c)
+          );
+        }
+        isCompatibleWith(e) {
+          return (
+            (0 !== this.major && this.major === e.major) ||
+            (0 === this.major &&
+              0 === e.major &&
+              0 !== this.minor &&
+              this.minor === e.minor) ||
+            (0 === this.major &&
+              0 === e.major &&
+              0 === this.minor &&
+              0 === e.minor &&
+              0 !== this.patch &&
+              this.patch === e.patch)
+          );
+        }
+        hasPrecedenceOver(e) {
+          if (this.major > e.major) return !0;
+          if (this.major < e.major) return !1;
+          if (this.minor > e.minor) return !0;
+          if (this.minor < e.minor) return !1;
+          if (this.patch > e.patch) return !0;
+          if (this.patch < e.patch) return !1;
+          if (null === this.prIdent && null !== e.prIdent) return !0;
+          if (null !== this.prIdent && null !== e.prIdent) {
+            const t = /^[0-9]*$/;
+            for (
+              let n = 0;
+              n < this.prIdent.length && n < e.prIdent.length;
+              n += 1
+            ) {
+              if (!t.test(this.prIdent[n]) && t.test(e.prIdent[n])) return !0;
+              if (t.test(this.prIdent[n]) && t.test(e.prIdent[n])) {
+                if (parseInt(this.prIdent[n], 10) > parseInt(e.prIdent[n], 10))
+                  return !0;
+                if (parseInt(this.prIdent[n], 10) < parseInt(e.prIdent[n], 10))
+                  return !1;
+              } else {
+                if (t.test(this.prIdent[n]) && !t.test(e.prIdent[n])) return !1;
+                if (!t.test(this.prIdent[n]) && !t.test(e.prIdent[n])) {
+                  if (this.prIdent[n] > e.prIdent[n]) return !0;
+                  if (this.prIdent[n] < e.prIdent[n]) return !1;
+                }
+              }
+            }
+            return this.prIdent.length > e.prIdent.length;
+          }
+          return !1;
+        }
+        isEqual(e) {
+          return (
+            this.major === e.major &&
+            this.minor === e.minor &&
+            this.patch === e.patch
+          );
+        }
+        isStableOrCompatiblePrerelease(e) {
+          return (
+            null === e.prIdent ||
+            (this.major === e.major &&
+              this.minor === e.minor &&
+              this.patch === e.patch)
+          );
+        }
+      }
+      class t {
+        constructor(e) {
+          this.requirements = e;
+        }
+        satisfiedBy(e) {
+          for (const t of this.requirements) {
+            let n = !0;
+            for (const { comparator: r, version: i } of t)
+              (n = n && i.isStableOrCompatiblePrerelease(e)),
+                "" === r || "=" === r
+                  ? (n = n && i.isEqual(e))
+                  : ">" === r
+                  ? (n = n && e.hasPrecedenceOver(i))
+                  : ">=" === r
+                  ? (n = n && (e.hasPrecedenceOver(i) || i.isEqual(e)))
+                  : "<" === r
+                  ? (n = n && i.hasPrecedenceOver(e))
+                  : "<=" === r
+                  ? (n = n && (i.hasPrecedenceOver(e) || i.isEqual(e)))
+                  : "^" === r && (n = n && i.isCompatibleWith(e));
+            if (n) return !0;
+          }
+          return !1;
+        }
+        static fromRequirementString(n) {
+          const r = n.split(" ");
+          let i = [];
+          const a = [];
+          for (const t of r)
+            if ("||" === t) i.length > 0 && (a.push(i), (i = []));
+            else if (t.length > 0) {
+              const n = /[0-9]/.exec(t);
+              if (n) {
+                const r = t.slice(0, n.index).trim(),
+                  a = e.fromSemver(t.slice(n.index).trim());
+                i.push({ comparator: r, version: a });
+              }
+            }
+          return i.length > 0 && a.push(i), new t(a);
+        }
+      }
+      const n = async () =>
+          WebAssembly.validate(
+            new Uint8Array([
+              0, 97, 115, 109, 1, 0, 0, 0, 1, 4, 1, 96, 0, 0, 3, 2, 1, 0, 5, 3,
+              1, 0, 1, 10, 14, 1, 12, 0, 65, 0, 65, 0, 65, 0, 252, 10, 0, 0, 11,
+            ]),
+          ),
+        r = async () =>
+          WebAssembly.validate(
+            new Uint8Array([
+              0, 97, 115, 109, 1, 0, 0, 0, 1, 4, 1, 96, 0, 0, 3, 2, 1, 0, 10, 7,
+              1, 5, 0, 208, 112, 26, 11,
+            ]),
+          ),
+        a = async () =>
+          WebAssembly.validate(
+            new Uint8Array([
+              0, 97, 115, 109, 1, 0, 0, 0, 1, 4, 1, 96, 0, 0, 3, 2, 1, 0, 10,
+              12, 1, 10, 0, 67, 0, 0, 0, 0, 252, 0, 26, 11,
+            ]),
+          ),
+        o = async () =>
+          WebAssembly.validate(
+            new Uint8Array([
+              0, 97, 115, 109, 1, 0, 0, 0, 1, 4, 1, 96, 0, 0, 3, 2, 1, 0, 10, 8,
+              1, 6, 0, 65, 0, 192, 26, 11,
+            ]),
+          ),
+        s = async () =>
+          WebAssembly.validate(
+            new Uint8Array([
+              0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0,
+              10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11,
+            ]),
+          );
+      function l(e) {
+        const t =
+          "function" == typeof Function.prototype.toString
+            ? Function.prototype.toString()
+            : null;
+        return (
+          "string" == typeof t &&
+          t.indexOf("[native code]") >= 0 &&
+          Function.prototype.toString.call(e).indexOf("[native code]") >= 0
+        );
+      }
+      let c = "";
+      try {
+        if (
+          void 0 !== document.currentScript &&
+          null !== document.currentScript &&
+          "src" in document.currentScript &&
+          "" !== document.currentScript.src
+        ) {
+          let e = document.currentScript.src;
+          e.endsWith(".js") || e.endsWith("/") || (e += "/"),
+            (c = new URL(".", e).href);
+        }
+      } catch (e) {
+        console.warn("Unable to get currentScript URL");
+      }
+      function u(e) {
+        let t = c;
+        return (
+          "publicPath" in e &&
+            null !== e.publicPath &&
+            void 0 !== e.publicPath &&
+            (t = e.publicPath),
+          "" === t || t.endsWith("/") || (t += "/"),
+          t
+        );
+      }
+      let d = null;
+      function f(e, t) {
+        return (
+          null === d &&
+            (d = (async function (e, t) {
+              ("function" == typeof Array.prototype.reduce &&
+                l(Array.prototype.reduce)) ||
+                Object.defineProperty(Array.prototype, "reduce", {
+                  value(...e) {
+                    if (
+                      0 === e.length &&
+                      window.Prototype &&
+                      window.Prototype.Version &&
+                      window.Prototype.Version < "1.6.1"
+                    )
+                      return this.length > 1 ? this : this[0];
+                    const t = e[0];
+                    if (null === this)
+                      throw new TypeError(
+                        "Array.prototype.reduce called on null or undefined",
+                      );
+                    if ("function" != typeof t)
+                      throw new TypeError(`${t} is not a function`);
+                    const n = Object(this),
+                      r = n.length >>> 0;
+                    let i,
+                      a = 0;
+                    if (e.length >= 2) i = e[1];
+                    else {
+                      for (; a < r && !(a in n); ) a++;
+                      if (a >= r)
+                        throw new TypeError(
+                          "Reduce of empty array with no initial value",
+                        );
+                      i = n[a++];
+                    }
+                    for (; a < r; ) a in n && (i = t(i, n[a], a, n)), a++;
+                    return i;
+                  },
+                }),
+                ("function" == typeof Window && l(Window)) ||
+                  ("function" == typeof window.constructor &&
+                    l(window.constructor) &&
+                    (window.Window = window.constructor)),
+                (void 0 !== window.Reflect && null !== window.Reflect) ||
+                  (window.Reflect = {}),
+                "function" != typeof Reflect.get &&
+                  Object.defineProperty(Reflect, "get", {
+                    value: (e, t) => e[t],
+                  }),
+                "function" != typeof Reflect.set &&
+                  Object.defineProperty(Reflect, "set", {
+                    value(e, t, n) {
+                      e[t] = n;
+                    },
+                  }),
+                "function" != typeof Reflect.has &&
+                  Object.defineProperty(Reflect, "has", {
+                    value: (e, t) => t in e,
+                  }),
+                "function" != typeof Reflect.ownKeys &&
+                  Object.defineProperty(Reflect, "ownKeys", {
+                    value: (e) => [
+                      ...Object.getOwnPropertyNames(e),
+                      ...Object.getOwnPropertySymbols(e),
+                    ],
+                  });
+              const c = (await Promise.all([n(), s(), a(), o(), r()])).every(
+                Boolean,
+              );
+              c ||
+                console.log(
+                  "Some WebAssembly extensions are NOT available, falling back to the vanilla WebAssembly module",
+                ),
+                (i.p = u(e));
+              const { default: d, Ruffle: f } = await (c
+                ? i.e(339).then(i.bind(i, 339))
+                : i.e(159).then(i.bind(i, 159)));
+              let h;
+              const p = c ? new URL(i(899), i.b) : new URL(i(878), i.b),
+                m = await fetch(p);
+              if (t) {
+                const e = m.headers.get("content-length") || "";
+                let n = 0;
+                const r = parseInt(e);
+                h = new Response(
+                  new ReadableStream({
+                    async start(e) {
+                      var i;
+                      const a =
+                        null === (i = m.body) || void 0 === i
+                          ? void 0
+                          : i.getReader();
+                      if (!a) throw "Response had no body";
+                      for (t(n, r); ; ) {
+                        const { done: i, value: o } = await a.read();
+                        if (i) break;
+                        (null == o ? void 0 : o.byteLength) &&
+                          (n += null == o ? void 0 : o.byteLength),
+                          e.enqueue(o),
+                          t(n, r);
+                      }
+                      e.close();
+                    },
+                  }),
+                  m,
+                );
+              } else h = m;
+              return await d(h), f;
+            })(e, t)),
+          d
+        );
+      }
+      const h = document.createElement("template");
+      h.innerHTML =
+        '\n    <style>\n        :host {\n            all: initial;\n\n            --ruffle-blue: #37528c;\n            --ruffle-orange: #ffad33;\n\n            display: inline-block;\n            position: relative;\n            /* Default width/height; this will get overridden by user styles/attributes. */\n            width: 550px;\n            height: 400px;\n            font-family: Arial, sans-serif;\n            letter-spacing: 0.4px;\n            touch-action: none;\n            user-select: none;\n            -webkit-user-select: none;\n            -webkit-tap-highlight-color: transparent;\n        }\n\n        /* Ruffle\'s width/height CSS interferes with Safari\'s fullscreen CSS. */\n        /* Ensure that Safari\'s fullscreen mode actually fills the screen. */\n        :host(:-webkit-full-screen) {\n            display: block;\n            width: 100% !important;\n            height: 100% !important;\n        }\n\n        .hidden {\n            display: none !important;\n        }\n\n        /* All of these use the dimensions specified by the embed. */\n        #container,\n        #play_button,\n        #unmute_overlay,\n        #unmute_overlay .background,\n        #panic,\n        #splash-screen,\n        #message_overlay {\n            position: absolute;\n            top: 0;\n            bottom: 0;\n            left: 0;\n            right: 0;\n        }\n\n        #container {\n            overflow: hidden;\n        }\n\n        #container canvas {\n            width: 100%;\n            height: 100%;\n        }\n\n        #play_button,\n        #unmute_overlay {\n            cursor: pointer;\n            display: none;\n        }\n\n        #unmute_overlay .background {\n            background: black;\n            opacity: 0.7;\n        }\n\n        #play_button .icon,\n        #unmute_overlay .icon {\n            position: absolute;\n            top: 50%;\n            left: 50%;\n            width: 50%;\n            height: 50%;\n            max-width: 384px;\n            max-height: 384px;\n            transform: translate(-50%, -50%);\n            opacity: 0.8;\n        }\n\n        #play_button:hover .icon,\n        #unmute_overlay:hover .icon {\n            opacity: 1;\n        }\n\n        #panic {\n            font-size: 20px;\n            text-align: center;\n            /* Inverted colors from play button! */\n            background: linear-gradient(180deg, #fd3a40 0%, #fda138 100%);\n            color: white;\n            display: flex;\n            flex-flow: column;\n            justify-content: space-around;\n        }\n\n        #panic a {\n            color: var(--ruffle-blue);\n            font-weight: bold;\n        }\n\n        #panic-title {\n            font-size: xxx-large;\n            font-weight: bold;\n        }\n\n        #panic-body.details {\n            flex: 0.9;\n            margin: 0 10px;\n        }\n\n        #panic-body textarea {\n            width: 100%;\n            height: 100%;\n            resize: none;\n        }\n\n        #panic ul {\n            padding: 0;\n            display: flex;\n            list-style-type: none;\n            justify-content: space-evenly;\n        }\n\n        #message_overlay {\n            position: absolute;\n            background: var(--ruffle-blue);\n            color: var(--ruffle-orange);\n            opacity: 1;\n            z-index: 2;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            overflow: auto;\n        }\n\n        #message_overlay .message {\n            text-align: center;\n            max-height: 100%;\n            max-width: 100%;\n            padding: 5%;\n            font-size: 20px;\n        }\n\n        #message_overlay p {\n            margin: 0.5em 0;\n        }\n\n        #message_overlay .message div {\n            display: flex;\n            justify-content: center;\n            flex-wrap: wrap;\n            column-gap: 1em;\n        }\n\n        #message_overlay a, #message_overlay button {\n            cursor: pointer;\n            background: var(--ruffle-blue);\n            color: var(--ruffle-orange);\n            border: 2px solid var(--ruffle-orange);\n            font-weight: bold;\n            font-size: 1.25em;\n            border-radius: 0.6em;\n            padding: 10px;\n            text-decoration: none;\n            margin: 2% 0;\n        }\n\n        #message_overlay a:hover, #message_overlay button:hover {\n            background: #ffffff4c;\n        }\n\n        #continue-btn {\n             cursor: pointer;\n             background: var(--ruffle-blue);\n             color: var(--ruffle-orange);\n             border: 2px solid var(--ruffle-orange);\n             font-weight: bold;\n             font-size: 20px;\n             border-radius: 20px;\n             padding: 10px;\n        }\n\n        #continue-btn:hover {\n            background: #ffffff4c;\n        }\n\n        #context-menu {\n            display: none;\n            color: black;\n            background: #fafafa;\n            border: 1px solid gray;\n            box-shadow: 0px 5px 10px -5px black;\n            position: absolute;\n            font-size: 14px;\n            text-align: left;\n            list-style: none;\n            padding: 0;\n            margin: 0;\n        }\n\n        #context-menu .menu_item {\n            padding: 5px 10px;\n            cursor: pointer;\n            color: black;\n        }\n\n        #context-menu .menu_item.disabled {\n            cursor: default;\n            color: gray;\n        }\n\n        #context-menu .menu_item:not(.disabled):hover {\n            background: lightgray;\n        }\n\n        #context-menu .menu_separator hr {\n            border: none;\n            border-bottom: 1px solid lightgray;\n            margin: 2px;\n        }\n\n        #splash-screen {\n            display: flex;\n            flex-direction: column;\n            background: var(--splash-screen-background, var(--preloader-background, var(--ruffle-blue)));\n            align-items: center;\n            justify-content: center;\n        }\n\n        .loadbar {\n            width: 100%;\n            max-width: 316px;\n            max-height: 10px;\n            height: 20%;\n            background: #253559;\n        }\n\n        .loadbar-inner {\n            width: 0px;\n            max-width: 100%;\n            height: 100%;\n            background: var(--ruffle-orange);\n        }\n            \n        .logo {\n            display: var(--logo-display, block);\n            max-width: 380px;\n            max-height: 150px;\n        }\n\n        .loading-animation {\n            max-width: 28px;\n            max-height: 28px;\n            margin-bottom: 2%;\n            width: 10%;\n            aspect-ratio: 1;\n        }\n\n        .spinner {\n            stroke-dasharray: 180;\n            stroke-dashoffset: 135;\n            stroke: var(--ruffle-orange);\n            transform-origin: 50% 50%;\n            animation: rotate 1.5s linear infinite;\n        }\n\n        @keyframes rotate {\n            to {\n                transform: rotate(360deg);\n            }\n        }\n\n        #virtual-keyboard {\n            position: absolute;\n            opacity: 0;\n            top: -100px;\n            width: 1px;\n            height: 1px;\n        }\n\n        #save-manager {\n            height: inherit;\n            user-select: text;\n        }\n        #modal-area {\n            position: sticky;\n            background: white;\n            width: fit-content;\n            padding: 16px;\n            border: 3px solid black;\n            margin: auto;\n            height: 500px;\n            max-height: calc(100% - 38px);\n            min-height: 80px;\n        }\n\n        #restore-save {\n            display: none;\n        }\n\n        .replace-save {\n            display: none;\n        }\n\n        .save-option {\n            display: inline-block;\n            padding: 3px 10px;\n            margin: 5px 2px;\n            cursor: pointer;\n            border-radius: 50px;\n            background-color: var(--ruffle-blue);\n            color: white;\n        }\n\n        #close-modal {\n            position: absolute;\n            top: 5px;\n            right: 10px;\n            cursor: pointer;\n            font-size: x-large;\n        }\n\n        .general-save-options {\n            text-align: center;\n            padding-bottom: 8px;\n            border-bottom: 2px solid #888;\n        }\n\n        #local-saves {\n            border-collapse: collapse;\n            overflow-y: auto;\n            display: block;\n            padding-right: 16px;\n            height: calc(100% - 45px);\n            min-height: 30px;\n        }\n\n        #local-saves td {\n            border-bottom: 1px solid #bbb;\n            height: 30px;\n        }\n\n        #local-saves tr td:nth-child(1) {\n            padding-right: 1em;\n            word-break: break-all;\n        }\n\n        #local-saves tr:nth-child(even) {\n            background-color: #f2f2f2;\n        }\n    </style>\n    <style id="dynamic_styles"></style>\n\n    <div id="container">\n        <div id="play_button"><div class="icon"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" viewBox="0 0 250 250" width="100%" height="100%"><defs><linearGradient id="a" gradientUnits="userSpaceOnUse" x1="125" y1="0" x2="125" y2="250" spreadMethod="pad"><stop offset="0%" stop-color="#FDA138"/><stop offset="100%" stop-color="#FD3A40"/></linearGradient><g id="b"><path fill="url(#a)" d="M250 125q0-52-37-88-36-37-88-37T37 37Q0 73 0 125t37 88q36 37 88 37t88-37q37-36 37-88M87 195V55l100 70-100 70z"/><path fill="#FFF" d="M87 55v140l100-70L87 55z"/></g></defs><use xlink:href="#b"/></svg></div></div>\n        <div id="unmute_overlay"><div class="background"></div><div class="icon"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" viewBox="0 0 512 584"  width="100%" height="100%" scale="0.8" id="unmute_overlay_svg"><path fill="#FFF" stroke="#FFF" d="m457.941 256 47.029-47.029c9.372-9.373 9.372-24.568 0-33.941-9.373-9.373-24.568-9.373-33.941 0l-47.029 47.029-47.029-47.029c-9.373-9.373-24.568-9.373-33.941 0-9.372 9.373-9.372 24.568 0 33.941l47.029 47.029-47.029 47.029c-9.372 9.373-9.372 24.568 0 33.941 4.686 4.687 10.827 7.03 16.97 7.03s12.284-2.343 16.971-7.029l47.029-47.03 47.029 47.029c4.687 4.687 10.828 7.03 16.971 7.03s12.284-2.343 16.971-7.029c9.372-9.373 9.372-24.568 0-33.941z"/><path fill="#FFF" stroke="#FFF" d="m99 160h-55c-24.301 0-44 19.699-44 44v104c0 24.301 19.699 44 44 44h55c2.761 0 5-2.239 5-5v-182c0-2.761-2.239-5-5-5z"/><path fill="#FFF" stroke="#FFF" d="m280 56h-24c-5.269 0-10.392 1.734-14.578 4.935l-103.459 79.116c-1.237.946-1.963 2.414-1.963 3.972v223.955c0 1.557.726 3.026 1.963 3.972l103.459 79.115c4.186 3.201 9.309 4.936 14.579 4.936h23.999c13.255 0 24-10.745 24-24v-352.001c0-13.255-10.745-24-24-24z"/><text x="256" y="560" text-anchor="middle" font-size="60px" fill="#FFF" stroke="#FFF" id="unmute_text"></text></svg></div></div>\n        <input id="virtual-keyboard" type="text" autocapitalize="off" autocomplete="off" autocorrect="off">\n    </div>\n    <div class="hidden" id="splash-screen">\n        <svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" viewBox="0 0 380 150"><g><path fill="#966214" d="M58.75 85.6q.75-.1 1.5-.35.85-.25 1.65-.75.55-.35 1.05-.8.5-.45.95-1 .5-.5.75-1.2-.05.05-.15.1-.1.15-.25.25l-.1.2q-.15.05-.25.1-.4 0-.8.05-.5-.25-.9-.5-.3-.1-.55-.3l-.6-.6-4.25-6.45-1.5 11.25h3.45m83.15-.2h3.45q.75-.1 1.5-.35.25-.05.45-.15.35-.15.65-.3l.5-.3q.25-.15.5-.35.45-.35.9-.75.45-.35.75-.85l.1-.1q.1-.2.2-.35.2-.3.35-.6l-.3.4-.15.15q-.5.15-1.1.1-.25 0-.4-.05-.5-.15-.8-.4-.15-.1-.25-.25-.3-.3-.55-.6l-.05-.05v-.05l-4.25-6.4-1.5 11.25m-21.15-3.95q-.3-.3-.55-.6l-.05-.05v-.05l-4.25-6.4-1.5 11.25h3.45q.75-.1 1.5-.35.85-.25 1.6-.75.75-.5 1.4-1.1.45-.35.75-.85.35-.5.65-1.05l-.45.55q-.5.15-1.1.1-.9 0-1.45-.7m59.15.3q-.75-.5-1.4-1-3.15-2.55-3.5-6.4l-1.5 11.25h21q-3.1-.25-5.7-.75-5.6-1.05-8.9-3.1m94.2 3.85h3.45q.6-.1 1.2-.3.4-.1.75-.2.35-.15.65-.3.7-.35 1.35-.8.75-.55 1.3-1.25.1-.15.25-.3-2.55-.25-3.25-1.8l-4.2-6.3-1.5 11.25m-45.3-4.85q-.5-.4-.9-.8-2.3-2.35-2.6-5.6l-1.5 11.25h21q-11.25-.95-16-4.85m97.7 4.85q-.3-.05-.6-.05-10.8-1-15.4-4.8-3.15-2.55-3.5-6.35l-1.5 11.2h21Z"/><path fill="var(--ruffle-orange)" d="M92.6 54.8q-1.95-1.4-4.5-1.4H60.35q-1.35 0-2.6.45-1.65.55-3.15 1.8-2.75 2.25-3.25 5.25l-1.65 12h.05v.3l5.85 1.15h-9.5q-.5.05-1 .15-.5.15-1 .35-.5.2-.95.45-.5.3-.95.7-.45.35-.85.8-.35.4-.65.85-.3.45-.5.9-.15.45-.3.95l-5.85 41.6H50.3l5-35.5 1.5-11.25 4.25 6.45.6.6q.25.2.55.3.4.25.9.5.4-.05.8-.05.1-.05.25-.1l.1-.2q.15-.1.25-.25.1-.05.15-.1l.3-1.05 1.75-12.3h11.15L75.8 82.6h16.5l2.3-16.25h-.05l.8-5.7q.4-2.45-1-4.2-.35-.4-.75-.8-.25-.25-.55-.5-.2-.2-.45-.35m16.2 18.1h.05l-.05.3 5.85 1.15H105.2q-.5.05-1 .15-.5.15-1 .35-.5.2-.95.45-.5.3-1 .65-.4.4-.8.85-.25.3-.55.65-.05.1-.15.2-.25.45-.4.9-.2.45-.3.95-.1.65-.2 1.25-.2 1.15-.4 2.25l-4.3 30.6q-.25 3 1.75 5.25 1.6 1.8 4 2.15.6.1 1.25.1h27.35q3.25 0 6-2.25.35-.35.7-.55l.3-.2q2-2 2.25-4.5l1.65-11.6q.05-.05.1-.05l1.65-11.35h.05l.7-5.2 1.5-11.25 4.25 6.4v.05l.05.05q.25.3.55.6.1.15.25.25.3.25.8.4.15.05.4.05.6.05 1.1-.1l.15-.15.3-.4.3-1.05 1.3-9.05h-.05l.7-5.05h-.05l.15-1.25h-.05l1.65-11.7h-16.25l-2.65 19.5h.05v.2l-.05.1h.05l5.8 1.15H132.7q-.5.05-1 .15-.5.15-1 .35-.15.05-.3.15-.3.1-.55.25-.05 0-.1.05-.5.3-1 .65-.4.35-.7.7-.55.7-.95 1.45-.35.65-.55 1.4-.15.7-.25 1.4v.05q-.15 1.05-.35 2.05l-1.2 8.75v.1l-2.1 14.7H111.4l2.25-15.55h.05l.7-5.2 1.5-11.25 4.25 6.4v.05l.05.05q.25.3.55.6.55.7 1.45.7.6.05 1.1-.1l.45-.55.3-1.05 1.3-9.05h-.05l.7-5.05h-.05l.15-1.25h-.05l1.65-11.7h-16.25l-2.65 19.5m106.5-41.75q-2.25-2.25-5.5-2.25h-27.75q-3 0-5.75 2.25-1.3.95-2.05 2.1-.45.6-.7 1.2-.2.5-.35 1-.1.45-.15.95l-4.15 29.95h-.05l-.7 5.2h-.05l-.2 1.35h.05l-.05.3 5.85 1.15h-9.45q-2.1.05-3.95 1.6-1.9 1.55-2.25 3.55l-.5 3.5h-.05l-5.3 38.1h16.25l5-35.5 1.5-11.25q.35 3.85 3.5 6.4.65.5 1.4 1 3.3 2.05 8.9 3.1 2.6.5 5.7.75l1.75-11.25h-12.2l.4-2.95h-.05l.7-5.05h-.05q.1-.9.3-1.9.1-.75.2-1.6.85-5.9 2.15-14.9 0-.15.05-.25l.1-.9q.2-1.55.45-3.15h11.25l-3.1 20.8h16.5l4.1-28.05q.15-1.7-.4-3.15-.5-1.1-1.35-2.1m46.65 44.15q-.5.3-1 .65-.4.4-.8.85-.35.4-.7.85-.25.45-.45.9-.15.45-.3.95l-5.85 41.6h16.25l5-35.5 1.5-11.25 4.2 6.3q.7 1.55 3.25 1.8l.05-.1q.25-.4.35-.85l.3-1.05 1.8-14.05v-.05l5.35-37.45h-16.25l-6.15 44.3 5.85 1.15h-9.45q-.5.05-1 .15-.5.15-1 .35-.5.2-.95.45m5.4-38.9q.15-1.7-.4-3.15-.5-1.1-1.35-2.1-2.25-2.25-5.5-2.25h-27.75q-2.3 0-4.45 1.35-.65.35-1.3.9-1.3.95-2.05 2.1-.45.6-.7 1.2-.4.9-.5 1.95l-4.15 29.95h-.05l-.7 5.2h-.05l-.2 1.35h.05l-.05.3 5.85 1.15h-9.45q-2.1.05-3.95 1.6-1.9 1.55-2.25 3.55l-.5 3.5h-.05l-1.2 8.75v.1l-4.1 29.25h16.25l5-35.5 1.5-11.25q.3 3.25 2.6 5.6.4.4.9.8 4.75 3.9 16 4.85l1.75-11.25h-12.2l.4-2.95h-.05l.7-5.05h-.05q.15-.9.3-1.9.1-.75.25-1.6.15-1.25.35-2.65v-.05q.95-6.7 2.35-16.5h11.25l-3.1 20.8h16.5l4.1-28.05M345 66.35h-.05l1.15-8.2q.5-3-1.75-5.25-1.25-1.25-3-1.75-1-.5-2.25-.5h-27.95q-.65 0-1.3.1-2.5.35-4.7 2.15-2.75 2.25-3.25 5.25l-1.95 14.7v.05l-.05.3 5.85 1.15h-9.45q-1.9.05-3.6 1.35-.2.1-.35.25-1.9 1.55-2.25 3.55l-4.85 34.1q-.25 3 1.75 5.25 1.25 1.4 3 1.95 1.05.3 2.25.3H320q3.25 0 6-2.25 2.75-2 3.25-5l2.75-18.5h-16.5l-1.75 11H302.5l2.1-14.75h.05l.85-6 1.5-11.2q.35 3.8 3.5 6.35 4.6 3.8 15.4 4.8.3 0 .6.05h15.75L345 66.35m-16.4-.95-1.25 8.95h-11.3l.4-2.95h-.05l.7-5.05h-.1l.15-.95h11.45Z"/></g></svg>\n        <svg class="loading-animation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66 66">\n            <circle class="spinner" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>\n        </svg>        \n        <div class="loadbar"><div class="loadbar-inner"></div></div>\n    </div>\n\n    <div id="save-manager" class="hidden">\n        <div id="modal-area">\n            <span id="close-modal">&times;</span>\n            <div class="general-save-options">\n                <span class="save-option" id="backup-saves"></span>\n            </div>\n            <table id="local-saves"></table>\n        </div>\n    </div>\n    <ul id="context-menu"></ul>\n';
+      const p = {};
+      function m(e, t) {
+        const n = p[e];
+        if (void 0 !== n) {
+          if (n.class !== t)
+            throw new Error("Internal naming conflict on " + e);
+          return n.name;
+        }
+        let r = 0;
+        if (void 0 !== window.customElements)
+          for (; r < 999; ) {
+            let n = e;
+            if (
+              (r > 0 && (n = n + "-" + r),
+              void 0 === window.customElements.get(n))
+            )
+              return (
+                window.customElements.define(n, t),
+                (p[e] = { class: t, name: n, internalName: e }),
+                n
+              );
+            r += 1;
+          }
+        throw new Error("Failed to assign custom element " + e);
+      }
+      const g = {
+          allowScriptAccess: !1,
+          parameters: {},
+          autoplay: "auto",
+          backgroundColor: null,
+          letterbox: "fullscreen",
+          unmuteOverlay: "visible",
+          upgradeToHttps: !0,
+          compatibilityRules: !0,
+          warnOnUnsupportedContent: !0,
+          logLevel: "error",
+          showSwfDownload: !1,
+          contextMenu: "on",
+          preloader: !0,
+          splashScreen: !0,
+          maxExecutionDuration: 15,
+          base: null,
+          menu: !0,
+          salign: "",
+          quality: "high",
+          scale: "showAll",
+          forceScale: !1,
+          frameRate: null,
+          wmode: "opaque",
+          publicPath: null,
+          polyfills: !0,
+          playerVersion: null,
+          preferredRenderer: null,
+          openUrlMode: "allow",
+          allowNetworking: "all",
+        },
+        v = "application/x-shockwave-flash",
+        w = "application/futuresplash",
+        b = "application/x-shockwave-flash2-preview",
+        y = "application/vnd.adobe.flash.movie";
+      function x(e) {
+        if (e) {
+          let t = "";
+          try {
+            t = new URL(e, "https://example.com").pathname;
+          } catch (e) {}
+          if (t && t.length >= 4) {
+            const e = t.slice(-4).toLowerCase();
+            if (".swf" === e || ".spl" === e) return !0;
+          }
+        }
+        return !1;
+      }
+      function k(e) {
+        switch (e.toLowerCase()) {
+          case v.toLowerCase():
+          case w.toLowerCase():
+          case b.toLowerCase():
+          case y.toLowerCase():
+            return !0;
+          default:
+            return !1;
+        }
+      }
+      const R = "0.1.0",
+        S = "nightly 2023-05-13",
+        E = "2023-05-13T00:20:38.156Z";
+      class C {
+        constructor(e) {
+          this.value = e;
+        }
+        valueOf() {
+          return this.value;
+        }
+      }
+      class I extends C {
+        constructor(e = "???") {
+          super(e);
+        }
+        toString(e) {
+          return `{${this.value}}`;
+        }
+      }
+      class A extends C {
+        constructor(e, t = {}) {
+          super(e), (this.opts = t);
+        }
+        toString(e) {
+          try {
+            return e
+              .memoizeIntlObject(Intl.NumberFormat, this.opts)
+              .format(this.value);
+          } catch (t) {
+            return e.reportError(t), this.value.toString(10);
+          }
+        }
+      }
+      class _ extends C {
+        constructor(e, t = {}) {
+          super(e), (this.opts = t);
+        }
+        toString(e) {
+          try {
+            return e
+              .memoizeIntlObject(Intl.DateTimeFormat, this.opts)
+              .format(this.value);
+          } catch (t) {
+            return e.reportError(t), new Date(this.value).toISOString();
+          }
+        }
+      }
+      const $ = 100,
+        j = "⁨",
+        P = "⁩";
+      function O(e, t, n) {
+        return (
+          n === t ||
+          (n instanceof A && t instanceof A && n.value === t.value) ||
+          (t instanceof A &&
+            "string" == typeof n &&
+            n === e.memoizeIntlObject(Intl.PluralRules, t.opts).select(t.value))
+        );
+      }
+      function F(e, t, n) {
+        return t[n]
+          ? D(e, t[n].value)
+          : (e.reportError(new RangeError("No default")), new I());
+      }
+      function M(e, t) {
+        const n = [],
+          r = Object.create(null);
+        for (const i of t)
+          "narg" === i.type ? (r[i.name] = L(e, i.value)) : n.push(L(e, i));
+        return { positional: n, named: r };
+      }
+      function L(e, t) {
+        switch (t.type) {
+          case "str":
+            return t.value;
+          case "num":
+            return new A(t.value, { minimumFractionDigits: t.precision });
+          case "var":
+            return (function (e, { name: t }) {
+              let n;
+              if (e.params) {
+                if (!Object.prototype.hasOwnProperty.call(e.params, t))
+                  return new I(`$${t}`);
+                n = e.params[t];
+              } else {
+                if (!e.args || !Object.prototype.hasOwnProperty.call(e.args, t))
+                  return (
+                    e.reportError(
+                      new ReferenceError(`Unknown variable: $${t}`),
+                    ),
+                    new I(`$${t}`)
+                  );
+                n = e.args[t];
+              }
+              if (n instanceof C) return n;
+              switch (typeof n) {
+                case "string":
+                  return n;
+                case "number":
+                  return new A(n);
+                case "object":
+                  if (n instanceof Date) return new _(n.getTime());
+                default:
+                  return (
+                    e.reportError(
+                      new TypeError(
+                        `Variable type not supported: $${t}, ${typeof n}`,
+                      ),
+                    ),
+                    new I(`$${t}`)
+                  );
+              }
+            })(e, t);
+          case "mesg":
+            return (function (e, { name: t, attr: n }) {
+              const r = e.bundle._messages.get(t);
+              if (!r)
+                return (
+                  e.reportError(new ReferenceError(`Unknown message: ${t}`)),
+                  new I(t)
+                );
+              if (n) {
+                const i = r.attributes[n];
+                return i
+                  ? D(e, i)
+                  : (e.reportError(
+                      new ReferenceError(`Unknown attribute: ${n}`),
+                    ),
+                    new I(`${t}.${n}`));
+              }
+              return r.value
+                ? D(e, r.value)
+                : (e.reportError(new ReferenceError(`No value: ${t}`)),
+                  new I(t));
+            })(e, t);
+          case "term":
+            return (function (e, { name: t, attr: n, args: r }) {
+              const i = `-${t}`,
+                a = e.bundle._terms.get(i);
+              if (!a)
+                return (
+                  e.reportError(new ReferenceError(`Unknown term: ${i}`)),
+                  new I(i)
+                );
+              if (n) {
+                const t = a.attributes[n];
+                if (t) {
+                  e.params = M(e, r).named;
+                  const n = D(e, t);
+                  return (e.params = null), n;
+                }
+                return (
+                  e.reportError(new ReferenceError(`Unknown attribute: ${n}`)),
+                  new I(`${i}.${n}`)
+                );
+              }
+              e.params = M(e, r).named;
+              const o = D(e, a.value);
+              return (e.params = null), o;
+            })(e, t);
+          case "func":
+            return (function (e, { name: t, args: n }) {
+              let r = e.bundle._functions[t];
+              if (!r)
+                return (
+                  e.reportError(new ReferenceError(`Unknown function: ${t}()`)),
+                  new I(`${t}()`)
+                );
+              if ("function" != typeof r)
+                return (
+                  e.reportError(
+                    new TypeError(`Function ${t}() is not callable`),
+                  ),
+                  new I(`${t}()`)
+                );
+              try {
+                let t = M(e, n);
+                return r(t.positional, t.named);
+              } catch (n) {
+                return e.reportError(n), new I(`${t}()`);
+              }
+            })(e, t);
+          case "select":
+            return (function (e, { selector: t, variants: n, star: r }) {
+              let i = L(e, t);
+              if (i instanceof I) return F(e, n, r);
+              for (const t of n) if (O(e, i, L(e, t.key))) return D(e, t.value);
+              return F(e, n, r);
+            })(e, t);
+          default:
+            return new I();
+        }
+      }
+      function T(e, t) {
+        if (e.dirty.has(t))
+          return e.reportError(new RangeError("Cyclic reference")), new I();
+        e.dirty.add(t);
+        const n = [],
+          r = e.bundle._useIsolating && t.length > 1;
+        for (const i of t)
+          if ("string" != typeof i) {
+            if ((e.placeables++, e.placeables > $))
+              throw (
+                (e.dirty.delete(t),
+                new RangeError(
+                  `Too many placeables expanded: ${e.placeables}, max allowed is ${$}`,
+                ))
+              );
+            r && n.push(j), n.push(L(e, i).toString(e)), r && n.push(P);
+          } else n.push(e.bundle._transform(i));
+        return e.dirty.delete(t), n.join("");
+      }
+      function D(e, t) {
+        return "string" == typeof t ? e.bundle._transform(t) : T(e, t);
+      }
+      class U {
+        constructor(e, t, n) {
+          (this.dirty = new WeakSet()),
+            (this.params = null),
+            (this.placeables = 0),
+            (this.bundle = e),
+            (this.errors = t),
+            (this.args = n);
+        }
+        reportError(e) {
+          if (!(this.errors && e instanceof Error)) throw e;
+          this.errors.push(e);
+        }
+        memoizeIntlObject(e, t) {
+          let n = this.bundle._intls.get(e);
+          n || ((n = {}), this.bundle._intls.set(e, n));
+          let r = JSON.stringify(t);
+          return n[r] || (n[r] = new e(this.bundle.locales, t)), n[r];
+        }
+      }
+      function q(e, t) {
+        const n = Object.create(null);
+        for (const [r, i] of Object.entries(e))
+          t.includes(r) && (n[r] = i.valueOf());
+        return n;
+      }
+      const N = [
+        "unitDisplay",
+        "currencyDisplay",
+        "useGrouping",
+        "minimumIntegerDigits",
+        "minimumFractionDigits",
+        "maximumFractionDigits",
+        "minimumSignificantDigits",
+        "maximumSignificantDigits",
+      ];
+      function z(e, t) {
+        let n = e[0];
+        if (n instanceof I) return new I(`NUMBER(${n.valueOf()})`);
+        if (n instanceof A)
+          return new A(n.valueOf(), { ...n.opts, ...q(t, N) });
+        if (n instanceof _) return new A(n.valueOf(), { ...q(t, N) });
+        throw new TypeError("Invalid argument to NUMBER");
+      }
+      const B = [
+        "dateStyle",
+        "timeStyle",
+        "fractionalSecondDigits",
+        "dayPeriod",
+        "hour12",
+        "weekday",
+        "era",
+        "year",
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "second",
+        "timeZoneName",
+      ];
+      function W(e, t) {
+        let n = e[0];
+        if (n instanceof I) return new I(`DATETIME(${n.valueOf()})`);
+        if (n instanceof _)
+          return new _(n.valueOf(), { ...n.opts, ...q(t, B) });
+        if (n instanceof A) return new _(n.valueOf(), { ...q(t, B) });
+        throw new TypeError("Invalid argument to DATETIME");
+      }
+      const H = new Map();
+      class V {
+        constructor(
+          e,
+          { functions: t, useIsolating: n = !0, transform: r = (e) => e } = {},
+        ) {
+          (this._terms = new Map()),
+            (this._messages = new Map()),
+            (this.locales = Array.isArray(e) ? e : [e]),
+            (this._functions = { NUMBER: z, DATETIME: W, ...t }),
+            (this._useIsolating = n),
+            (this._transform = r),
+            (this._intls = (function (e) {
+              const t = Array.isArray(e) ? e.join(" ") : e;
+              let n = H.get(t);
+              return void 0 === n && ((n = new Map()), H.set(t, n)), n;
+            })(e));
+        }
+        hasMessage(e) {
+          return this._messages.has(e);
+        }
+        getMessage(e) {
+          return this._messages.get(e);
+        }
+        addResource(e, { allowOverrides: t = !1 } = {}) {
+          const n = [];
+          for (let r = 0; r < e.body.length; r++) {
+            let i = e.body[r];
+            if (i.id.startsWith("-")) {
+              if (!1 === t && this._terms.has(i.id)) {
+                n.push(
+                  new Error(`Attempt to override an existing term: "${i.id}"`),
+                );
+                continue;
+              }
+              this._terms.set(i.id, i);
+            } else {
+              if (!1 === t && this._messages.has(i.id)) {
+                n.push(
+                  new Error(
+                    `Attempt to override an existing message: "${i.id}"`,
+                  ),
+                );
+                continue;
+              }
+              this._messages.set(i.id, i);
+            }
+          }
+          return n;
+        }
+        formatPattern(e, t = null, n = null) {
+          if ("string" == typeof e) return this._transform(e);
+          let r = new U(this, n, t);
+          try {
+            return T(r, e).toString(r);
+          } catch (e) {
+            if (r.errors && e instanceof Error)
+              return r.errors.push(e), new I().toString(r);
+            throw e;
+          }
+        }
+      }
+      const Z = /^(-?[a-zA-Z][\w-]*) *= */gm,
+        K = /\.([a-zA-Z][\w-]*) *= */y,
+        J = /\*?\[/y,
+        Y = /(-?[0-9]+(?:\.([0-9]+))?)/y,
+        G = /([a-zA-Z][\w-]*)/y,
+        Q = /([$-])?([a-zA-Z][\w-]*)(?:\.([a-zA-Z][\w-]*))?/y,
+        X = /^[A-Z][A-Z0-9_-]*$/,
+        ee = /([^{}\n\r]+)/y,
+        te = /([^\\"\n\r]*)/y,
+        ne = /\\([\\"])/y,
+        re = /\\u([a-fA-F0-9]{4})|\\U([a-fA-F0-9]{6})/y,
+        ie = /^\n+/,
+        ae = / +$/,
+        oe = / *\r?\n/g,
+        se = /( *)$/,
+        le = /{\s*/y,
+        ce = /\s*}/y,
+        ue = /\[\s*/y,
+        de = /\s*] */y,
+        fe = /\s*\(\s*/y,
+        he = /\s*->\s*/y,
+        pe = /\s*:\s*/y,
+        me = /\s*,?\s*/y,
+        ge = /\s+/y;
+      class ve {
+        constructor(e) {
+          (this.body = []), (Z.lastIndex = 0);
+          let t = 0;
+          for (;;) {
+            let n = Z.exec(e);
+            if (null === n) break;
+            t = Z.lastIndex;
+            try {
+              this.body.push(s(n[1]));
+            } catch (e) {
+              if (e instanceof SyntaxError) continue;
+              throw e;
+            }
+          }
+          function n(n) {
+            return (n.lastIndex = t), n.test(e);
+          }
+          function r(n, r) {
+            if (e[t] === n) return t++, !0;
+            if (r) throw new r(`Expected ${n}`);
+            return !1;
+          }
+          function i(e, r) {
+            if (n(e)) return (t = e.lastIndex), !0;
+            if (r) throw new r(`Expected ${e.toString()}`);
+            return !1;
+          }
+          function a(n) {
+            n.lastIndex = t;
+            let r = n.exec(e);
+            if (null === r) throw new SyntaxError(`Expected ${n.toString()}`);
+            return (t = n.lastIndex), r;
+          }
+          function o(e) {
+            return a(e)[1];
+          }
+          function s(e) {
+            let t = l(),
+              r = (function () {
+                let e = Object.create(null);
+                for (; n(K); ) {
+                  let t = o(K),
+                    n = l();
+                  if (null === n)
+                    throw new SyntaxError("Expected attribute value");
+                  e[t] = n;
+                }
+                return e;
+              })();
+            if (null === t && 0 === Object.keys(r).length)
+              throw new SyntaxError("Expected message value or attributes");
+            return { id: e, value: t, attributes: r };
+          }
+          function l() {
+            let r;
+            if ((n(ee) && (r = o(ee)), "{" === e[t] || "}" === e[t]))
+              return c(r ? [r] : [], 1 / 0);
+            let i = v();
+            return i
+              ? r
+                ? c([r, i], i.length)
+                : ((i.value = w(i.value, ie)), c([i], i.length))
+              : r
+              ? w(r, ae)
+              : null;
+          }
+          function c(r = [], i) {
+            for (;;) {
+              if (n(ee)) {
+                r.push(o(ee));
+                continue;
+              }
+              if ("{" === e[t]) {
+                r.push(u());
+                continue;
+              }
+              if ("}" === e[t])
+                throw new SyntaxError("Unbalanced closing brace");
+              let a = v();
+              if (!a) break;
+              r.push(a), (i = Math.min(i, a.length));
+            }
+            let a = r.length - 1,
+              s = r[a];
+            "string" == typeof s && (r[a] = w(s, ae));
+            let l = [];
+            for (let e of r)
+              e instanceof we && (e = e.value.slice(0, e.value.length - i)),
+                e && l.push(e);
+            return l;
+          }
+          function u() {
+            i(le, SyntaxError);
+            let e = d();
+            if (i(ce)) return e;
+            if (i(he)) {
+              let t = (function () {
+                let e,
+                  t = [],
+                  i = 0;
+                for (; n(J); ) {
+                  r("*") && (e = i);
+                  let n = h(),
+                    a = l();
+                  if (null === a)
+                    throw new SyntaxError("Expected variant value");
+                  t[i++] = { key: n, value: a };
+                }
+                if (0 === i) return null;
+                if (void 0 === e)
+                  throw new SyntaxError("Expected default variant");
+                return { variants: t, star: e };
+              })();
+              return i(ce, SyntaxError), { type: "select", selector: e, ...t };
+            }
+            throw new SyntaxError("Unclosed placeable");
+          }
+          function d() {
+            if ("{" === e[t]) return u();
+            if (n(Q)) {
+              let [, n, r, o = null] = a(Q);
+              if ("$" === n) return { type: "var", name: r };
+              if (i(fe)) {
+                let a = (function () {
+                  let n = [];
+                  for (;;) {
+                    switch (e[t]) {
+                      case ")":
+                        return t++, n;
+                      case void 0:
+                        throw new SyntaxError("Unclosed argument list");
+                    }
+                    n.push(f()), i(me);
+                  }
+                })();
+                if ("-" === n)
+                  return { type: "term", name: r, attr: o, args: a };
+                if (X.test(r)) return { type: "func", name: r, args: a };
+                throw new SyntaxError("Function names must be all upper-case");
+              }
+              return "-" === n
+                ? { type: "term", name: r, attr: o, args: [] }
+                : { type: "mesg", name: r, attr: o };
+            }
+            return p();
+          }
+          function f() {
+            let e = d();
+            return "mesg" !== e.type
+              ? e
+              : i(pe)
+              ? { type: "narg", name: e.name, value: p() }
+              : e;
+          }
+          function h() {
+            let e;
+            return (
+              i(ue, SyntaxError),
+              (e = n(Y) ? m() : { type: "str", value: o(G) }),
+              i(de, SyntaxError),
+              e
+            );
+          }
+          function p() {
+            if (n(Y)) return m();
+            if ('"' === e[t])
+              return (function () {
+                r('"', SyntaxError);
+                let n = "";
+                for (;;) {
+                  if (((n += o(te)), "\\" !== e[t])) {
+                    if (r('"')) return { type: "str", value: n };
+                    throw new SyntaxError("Unclosed string literal");
+                  }
+                  n += g();
+                }
+              })();
+            throw new SyntaxError("Invalid expression");
+          }
+          function m() {
+            let [, e, t = ""] = a(Y),
+              n = t.length;
+            return { type: "num", value: parseFloat(e), precision: n };
+          }
+          function g() {
+            if (n(ne)) return o(ne);
+            if (n(re)) {
+              let [, e, t] = a(re),
+                n = parseInt(e || t, 16);
+              return n <= 55295 || 57344 <= n ? String.fromCodePoint(n) : "�";
+            }
+            throw new SyntaxError("Unknown escape sequence");
+          }
+          function v() {
+            let n = t;
+            switch ((i(ge), e[t])) {
+              case ".":
+              case "[":
+              case "*":
+              case "}":
+              case void 0:
+                return !1;
+              case "{":
+                return b(e.slice(n, t));
+            }
+            return " " === e[t - 1] && b(e.slice(n, t));
+          }
+          function w(e, t) {
+            return e.replace(t, "");
+          }
+          function b(e) {
+            let t = e.replace(oe, "\n"),
+              n = se.exec(e)[1].length;
+            return new we(t, n);
+          }
+        }
+      }
+      class we {
+        constructor(e, t) {
+          (this.value = e), (this.length = t);
+        }
+      }
+      const be = new RegExp(
+        "^([a-z]{2,3}|\\*)(?:-([a-z]{4}|\\*))?(?:-([a-z]{2}|\\*))?(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))?$",
+        "i",
+      );
+      class ye {
+        constructor(e) {
+          const t = be.exec(e.replace(/_/g, "-"));
+          if (!t) return void (this.isWellFormed = !1);
+          let [, n, r, i, a] = t;
+          n && (this.language = n.toLowerCase()),
+            r && (this.script = r[0].toUpperCase() + r.slice(1)),
+            i && (this.region = i.toUpperCase()),
+            (this.variant = a),
+            (this.isWellFormed = !0);
+        }
+        isEqual(e) {
+          return (
+            this.language === e.language &&
+            this.script === e.script &&
+            this.region === e.region &&
+            this.variant === e.variant
+          );
+        }
+        matches(e, t = !1, n = !1) {
+          return (
+            (this.language === e.language ||
+              (t && void 0 === this.language) ||
+              (n && void 0 === e.language)) &&
+            (this.script === e.script ||
+              (t && void 0 === this.script) ||
+              (n && void 0 === e.script)) &&
+            (this.region === e.region ||
+              (t && void 0 === this.region) ||
+              (n && void 0 === e.region)) &&
+            (this.variant === e.variant ||
+              (t && void 0 === this.variant) ||
+              (n && void 0 === e.variant))
+          );
+        }
+        toString() {
+          return [this.language, this.script, this.region, this.variant]
+            .filter((e) => void 0 !== e)
+            .join("-");
+        }
+        clearVariants() {
+          this.variant = void 0;
+        }
+        clearRegion() {
+          this.region = void 0;
+        }
+        addLikelySubtags() {
+          const e = (function (e) {
+            if (Object.prototype.hasOwnProperty.call(xe, e))
+              return new ye(xe[e]);
+            const t = new ye(e);
+            return t.language && ke.includes(t.language)
+              ? ((t.region = t.language.toUpperCase()), t)
+              : null;
+          })(this.toString().toLowerCase());
+          return (
+            !!e &&
+            ((this.language = e.language),
+            (this.script = e.script),
+            (this.region = e.region),
+            (this.variant = e.variant),
+            !0)
+          );
+        }
+      }
+      const xe = {
+          ar: "ar-arab-eg",
+          "az-arab": "az-arab-ir",
+          "az-ir": "az-arab-ir",
+          be: "be-cyrl-by",
+          da: "da-latn-dk",
+          el: "el-grek-gr",
+          en: "en-latn-us",
+          fa: "fa-arab-ir",
+          ja: "ja-jpan-jp",
+          ko: "ko-kore-kr",
+          pt: "pt-latn-br",
+          sr: "sr-cyrl-rs",
+          "sr-ru": "sr-latn-ru",
+          sv: "sv-latn-se",
+          ta: "ta-taml-in",
+          uk: "uk-cyrl-ua",
+          zh: "zh-hans-cn",
+          "zh-hant": "zh-hant-tw",
+          "zh-hk": "zh-hant-hk",
+          "zh-mo": "zh-hant-mo",
+          "zh-tw": "zh-hant-tw",
+          "zh-gb": "zh-hant-gb",
+          "zh-us": "zh-hant-us",
+        },
+        ke = [
+          "az",
+          "bg",
+          "cs",
+          "de",
+          "es",
+          "fi",
+          "fr",
+          "hu",
+          "it",
+          "lt",
+          "lv",
+          "nl",
+          "pl",
+          "ro",
+          "ru",
+        ];
+      const Re = {
+          "ca-ES": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "de-DE": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "en-US": {
+            "context_menu.ftl":
+              "context-menu-download-swf = Download .swf\ncontext-menu-copy-debug-info = Copy debug info\ncontext-menu-open-save-manager = Open Save Manager\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] About Ruffle Extension ({$version})\n        *[other] About Ruffle ({$version})\n    }\ncontext-menu-hide = Hide this menu\ncontext-menu-exit-fullscreen = Exit fullscreen\ncontext-menu-enter-fullscreen = Enter fullscreen",
+            "messages.ftl":
+              'message-unsupported-avm2 =\n    The Ruffle emulator may not yet fully support all of ActionScript 3 used by this content.\n    Some parts of the content may not work as expected.\nmessage-cant-embed =\n    Ruffle wasn\'t able to run the Flash embedded in this page.\n    You can try to open the file in a separate tab, to sidestep this issue.\npanic-title = Something went wrong :(\nmore-info = More info\nrun-anyway = Run anyway\ncontinue = Continue\nreport-bug = Report Bug\nupdate-ruffle = Update Ruffle\nruffle-demo = Web Demo\nruffle-desktop = Desktop Application\nruffle-wiki = View Ruffle Wiki\nview-error-details = View Error Details\nopen-in-new-tab = Open in a new tab\nclick-to-unmute = Click to unmute\nerror-file-protocol =\n    It appears you are running Ruffle on the "file:" protocol.\n    This doesn\'t work as browsers block many features from working for security reasons.\n    Instead, we invite you to setup a local server or either use the web demo or the desktop application.\nerror-javascript-config =\n    Ruffle has encountered a major issue due to an incorrect JavaScript configuration.\n    If you are the server administrator, we invite you to check the error details to find out which parameter is at fault.\n    You can also consult the Ruffle wiki for help.\nerror-wasm-not-found =\n    Ruffle failed to load the required ".wasm" file component.\n    If you are the server administrator, please ensure the file has correctly been uploaded.\n    If the issue persists, you may need to use the "publicPath" setting: please consult the Ruffle wiki for help.\nerror-wasm-mime-type =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    This web server is not serving ".wasm" files with the correct MIME type.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-swf-fetch =\n    Ruffle failed to load the Flash SWF file.\n    The most likely reason is that the file no longer exists, so there is nothing for Ruffle to load.\n    Try contacting the website administrator for help.\nerror-swf-cors =\n    Ruffle failed to load the Flash SWF file.\n    Access to fetch has likely been blocked by CORS policy.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-wasm-cors =\n    Ruffle failed to load the required ".wasm" file component.\n    Access to fetch has likely been blocked by CORS policy.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-wasm-invalid =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    It seems like this page has missing or invalid files for running Ruffle.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-wasm-download =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    This can often resolve itself, so you can try reloading the page.\n    Otherwise, please contact the website administrator.\nerror-wasm-disabled-on-edge =\n    Ruffle failed to load the required ".wasm" file component.\n    To fix this, try opening your browser\'s settings, clicking "Privacy, search, and services", scrolling down, and turning off "Enhance your security on the web".\n    This will allow your browser to load the required ".wasm" files.\n    If the issue persists, you might have to use a different browser.\nerror-javascript-conflict =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    It seems like this page uses JavaScript code that conflicts with Ruffle.\n    If you are the server administrator, we invite you to try loading the file on a blank page.\nerror-javascript-conflict-outdated = You can also try to upload a more recent version of Ruffle that may circumvent the issue (current build is outdated: {$buildDate}).\nerror-csp-conflict =\n    Ruffle has encountered a major issue whilst trying to initialize.\n    This web server\'s Content Security Policy does not allow the required ".wasm" component to run.\n    If you are the server administrator, please consult the Ruffle wiki for help.\nerror-unknown =\n    Ruffle has encountered a major issue whilst trying to display this Flash content.\n    {$outdated ->\n        [true] If you are the server administrator, please try to upload a more recent version of Ruffle (current build is outdated: {$buildDate}).\n        *[false] This isn\'t supposed to happen, so we\'d really appreciate if you could file a bug!\n    }',
+            "save-manager.ftl":
+              "save-delete-prompt = Are you sure you want to delete this save file?\nsave-reload-prompt =\n    The only way to {$action ->\n    [delete] delete\n    *[replace] replace\n    } this save file without potential conflict is to reload this content. Do you wish to continue anyway?\nsave-download = Download\nsave-replace = Replace\nsave-delete = Delete\nsave-backup-all = Download all save files",
+          },
+          "es-ES": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "fr-FR": {
+            "context_menu.ftl":
+              "context-menu-download-swf = Télécharger en tant que .swf\ncontext-menu-copy-debug-info = Copier les infos de débogage\ncontext-menu-open-save-manager = Ouvrir le gestionnaire de stockage\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] À propos de Ruffle Extension ({ $version })\n       *[other] À propos de Ruffle ({ $version })\n    }\ncontext-menu-hide = Masquer ce menu\ncontext-menu-exit-fullscreen = Sortir du mode plein écran\ncontext-menu-enter-fullscreen = Afficher en plein écran\n",
+            "messages.ftl":
+              "message-unsupported-avm2 =\n    L'émulateur Ruffle ne prend pas encore en charge toutes les fonctionnalités du langage ActionScript 3.\n    Certaines parties de ce contenu pourraient ainsi ne pas fonctionner correctement.\nmessage-cant-embed =\n    Ruffle n'a pas été en mesure de lire le fichier Flash intégré dans cette page.\n    Vous pouvez essayer d'ouvrir le fichier dans un onglet isolé, pour contourner le problème.\nmore-info = Plus d'infos\nrun-anyway = Exécuter quand même\ncontinue = Continuer\nopen-in-new-tab = Ouvrir dans un nouvel onglet\nclick-to-unmute = Cliquez pour activer le son\n",
+            "save-manager.ftl":
+              "save-delete-prompt = Voulez-vous vraiment supprimer ce fichier de sauvegarde ?\nsave-reload-prompt =\n    La seule façon de { $action ->\n        [delete] supprimer\n       *[replace] remplacer\n    } ce fichier de sauvegarde sans conflit potentiel est de recharger ce contenu. Souhaitez-vous quand même continuer ?\nsave-download = Télécharger\nsave-replace = Remplacer\nsave-delete = Supprimer\n",
+          },
+          "hu-HU": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "it-IT": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "ja-JP": {
+            "context_menu.ftl":
+              "context-menu-download-swf = .swfをダウンロード\ncontext-menu-copy-debug-info = デバッグ情報をコピー\ncontext-menu-open-save-manager = セーブマネージャーを開く\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] Ruffle拡張機能について ({ $version })\n       *[other] Ruffleについて ({ $version })\n    }\ncontext-menu-hide = メニューを隠す\ncontext-menu-exit-fullscreen = フルスクリーンを終了\ncontext-menu-enter-fullscreen = フルスクリーンにする\n",
+            "messages.ftl":
+              'message-unsupported-avm2 = Ruffleは、このコンテンツで使用されているActionScript3の一部をサポートしていない可能性があり、コンテンツの一部が期待どおりに動作しない場合があります。\nmessage-cant-embed =\n    Ruffleはこのページに埋め込まれた Flash を実行できませんでした。\n    別のタブでファイルを開くことで、この問題を解決できるかもしれません。\npanic-title = エラーが発生しました :(\nmore-info = 詳細情報\nrun-anyway = とにかく実行する\ncontinue = 続行\nreport-bug = バグを報告\nupdate-ruffle = Ruffleを更新\nruffle-demo = Webデモ\nruffle-desktop = デスクトップアプリ\nruffle-wiki = Ruffle Wikiを見る\nview-error-details = エラーの詳細を表示\nopen-in-new-tab = 新しいタブで開く\nclick-to-unmute = クリックでミュートを解除\nerror-file-protocol =\n    Ruffleを"file:"プロトコルで使用しているようです。\n    ブラウザはセキュリティ上の理由から殆どの機能を制限しているため、正しく動作しません。\n    ローカルサーバーをセットアップするか、ウェブデモまたはデスクトップアプリをご利用ください。\nerror-javascript-config =\n    JavaScriptの設定が正しくないため、Ruffleで問題が発生しました。\n    サーバー管理者の方は、エラーの詳細から、どのパラメーターに問題があるのかを確認してください。\n    Ruffleのwikiを参照することで、解決方法が見つかるかもしれません。\nerror-swf-cors =\n    RuffleはSWFファイルの読み込みに失敗しました。\n    CORSポリシーの設定により、fetchへのアクセスがブロックされている可能性があります。\n    サーバー管理者の方は、Ruffleのwikiを参照してください。\nerror-unknown =\n    Flashコンテンツを表示する際にRuffleで問題が発生しました。\n    { $outdated ->\n        [true] 現在使用しているビルドは最新ではないため、サーバー管理者の方は、最新版のRuffleに更新してみてください(現在利用中のビルド: { $buildDate })。\n       *[false] 想定外の問題なので、バグとして報告していただけると嬉しいです!\n    }\n',
+            "save-manager.ftl":
+              "save-delete-prompt = このセーブファイルを削除してもよろしいですか?\nsave-reload-prompt =\n    セーブファイルを競合の可能性なく { $action ->\n        [delete] 削除する\n       *[replace] 置き換える\n    } ために、このコンテンツを再読み込みすることを推奨します。続行しますか？\nsave-download = ダウンロード\nsave-replace = 置き換え\nsave-delete = 削除\nsave-backup-all = 全てのセーブをバックアップ(全てのsolsファイルをダウンロード)\n",
+          },
+          "ko-KR": {
+            "context_menu.ftl":
+              "context-menu-download-swf = .swf 다운로드\ncontext-menu-copy-debug-info = 디버그 정보 복사\ncontext-menu-open-save-manager = 저장 관리자 열기\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] Ruffle 확장 프로그램 정보 ({ $version })\n       *[other] Ruffle 정보 ({ $version })\n    }\ncontext-menu-hide = 이 메뉴 숨기기\ncontext-menu-exit-fullscreen = 전체화면 나가기\ncontext-menu-enter-fullscreen = 전체화면으로 열기\n",
+            "messages.ftl":
+              'message-unsupported-avm2 = Ruffle 에뮬레이터는 액션스크립트 3이 사용된 이 콘텐츠를 아직 완벽하게 지원하지 않을 수 있습니다. 콘텐츠의 일부 동작이 예상대로 작동하지 않을 수 있습니다.\nmessage-cant-embed = Ruffle이 이 페이지에 포함된 플래시를 실행할 수 없었습니다. 별도의 탭에서 파일을 열어봄으로서 이 문제를 해결할 수 있습니다.\npanic-title = 문제가 발생했습니다 :(\nmore-info = 추가 정보\nrun-anyway = 그래도 실행하기\ncontinue = 계속하기\nreport-bug = 버그 제보\nupdate-ruffle = Ruffle 업데이트\nruffle-demo = 웹 데모\nruffle-desktop = 데스크톱 애플리케이션\nruffle-wiki = Ruffle 위키 보기\nview-error-details = 오류 세부 정보 보기\nopen-in-new-tab = 새 탭에서 열기\nclick-to-unmute = 클릭하여 음소거 해제\nerror-file-protocol =\n    Ruffle을 "file:" 프로토콜에서 실행하고 있는 것으로 보입니다.\n    브라우저에서는 이 프로토콜을 보안상의 이유로 많은 기능을 작동하지 않게 차단하므로 이 방법은 작동하지 않습니다.\n    대신, 로컬 서버를 직접 열어서 설정하거나 웹 데모 또는 데스크톱 애플리케이션을 사용하시기 바랍니다.\nerror-javascript-config =\n    잘못된 자바스크립트 설정으로 인해 Ruffle에서 중대한 문제가 발생했습니다.\n    만약 당신이 서버 관리자인 경우, 오류 세부사항을 확인하여 어떤 매개변수가 잘못되었는지 알아보세요.\n    또는 Ruffle 위키를 통해 도움을 받아 볼 수도 있습니다.\nerror-wasm-not-found =\n    Ruffle이 ".wasm" 필수 파일 구성요소를 로드하지 못했습니다.\n    만약 당신이 서버 관리자라면 파일이 올바르게 업로드되었는지 확인하세요.\n    문제가 지속된다면 "publicPath" 옵션을 사용해야 할 수도 있습니다: Ruffle 위키를 참조하여 도움을 받으세요.\nerror-wasm-mime-type =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 웹 서버는 올바른 MIME 유형의 ".wasm" 파일을 제공하지 않습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 통해 도움을 받으세요.\nerror-swf-fetch =\n    Ruffle이 플래시 SWF 파일을 로드하는 데 실패하였습니다.\n    이는 주로 파일이 더 이상 존재하지 않아 Ruffle이 로드할 수 있는 것이 없을 가능성이 높습니다.\n    웹사이트 관리자에게 문의하여 도움을 받아보세요.\nerror-swf-cors =\n    Ruffle이 플래시 SWF 파일을 로드하는 데 실패하였습니다.\n    CORS 정책에 의해 데이터 가져오기에 대한 액세스가 차단되었을 수 있습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 참조하여 도움을 받아볼 수 있습니다.\nerror-wasm-cors =\n    Ruffle이 ".wasm" 필수 파일 구성요소를 로드하지 못했습니다.\n    CORS 정책에 의해 데이터 가져오기에 대한 액세스가 차단되었을 수 있습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 참조하여 도움을 받아볼 수 있습니다.\nerror-wasm-invalid =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 페이지에 Ruffle을 실행하기 위한 파일이 누락되었거나 잘못된 것 같습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 참조하여 도움을 받아볼 수 있습니다.\nerror-wasm-download =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 문제는 때때로 바로 해결될 수 있으므로 페이지를 새로고침하여 다시 시도해보세요.\n    그래도 문제가 지속된다면, 웹사이트 관리자에게 문의해주세요.\nerror-wasm-disabled-on-edge =\n    Ruffle이 ".wasm" 필수 파일 구성요소를 로드하지 못했습니다.\n    이를 해결하려면 브라우저 설정에서 "개인 정보, 검색 및 서비스"를 클릭한 후, 하단으로 스크롤하여 "웹에서 보안 강화" 기능을 꺼야 합니다.\n    이는 필요한 ".wasm" 파일을 브라우저에서 로드할 수 있도록 허용합니다.\n    이 문제가 지속될 경우 다른 브라우저를 사용해야 할 수 있습니다.\nerror-javascript-conflict =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 페이지에서 사용되는 자바스크립트 코드가 Ruffle과 충돌하는 것으로 보입니다.\n    만약 당신이 서버 관리자라면 빈 페이지에서 파일을 로드해보세요.\nerror-javascript-conflict-outdated = 또한 Ruffle의 최신 버전을 업로드하는 것을 시도하여 문제를 우회해볼 수 있습니다. (현재 빌드가 오래되었습니다: { $buildDate }).\nerror-csp-conflict =\n    Ruffle이 초기화를 시도하는 동안 중대한 문제가 발생했습니다.\n    이 웹 서버의 CSP(Content Security Policy) 정책이 ".wasm" 필수 구성요소를 실행하는 것을 허용하지 않습니다.\n    만약 당신이 서버 관리자라면 Ruffle 위키를 참조하여 도움을 받아볼 수 있습니다.\nerror-unknown =\n    Ruffle이 플래시 콘텐츠를 표시하려고 시도하는 동안 중대한 문제가 발생했습니다.\n    { $outdated ->\n        [true] 만약 당신이 서버 관리자라면, Ruffle의 최신 버전을 업로드하여 다시 시도해보세요. (현재 빌드가 오래되었습니다: { $buildDate }).\n       *[false] 이런 현상이 발생해서는 안되므로, 버그를 제보해주신다면 감사하겠습니다!\n    }\n',
+            "save-manager.ftl":
+              "save-delete-prompt = 정말로 이 세이브 파일을 삭제하시겠습니까?\nsave-reload-prompt =\n    \b이 파일을 잠재적인 충돌 없이 { $action ->\n        [delete] 삭제\n       *[replace] 교체\n    }하려면 콘텐츠를 다시 로드해야 합니다. 그래도 계속하시겠습니까?\nsave-download = 다운로드\nsave-replace = 교체\nsave-delete = 삭제\nsave-backup-all = 모든 저장 데이터 백업 (모든 sol 다운로드)\n",
+          },
+          "nl-NL": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "pt-PT": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "ro-RO": {
+            "context_menu.ftl":
+              "context-menu-download-swf = Descarcă .swf\ncontext-menu-copy-debug-info = Copiați informațiile de depanare\ncontext-menu-open-save-manager = Deschide manager de salvări\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] Despre extensia Ruffle ({ $version })\n       *[other] Despre Ruffle ({ $version })\n    }\ncontext-menu-hide = Ascunde acest meniu\ncontext-menu-exit-fullscreen = Ieșiți din ecranul complet\ncontext-menu-enter-fullscreen = Intră în ecran complet\n",
+            "messages.ftl":
+              'message-unsupported-avm2 =\n    Emulatorul Ruffle poate să nu accepte încă pe deplin tot ActionScript 3 folosit de acest conţinut.\n    Este posibil ca unele părți ale conținutului să nu funcționeze conform așteptărilor.\nmessage-cant-embed =\n    Ruffle nu a putut rula Flash încorporat în această pagină.\n    Puteți încerca să deschideți fișierul într-o filă separată, pentru a evita această problemă.\npanic-title = Ceva a mers prost :(\nmore-info = Mai multe informatii\nrun-anyway = Rulează oricum\ncontinue = Continuare\nreport-bug = Raportează o eroare\nupdate-ruffle = Actualizează\nruffle-demo = Demo Web\nruffle-desktop = Aplicație desktop\nruffle-wiki = Vezi Ruffle Wiki\nview-error-details = Vezi detaliile de eroare\nopen-in-new-tab = Deschidere in filă nouă\nclick-to-unmute = Înlătură amuțirea\nerror-file-protocol =\n    Se pare că rulați Ruffle pe protocolul "fișier:".\n    Aceasta nu funcționează ca browsere blochează multe caracteristici din motive de securitate.\n    În schimb, vă invităm să configurați un server local sau să folosiți aplicația web demo sau desktop.\nerror-javascript-config =\n    Ruffle a întâmpinat o problemă majoră din cauza unei configurări incorecte a JavaScript.\n    Dacă sunteți administratorul serverului, vă invităm să verificați detaliile de eroare pentru a afla care parametru este defect.\n    Puteți consulta și Ruffle wiki pentru ajutor.\nerror-wasm-not-found =\n    Ruffle a eșuat la încărcarea componentei de fișier ".wasm".\n    Dacă sunteți administratorul serverului, vă rugăm să vă asigurați că fișierul a fost încărcat corect.\n    Dacă problema persistă, poate fi necesar să utilizaţi setarea "publicPath": vă rugăm să consultaţi Ruffle wiki pentru ajutor.\nerror-wasm-mime-type =\n    Ruffle a întâmpinat o problemă majoră în timp ce se încerca inițializarea.\n    Acest server web nu servește ". asm" fișiere cu tipul corect MIME.\n    Dacă sunteți administrator de server, vă rugăm să consultați Ruffle wiki pentru ajutor.\nerror-swf-fetch =\n    Ruffle a eșuat la încărcarea fișierului Flash SWF.\n    Motivul cel mai probabil este că fişierul nu mai există, deci nu există nimic pentru Ruffle să se încarce.\n    Încercați să contactați administratorul site-ului web pentru ajutor.\nerror-swf-cors =\n    Ruffle a eșuat la încărcarea fișierului Flash SWF.\n    Accesul la preluare a fost probabil blocat de politica CORS.\n    Dacă sunteţi administratorul serverului, vă rugăm să consultaţi Ruffle wiki pentru ajutor.\nerror-wasm-cors =\n    Ruffle a eșuat în încărcarea componentei de fișier ".wasm".\n    Accesul la preluare a fost probabil blocat de politica CORS.\n    Dacă sunteţi administratorul serverului, vă rugăm să consultaţi Ruffle wiki pentru ajutor.\nerror-wasm-invalid =\n    Ruffle a întâmpinat o problemă majoră în timp ce se încearcă inițializarea.\n    Se pare că această pagină are fișiere lipsă sau invalide pentru rularea Ruffle.\n    Dacă sunteţi administratorul serverului, vă rugăm să consultaţi Ruffle wiki pentru ajutor.\nerror-wasm-download =\n    Ruffle a întâmpinat o problemă majoră în timp ce încerca să inițializeze.\n    Acest lucru se poate rezolva adesea, astfel încât puteţi încerca să reîncărcaţi pagina.\n    Altfel, vă rugăm să contactaţi administratorul site-ului.\nerror-wasm-disabled-on-edge =\n    Ruffle nu a putut încărca componenta de fișier ".wasm".\n    Pentru a remedia acest lucru, încercați să deschideți setările browser-ului dvs., apăsând pe "Confidențialitate, căutare și servicii", derulând în jos și închizând "Îmbunătățește-ți securitatea pe web".\n    Acest lucru va permite browser-ului să încarce fișierele ".wasm" necesare.\n    Dacă problema persistă, ar putea fi necesar să folosiți un browser diferit.\nerror-javascript-conflict =\n    Ruffle a întâmpinat o problemă majoră în timp ce încerca să inițializeze.\n    Se pare că această pagină folosește codul JavaScript care intră în conflict cu Ruffle.\n    Dacă sunteţi administratorul serverului, vă invităm să încărcaţi fişierul pe o pagină goală.\nerror-javascript-conflict-outdated = De asemenea, poți încerca să încarci o versiune mai recentă de Ruffle care poate ocoli problema (versiunea curentă este expirată: { $buildDate }).\nerror-csp-conflict =\n    Ruffle a întâmpinat o problemă majoră în timp ce se încerca inițializarea.\n    Politica de securitate a conținutului acestui server web nu permite serviciul necesar". asm" componentă pentru a rula.\n    Dacă sunteți administratorul de server, consultați Ruffle wiki pentru ajutor.\nerror-unknown =\n    Ruffle a întâmpinat o problemă majoră în timp ce se încerca afișarea conținutului Flash.\n    { $outdated ->\n        [true] Dacă sunteți administratorul de server, vă rugăm să încercaţi să încărcaţi o versiune mai recentă de Ruffle (versiunea curentă este depăşită: { $buildDate }).\n       *[false] Acest lucru nu ar trebui să se întâmple, așa că am aprecia foarte mult dacă ai putea trimite un bug!\n    }\n',
+            "save-manager.ftl":
+              "save-delete-prompt = Sunteţi sigur că doriţi să ştergeţi acest fişier salvat?\nsave-reload-prompt =\n    Singura cale de a { $action ->\n        [delete] șterge\n       *[replace] înlocuiește\n    } acest fișier de salvare fără un conflict potențial este de a reîncărca acest conținut. Doriți să continuați oricum?\nsave-download = Descărcare\nsave-replace = Înlocuiește\nsave-delete = Ștergere\nsave-backup-all = Copie de rezervă toate salvările (descarcă toate sols?)\n",
+          },
+          "ru-RU": {
+            "context_menu.ftl":
+              "context-menu-download-swf = Скачать .swf\ncontext-menu-copy-debug-info = Копировать отладочную информацию\ncontext-menu-open-save-manager = Менеджер сохранений\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] О расширении Ruffle ({ $version })\n       *[other] О Ruffle ({ $version })\n    }\ncontext-menu-hide = Скрыть это меню\ncontext-menu-exit-fullscreen = Оконный режим\ncontext-menu-enter-fullscreen = Полноэкранный режим\n",
+            "messages.ftl":
+              'message-unsupported-avm2 =\n    Эмулятор Ruffle ещё не полностью поддерживает ActionScript 3, используемый в этом файле.\n    Некоторое содержимое может отображаться некорректно или работать с ошибками.\nmessage-cant-embed =\n    Ruffle не смог запустить Flash, используемый на этой странице.\n    Чтобы обойти эту проблему, вы можете попробовать открыть файл в отдельной вкладке.\npanic-title = Что-то пошло не так :(\nmore-info = Подробнее\nrun-anyway = Всё равно запустить\ncontinue = Продолжить\nreport-bug = Сообщить об ошибке\nupdate-ruffle = Обновить Ruffle\nruffle-demo = Веб-демо\nruffle-desktop = Настольное приложение\nruffle-wiki = Открыть вики Ruffle\nview-error-details = Сведения об ошибке\nopen-in-new-tab = Открыть в новой вкладке\nclick-to-unmute = Включить звук\nerror-file-protocol =\n    Похоже, что вы запускаете Ruffle по протоколу "file:".\n    Это не работает, поскольку браузеры блокируют работу многих функций по соображениям безопасности.\n    Вместо этого мы предлагаем вам использовать настольное приложение, веб-демо или настроить локальный сервер.\nerror-javascript-config =\n    Возникла серьёзная ошибка из-за неправильной конфигурации JavaScript.\n    Если вы являетесь администратором сервера, мы предлагаем вам проверить детали ошибки, чтобы выяснить, какой параметр дал сбой.\n    Вы также можете обратиться за помощью к вики Ruffle.\nerror-wasm-not-found =\n    Ruffle не удалось запустить необходимый компонент файла ".wasm".\n    Если вы администратор сервера, пожалуйста, убедитесь, что файл был загружен правильно.\n    Если проблема не устраняется, вам может потребоваться использовать настройку "publicPath": обратитесь к вики Ruffle.\nerror-wasm-mime-type =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Этот веб-сервер не предоставляет файлы ".wasm" с правильным типом MIME.\n    Если вы администратор сервера, обратитесь за помощью к вики Ruffle.\nerror-swf-fetch =\n    Ruffle не удалось запустить SWF-файл Flash.\n    Вероятнее всего, файл больше не существует, поэтому Ruffle нечего загружать.\n    Попробуйте связаться с администратором сайта для получения помощи.\nerror-swf-cors =\n    Ruffle не удалось запустить SWF-файл Flash.\n    Скорее всего, доступ к файлу был заблокирован политикой CORS.\n    Если вы администратор сервера, обратитесь за помощью к вики Ruffle.\nerror-wasm-cors =\n    Ruffle не удалось загрузить необходимый компонент файла ".wasm".\n    Скорее всего, доступ к файлу был заблокирован политикой CORS.\n    Если вы администратор сервера, обратитесь за помощью к вики Ruffle.\nerror-wasm-invalid =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Похоже, что на этой странице отсутствуют файлы для запуска Ruffle или они недействительны.\n    Если вы администратор сервера, обратитесь за помощью к вики Ruffle.\nerror-wasm-download =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Чаще всего эта проблема устраняется сама собою, поэтому вы можете просто перезагрузить страницу.\n    Если ошибка продолжает появляться, свяжитесь с администратором сайта.\nerror-wasm-disabled-on-edge =\n    Ruffle не удалось загрузить необходимый компонент файла ".wasm".\n    Чтобы исправить эту ошибку, попробуйте отключить в настройках браузера дополнительную конфиденциальность. Это позволит браузеру загрузить необходимые WASM-файлы.\n    Если проблема осталась, вам может потребоваться другой браузер.\nerror-javascript-conflict =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Похоже, что эта страница использует конфликтующий с Ruffle код JavaScript.\n    Если вы являетесь администратором сервера, мы предлагаем вам попробовать запустить файл на пустой странице.\nerror-javascript-conflict-outdated = Вы также можете попробовать загрузить последнюю версию Ruffle, которая может обойти проблему (текущая версия устарела: { $buildDate }).\nerror-csp-conflict =\n    Ruffle столкнулся с серьёзной проблемой во время инициализации.\n    Политика безопасности содержимого этого веб-сервера не позволяет использовать требуемые компоненты для запуска ".wasm".\n    Если вы являетесь администратором сервера, обратитесь за помощью к вики Ruffle.\nerror-unknown =\n    Ruffle столкнулся с серьёзной проблемой при попытке отобразить этот Flash-контент.\n    { $outdated ->\n        [true] Если вы администратор сервера, попробуйте загрузить более новую версию Ruffle (текущая версия устарела: { $buildDate }).\n       *[false] Этого не должно происходить, поэтому мы будем очень признательны, если вы сообщите нам об ошибке!\n    }\n',
+            "save-manager.ftl":
+              "save-delete-prompt = Удалить этот файл сохранения?\nsave-reload-prompt =\n    Единственный способ { $action ->\n        [delete] удалить\n       *[replace] заменить\n    } этот файл сохранения без потенциального конфликта – перезапустить запущенный контент. Всё равно продолжить?\nsave-download = Скачать\nsave-replace = Заменить\nsave-delete = Удалить\nsave-backup-all = Скачать все сохранения\n",
+          },
+          "sv-SE": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "tr-TR": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "zh-CN": {
+            "context_menu.ftl": "",
+            "messages.ftl": "",
+            "save-manager.ftl": "",
+          },
+          "zh-TW": {
+            "context_menu.ftl":
+              "context-menu-download-swf = 下載SWF檔案\ncontext-menu-copy-debug-info = 複製除錯資訊\ncontext-menu-open-save-manager = 打開存檔管理器\ncontext-menu-about-ruffle =\n    { $flavor ->\n        [extension] 關於Ruffle擴充功能 ({ $version })\n       *[other] 關於Ruffle ({ $version })\n    }\ncontext-menu-hide = 隱藏菜單\ncontext-menu-exit-fullscreen = 退出全螢幕\ncontext-menu-enter-fullscreen = 進入全螢幕\n",
+            "messages.ftl":
+              'message-unsupported-avm2 =\n    目前Ruffle還沒辦法完整模擬所有的ActionScript 3內容。\n    有些地方還沒辦法正常顯示。\nmessage-cant-embed =\n    目前Ruffle沒辦法執行嵌入式Flash。\n    你可以在新分頁中開啟來解決這個問題。\npanic-title = 完蛋，出問題了 :(\nmore-info = 更多資訊\nrun-anyway = 直接執行\ncontinue = 繼續\nreport-bug = 回報BUG\nupdate-ruffle = 更新Ruffle\nruffle-demo = 網頁展示\nruffle-desktop = 桌面應用程式\nruffle-wiki = 查看Ruffle Wiki\nview-error-details = 檢視錯誤詳細資料\nopen-in-new-tab = 開啟新增分頁\nclick-to-unmute = 點擊以取消靜音\nerror-file-protocol =\n    看起來你想要用Ruffle來執行"file:"的協議。\n    因為瀏覽器禁了很多功能以資安的理由來講。\n    我們建議你建立本地伺服器或著直接使用網頁展示或桌面應用程式。\nerror-javascript-config =\n    目前Ruffle遇到不正確的JavaScript配置。\n    如果你是伺服器管理員，我們建議你檢查哪個環節出錯。\n    你可以查詢Ruffle wiki得到需求幫助。\nerror-wasm-not-found =\n    目前Ruffle找不到".wasm"檔案。\n    如果你是伺服器管理員，確保檔案是否放對位置。\n    如果還是有問題的話，你要用"publicPath"來設定: 請查詢Ruffle wiki得到需求幫助。\n',
+            "save-manager.ftl": "",
+          },
+        },
+        Se = {};
+      for (const e in Re) {
+        const t = new V(e),
+          n = Re[e];
+        if (n)
+          for (const r in n) {
+            const i = n[r];
+            if (i)
+              for (const n in t.addResource(new ve(i)))
+                console.error(`Error in text for ${e} ${r}: ${n}`);
+          }
+        Se[e] = t;
+      }
+      function Ee(e, t, n) {
+        const r = Se[e];
+        if (void 0 !== r) {
+          const e = r.getMessage(t);
+          if (void 0 !== e && e.value) return r.formatPattern(e.value, n);
+        }
+        return null;
+      }
+      function Ce(e, t) {
+        const n = (function (
+          e,
+          t,
+          { strategy: n = "filtering", defaultLocale: r } = {},
+        ) {
+          const i = (function (e, t, n) {
+            const r = new Set(),
+              i = new Map();
+            for (let e of t) new ye(e).isWellFormed && i.set(e, new ye(e));
+            e: for (const t of e) {
+              const e = t.toLowerCase(),
+                a = new ye(e);
+              if (void 0 !== a.language) {
+                for (const t of i.keys())
+                  if (e === t.toLowerCase()) {
+                    if ((r.add(t), i.delete(t), "lookup" === n))
+                      return Array.from(r);
+                    if ("filtering" === n) continue;
+                    continue e;
+                  }
+                for (const [e, t] of i.entries())
+                  if (t.matches(a, !0, !1)) {
+                    if ((r.add(e), i.delete(e), "lookup" === n))
+                      return Array.from(r);
+                    if ("filtering" === n) continue;
+                    continue e;
+                  }
+                if (a.addLikelySubtags())
+                  for (const [e, t] of i.entries())
+                    if (t.matches(a, !0, !1)) {
+                      if ((r.add(e), i.delete(e), "lookup" === n))
+                        return Array.from(r);
+                      if ("filtering" === n) continue;
+                      continue e;
+                    }
+                a.clearVariants();
+                for (const [e, t] of i.entries())
+                  if (t.matches(a, !0, !0)) {
+                    if ((r.add(e), i.delete(e), "lookup" === n))
+                      return Array.from(r);
+                    if ("filtering" === n) continue;
+                    continue e;
+                  }
+                if ((a.clearRegion(), a.addLikelySubtags()))
+                  for (const [e, t] of i.entries())
+                    if (t.matches(a, !0, !1)) {
+                      if ((r.add(e), i.delete(e), "lookup" === n))
+                        return Array.from(r);
+                      if ("filtering" === n) continue;
+                      continue e;
+                    }
+                a.clearRegion();
+                for (const [e, t] of i.entries())
+                  if (t.matches(a, !0, !0)) {
+                    if ((r.add(e), i.delete(e), "lookup" === n))
+                      return Array.from(r);
+                    if ("filtering" === n) continue;
+                    continue e;
+                  }
+              }
+            }
+            return Array.from(r);
+          })(
+            Array.from(null != e ? e : []).map(String),
+            Array.from(null != t ? t : []).map(String),
+            n,
+          );
+          if ("lookup" === n) {
+            if (void 0 === r)
+              throw new Error(
+                "defaultLocale cannot be undefined for strategy `lookup`",
+              );
+            0 === i.length && i.push(r);
+          } else r && !i.includes(r) && i.push(r);
+          return i;
+        })(navigator.languages, Object.keys(Se), { defaultLocale: "en-US" });
+        for (const r in n) {
+          const i = Ee(n[r], e, t);
+          if (i) return i;
+        }
+        return console.error(`Unknown text key '${e}'`), e;
+      }
+      function Ie(e, t) {
+        const n = document.createElement("div");
+        return (
+          Ce(e, t)
+            .split("\n")
+            .forEach((e) => {
+              const t = document.createElement("p");
+              (t.innerText = e), n.appendChild(t);
+            }),
+          n.innerHTML
+        );
+      }
+      const Ae = "https://ruffle.rs",
+        _e = /^\s*(\d+(\.\d+)?(%)?)/;
+      let $e = !1;
+      function je(e) {
+        if (null == e) return {};
+        e instanceof URLSearchParams || (e = new URLSearchParams(e));
+        const t = {};
+        for (const [n, r] of e) t[n] = r.toString();
+        return t;
+      }
+      class Pe {
+        constructor(e, t) {
+          (this.x = e), (this.y = t);
+        }
+        distanceTo(e) {
+          const t = e.x - this.x,
+            n = e.y - this.y;
+          return Math.sqrt(t * t + n * n);
+        }
+      }
+      class Oe extends HTMLElement {
+        get readyState() {
+          return this._readyState;
+        }
+        get metadata() {
+          return this._metadata;
+        }
+        constructor() {
+          super(),
+            (this.contextMenuForceDisabled = !1),
+            (this.contextMenuSupported = !1),
+            (this.panicked = !1),
+            (this.rendererDebugInfo = ""),
+            (this.isExtension = !1),
+            (this.longPressTimer = null),
+            (this.pointerDownPosition = null),
+            (this.pointerMoveMaxDistance = 0),
+            (this.config = {}),
+            (this.shadow = this.attachShadow({ mode: "open" })),
+            this.shadow.appendChild(h.content.cloneNode(!0)),
+            (this.dynamicStyles = this.shadow.getElementById("dynamic_styles")),
+            (this.container = this.shadow.getElementById("container")),
+            (this.playButton = this.shadow.getElementById("play_button")),
+            this.playButton.addEventListener("click", () => this.play()),
+            (this.unmuteOverlay = this.shadow.getElementById("unmute_overlay")),
+            (this.splashScreen = this.shadow.getElementById("splash-screen")),
+            (this.virtualKeyboard =
+              this.shadow.getElementById("virtual-keyboard")),
+            this.virtualKeyboard.addEventListener(
+              "input",
+              this.virtualKeyboardInput.bind(this),
+            ),
+            (this.saveManager = this.shadow.getElementById("save-manager")),
+            this.saveManager.addEventListener("click", () =>
+              this.saveManager.classList.add("hidden"),
+            );
+          const e = this.saveManager.querySelector("#modal-area");
+          e && e.addEventListener("click", (e) => e.stopPropagation());
+          const t = this.saveManager.querySelector("#close-modal");
+          t &&
+            t.addEventListener("click", () =>
+              this.saveManager.classList.add("hidden"),
+            );
+          const n = this.saveManager.querySelector("#backup-saves");
+          n &&
+            (n.addEventListener("click", this.backupSaves.bind(this)),
+            (n.innerText = Ce("save-backup-all")));
+          const r = this.unmuteOverlay.querySelector("#unmute_overlay_svg");
+          r &&
+            (r.querySelector("#unmute_text").textContent =
+              Ce("click-to-unmute")),
+            (this.contextMenuElement =
+              this.shadow.getElementById("context-menu")),
+            this.addEventListener(
+              "contextmenu",
+              this.showContextMenu.bind(this),
+            ),
+            this.container.addEventListener(
+              "pointerdown",
+              this.pointerDown.bind(this),
+            ),
+            this.container.addEventListener(
+              "pointermove",
+              this.checkLongPressMovement.bind(this),
+            ),
+            this.container.addEventListener(
+              "pointerup",
+              this.checkLongPress.bind(this),
+            ),
+            this.container.addEventListener(
+              "pointercancel",
+              this.clearLongPressTimer.bind(this),
+            ),
+            this.addEventListener(
+              "fullscreenchange",
+              this.fullScreenChange.bind(this),
+            ),
+            this.addEventListener(
+              "webkitfullscreenchange",
+              this.fullScreenChange.bind(this),
+            ),
+            (this.instance = null),
+            (this.onFSCommand = null),
+            (this._readyState = 0),
+            (this._metadata = null),
+            (this.lastActivePlayingState = !1),
+            this.setupPauseOnTabHidden();
+        }
+        setupPauseOnTabHidden() {
+          document.addEventListener(
+            "visibilitychange",
+            () => {
+              this.instance &&
+                (document.hidden &&
+                  ((this.lastActivePlayingState = this.instance.is_playing()),
+                  this.instance.pause()),
+                document.hidden ||
+                  !0 !== this.lastActivePlayingState ||
+                  this.instance.play());
+            },
+            !1,
+          );
+        }
+        connectedCallback() {
+          this.updateStyles();
+        }
+        static get observedAttributes() {
+          return ["width", "height"];
+        }
+        attributeChangedCallback(e, t, n) {
+          ("width" !== e && "height" !== e) || this.updateStyles();
+        }
+        disconnectedCallback() {
+          this.destroy();
+        }
+        updateStyles() {
+          if (this.dynamicStyles.sheet) {
+            if (this.dynamicStyles.sheet.rules)
+              for (let e = 0; e < this.dynamicStyles.sheet.rules.length; e++)
+                this.dynamicStyles.sheet.deleteRule(e);
+            const e = this.attributes.getNamedItem("width");
+            if (null != e) {
+              const t = Oe.htmlDimensionToCssDimension(e.value);
+              null !== t &&
+                this.dynamicStyles.sheet.insertRule(`:host { width: ${t}; }`);
+            }
+            const t = this.attributes.getNamedItem("height");
+            if (null != t) {
+              const e = Oe.htmlDimensionToCssDimension(t.value);
+              null !== e &&
+                this.dynamicStyles.sheet.insertRule(`:host { height: ${e}; }`);
+            }
+          }
+        }
+        isUnusedFallbackObject() {
+          const e = (function (e) {
+            const t = p[e];
+            return void 0 !== t
+              ? { internalName: e, name: t.name, class: t.class }
+              : null;
+          })("ruffle-object");
+          if (null !== e) {
+            let t = this.parentNode;
+            for (; t !== document && null !== t; ) {
+              if (t.nodeName === e.name) return !0;
+              t = t.parentNode;
+            }
+          }
+          return !1;
+        }
+        async ensureFreshInstance() {
+          var e;
+          this.destroy(),
+            this.loadedConfig &&
+              !1 !== this.loadedConfig.splashScreen &&
+              !1 !== this.loadedConfig.preloader &&
+              this.showSplashScreen(),
+            this.loadedConfig &&
+              !1 === this.loadedConfig.preloader &&
+              console.warn(
+                "The configuration option preloader has been replaced with splashScreen. If you own this website, please update the configuration.",
+              ),
+            this.loadedConfig &&
+              this.loadedConfig.maxExecutionDuration &&
+              "number" != typeof this.loadedConfig.maxExecutionDuration &&
+              console.warn(
+                "Configuration: An obsolete format for duration for 'maxExecutionDuration' was used, please use a single number indicating seconds instead. For instance '15' instead of '{secs: 15, nanos: 0}'.",
+              ),
+            this.loadedConfig &&
+              "boolean" == typeof this.loadedConfig.contextMenu &&
+              console.warn(
+                'The configuration option contextMenu no longer takes a boolean. Use "on", "off", or "rightClickOnly".',
+              );
+          const t = await f(
+            this.loadedConfig || {},
+            this.onRuffleDownloadProgress.bind(this),
+          ).catch((e) => {
+            if (
+              (console.error(`Serious error loading Ruffle: ${e}`),
+              "file:" === window.location.protocol)
+            )
+              e.ruffleIndexError = 2;
+            else {
+              e.ruffleIndexError = 9;
+              const t = String(e.message).toLowerCase();
+              t.includes("mime")
+                ? (e.ruffleIndexError = 8)
+                : t.includes("networkerror") || t.includes("failed to fetch")
+                ? (e.ruffleIndexError = 6)
+                : t.includes("disallowed by embedder")
+                ? (e.ruffleIndexError = 1)
+                : "CompileError" === e.name
+                ? (e.ruffleIndexError = 3)
+                : t.includes("could not download wasm module") &&
+                  "TypeError" === e.name
+                ? (e.ruffleIndexError = 7)
+                : "TypeError" === e.name
+                ? (e.ruffleIndexError = 5)
+                : navigator.userAgent.includes("Edg") &&
+                  t.includes("webassembly is not defined") &&
+                  (e.ruffleIndexError = 10);
+            }
+            throw (this.panic(e), e);
+          });
+          (this.instance = await new t(
+            this.container,
+            this,
+            this.loadedConfig,
+          )),
+            (this.rendererDebugInfo = this.instance.renderer_debug_info());
+          const n = this.instance.renderer_name();
+          if (
+            (console.log(
+              "%cNew Ruffle instance created (WebAssembly extensions: " +
+                (t.is_wasm_simd_used() ? "ON" : "OFF") +
+                " | Used renderer: " +
+                (null != n ? n : "") +
+                ")",
+              "background: #37528C; color: #FFAD33",
+            ),
+            "running" !== this.audioState() &&
+              ((this.container.style.visibility = "hidden"),
+              await new Promise((e) => {
+                window.setTimeout(() => {
+                  e();
+                }, 200);
+              }),
+              (this.container.style.visibility = "")),
+            this.unmuteAudioContext(),
+            navigator.userAgent.toLowerCase().includes("android") &&
+              this.container.addEventListener("click", () =>
+                this.virtualKeyboard.blur(),
+              ),
+            !this.loadedConfig ||
+              "on" === this.loadedConfig.autoplay ||
+              ("off" !== this.loadedConfig.autoplay &&
+                "running" === this.audioState()))
+          ) {
+            if ((this.play(), "running" !== this.audioState())) {
+              (this.loadedConfig &&
+                "hidden" === this.loadedConfig.unmuteOverlay) ||
+                (this.unmuteOverlay.style.display = "block"),
+                this.container.addEventListener(
+                  "click",
+                  this.unmuteOverlayClicked.bind(this),
+                  { once: !0 },
+                );
+              const t =
+                null === (e = this.instance) || void 0 === e
+                  ? void 0
+                  : e.audio_context();
+              t &&
+                (t.onstatechange = () => {
+                  "running" === t.state && this.unmuteOverlayClicked(),
+                    (t.onstatechange = null);
+                });
+            }
+          } else this.playButton.style.display = "block";
+        }
+        onRuffleDownloadProgress(e, t) {
+          const n = this.splashScreen.querySelector(".loadbar-inner"),
+            r = this.splashScreen.querySelector(".loadbar");
+          Number.isNaN(t)
+            ? r && (r.style.display = "none")
+            : (n.style.width = (e / t) * 100 + "%");
+        }
+        destroy() {
+          this.instance &&
+            (this.instance.destroy(),
+            (this.instance = null),
+            (this._metadata = null),
+            (this._readyState = 0),
+            console.log("Ruffle instance destroyed."));
+        }
+        checkOptions(e) {
+          if ("string" == typeof e) return { url: e };
+          const t = (e, t) => {
+            if (!e) {
+              const e = new TypeError(t);
+              throw ((e.ruffleIndexError = 4), this.panic(e), e);
+            }
+          };
+          return (
+            t(
+              null !== e && "object" == typeof e,
+              "Argument 0 must be a string or object",
+            ),
+            t(
+              "url" in e || "data" in e,
+              "Argument 0 must contain a `url` or `data` key",
+            ),
+            t(
+              !("url" in e) || "string" == typeof e.url,
+              "`url` must be a string",
+            ),
+            e
+          );
+        }
+        getExtensionConfig() {
+          var e;
+          return window.RufflePlayer &&
+            window.RufflePlayer.conflict &&
+            ("extension" === window.RufflePlayer.conflict.newestName ||
+              "extension" === window.RufflePlayer.newestName)
+            ? null === (e = window.RufflePlayer) || void 0 === e
+              ? void 0
+              : e.conflict.config
+            : {};
+        }
+        async load(e) {
+          var t, n;
+          if (
+            ((e = this.checkOptions(e)),
+            this.isConnected && !this.isUnusedFallbackObject())
+          ) {
+            if (!De(this))
+              try {
+                const r = this.getExtensionConfig();
+                if (
+                  ((this.loadedConfig = Object.assign(
+                    Object.assign(
+                      Object.assign(
+                        Object.assign(Object.assign({}, g), r),
+                        null !==
+                          (n =
+                            null === (t = window.RufflePlayer) || void 0 === t
+                              ? void 0
+                              : t.config) && void 0 !== n
+                          ? n
+                          : {},
+                      ),
+                      this.config,
+                    ),
+                    e,
+                  )),
+                  (this.loadedConfig.allowScriptAccess =
+                    !0 === e.allowScriptAccess),
+                  this.loadedConfig.backgroundColor &&
+                    "transparent" !== this.loadedConfig.wmode &&
+                    (this.container.style.backgroundColor =
+                      this.loadedConfig.backgroundColor),
+                  await this.ensureFreshInstance(),
+                  "url" in e)
+                ) {
+                  console.log(`Loading SWF file ${e.url}`),
+                    (this.swfUrl = new URL(e.url, document.baseURI));
+                  const t = Object.assign(
+                    Object.assign({}, je(e.url.substring(e.url.indexOf("?")))),
+                    je(e.parameters),
+                  );
+                  this.instance.stream_from(this.swfUrl.href, t);
+                } else
+                  "data" in e &&
+                    (console.log("Loading SWF data"),
+                    this.instance.load_data(
+                      new Uint8Array(e.data),
+                      je(e.parameters),
+                      e.swfFileName || "movie.swf",
+                    ));
+              } catch (e) {
+                console.error(`Serious error occurred loading SWF file: ${e}`);
+                const t = new Error(e);
+                throw (
+                  (t.message.includes("Error parsing config") &&
+                    (t.ruffleIndexError = 4),
+                  this.panic(t),
+                  t)
+                );
+              }
+          } else
+            console.warn(
+              "Ignoring attempt to play a disconnected or suspended Ruffle element",
+            );
+        }
+        play() {
+          this.instance &&
+            (this.instance.play(), (this.playButton.style.display = "none"));
+        }
+        get isPlaying() {
+          return !!this.instance && this.instance.is_playing();
+        }
+        get volume() {
+          return this.instance ? this.instance.volume() : 1;
+        }
+        set volume(e) {
+          this.instance && this.instance.set_volume(e);
+        }
+        get fullscreenEnabled() {
+          return !(
+            !document.fullscreenEnabled && !document.webkitFullscreenEnabled
+          );
+        }
+        get isFullscreen() {
+          return (
+            (document.fullscreenElement || document.webkitFullscreenElement) ===
+            this
+          );
+        }
+        setFullscreen(e) {
+          this.fullscreenEnabled &&
+            (e ? this.enterFullscreen() : this.exitFullscreen());
+        }
+        enterFullscreen() {
+          const e = { navigationUI: "hide" };
+          this.requestFullscreen
+            ? this.requestFullscreen(e)
+            : this.webkitRequestFullscreen
+            ? this.webkitRequestFullscreen(e)
+            : this.webkitRequestFullScreen && this.webkitRequestFullScreen(e);
+        }
+        exitFullscreen() {
+          document.exitFullscreen
+            ? document.exitFullscreen()
+            : document.webkitExitFullscreen
+            ? document.webkitExitFullscreen()
+            : document.webkitCancelFullScreen &&
+              document.webkitCancelFullScreen();
+        }
+        fullScreenChange() {
+          var e;
+          null === (e = this.instance) ||
+            void 0 === e ||
+            e.set_fullscreen(this.isFullscreen);
+        }
+        base64ToBlob(e, t) {
+          const n = atob(e),
+            r = new ArrayBuffer(n.length),
+            i = new Uint8Array(r);
+          for (let e = 0; e < n.length; e++) i[e] = n.charCodeAt(e);
+          return new Blob([r], { type: t });
+        }
+        saveFile(e, t, n) {
+          const r = this.base64ToBlob(e, t),
+            i = URL.createObjectURL(r),
+            a = document.createElement("a");
+          (a.href = i),
+            (a.style.display = "none"),
+            (a.download = n),
+            document.body.appendChild(a),
+            a.click(),
+            document.body.removeChild(a),
+            URL.revokeObjectURL(i);
+        }
+        isB64SOL(e) {
+          try {
+            return "TCSO" === atob(e).slice(6, 10);
+          } catch (e) {
+            return !1;
+          }
+        }
+        confirmReloadSave(e, t, n) {
+          if (this.isB64SOL(t) && localStorage[e]) {
+            if (!n && !confirm(Ce("save-delete-prompt"))) return;
+            const r = this.swfUrl ? this.swfUrl.pathname : "",
+              i = this.swfUrl
+                ? this.swfUrl.hostname
+                : document.location.hostname,
+              a = e.split("/").slice(1, -1).join("/");
+            if (r.includes(a) && e.startsWith(i))
+              return void (
+                confirm(
+                  Ce("save-reload-prompt", {
+                    action: n ? "replace" : "delete",
+                  }),
+                ) &&
+                this.loadedConfig &&
+                (this.destroy(),
+                n ? localStorage.setItem(e, t) : localStorage.removeItem(e),
+                this.load(this.loadedConfig),
+                this.populateSaves(),
+                this.saveManager.classList.add("hidden"))
+              );
+            n ? localStorage.setItem(e, t) : localStorage.removeItem(e),
+              this.populateSaves(),
+              this.saveManager.classList.add("hidden");
+          }
+        }
+        replaceSOL(e, t) {
+          const n = e.target,
+            r = new FileReader();
+          r.addEventListener("load", () => {
+            if (r.result && "string" == typeof r.result) {
+              const e = new RegExp("data:.*;base64,"),
+                n = r.result.replace(e, "");
+              this.confirmReloadSave(t, n, !0);
+            }
+          }),
+            n &&
+              n.files &&
+              n.files.length > 0 &&
+              n.files[0] &&
+              r.readAsDataURL(n.files[0]);
+        }
+        deleteSave(e) {
+          const t = localStorage.getItem(e);
+          t && this.confirmReloadSave(e, t, !1);
+        }
+        populateSaves() {
+          const e = this.saveManager.querySelector("#local-saves");
+          if (e) {
+            try {
+              localStorage;
+            } catch (e) {
+              return;
+            }
+            (e.textContent = ""),
+              Object.keys(localStorage).forEach((t) => {
+                const n = t.split("/").pop(),
+                  r = localStorage.getItem(t);
+                if (n && r && this.isB64SOL(r)) {
+                  const i = document.createElement("TR"),
+                    a = document.createElement("TD");
+                  (a.textContent = n), (a.title = t);
+                  const o = document.createElement("TD"),
+                    s = document.createElement("SPAN");
+                  (s.textContent = Ce("save-download")),
+                    (s.className = "save-option"),
+                    s.addEventListener("click", () =>
+                      this.saveFile(r, "application/octet-stream", n + ".sol"),
+                    ),
+                    o.appendChild(s);
+                  const l = document.createElement("TD"),
+                    c = document.createElement("INPUT");
+                  (c.type = "file"),
+                    (c.accept = ".sol"),
+                    (c.className = "replace-save"),
+                    (c.id = "replace-save-" + t);
+                  const u = document.createElement("LABEL");
+                  (u.htmlFor = "replace-save-" + t),
+                    (u.textContent = Ce("save-replace")),
+                    (u.className = "save-option"),
+                    c.addEventListener("change", (e) => this.replaceSOL(e, t)),
+                    l.appendChild(c),
+                    l.appendChild(u);
+                  const d = document.createElement("TD"),
+                    f = document.createElement("SPAN");
+                  (f.textContent = Ce("save-delete")),
+                    (f.className = "save-option"),
+                    f.addEventListener("click", () => this.deleteSave(t)),
+                    d.appendChild(f),
+                    i.appendChild(a),
+                    i.appendChild(o),
+                    i.appendChild(l),
+                    i.appendChild(d),
+                    e.appendChild(i);
+                }
+              });
+          }
+        }
+        backupSaves() {
+          Object.keys(localStorage).forEach((e) => {
+            const t = e.split("/").pop(),
+              n = localStorage.getItem(e);
+            n &&
+              this.isB64SOL(n) &&
+              this.saveFile(n, "application/octet-stream", t + ".sol");
+          });
+        }
+        openSaveManager() {
+          this.saveManager.classList.remove("hidden");
+        }
+        async downloadSwf() {
+          try {
+            if (this.swfUrl) {
+              console.log("Downloading SWF: " + this.swfUrl);
+              const e = await fetch(this.swfUrl.href);
+              if (!e.ok) return void console.error("SWF download failed");
+              const t = await e.blob(),
+                n = URL.createObjectURL(t),
+                r = document.createElement("a");
+              (r.style.display = "none"),
+                (r.href = n),
+                (r.download = (function (e) {
+                  const t = e.pathname;
+                  return t.substring(t.lastIndexOf("/") + 1);
+                })(this.swfUrl)),
+                document.body.appendChild(r),
+                r.click(),
+                document.body.removeChild(r),
+                URL.revokeObjectURL(n);
+            } else console.error("SWF download failed");
+          } catch (e) {
+            console.error("SWF download failed");
+          }
+        }
+        virtualKeyboardInput() {
+          const e = this.virtualKeyboard,
+            t = e.value;
+          for (const e of t)
+            for (const t of ["keydown", "keyup"])
+              this.dispatchEvent(new KeyboardEvent(t, { key: e, bubbles: !0 }));
+          e.value = "";
+        }
+        openVirtualKeyboard() {
+          navigator.userAgent.toLowerCase().includes("android")
+            ? setTimeout(() => {
+                this.virtualKeyboard.focus({ preventScroll: !0 });
+              }, 100)
+            : this.virtualKeyboard.focus({ preventScroll: !0 });
+        }
+        contextMenuItems(e) {
+          const t = String.fromCharCode(10003),
+            n = [],
+            r = () => {
+              n.length > 0 && null !== n[n.length - 1] && n.push(null);
+            };
+          this.instance &&
+            (this.instance.prepare_context_menu().forEach((e, i) => {
+              e.separatorBefore && r(),
+                n.push({
+                  text: e.caption + (e.checked ? ` (${t})` : ""),
+                  onClick: () => {
+                    var e;
+                    return null === (e = this.instance) || void 0 === e
+                      ? void 0
+                      : e.run_context_menu_callback(i);
+                  },
+                  enabled: e.enabled,
+                });
+            }),
+            r()),
+            this.fullscreenEnabled &&
+              (this.isFullscreen
+                ? n.push({
+                    text: Ce("context-menu-exit-fullscreen"),
+                    onClick: () => {
+                      var e;
+                      return null === (e = this.instance) || void 0 === e
+                        ? void 0
+                        : e.set_fullscreen(!1);
+                    },
+                  })
+                : n.push({
+                    text: Ce("context-menu-enter-fullscreen"),
+                    onClick: () => {
+                      var e;
+                      return null === (e = this.instance) || void 0 === e
+                        ? void 0
+                        : e.set_fullscreen(!0);
+                    },
+                  })),
+            this.instance &&
+              this.swfUrl &&
+              this.loadedConfig &&
+              !0 === this.loadedConfig.showSwfDownload &&
+              (r(),
+              n.push({
+                text: Ce("context-menu-download-swf"),
+                onClick: this.downloadSwf.bind(this),
+              })),
+            window.isSecureContext &&
+              n.push({
+                text: Ce("context-menu-copy-debug-info"),
+                onClick: () =>
+                  navigator.clipboard.writeText(this.getPanicData()),
+              }),
+            this.populateSaves();
+          const i = this.saveManager.querySelector("#local-saves");
+          i &&
+            "" !== i.textContent &&
+            n.push({
+              text: Ce("context-menu-open-save-manager"),
+              onClick: this.openSaveManager.bind(this),
+            }),
+            r();
+          const a = this.isExtension ? "extension" : "";
+          return (
+            n.push({
+              text: Ce("context-menu-about-ruffle", { flavor: a, version: S }),
+              onClick() {
+                window.open(Ae, "_blank");
+              },
+            }),
+            e &&
+              (r(),
+              n.push({
+                text: Ce("context-menu-hide"),
+                onClick: () => (this.contextMenuForceDisabled = !0),
+              })),
+            n
+          );
+        }
+        pointerDown(e) {
+          (this.pointerDownPosition = new Pe(e.pageX, e.pageY)),
+            (this.pointerMoveMaxDistance = 0),
+            this.startLongPressTimer();
+        }
+        clearLongPressTimer() {
+          this.longPressTimer &&
+            (clearTimeout(this.longPressTimer), (this.longPressTimer = null));
+        }
+        startLongPressTimer() {
+          this.clearLongPressTimer(),
+            (this.longPressTimer = setTimeout(
+              () => this.clearLongPressTimer(),
+              800,
+            ));
+        }
+        checkLongPressMovement(e) {
+          if (null !== this.pointerDownPosition) {
+            const t = new Pe(e.pageX, e.pageY),
+              n = this.pointerDownPosition.distanceTo(t);
+            n > this.pointerMoveMaxDistance &&
+              (this.pointerMoveMaxDistance = n);
+          }
+        }
+        checkLongPress(e) {
+          this.longPressTimer
+            ? this.clearLongPressTimer()
+            : !this.contextMenuSupported &&
+              "mouse" !== e.pointerType &&
+              this.pointerMoveMaxDistance < 15 &&
+              this.showContextMenu(e);
+        }
+        showContextMenu(e) {
+          var t, n, r;
+          e.preventDefault(),
+            "contextmenu" === e.type
+              ? ((this.contextMenuSupported = !0),
+                window.addEventListener(
+                  "click",
+                  this.hideContextMenu.bind(this),
+                  { once: !0 },
+                ))
+              : (window.addEventListener(
+                  "pointerup",
+                  this.hideContextMenu.bind(this),
+                  { once: !0 },
+                ),
+                e.stopPropagation());
+          const i =
+            e instanceof PointerEvent &&
+            ("touch" === e.pointerType || "pen" === e.pointerType);
+          if (
+            [!1, "off"].includes(
+              null !==
+                (n =
+                  null === (t = this.loadedConfig) || void 0 === t
+                    ? void 0
+                    : t.contextMenu) && void 0 !== n
+                ? n
+                : "on",
+            ) ||
+            (i &&
+              "rightClickOnly" ===
+                (null === (r = this.loadedConfig) || void 0 === r
+                  ? void 0
+                  : r.contextMenu)) ||
+            this.contextMenuForceDisabled
+          )
+            return;
+          for (; this.contextMenuElement.firstChild; )
+            this.contextMenuElement.removeChild(
+              this.contextMenuElement.firstChild,
+            );
+          for (const e of this.contextMenuItems(i))
+            if (null === e) {
+              const e = document.createElement("li");
+              e.className = "menu_separator";
+              const t = document.createElement("hr");
+              e.appendChild(t), this.contextMenuElement.appendChild(e);
+            } else {
+              const { text: t, onClick: n, enabled: r } = e,
+                i = document.createElement("li");
+              (i.className = "menu_item"),
+                (i.textContent = t),
+                this.contextMenuElement.appendChild(i),
+                !1 !== r
+                  ? i.addEventListener(
+                      this.contextMenuSupported ? "click" : "pointerup",
+                      n,
+                    )
+                  : i.classList.add("disabled");
+            }
+          (this.contextMenuElement.style.left = "0"),
+            (this.contextMenuElement.style.top = "0"),
+            (this.contextMenuElement.style.display = "block");
+          const a = this.getBoundingClientRect(),
+            o = e.clientX - a.x,
+            s = e.clientY - a.y,
+            l = a.width - this.contextMenuElement.clientWidth - 1,
+            c = a.height - this.contextMenuElement.clientHeight - 1;
+          (this.contextMenuElement.style.left =
+            Math.floor(Math.min(o, l)) + "px"),
+            (this.contextMenuElement.style.top =
+              Math.floor(Math.min(s, c)) + "px");
+        }
+        hideContextMenu() {
+          var e;
+          null === (e = this.instance) ||
+            void 0 === e ||
+            e.clear_custom_menu_items(),
+            (this.contextMenuElement.style.display = "none");
+        }
+        pause() {
+          this.instance &&
+            (this.instance.pause(), (this.playButton.style.display = "block"));
+        }
+        audioState() {
+          if (this.instance) {
+            const e = this.instance.audio_context();
+            return (e && e.state) || "running";
+          }
+          return "suspended";
+        }
+        unmuteOverlayClicked() {
+          if (this.instance) {
+            if ("running" !== this.audioState()) {
+              const e = this.instance.audio_context();
+              e && e.resume();
+            }
+            this.unmuteOverlay.style.display = "none";
+          }
+        }
+        unmuteAudioContext() {
+          $e ||
+            (navigator.maxTouchPoints < 1
+              ? ($e = !0)
+              : this.container.addEventListener(
+                  "click",
+                  () => {
+                    var e;
+                    if ($e) return;
+                    const t =
+                      null === (e = this.instance) || void 0 === e
+                        ? void 0
+                        : e.audio_context();
+                    if (!t) return;
+                    const n = new Audio();
+                    (n.src = (() => {
+                      const e = new ArrayBuffer(10),
+                        n = new DataView(e),
+                        r = t.sampleRate;
+                      return (
+                        n.setUint32(0, r, !0),
+                        n.setUint32(4, r, !0),
+                        n.setUint16(8, 1, !0),
+                        `data:audio/wav;base64,UklGRisAAABXQVZFZm10IBAAAAABAAEA${window
+                          .btoa(String.fromCharCode(...new Uint8Array(e)))
+                          .slice(0, 13)}AgAZGF0YQcAAACAgICAgICAAAA=`
+                      );
+                    })()),
+                      n.load(),
+                      n
+                        .play()
+                        .then(() => {
+                          $e = !0;
+                        })
+                        .catch((e) => {
+                          console.warn(`Failed to play dummy sound: ${e}`);
+                        });
+                  },
+                  { once: !0 },
+                ));
+        }
+        copyElement(e) {
+          if (e) {
+            for (const t of e.attributes)
+              if (t.specified) {
+                if ("title" === t.name && "Adobe Flash Player" === t.value)
+                  continue;
+                try {
+                  this.setAttribute(t.name, t.value);
+                } catch (e) {
+                  console.warn(
+                    `Unable to set attribute ${t.name} on Ruffle instance`,
+                  );
+                }
+              }
+            for (const t of Array.from(e.children)) this.appendChild(t);
+          }
+        }
+        static htmlDimensionToCssDimension(e) {
+          if (e) {
+            const t = e.match(_e);
+            if (t) {
+              let e = t[1];
+              return t[3] || (e += "px"), e;
+            }
+          }
+          return null;
+        }
+        onCallbackAvailable(e) {
+          const t = this.instance;
+          this[e] = (...n) =>
+            null == t ? void 0 : t.call_exposed_callback(e, n);
+        }
+        set traceObserver(e) {
+          var t;
+          null === (t = this.instance) ||
+            void 0 === t ||
+            t.set_trace_observer(e);
+        }
+        getPanicData() {
+          let e = "\n# Player Info\n";
+          if (
+            ((e += `Allows script access: ${
+              !!this.loadedConfig && this.loadedConfig.allowScriptAccess
+            }\n`),
+            (e += `${this.rendererDebugInfo}\n`),
+            (e += this.debugPlayerInfo()),
+            (e += "\n# Page Info\n"),
+            (e += `Page URL: ${document.location.href}\n`),
+            this.swfUrl && (e += `SWF URL: ${this.swfUrl}\n`),
+            (e += "\n# Browser Info\n"),
+            (e += `User Agent: ${window.navigator.userAgent}\n`),
+            (e += `Platform: ${window.navigator.platform}\n`),
+            (e += `Has touch support: ${
+              window.navigator.maxTouchPoints > 0
+            }\n`),
+            (e += "\n# Ruffle Info\n"),
+            (e += `Version: ${R}\n`),
+            (e += `Name: ${S}\n`),
+            (e += "Channel: nightly\n"),
+            (e += `Built: ${E}\n`),
+            (e += "Commit: a023e11098d9f4dc1fe4a8c6768d7e3c47140dc8\n"),
+            (e += `Is extension: ${this.isExtension}\n`),
+            (e += "\n# Metadata\n"),
+            this.metadata)
+          )
+            for (const [t, n] of Object.entries(this.metadata))
+              e += `${t}: ${n}\n`;
+          return e;
+        }
+        panic(e) {
+          var t;
+          if (this.panicked) return;
+          if (
+            ((this.panicked = !0),
+            this.hideSplashScreen(),
+            e instanceof Error &&
+              ("AbortError" === e.name || e.message.includes("AbortError")))
+          )
+            return;
+          const n =
+              null !== (t = null == e ? void 0 : e.ruffleIndexError) &&
+              void 0 !== t
+                ? t
+                : 0,
+            r = Object.assign([], { stackIndex: -1, avmStackIndex: -1 });
+          if ((r.push("# Error Info\n"), e instanceof Error)) {
+            if (
+              (r.push(`Error name: ${e.name}\n`),
+              r.push(`Error message: ${e.message}\n`),
+              e.stack)
+            ) {
+              const t =
+                r.push(`Error stack:\n\`\`\`\n${e.stack}\n\`\`\`\n`) - 1;
+              if (e.avmStack) {
+                const t =
+                  r.push(
+                    `AVM2 stack:\n\`\`\`\n    ${e.avmStack
+                      .trim()
+                      .replace(/\t/g, "    ")}\n\`\`\`\n`,
+                  ) - 1;
+                r.avmStackIndex = t;
+              }
+              r.stackIndex = t;
+            }
+          } else r.push(`Error: ${e}\n`);
+          r.push(this.getPanicData());
+          const i = r.join(""),
+            a = new Date(E),
+            o = new Date();
+          o.setMonth(o.getMonth() - 6);
+          const s = o > a;
+          let l, c, u;
+          if (s)
+            l = `<a target="_top" href="${Ae}#downloads">${Ce(
+              "update-ruffle",
+            )}</a>`;
+          else {
+            const e = document.location.href.split(/[?#]/)[0];
+            let t = `https://github.com/ruffle-rs/ruffle/issues/new?title=${encodeURIComponent(
+                `Error on ${e}`,
+              )}&template=error_report.md&labels=error-report&body=`,
+              n = encodeURIComponent(i);
+            r.stackIndex > -1 &&
+              String(t + n).length > 8195 &&
+              ((r[r.stackIndex] = null),
+              r.avmStackIndex > -1 && (r[r.avmStackIndex] = null),
+              (n = encodeURIComponent(r.join("")))),
+              (t += n),
+              (l = `<a target="_top" href="${t}">${Ce("report-bug")}</a>`);
+          }
+          switch (n) {
+            case 2:
+              (c = Ie("error-file-protocol")),
+                (u = `\n                    <li><a target="_top" href="${Ae}/demo">${Ce(
+                  "ruffle-demo",
+                )}</a></li>\n                    <li><a target="_top" href="${Ae}#downloads">${Ce(
+                  "ruffle-desktop",
+                )}</a></li>\n                `);
+              break;
+            case 4:
+              (c = Ie("error-javascript-config")),
+                (u = `\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#javascript-api">${Ce(
+                  "ruffle-wiki",
+                )}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 9:
+              (c = Ie("error-wasm-not-found")),
+                (u = `\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configuration-options">${Ce(
+                  "ruffle-wiki",
+                )}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 8:
+              (c = Ie("error-wasm-mime-type")),
+                (u = `\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configure-webassembly-mime-type">${Ce(
+                  "ruffle-wiki",
+                )}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 11:
+              (c = Ie("error-swf-fetch")),
+                (u = `\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 12:
+              (c = Ie("error-swf-cors")),
+                (u = `\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configure-cors-header">${Ce(
+                  "ruffle-wiki",
+                )}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 6:
+              (c = Ie("error-wasm-cors")),
+                (u = `\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configure-cors-header">${Ce(
+                  "ruffle-wiki",
+                )}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 3:
+              (c = Ie("error-wasm-invalid")),
+                (u = `\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#addressing-a-compileerror">${Ce(
+                  "ruffle-wiki",
+                )}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 7:
+              (c = Ie("error-wasm-download")),
+                (u = `\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 10:
+              (c = Ie("error-wasm-disabled-on-edge")),
+                (u = `\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Frequently-Asked-Questions-For-Users#edge-webassembly-error">${Ce(
+                  "more-info",
+                )}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 5:
+              (c = Ie("error-javascript-conflict")),
+                s &&
+                  (c += Ie("error-javascript-conflict-outdated", {
+                    buildDate: E,
+                  })),
+                (u = `\n                    <li>${l}</li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            case 1:
+              (c = Ie("error-csp-conflict")),
+                (u = `\n                    <li><a target="_top" href="https://github.com/ruffle-rs/ruffle/wiki/Using-Ruffle#configure-wasm-csp">${Ce(
+                  "ruffle-wiki",
+                )}</a></li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+              break;
+            default:
+              (c = Ie("error-unknown", { buildDate: E, outdated: String(s) })),
+                (u = `\n                    <li>${l}</li>\n                    <li><a href="#" id="panic-view-details">${Ce(
+                  "view-error-details",
+                )}</a></li>\n                `);
+          }
+          this.container.innerHTML = `\n            <div id="panic">\n                <div id="panic-title">${Ce(
+            "panic-title",
+          )}</div>\n                <div id="panic-body">${c}</div>\n                <div id="panic-footer">\n                    <ul>${u}</ul>\n                </div>\n            </div>\n        `;
+          const d = this.container.querySelector("#panic-view-details");
+          d &&
+            (d.onclick = () => {
+              const e = this.container.querySelector("#panic-body");
+              e.classList.add("details");
+              const t = document.createElement("textarea");
+              return (t.readOnly = !0), (t.value = i), e.replaceChildren(t), !1;
+            }),
+            this.destroy();
+        }
+        displayRootMovieDownloadFailedMessage() {
+          if (
+            this.isExtension &&
+            window.location.origin !== this.swfUrl.origin
+          ) {
+            this.hideSplashScreen();
+            const e = document.createElement("div");
+            (e.id = "message_overlay"),
+              (e.innerHTML = `<div class="message">\n                ${Ie(
+                "message-cant-embed",
+              )}\n                <div>\n                    <a target="_blank" href="${
+                this.swfUrl
+              }">${Ce(
+                "open-in-new-tab",
+              )}</a>\n                </div>\n            </div>`),
+              this.container.prepend(e);
+          } else {
+            const e = new Error("Failed to fetch: " + this.swfUrl);
+            this.swfUrl.protocol.includes("http")
+              ? window.location.origin === this.swfUrl.origin
+                ? (e.ruffleIndexError = 11)
+                : (e.ruffleIndexError = 12)
+              : (e.ruffleIndexError = 2),
+              this.panic(e);
+          }
+        }
+        displayUnsupportedMessage() {
+          const e = document.createElement("div");
+          (e.id = "message_overlay"),
+            (e.innerHTML = `<div class="message">\n            ${Ie(
+              "message-unsupported-avm2",
+            )}\n            <div>\n                <a target="_blank" class="more-info-link" href="https://github.com/ruffle-rs/ruffle/wiki/Frequently-Asked-Questions-For-Users">${Ce(
+              "more-info",
+            )}</a>\n                <button id="run-anyway-btn">${Ce(
+              "run-anyway",
+            )}</button>\n            </div>\n        </div>`),
+            this.container.prepend(e),
+            (e.querySelector("#run-anyway-btn").onclick = () => {
+              e.parentNode.removeChild(e);
+            });
+        }
+        displayMessage(e) {
+          const t = document.createElement("div");
+          (t.id = "message_overlay"),
+            (t.innerHTML = `<div class="message">\n            <p>${e}</p>\n            <div>\n                <button id="continue-btn">${Ce(
+              "continue",
+            )}</button>\n            </div>\n        </div>`),
+            this.container.prepend(t),
+            (this.container.querySelector("#continue-btn").onclick = () => {
+              t.parentNode.removeChild(t);
+            });
+        }
+        debugPlayerInfo() {
+          return "";
+        }
+        hideSplashScreen() {
+          this.splashScreen.classList.add("hidden"),
+            this.container.classList.remove("hidden");
+        }
+        showSplashScreen() {
+          this.splashScreen.classList.remove("hidden"),
+            this.container.classList.add("hidden");
+        }
+        setMetadata(e) {
+          (this._metadata = e),
+            (this._readyState = 2),
+            this.hideSplashScreen(),
+            this.dispatchEvent(new Event(Oe.LOADED_METADATA)),
+            this.dispatchEvent(new Event(Oe.LOADED_DATA));
+        }
+        setIsExtension(e) {
+          this.isExtension = e;
+        }
+      }
+      function Fe(e, t) {
+        switch ((e || (e = "sameDomain"), e.toLowerCase())) {
+          case "always":
+            return !0;
+          case "never":
+            return !1;
+          default:
+            try {
+              return (
+                new URL(window.location.href).origin ===
+                new URL(t, window.location.href).origin
+              );
+            } catch (e) {
+              return !1;
+            }
+        }
+      }
+      function Me(e) {
+        return null === e || "true" === e.toLowerCase();
+      }
+      function Le(e) {
+        if (e) {
+          let t = "",
+            n = "";
+          try {
+            const r = new URL(e, Ae);
+            (t = r.pathname), (n = r.hostname.replace("www.", ""));
+          } catch (e) {}
+          if (
+            t.startsWith("/v/") &&
+            ("youtube.com" === n || "youtube-nocookie.com" === n)
+          )
+            return !0;
+        }
+        return !1;
+      }
+      function Te(e, t) {
+        var n, r;
+        const i = e.getAttribute(t),
+          a =
+            null !==
+              (r =
+                null === (n = window.RufflePlayer) || void 0 === n
+                  ? void 0
+                  : n.config) && void 0 !== r
+              ? r
+              : {};
+        if (i)
+          try {
+            const n = new URL(i);
+            "http:" !== n.protocol ||
+              "https:" !== window.location.protocol ||
+              ("upgradeToHttps" in a && !1 === a.upgradeToHttps) ||
+              ((n.protocol = "https:"), e.setAttribute(t, n.toString()));
+          } catch (e) {}
+      }
+      function De(e) {
+        let t = e.parentElement;
+        for (; null !== t; ) {
+          switch (t.tagName) {
+            case "AUDIO":
+            case "VIDEO":
+              return !0;
+          }
+          t = t.parentElement;
+        }
+        return !1;
+      }
+      (Oe.LOADED_METADATA = "loadedmetadata"), (Oe.LOADED_DATA = "loadeddata");
+      class Ue extends Oe {
+        constructor() {
+          super();
+        }
+        connectedCallback() {
+          var e, t, n, r, i, a, o, s, l, c, u, d, f, h, p, m, g, v, w, b;
+          super.connectedCallback();
+          const y = this.attributes.getNamedItem("src");
+          if (y) {
+            const x =
+                null !==
+                  (t =
+                    null ===
+                      (e = this.attributes.getNamedItem("allowScriptAccess")) ||
+                    void 0 === e
+                      ? void 0
+                      : e.value) && void 0 !== t
+                  ? t
+                  : null,
+              k =
+                null !==
+                  (r =
+                    null === (n = this.attributes.getNamedItem("menu")) ||
+                    void 0 === n
+                      ? void 0
+                      : n.value) && void 0 !== r
+                  ? r
+                  : null;
+            this.load({
+              url: y.value,
+              allowScriptAccess: Fe(x, y.value),
+              parameters:
+                null !==
+                  (a =
+                    null === (i = this.attributes.getNamedItem("flashvars")) ||
+                    void 0 === i
+                      ? void 0
+                      : i.value) && void 0 !== a
+                  ? a
+                  : null,
+              backgroundColor:
+                null !==
+                  (s =
+                    null === (o = this.attributes.getNamedItem("bgcolor")) ||
+                    void 0 === o
+                      ? void 0
+                      : o.value) && void 0 !== s
+                  ? s
+                  : null,
+              base:
+                null !==
+                  (c =
+                    null === (l = this.attributes.getNamedItem("base")) ||
+                    void 0 === l
+                      ? void 0
+                      : l.value) && void 0 !== c
+                  ? c
+                  : null,
+              menu: Me(k),
+              salign:
+                null !==
+                  (d =
+                    null === (u = this.attributes.getNamedItem("salign")) ||
+                    void 0 === u
+                      ? void 0
+                      : u.value) && void 0 !== d
+                  ? d
+                  : "",
+              quality:
+                null !==
+                  (h =
+                    null === (f = this.attributes.getNamedItem("quality")) ||
+                    void 0 === f
+                      ? void 0
+                      : f.value) && void 0 !== h
+                  ? h
+                  : "high",
+              scale:
+                null !==
+                  (m =
+                    null === (p = this.attributes.getNamedItem("scale")) ||
+                    void 0 === p
+                      ? void 0
+                      : p.value) && void 0 !== m
+                  ? m
+                  : "showAll",
+              wmode:
+                null !==
+                  (v =
+                    null === (g = this.attributes.getNamedItem("wmode")) ||
+                    void 0 === g
+                      ? void 0
+                      : g.value) && void 0 !== v
+                  ? v
+                  : "window",
+              allowNetworking:
+                null !==
+                  (b =
+                    null ===
+                      (w = this.attributes.getNamedItem("allowNetworking")) ||
+                    void 0 === w
+                      ? void 0
+                      : w.value) && void 0 !== b
+                  ? b
+                  : "all",
+            });
+          }
+        }
+        get src() {
+          var e;
+          return null === (e = this.attributes.getNamedItem("src")) ||
+            void 0 === e
+            ? void 0
+            : e.value;
+        }
+        set src(e) {
+          if (e) {
+            const t = document.createAttribute("src");
+            (t.value = e), this.attributes.setNamedItem(t);
+          } else this.attributes.removeNamedItem("src");
+        }
+        static get observedAttributes() {
+          return ["src", "width", "height"];
+        }
+        attributeChangedCallback(e, t, n) {
+          var r, i, a, o;
+          if (
+            (super.attributeChangedCallback(e, t, n),
+            this.isConnected && "src" === e)
+          ) {
+            const e = this.attributes.getNamedItem("src");
+            e &&
+              this.load({
+                url: e.value,
+                parameters:
+                  null !==
+                    (i =
+                      null ===
+                        (r = this.attributes.getNamedItem("flashvars")) ||
+                      void 0 === r
+                        ? void 0
+                        : r.value) && void 0 !== i
+                    ? i
+                    : null,
+                base:
+                  null !==
+                    (o =
+                      null === (a = this.attributes.getNamedItem("base")) ||
+                      void 0 === a
+                        ? void 0
+                        : a.value) && void 0 !== o
+                    ? o
+                    : null,
+              });
+          }
+        }
+        static isInterdictable(e) {
+          if (De(e)) return !1;
+          if (!e.getAttribute("src")) return !1;
+          if (Le(e.getAttribute("src"))) return Te(e, "src"), !1;
+          const t = e.getAttribute("type");
+          return t ? k(t) : x(e.getAttribute("src"));
+        }
+        static fromNativeEmbedElement(e) {
+          const t = m("ruffle-embed", Ue),
+            n = document.createElement(t);
+          return n.copyElement(e), n;
+        }
+      }
+      function qe(e, t, n) {
+        t = t.toLowerCase();
+        for (const [n, r] of Object.entries(e))
+          if (n.toLowerCase() === t) return r;
+        return n;
+      }
+      function Ne(e) {
+        var t, n;
+        const r = {};
+        for (const i of e.children)
+          if (i instanceof HTMLParamElement) {
+            const e =
+                null === (t = i.attributes.getNamedItem("name")) || void 0 === t
+                  ? void 0
+                  : t.value,
+              a =
+                null === (n = i.attributes.getNamedItem("value")) ||
+                void 0 === n
+                  ? void 0
+                  : n.value;
+            e && a && (r[e] = a);
+          }
+        return r;
+      }
+      class ze extends Oe {
+        constructor() {
+          super(), (this.params = {});
+        }
+        connectedCallback() {
+          var e;
+          super.connectedCallback(), (this.params = Ne(this));
+          let t = null;
+          this.attributes.getNamedItem("data")
+            ? (t =
+                null === (e = this.attributes.getNamedItem("data")) ||
+                void 0 === e
+                  ? void 0
+                  : e.value)
+            : this.params.movie && (t = this.params.movie);
+          const n = qe(this.params, "allowScriptAccess", null),
+            r = qe(this.params, "flashvars", this.getAttribute("flashvars")),
+            i = qe(this.params, "bgcolor", this.getAttribute("bgcolor")),
+            a = qe(
+              this.params,
+              "allowNetworking",
+              this.getAttribute("allowNetworking"),
+            ),
+            o = qe(this.params, "base", this.getAttribute("base")),
+            s = qe(this.params, "menu", null),
+            l = qe(this.params, "salign", ""),
+            c = qe(this.params, "quality", "high"),
+            u = qe(this.params, "scale", "showAll"),
+            d = qe(this.params, "wmode", "window");
+          if (t) {
+            const e = { url: t };
+            (e.allowScriptAccess = Fe(n, t)),
+              r && (e.parameters = r),
+              i && (e.backgroundColor = i),
+              o && (e.base = o),
+              (e.menu = Me(s)),
+              l && (e.salign = l),
+              c && (e.quality = c),
+              u && (e.scale = u),
+              d && (e.wmode = d),
+              a && (e.allowNetworking = a),
+              this.load(e);
+          }
+        }
+        debugPlayerInfo() {
+          var e;
+          let t = "Player type: Object\n",
+            n = null;
+          return (
+            this.attributes.getNamedItem("data")
+              ? (n =
+                  null === (e = this.attributes.getNamedItem("data")) ||
+                  void 0 === e
+                    ? void 0
+                    : e.value)
+              : this.params.movie && (n = this.params.movie),
+            (t += `SWF URL: ${n}\n`),
+            Object.keys(this.params).forEach((e) => {
+              t += `Param ${e}: ${this.params[e]}\n`;
+            }),
+            Object.keys(this.attributes).forEach((e) => {
+              var n;
+              t += `Attribute ${e}: ${
+                null === (n = this.attributes.getNamedItem(e)) || void 0 === n
+                  ? void 0
+                  : n.value
+              }\n`;
+            }),
+            t
+          );
+        }
+        get data() {
+          return this.getAttribute("data");
+        }
+        set data(e) {
+          if (e) {
+            const t = document.createAttribute("data");
+            (t.value = e), this.attributes.setNamedItem(t);
+          } else this.attributes.removeNamedItem("data");
+        }
+        static isInterdictable(e) {
+          var t, n;
+          if (De(e)) return !1;
+          if (
+            e.getElementsByTagName("ruffle-object").length > 0 ||
+            e.getElementsByTagName("ruffle-embed").length > 0
+          )
+            return !1;
+          const r =
+              null === (t = e.attributes.getNamedItem("data")) || void 0 === t
+                ? void 0
+                : t.value.toLowerCase(),
+            i = Ne(e);
+          let a;
+          if (r) {
+            if (Le(r)) return Te(e, "data"), !1;
+            a = x(r);
+          } else {
+            if (!i || !i.movie) return !1;
+            if (Le(i.movie)) {
+              const t = e.querySelector("param[name='movie']");
+              if (t) {
+                Te(t, "value");
+                const n = t.getAttribute("value");
+                n && e.setAttribute("data", n);
+              }
+              return !1;
+            }
+            a = x(i.movie);
+          }
+          const o =
+            null === (n = e.attributes.getNamedItem("classid")) || void 0 === n
+              ? void 0
+              : n.value.toLowerCase();
+          if (o === "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000".toLowerCase())
+            return (
+              !Array.from(e.getElementsByTagName("object")).some(
+                ze.isInterdictable,
+              ) &&
+              !Array.from(e.getElementsByTagName("embed")).some(
+                Ue.isInterdictable,
+              )
+            );
+          if (o) return !1;
+          const s = e.attributes.getNamedItem("type");
+          return s ? k(s.value) : a;
+        }
+        static fromNativeObjectElement(e) {
+          const t = m("ruffle-object", ze),
+            n = document.createElement(t);
+          for (const t of Array.from(e.getElementsByTagName("embed")))
+            Ue.isInterdictable(t) && t.remove();
+          for (const t of Array.from(e.getElementsByTagName("object")))
+            ze.isInterdictable(t) && t.remove();
+          return n.copyElement(e), n;
+        }
+      }
+      class Be {
+        constructor(e) {
+          if (((this.__mimeTypes = []), (this.__namedMimeTypes = {}), e))
+            for (let t = 0; t < e.length; t++) this.install(e[t]);
+        }
+        install(e) {
+          const t = this.__mimeTypes.length;
+          this.__mimeTypes.push(e),
+            (this.__namedMimeTypes[e.type] = e),
+            (this[e.type] = e),
+            (this[t] = e);
+        }
+        item(e) {
+          return this.__mimeTypes[e >>> 0];
+        }
+        namedItem(e) {
+          return this.__namedMimeTypes[e];
+        }
+        get length() {
+          return this.__mimeTypes.length;
+        }
+        [Symbol.iterator]() {
+          return this.__mimeTypes[Symbol.iterator]();
+        }
+      }
+      class We extends Be {
+        constructor(e, t, n) {
+          super(), (this.name = e), (this.description = t), (this.filename = n);
+        }
+      }
+      class He {
+        constructor(e) {
+          (this.__plugins = []), (this.__namedPlugins = {});
+          for (let t = 0; t < e.length; t++) this.install(e[t]);
+        }
+        install(e) {
+          const t = this.__plugins.length;
+          this.__plugins.push(e),
+            (this.__namedPlugins[e.name] = e),
+            (this[e.name] = e),
+            (this[t] = e);
+        }
+        item(e) {
+          return this.__plugins[e >>> 0];
+        }
+        namedItem(e) {
+          return this.__namedPlugins[e];
+        }
+        refresh() {}
+        [Symbol.iterator]() {
+          return this.__plugins[Symbol.iterator]();
+        }
+        get length() {
+          return this.__plugins.length;
+        }
+      }
+      const Ve = new We(
+          "Shockwave Flash",
+          "Shockwave Flash 32.0 r0",
+          "ruffle.js",
+        ),
+        Ze = new We("Ruffle Extension", "Ruffle Extension", "ruffle.js");
+      var Ke, Je;
+      let Ye;
+      Ve.install({
+        type: w,
+        description: "Shockwave Flash",
+        suffixes: "spl",
+        enabledPlugin: Ve,
+      }),
+        Ve.install({
+          type: v,
+          description: "Shockwave Flash",
+          suffixes: "swf",
+          enabledPlugin: Ve,
+        }),
+        Ve.install({
+          type: b,
+          description: "Shockwave Flash",
+          suffixes: "swf",
+          enabledPlugin: Ve,
+        }),
+        Ve.install({
+          type: y,
+          description: "Shockwave Flash",
+          suffixes: "swf",
+          enabledPlugin: Ve,
+        }),
+        Ze.install({
+          type: "",
+          description: "Ruffle Detection",
+          suffixes: "",
+          enabledPlugin: Ze,
+        });
+      const Ge =
+          null !==
+            (Je =
+              null === (Ke = window.RufflePlayer) || void 0 === Ke
+                ? void 0
+                : Ke.config) && void 0 !== Je
+            ? Je
+            : {},
+        Qe = u(Ge) + "ruffle.js";
+      let Xe, et, tt, nt;
+      function rt() {
+        try {
+          (Xe = null != Xe ? Xe : document.getElementsByTagName("object")),
+            (et = null != et ? et : document.getElementsByTagName("embed"));
+          for (const e of Array.from(Xe))
+            if (ze.isInterdictable(e)) {
+              const t = ze.fromNativeObjectElement(e);
+              t.setIsExtension(Ye), e.replaceWith(t);
+            }
+          for (const e of Array.from(et))
+            if (Ue.isInterdictable(e)) {
+              const t = Ue.fromNativeEmbedElement(e);
+              t.setIsExtension(Ye), e.replaceWith(t);
+            }
+        } catch (e) {
+          console.error(
+            `Serious error encountered when polyfilling native Flash elements: ${e}`,
+          );
+        }
+      }
+      function it() {
+        (tt = null != tt ? tt : document.getElementsByTagName("iframe")),
+          (nt = null != nt ? nt : document.getElementsByTagName("frame")),
+          [tt, nt].forEach((e) => {
+            for (const t of e) {
+              if (void 0 !== t.dataset.rufflePolyfilled) continue;
+              t.dataset.rufflePolyfilled = "";
+              const e = t.contentWindow,
+                n = `Couldn't load Ruffle into ${t.tagName}[${t.src}]: `;
+              try {
+                "complete" === e.document.readyState && at(e, n);
+              } catch (e) {
+                Ye || console.warn(n + e);
+              }
+              t.addEventListener(
+                "load",
+                () => {
+                  at(e, n);
+                },
+                !1,
+              );
+            }
+          });
+      }
+      async function at(e, t) {
+        var n;
+        let r;
+        await new Promise((e) => {
+          window.setTimeout(() => {
+            e();
+          }, 100);
+        });
+        try {
+          if (((r = e.document), !r)) return;
+        } catch (e) {
+          return void (Ye || console.warn(t + e));
+        }
+        if (Ye || void 0 === r.documentElement.dataset.ruffleOptout)
+          if (Ye)
+            e.RufflePlayer || (e.RufflePlayer = {}),
+              (e.RufflePlayer.config = Object.assign(
+                Object.assign({}, Ge),
+                null !== (n = e.RufflePlayer.config) && void 0 !== n ? n : {},
+              ));
+          else if (!e.RufflePlayer) {
+            const t = r.createElement("script");
+            t.setAttribute("src", Qe),
+              (t.onload = () => {
+                (e.RufflePlayer = {}), (e.RufflePlayer.config = Ge);
+              }),
+              r.head.appendChild(t);
+          }
+      }
+      const ot = {
+        version: R,
+        polyfill(e) {
+          !(function (e) {
+            var t;
+            Ye = e;
+            const n =
+              "ruffle.js" ===
+              (null === (t = navigator.plugins.namedItem("Ruffle Extension")) ||
+              void 0 === t
+                ? void 0
+                : t.filename);
+            (!Ye && n) ||
+              (rt(),
+              it(),
+              new MutationObserver(function (e) {
+                e.some((e) => e.addedNodes.length > 0) && (rt(), it());
+              }).observe(document, { childList: !0, subtree: !0 }));
+          })(e);
+        },
+        pluginPolyfill() {
+          !(function (e) {
+            ("install" in navigator.plugins && navigator.plugins.install) ||
+              Object.defineProperty(navigator, "plugins", {
+                value: new He(navigator.plugins),
+                writable: !1,
+              }),
+              navigator.plugins.install(e),
+              !(e.length > 0) ||
+                ("install" in navigator.mimeTypes &&
+                  navigator.mimeTypes.install) ||
+                Object.defineProperty(navigator, "mimeTypes", {
+                  value: new Be(navigator.mimeTypes),
+                  writable: !1,
+                });
+            const t = navigator.mimeTypes;
+            for (let n = 0; n < e.length; n += 1) t.install(e[n]);
+          })(Ve);
+        },
+        createPlayer() {
+          const e = m("ruffle-player", Oe);
+          return document.createElement(e);
+        },
+      };
+      class st {
+        constructor(e) {
+          (this.sources = {}),
+            (this.config = {}),
+            (this.invoked = !1),
+            (this.newestName = null),
+            (this.conflict = null),
+            null != e &&
+              (e instanceof st
+                ? ((this.sources = e.sources),
+                  (this.config = e.config),
+                  (this.invoked = e.invoked),
+                  (this.conflict = e.conflict),
+                  (this.newestName = e.newestName),
+                  e.superseded())
+                : e.constructor === Object && e.config instanceof Object
+                ? (this.config = e.config)
+                : (this.conflict = e)),
+            "loading" === document.readyState
+              ? document.addEventListener(
+                  "readystatechange",
+                  this.init.bind(this),
+                )
+              : window.setTimeout(this.init.bind(this), 0);
+        }
+        get version() {
+          return "0.1.0";
+        }
+        registerSource(e) {
+          this.sources[e] = ot;
+        }
+        newestSourceName() {
+          let t = null,
+            n = e.fromSemver("0.0.0");
+          for (const r in this.sources)
+            if (Object.prototype.hasOwnProperty.call(this.sources, r)) {
+              const i = e.fromSemver(this.sources[r].version);
+              i.hasPrecedenceOver(n) && ((t = r), (n = i));
+            }
+          return t;
+        }
+        init() {
+          if (!this.invoked) {
+            if (
+              ((this.invoked = !0),
+              (this.newestName = this.newestSourceName()),
+              null === this.newestName)
+            )
+              throw new Error("No registered Ruffle source!");
+            !1 !== (!("polyfills" in this.config) || this.config.polyfills) &&
+              this.sources[this.newestName].polyfill(
+                "extension" === this.newestName,
+              );
+          }
+        }
+        newest() {
+          const e = this.newestSourceName();
+          return null !== e ? this.sources[e] : null;
+        }
+        satisfying(n) {
+          const r = t.fromRequirementString(n);
+          let i = null;
+          for (const t in this.sources)
+            if (Object.prototype.hasOwnProperty.call(this.sources, t)) {
+              const n = e.fromSemver(this.sources[t].version);
+              r.satisfiedBy(n) && (i = this.sources[t]);
+            }
+          return i;
+        }
+        localCompatible() {
+          return void 0 !== this.sources.local
+            ? this.satisfying("^" + this.sources.local.version)
+            : this.newest();
+        }
+        local() {
+          return void 0 !== this.sources.local
+            ? this.satisfying("=" + this.sources.local.version)
+            : this.newest();
+        }
+        superseded() {
+          this.invoked = !0;
+        }
+        static negotiate(e, t) {
+          let n;
+          return (
+            (n = e instanceof st ? e : new st(e)),
+            void 0 !== t &&
+              (n.registerSource(t),
+              !1 !== (!("polyfills" in n.config) || n.config.polyfills) &&
+                ot.pluginPolyfill()),
+            n
+          );
+        }
+      }
+      window.RufflePlayer = st.negotiate(window.RufflePlayer, "local");
+    })();
+})();
 //# sourceMappingURL=ruffle.js.map

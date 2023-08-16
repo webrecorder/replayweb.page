@@ -4,12 +4,12 @@ title: Troubleshooting
 nav_order: 4
 description: Troubleshooting ReplayWeb.page
 permalink: /docs/troubleshooting
-
 ---
 
 This section will be dedicated to common errors and issues that we’ve encountered during web archiving.
 
 ### WARC file is too big / too slow / fails to load.
+
 #### Loading Large Files: Full vs On-Demand Loading
 
 Due to the nature of the WARC format, the entire file must be read on first use to generate an index.
@@ -32,4 +32,5 @@ If an archive could not be loaded, an error will be displayed instead of the pro
 Please report any issues encountered via [GitHub Issues](https://github.com/webrecorder/replayweb.page/issues)
 
 ## Have another error or issue?
+
 Since we just launched, we’ll need your help with what we should troubleshoot! Please contact us and ask us questions and show us examples.

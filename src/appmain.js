@@ -1,15 +1,19 @@
 import { LitElement, html, css } from "lit";
-import { wrapCss, rwpLogo, IS_APP, VERSION, clickOnSpacebarPress } from "./misc";
+import {
+  wrapCss,
+  rwpLogo,
+  IS_APP,
+  VERSION,
+  clickOnSpacebarPress,
+} from "./misc";
 
 import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.svg";
 import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
 import fasArrowRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
 import { SWManager } from "./swmanager";
 
-
 // ===========================================================================
-class ReplayWebApp extends LitElement
-{
+class ReplayWebApp extends LitElement {
   // eslint-disable-next-line no-undef
   constructor(swName = __SW_NAME__) {
     super();
@@ -104,105 +108,104 @@ class ReplayWebApp extends LitElement
 
   static get appStyles() {
     return css`
-    #wrlogo {
-      max-height: 1.0rem;
-    }
-    .navbar {
-      height: 1.5rem;
-    }
-    .navbar-brand {
-      height: 1.5rem;
-      display: flex;
-      align-items: center;
-    }
-    .wr-logo-item {
-      padding: 0 8px 0 0;
-    }
-    .no-wrap {
-      white-space: nowrap;
-      overflow-x: hidden;
-      text-overflow: ellipsis;
-    }
-    .has-allcaps {
-      font-variant-caps: small-caps;
-    }
-    :host {
-      position: fixed;
-      left: 0px;
-      top: 0px;
-      bottom: 0px;
-      right: 0px;
-      display: flex;
-      min-width: 0px;
-      flex-direction: column;
-    }
-    wr-coll {
-      height: 100%;
-    }
-    .navbar {
-      padding: 0 0.5em;
-    }
-
-    div.navbar-menu fa-icon {
-      vertical-align: sub;
-    }
-    .tagline {
-      margin-top: 1.0rem;
-    }
-
-    .drop-file-overlay {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      font-weight: bold;
-      font-size: 1.5rem;
-      background: rgba(255,255,255,.5);
-      backdrop-filter: blur(2px);
-    }
-
-    .drop-file-overlay:after {
-      pointer-events: none;
-      content: " ";
-      position: absolute;
-      inset: 0;
-      border: 5px dashed #aaa;
-      margin: 15px;
-    }
-
-    @media screen and (min-width: 840px) {
-      .menu-only {
-        display: none;
+      #wrlogo {
+        max-height: 1rem;
+      }
+      .navbar {
+        height: 1.5rem;
+      }
+      .navbar-brand {
+        height: 1.5rem;
+        display: flex;
+        align-items: center;
+      }
+      .wr-logo-item {
+        padding: 0 8px 0 0;
+      }
+      .no-wrap {
+        white-space: nowrap;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+      }
+      .has-allcaps {
+        font-variant-caps: small-caps;
+      }
+      :host {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        bottom: 0px;
+        right: 0px;
+        display: flex;
+        min-width: 0px;
+        flex-direction: column;
+      }
+      wr-coll {
+        height: 100%;
+      }
+      .navbar {
+        padding: 0 0.5em;
       }
 
-      a.arrow-button {
-        padding-left: 4px;
-        padding-right: 4px;
+      div.navbar-menu fa-icon {
+        vertical-align: sub;
+      }
+      .tagline {
+        margin-top: 1rem;
       }
 
-      .info-menu {
-        padding: 0 1.0em;
+      .drop-file-overlay {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        font-weight: bold;
+        font-size: 1.5rem;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(2px);
       }
 
-      .logo-text {
-        padding-left: 0px;
-        margin-left: 6px;
+      .drop-file-overlay:after {
+        pointer-events: none;
+        content: " ";
+        position: absolute;
+        inset: 0;
+        border: 5px dashed #aaa;
+        margin: 15px;
       }
 
-      a.navbar-item.logo-text:hover {
-        background-color: initial;
-      }
-    }
+      @media screen and (min-width: 840px) {
+        .menu-only {
+          display: none;
+        }
 
-    @media screen and (max-width: 840px) {
-      .wide-only {
-        display: none !important;
-      }
-    }
+        a.arrow-button {
+          padding-left: 4px;
+          padding-right: 4px;
+        }
 
+        .info-menu {
+          padding: 0 1em;
+        }
+
+        .logo-text {
+          padding-left: 0px;
+          margin-left: 6px;
+        }
+
+        a.navbar-item.logo-text:hover {
+          background-color: initial;
+        }
+      }
+
+      @media screen and (max-width: 840px) {
+        .wide-only {
+          display: none !important;
+        }
+      }
     `;
   }
 
@@ -211,8 +214,10 @@ class ReplayWebApp extends LitElement
   }
 
   renderNavBrand() {
-    return html`
-      <span id="home" class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only">
+    return html` <span
+      id="home"
+      class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
+    >
       <span class="has-text-primary">replay</span>
       <span class="has-text-link">web.page</span>
       <span class="is-sr-only">Home</span>
@@ -220,88 +225,176 @@ class ReplayWebApp extends LitElement
   }
 
   renderNavBar() {
-    return html`
-    <a href="#skip-main-target" @click=${this.skipMenu} class="skip-link">Skip main navigation</a>
-    <nav class="navbar has-background-info" aria-label="main">
-      <div class="navbar-brand">
-        ${!this.embed ? html`
-          <a href="${this.homeUrl}" class="navbar-item wr-logo-item" aria-labelledby="home">
-            <fa-icon id="wrlogo" size="1.0rem" .svg=${this.mainLogo} aria-hidden="true"></fa-icon>
-            ${this.renderNavBrand()}
+    return html` <a
+        href="#skip-main-target"
+        @click=${this.skipMenu}
+        class="skip-link"
+        >Skip main navigation</a
+      >
+      <nav class="navbar has-background-info" aria-label="main">
+        <div class="navbar-brand">
+          ${!this.embed
+            ? html`
+                <a
+                  href="${this.homeUrl}"
+                  class="navbar-item wr-logo-item"
+                  aria-labelledby="home"
+                >
+                  <fa-icon
+                    id="wrlogo"
+                    size="1.0rem"
+                    .svg=${this.mainLogo}
+                    aria-hidden="true"
+                  ></fa-icon>
+                  ${this.renderNavBrand()}
+                </a>
+                ${this.collTitle
+                  ? html`
+                      <a
+                        href="${this.collPageUrl}"
+                        class="no-wrap is-size-6 has-text-black"
+                        >/&nbsp;&nbsp;<i>${this.collTitle}</i></a
+                      >
+                      <span class="no-wrap is-size-6"
+                        >&nbsp;&nbsp;/&nbsp;
+                        ${this.pageReplay
+                          ? html`<i>${this.pageTitle}</i>`
+                          : this.pageTitle}
+                      </span>
+                    `
+                  : ""}
+              `
+            : html`
+                <span class="navbar-item wr-logo-item">
+                  <fa-icon
+                    id="wrlogo"
+                    size="1.0rem"
+                    .svg=${this.mainLogo}
+                    aria-hidden="true"
+                  ></fa-icon>
+                </span>
+              `}
+          <a
+            href="#"
+            role="button"
+            id="menu-button"
+            @click="${this.onNavMenu}"
+            @keyup="${clickOnSpacebarPress}"
+            class="navbar-burger burger ${this.navMenuShown ? "is-active" : ""}"
+            aria-label="main menu"
+            aria-haspopup="true"
+            aria-expanded="${this.navMenuShown}"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
           </a>
-          ${this.collTitle ? html`
-          <a href="${this.collPageUrl}" class="no-wrap is-size-6 has-text-black">/&nbsp;&nbsp;<i>${this.collTitle}</i></a>
-          <span class="no-wrap is-size-6">&nbsp;&nbsp;/&nbsp;
-          ${this.pageReplay ? html`<i>${this.pageTitle}</i>` : this.pageTitle}
-          </span>
-          ` : ""}
-          `: html`
-          <span class="navbar-item wr-logo-item">
-            <fa-icon id="wrlogo" size="1.0rem" .svg=${this.mainLogo} aria-hidden="true"></fa-icon>
-          </span>
-        `}
-        <a href="#" role="button" id="menu-button" @click="${this.onNavMenu}" @keyup="${clickOnSpacebarPress}"
-          class="navbar-burger burger ${this.navMenuShown ? "is-active" : ""}" aria-label="main menu" aria-haspopup="true" aria-expanded="${this.navMenuShown}">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-      ${!this.sourceUrl ? html`
-      <div class="navbar-menu ${this.navMenuShown ? "is-active" : ""}">
-        <div class="navbar-start">
-          ${IS_APP ? html`
-            <a role="button" href="#" class="navbar-item arrow-button" title="Go Back" @click="${() => window.history.back()}" @keyup="${clickOnSpacebarPress}">
-              <fa-icon size="1.0rem" .svg="${fasArrowLeft}" aria-hidden="true"></fa-icon><span class="menu-only is-size-7">&nbsp;Go Back</span>
-            </a>
-            <a role="button" href="#" class="navbar-item arrow-button" title="Go Forward" @click="${() => window.history.forward()}" @keyup="${clickOnSpacebarPress}">
-              <fa-icon size="1.0rem" .svg="${fasArrowRight}" aria-hidden="true"></fa-icon><span class="menu-only is-size-7">&nbsp;Go Forward</span>
-            </a>
-          ` : ""}
         </div>
-        ${!this.embed ? html`
-        <div class="navbar-end">
-          ${this.renderNavEnd()}
-        </div>` : html``}
-      </div>` : html``}
-    </nav>
-    <p id="skip-main-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
+        ${!this.sourceUrl
+          ? html` <div
+              class="navbar-menu ${this.navMenuShown ? "is-active" : ""}"
+            >
+              <div class="navbar-start">
+                ${IS_APP
+                  ? html`
+                      <a
+                        role="button"
+                        href="#"
+                        class="navbar-item arrow-button"
+                        title="Go Back"
+                        @click="${() => window.history.back()}"
+                        @keyup="${clickOnSpacebarPress}"
+                      >
+                        <fa-icon
+                          size="1.0rem"
+                          .svg="${fasArrowLeft}"
+                          aria-hidden="true"
+                        ></fa-icon
+                        ><span class="menu-only is-size-7">&nbsp;Go Back</span>
+                      </a>
+                      <a
+                        role="button"
+                        href="#"
+                        class="navbar-item arrow-button"
+                        title="Go Forward"
+                        @click="${() => window.history.forward()}"
+                        @keyup="${clickOnSpacebarPress}"
+                      >
+                        <fa-icon
+                          size="1.0rem"
+                          .svg="${fasArrowRight}"
+                          aria-hidden="true"
+                        ></fa-icon
+                        ><span class="menu-only is-size-7"
+                          >&nbsp;Go Forward</span
+                        >
+                      </a>
+                    `
+                  : ""}
+              </div>
+              ${!this.embed
+                ? html` <div class="navbar-end">${this.renderNavEnd()}</div>`
+                : html``}
+            </div>`
+          : html``}
+      </nav>
+      <p id="skip-main-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
   }
 
   renderNavEnd() {
-    return html`
-      <a href="/docs" target="_blank" class="navbar-item is-size-6">
-      <fa-icon .svg="${fasHelp}" aria-hidden="true"></fa-icon><span>&nbsp;User Docs</span>
-    </a>
-    <!--
+    return html` <a href="/docs" target="_blank" class="navbar-item is-size-6">
+        <fa-icon .svg="${fasHelp}" aria-hidden="true"></fa-icon
+        ><span>&nbsp;User Docs</span>
+      </a>
+      <!--
     -- NB: the About modal is currently inaccessible to people using keyboards or screen readers.
     --  Should all the JS and infrastructure for accessible modals be added, or should About be a normal page?
     -->
-    <a href="?terms" @click="${(e) => { e.preventDefault(); this.showAbout = true;} }"class="navbar-item is-size-6">About
-    </a>`;
+      <a
+        href="?terms"
+        @click="${(e) => {
+          e.preventDefault();
+          this.showAbout = true;
+        }}"
+        class="navbar-item is-size-6"
+        >About
+      </a>`;
   }
 
   renderColl() {
-    return html`
-    <wr-coll .loadInfo="${this.loadInfo}"
-    sourceUrl="${this.sourceUrl}"
-    embed="${this.embed}"
-    appName="${this.appName}"
-    swName="${this.swName}"
-    .appLogo="${this.mainLogo}"
-    @replay-favicons=${this.onFavIcons}
-    @update-title=${this.onTitle}
-    @coll-loaded=${this.onCollLoaded}
-    @about-show=${() => this.showAbout = true}></wr-coll>`;
+    return html` <wr-coll
+      .loadInfo="${this.loadInfo}"
+      sourceUrl="${this.sourceUrl}"
+      embed="${this.embed}"
+      appName="${this.appName}"
+      swName="${this.swName}"
+      .appLogo="${this.mainLogo}"
+      @replay-favicons=${this.onFavIcons}
+      @update-title=${this.onTitle}
+      @coll-loaded=${this.onCollLoaded}
+      @about-show=${() => (this.showAbout = true)}
+    ></wr-coll>`;
   }
 
   renderHomeIndex() {
-    return html`
-      <wr-coll-index>
-      ${!IS_APP ? html`
-      <p slot="header" class="tagline is-size-5 has-text-centered">Explore and Replay Interactive Archived Webpages Directly in your Browser. <i><a target="_blank" href="./docs/examples">(See Examples)</a></i></p>
-      ` : ""}
-      <wr-chooser slot="header" .droppedFile=${this.droppedFile} @did-drop-file="${() => this.droppedFile = null}" @load-start=${this.onStartLoad}></wr-chooser>
+    return html` <wr-coll-index>
+      ${!IS_APP
+        ? html`
+            <p slot="header" class="tagline is-size-5 has-text-centered">
+              Explore and Replay Interactive Archived Webpages Directly in your
+              Browser.
+              <i
+                ><a target="_blank" href="./docs/examples">(See Examples)</a></i
+              >
+            </p>
+          `
+        : ""}
+      <wr-chooser
+        slot="header"
+        .droppedFile=${this.droppedFile}
+        @did-drop-file="${() => (this.droppedFile = null)}"
+        @load-start=${this.onStartLoad}
+      ></wr-chooser>
     </wr-coll-index>`;
   }
 
@@ -316,11 +409,8 @@ class ReplayWebApp extends LitElement
 
     return html`
       ${!this.embed || this.embed === "full" ? this.renderNavBar() : ""}
-
       ${this.sourceUrl ? this.renderColl() : this.renderHomeIndex()}
-
       ${this.showAbout ? this.renderAbout() : ""}
-
       ${this.showFileDropOverlay ? this.renderDropFileOverlay() : ""}
     `;
   }
@@ -331,8 +421,13 @@ class ReplayWebApp extends LitElement
     // service worker name
     const name = this.swName + (this.useRuffle ? "?ruffle=1" : "");
 
-    this.swmanager = new SWManager({name, appName: this.appName});
-    this.swmanager.register().catch(() => this.swErrorMsg = this.swmanager.renderErrorReport(this.mainLogo));
+    this.swmanager = new SWManager({ name, appName: this.appName });
+    this.swmanager
+      .register()
+      .catch(
+        () =>
+          (this.swErrorMsg = this.swmanager.renderErrorReport(this.mainLogo)),
+      );
 
     window.addEventListener("popstate", () => {
       this.initRoute();
@@ -361,7 +456,7 @@ class ReplayWebApp extends LitElement
     }
   }
 
-  skipMenu(event){
+  skipMenu(event) {
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
     event.preventDefault();
@@ -377,18 +472,26 @@ class ReplayWebApp extends LitElement
       // Since this menu can be large and obscure significant page content,
       // dismiss like a modal, returning keyboard focus to the
       // menu button on dismissal.
-      document.addEventListener("click", (event) => {
-        event.preventDefault();
-        this.navMenuShown = false;
-        this.renderRoot.querySelector("#menu-button").focus();
-      }, {once: true});
-      document.addEventListener("keypress", (event) => {
-        if (event.key == "Escape") {
+      document.addEventListener(
+        "click",
+        (event) => {
           event.preventDefault();
           this.navMenuShown = false;
           this.renderRoot.querySelector("#menu-button").focus();
-        }
-      }, {once: true});
+        },
+        { once: true },
+      );
+      document.addEventListener(
+        "keypress",
+        (event) => {
+          if (event.key == "Escape") {
+            event.preventDefault();
+            this.navMenuShown = false;
+            this.renderRoot.querySelector("#menu-button").focus();
+          }
+        },
+        { once: true },
+      );
     }
   }
 
@@ -401,7 +504,11 @@ class ReplayWebApp extends LitElement
     if (state) {
       try {
         state = JSON.parse(state);
-        if ((state.ids instanceof Array) && state.userId && state.action === "open") {
+        if (
+          state.ids instanceof Array &&
+          state.userId &&
+          state.action === "open"
+        ) {
           this.pageParams.set("source", "googledrive://" + state.ids[0]);
           this.pageParams.delete("state");
           window.location.search = this.pageParams.toString();
@@ -448,7 +555,9 @@ class ReplayWebApp extends LitElement
 
     if (this.pageParams.get("baseUrlSourcePrefix")) {
       this.loadInfo.extraConfig = this.loadInfo.extraConfig || {};
-      this.loadInfo.extraConfig.baseUrlSourcePrefix = this.pageParams.get("baseUrlSourcePrefix");
+      this.loadInfo.extraConfig.baseUrlSourcePrefix = this.pageParams.get(
+        "baseUrlSourcePrefix",
+      );
     }
 
     if (this.pageParams.get("basePageUrl")) {
@@ -463,7 +572,6 @@ class ReplayWebApp extends LitElement
     if (this.pageParams.get("noWebWorker") === "1") {
       this.loadInfo.noWebWorker = true;
     }
-
 
     if (this.pageParams.get("noCache") === "1") {
       this.loadInfo.noCache = true;
@@ -484,7 +592,7 @@ class ReplayWebApp extends LitElement
     if (IS_APP && this.sourceUrl.startsWith("file://")) {
       this.loadInfo = {
         sourceUrl: this.sourceUrl,
-        loadUrl: this.sourceUrl.replace("file://", "file2://")
+        loadUrl: this.sourceUrl.replace("file://", "file2://"),
       };
     }
   }
@@ -501,7 +609,6 @@ class ReplayWebApp extends LitElement
       window.location.search = this.pageParams.toString();
       return;
     } else {
-
       window.history.pushState({}, "", this.collPageUrl);
     }
 
@@ -533,7 +640,11 @@ class ReplayWebApp extends LitElement
       this.pageTitle = event.detail.title;
       this.pageReplay = event.detail.replayTitle;
 
-      document.title = (event.detail.replayTitle ? "Archive of " : "") + this.pageTitle + " | " + this.appName;
+      document.title =
+        (event.detail.replayTitle ? "Archive of " : "") +
+        this.pageTitle +
+        " | " +
+        this.appName;
     }
   }
 
@@ -561,8 +672,12 @@ class ReplayWebApp extends LitElement
         <div class="modal-background" @click="${this.onAboutClose}"></div>
           <div class="modal-card">
             <header class="modal-card-head">
-              <p class="modal-card-title">About ReplayWeb.page ${IS_APP ? "App" : ""}</p>
-              <button class="delete" aria-label="close" @click="${this.onAboutClose}"></button>
+              <p class="modal-card-title">About ReplayWeb.page ${
+                IS_APP ? "App" : ""
+              }</p>
+              <button class="delete" aria-label="close" @click="${
+                this.onAboutClose
+              }"></button>
             </header>
             <section class="modal-card-body">
               <div class="container">
@@ -570,16 +685,29 @@ class ReplayWebApp extends LitElement
                   <div style="display: flex">
                     <div class="has-text-centered" style="width: 220px">
                       <wr-anim-logo class="logo" size="48px"></wr-anim-logo>
-                      <div style="font-size: smaller; margin-bottom: 1em">${IS_APP ? "App" : ""} v${VERSION}</div>
+                      <div style="font-size: smaller; margin-bottom: 1em">${
+                        IS_APP ? "App" : ""
+                      } v${VERSION}</div>
                     </div>
 
-                    ${IS_APP ? html`
-                    <p>ReplayWeb.page App is a standalone app for Mac, Windows and Linux that loads web archive files provided by the user
-                    and renders them for replay.</p>
-
-                    ` : html`
-                    <p><a href="https://replayweb.page" target="_blank">ReplayWeb.page</a> is a browser-based viewer that loads web archive files provided by the user
-                    and renders them for replay in the browser.</p>`}
+                    ${
+                      IS_APP
+                        ? html`
+                            <p>
+                              ReplayWeb.page App is a standalone app for Mac,
+                              Windows and Linux that loads web archive files
+                              provided by the user and renders them for replay.
+                            </p>
+                          `
+                        : html` <p>
+                            <a href="https://replayweb.page" target="_blank"
+                              >ReplayWeb.page</a
+                            >
+                            is a browser-based viewer that loads web archive
+                            files provided by the user and renders them for
+                            replay in the browser.
+                          </p>`
+                    }
                   </div>
 
                   <p>Full source code is available at:
@@ -604,7 +732,9 @@ class ReplayWebApp extends LitElement
                     INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
                   </details>
                   <div class="has-text-centered">
-                    <a class="button is-warning" href="#" @click="${this.onAboutClose}">Close</a>
+                    <a class="button is-warning" href="#" @click="${
+                      this.onAboutClose
+                    }">Close</a>
                   </div>
                 </div>
               </div>

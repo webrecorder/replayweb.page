@@ -4,13 +4,14 @@ title: Embedding ReplayWeb.page
 nav_order: 3
 permalink: /docs/embedding
 ---
+
 ## Embedding Web Archives with ReplayWeb.page
 
 A key goal of ReplayWeb.page is to make embedding web archives into other sites as easy as it is to embed media files like images and PDFs.
 
 To make this possible ReplayWeb.page provides the `<replay-web-page>` HTML web component to support embedding in the pages where you would like to display web archives. This component works in all modern browsers, and has several configuration options that allow you to control things like the initial URL or snapshot to display from the archive when the component loads. The component allows you to load WACZ files that are created with Webrecorder tools, as well as standalone WARC files.
 
-For the web component to work you need to load the *frontend* user interface and the *backend* service worker into your web page, and then point a `<replay-web-page>` component at your WACZ file. The *frontend* defines the `<replay-web-page>` web component itself, and the backend service worker is responsible for retrieving data on demand from your web archive file. The backend pulls resources from the WACZ file *on-demand* as they are requested, so full retrieval of the WACZ to the browser is *not* required. The frontend and backend are just static JavaScript assets which you can choose to load from a Content Delivery Network (CDN) or directly from your website if you would like to host them yourself.
+For the web component to work you need to load the _frontend_ user interface and the _backend_ service worker into your web page, and then point a `<replay-web-page>` component at your WACZ file. The _frontend_ defines the `<replay-web-page>` web component itself, and the backend service worker is responsible for retrieving data on demand from your web archive file. The backend pulls resources from the WACZ file _on-demand_ as they are requested, so full retrieval of the WACZ to the browser is _not_ required. The frontend and backend are just static JavaScript assets which you can choose to load from a Content Delivery Network (CDN) or directly from your website if you would like to host them yourself.
 
 For example, to embed a WACZ web archive stored at `https://replayweb.page/docs/assets/tweet-example.wacz` you first need to add the following snippet to your HTML page to load the user interface and use the `<replay-web-page>` component to point to the WACZ:
 
@@ -20,8 +21,10 @@ my-web-archive-embed.html
 ```html
 <script src="https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/ui.js"></script>
 
-<replay-web-page source="https://replayweb.page/docs/assets/tweet-example.wacz"
-url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
+<replay-web-page
+  source="https://replayweb.page/docs/assets/tweet-example.wacz"
+  url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"
+></replay-web-page>
 ```
 
 The first line loads version {{ site.data.package.version }} of the ui from the jsDelivr content delivery network. And the second instantiates the ReplayWebPage component using the `source` attribute to point to the location of the WACZ file on the web (in this case published on AWS S3). The `url` attribute is used to indicate what URL to display from the archive after the component loads.
@@ -32,7 +35,9 @@ ReplayWeb.page's backend is a [service worker](https://developer.mozilla.org/en-
 ./replay/sw.js
 
 ```javascript
-importScripts("https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/sw.js");
+importScripts(
+  "https://cdn.jsdelivr.net/npm/replaywebpage@{{ site.data.package.version }}/sw.js",
+);
 ```
 
 If the HTML snippet was added to `https://my-site.example.com/path/my-web-archive-embed.html`
@@ -44,41 +49,48 @@ Be sure to add width and height styles to the `<replay-web-page>` tag as needed 
 
 You can replace `https://replayweb.page/docs/assets/example.wacz` with any web archive hosted on your site.
 
-{:  .fs-3 .pad .bg-grey-lt-100}
+{: .fs-3 .pad .bg-grey-lt-100}
 If the file is loaded from a different origin, your site must have CORS access to download the web archive.
 <br>See [CORS restrictions](#cors-restrictions) below for more info.
 
 ### Self Hosting
 
-Sometimes it can be desirable to *self-host* the user interface, service worker, and WACZ files. This is useful in situations where you want to prevent tracking by CDNs, or to make it easier to host the content in one place without needing to work out the details of Cross Origin Resource Sharing (CORS). Self-hosting is easy if you follow the same steps as above, but instead of loading the JavaScript and WACZ file from external locations you will need to [download](https://www.jsdelivr.com/package/npm/replaywebpage) the `ui.js` and `sw.js` JavaScript files and put them on the same server as the HTML that you are publishing.
+Sometimes it can be desirable to _self-host_ the user interface, service worker, and WACZ files. This is useful in situations where you want to prevent tracking by CDNs, or to make it easier to host the content in one place without needing to work out the details of Cross Origin Resource Sharing (CORS). Self-hosting is easy if you follow the same steps as above, but instead of loading the JavaScript and WACZ file from external locations you will need to [download](https://www.jsdelivr.com/package/npm/replaywebpage) the `ui.js` and `sw.js` JavaScript files and put them on the same server as the HTML that you are publishing.
 
 For example if you are publishing a page at `https://my-site.example.com/path/my-web-archive-embed.html` you could adjust the &lt;script&gt; element to load the ui from a location on your website:
 
 ```html
 <script src="ui.js"></script>
 
-<replay-web-page source="example.wacz" url="https://webrecorder.net"></replay-web-page>
+<replay-web-page
+  source="example.wacz"
+  url="https://webrecorder.net"
+></replay-web-page>
 ```
 
 The following URLs would then need to resolve correctly:
 
-* https://my-site.example.com/path/my-web-archive-embed.html
-* https://my-site.example.com/path/example.wacz
-* https://my-site.example.com/path/ui.js
-* https://my-site.example.com/path/replay/sw.js
+- https://my-site.example.com/path/my-web-archive-embed.html
+- https://my-site.example.com/path/example.wacz
+- https://my-site.example.com/path/ui.js
+- https://my-site.example.com/path/replay/sw.js
 
 If you want to embed more than one web archive on your site it can be helpful to centralise the location of the frontend and backend JavaScript and potentially WACZ files. The &lt;replay-web-page&gt; component has a `replayBase` attribute that lets you define the location to load the `sw.js` service worker from. By default, `replayBase` is set to `./replay/` and so the service worker is loaded from `./replay/sw.js`. For example if you publish your JavaScript files at:
 
-* https://my-site.example.com/js/ui.js
-* https://my-site.example.com/js/sw.js
-* https://my-site.example.com/wacz/example.wacz
+- https://my-site.example.com/js/ui.js
+- https://my-site.example.com/js/sw.js
+- https://my-site.example.com/wacz/example.wacz
 
 Then you adjust your HTML to reference the new resources:
 
 ```html
 <script src="/js/ui.js"></script>
 
-<replay-web-page replayBase="/js/" source="/wacz/example.wacz" url="https://webrecorder.net"></replay-web-page>
+<replay-web-page
+  replayBase="/js/"
+  source="/wacz/example.wacz"
+  url="https://webrecorder.net"
+></replay-web-page>
 ```
 
 ### Embed Modes
@@ -93,7 +105,6 @@ ReplayWeb.page offers a number of different ways to embed the archived content, 
 
 - `replay-with-info`: Show the replayonly mode, but also add an archive info dropdown, which shows a kind of archival 'receipt' with provenance and verification information (new in 1.7.0)
 
-
 ### Examples
 
 <details>
@@ -105,33 +116,34 @@ Here is an example embed added directly to this page, with <code class="language
 
 <replay-web-page style="height: 600px" embed="replay-with-info" replaybase="../" source="./assets/tweet-example.wacz"
 url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
+
 </details>
 
-For a working example of hosting multiple web archives take a look at our *example-webarchive* [repository](https://github.com/webrecorder/example-webarchive/) and [static website](https://webrecorder.github.io/example-webarchive) which hosted on Github pages. It may give you ideas for how to integrate the ReplayWeb.page component into your site You may also be interested in [Web Replay Gen](https://github.com/webrecorder/web-replay-gen) which is an 11ty based static site builder for a web archive of WACZ files.
+For a working example of hosting multiple web archives take a look at our _example-webarchive_ [repository](https://github.com/webrecorder/example-webarchive/) and [static website](https://webrecorder.github.io/example-webarchive) which hosted on Github pages. It may give you ideas for how to integrate the ReplayWeb.page component into your site You may also be interested in [Web Replay Gen](https://github.com/webrecorder/web-replay-gen) which is an 11ty based static site builder for a web archive of WACZ files.
 
 ### Embedding Options
 
 The `<replay-web-page>` tag is a web component that supports a number of additional attributes:
 
-| Attribute    | Description      |
-|:-------------|:-----------------|
-| `source`     | Source URL for the archive file. It should be a URL in one of the [supported formats](/docs/formats) loaded from one of the [support locations](/docs/locations) and is required. |
-| `url`        | The starting URL to load from the archive. If omitted, will start with the page list or URL search view. |
-| `ts`         | The timestamp of the starting URL to load. If omitted, the latest available version is used. |
-| `deepLink`   | if set, allow 'deep linking' to exact pages in the embed, besides the starting URL. |
-| `embed`      | (`default` / `full` / `replayonly` / `replay-with-info` ) - See [Embed Modes](#embed-modes) above.
-| `swName`     | Service Worker filename (default: `sw.js`). Set if using different name, don't include path, only filename |
-| `replayBase` | Location of the service worker file (eg. sw.js), defaults to `./replay/` as mentioned above, but can be overridden. |
-| `coll`       | Internal id for this collection, usually generated automatically.
-| `config`     | Extra per collection config options (such as custom fuzzy matching rules, TODO add more info!) |
-| `sandbox`    | if set, will iframe in `sandbox`. Provides extra isolation, but prevents PDFs from loading in an embed, and may result in links opening in new windows. |
-| `noWebWorker`| if set, will not use Web Worker for loading, only Service Worker. May be useful for certain loading edge cases. |
-| `noCache`    | if set, will not cache any loaded content HTTP responses locally, always loading from original source. |
-| `hideOffscreen` | if set, will unload the embed when it is not visible and reload when scrolled into view. Useful if multiple embeds per-page to avoid loading all at once. |
-| `newWindowBase` | set base replay URL loaded when a page opens a new window, defaults to `https://replayweb.page/` if `deepLink` not enabled, otherwise, to current page with new link. |
-| `requireSubdomainIframe` | if set, will only load embed in an iframe loaded from a subdomain, for increased origin isolation. |
-| `loading="eager"` | if set, will load the entire WACZ file at once (regardless of size), and not attempt on-demand range request loading. |
-| `useRuffle` | if set, will enable include Ruffle Flash emulator. Must include the `ruffle/` directory in `replayBase`. |
+| Attribute                | Description                                                                                                                                                                       |
+| :----------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `source`                 | Source URL for the archive file. It should be a URL in one of the [supported formats](/docs/formats) loaded from one of the [support locations](/docs/locations) and is required. |
+| `url`                    | The starting URL to load from the archive. If omitted, will start with the page list or URL search view.                                                                          |
+| `ts`                     | The timestamp of the starting URL to load. If omitted, the latest available version is used.                                                                                      |
+| `deepLink`               | if set, allow 'deep linking' to exact pages in the embed, besides the starting URL.                                                                                               |
+| `embed`                  | (`default` / `full` / `replayonly` / `replay-with-info` ) - See [Embed Modes](#embed-modes) above.                                                                                |
+| `swName`                 | Service Worker filename (default: `sw.js`). Set if using different name, don't include path, only filename                                                                        |
+| `replayBase`             | Location of the service worker file (eg. sw.js), defaults to `./replay/` as mentioned above, but can be overridden.                                                               |
+| `coll`                   | Internal id for this collection, usually generated automatically.                                                                                                                 |
+| `config`                 | Extra per collection config options (such as custom fuzzy matching rules, TODO add more info!)                                                                                    |
+| `sandbox`                | if set, will iframe in `sandbox`. Provides extra isolation, but prevents PDFs from loading in an embed, and may result in links opening in new windows.                           |
+| `noWebWorker`            | if set, will not use Web Worker for loading, only Service Worker. May be useful for certain loading edge cases.                                                                   |
+| `noCache`                | if set, will not cache any loaded content HTTP responses locally, always loading from original source.                                                                            |
+| `hideOffscreen`          | if set, will unload the embed when it is not visible and reload when scrolled into view. Useful if multiple embeds per-page to avoid loading all at once.                         |
+| `newWindowBase`          | set base replay URL loaded when a page opens a new window, defaults to `https://replayweb.page/` if `deepLink` not enabled, otherwise, to current page with new link.             |
+| `requireSubdomainIframe` | if set, will only load embed in an iframe loaded from a subdomain, for increased origin isolation.                                                                                |
+| `loading="eager"`        | if set, will load the entire WACZ file at once (regardless of size), and not attempt on-demand range request loading.                                                             |
+| `useRuffle`              | if set, will enable include Ruffle Flash emulator. Must include the `ruffle/` directory in `replayBase`.                                                                          |
 
 ### Versioning
 
@@ -156,11 +168,9 @@ and `https://replayweb.page/sw.js` but these are updated the most frequently and
 
 For production use, it is recommended to use a fixed version and explicitly upgrade as necessary.
 
-
 ## Common Issues
 
 Below are some possible issues that you may encounter when embedding and possible workarounds.
-
 
 ### Embed is too small / doesn't fill page.
 
@@ -169,10 +179,11 @@ style should fix the issue:
 
 ```html
 <style>
-html, body {
-  width: 100%;
-  height: 100%;
-}
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
 </style>
 ```
 
@@ -203,13 +214,12 @@ xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
 
 One way to set this policy is to use the popular [s3cmd](https://s3tools.org/usage) command-line tool:
 
-1) Paste the above snippet into a file, eg. `cors.xml`
-2) Be sure to set the 'Allowed Origin' to the site hosting the embed. You can add as many of these as necessary.
-3) Run `s3cmd setcors ./cors.xml s3://<your-bucket>`
+1. Paste the above snippet into a file, eg. `cors.xml`
+2. Be sure to set the 'Allowed Origin' to the site hosting the embed. You can add as many of these as necessary.
+3. Run `s3cmd setcors ./cors.xml s3://<your-bucket>`
 
 See the s3cmd docs for how to configure it s3cmd to work with your setup.
 
 See [S3 Docs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ManageCorsUsing.html) for more info on how to set this policy.
 
 Other cloud providers may have a similar settings for configuring CORS.
-

@@ -1,11 +1,14 @@
 <!doctype html>
 <html class="no-overflow">
-<head>
-</head>
-<body>
-Loading SW, Please wait...
-<script>
-navigator.serviceWorker.register("/swonly.js?replayPrefix=wabac&stats=true", {scope: window.location.origin + "/"}).then(() => window.location.reload());
-</script>
-</body>
+  <head> </head>
+  <body>
+    Loading SW, Please wait...
+    <script>
+      navigator.serviceWorker
+        .register("/swonly.js?replayPrefix=wabac&stats=true", {
+          scope: window.location.origin + "/",
+        })
+        .then(() => window.location.reload());
+    </script>
+  </body>
 </html>

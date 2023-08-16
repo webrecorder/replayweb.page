@@ -14,10 +14,8 @@ import fasAngleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-down.sv
 
 import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
 
-
 // ===========================================================================
-class Pages extends LitElement
-{
+class Pages extends LitElement {
   constructor() {
     super();
     this.filteredPages = [];
@@ -58,17 +56,17 @@ class Pages extends LitElement
   static get sortKeys() {
     return [
       {
-        "key": "",
-        "name": "Best Match",
+        key: "",
+        name: "Best Match",
       },
       {
-        "key": "title",
-        "name": "Title"
+        key: "title",
+        name: "Title",
       },
       {
-        "key": "date",
-        "name": "Date"
-      }
+        key: "date",
+        name: "Date",
+      },
     ];
   }
 
@@ -92,7 +90,7 @@ class Pages extends LitElement
       selectedPages: { type: Set },
       allSelected: { type: Boolean },
 
-      menuActive: {type: Boolean },
+      menuActive: { type: Boolean },
 
       sortKey: { type: String },
       sortDesc: { type: Boolean },
@@ -104,7 +102,7 @@ class Pages extends LitElement
       editing: { type: Boolean },
 
       toDeletePages: { type: Object },
-      toDeletePage: { type: Object }
+      toDeletePage: { type: Object },
     };
   }
 
@@ -119,10 +117,8 @@ class Pages extends LitElement
   async updated(changedProperties) {
     if (changedProperties.has("collInfo")) {
       this.updateTextSearch();
-
     } else if (changedProperties.has("query")) {
       this.filter();
-
     } else if (changedProperties.has("currList")) {
       this.filter();
     } else if (changedProperties.has("showAllPages")) {
@@ -154,7 +150,11 @@ class Pages extends LitElement
       //if (await this.updateComplete) {
       const selected = this.renderRoot.querySelector(".current");
       if (selected) {
-        const opts = {behavior: "smooth", block: "nearest", inline: "nearest"};
+        const opts = {
+          behavior: "smooth",
+          block: "nearest",
+          inline: "nearest",
+        };
         setTimeout(() => selected.scrollIntoView(opts), 100);
       }
       //}
@@ -180,7 +180,7 @@ class Pages extends LitElement
     this.loading = true;
     if (this.flex && this.query && this.textPages) {
       const results = await this.flex.searchAsync(this.query, 25);
-      this.filteredPages = results.map(inx => this.textPages[inx]);
+      this.filteredPages = results.map((inx) => this.textPages[inx]);
     } else if (this.showAllPages && this.hasExtraPages) {
       this.filteredPages = [...this.textPages];
     } else {
@@ -193,19 +193,21 @@ class Pages extends LitElement
 
     // normalize the date
     for (const page of this.filteredPages) {
-      const {timestamp, date} = getPageDateTS(page);
+      const { timestamp, date } = getPageDateTS(page);
       page.timestamp = timestamp;
       page.date = date;
     }
 
     this.loading = false;
     this.changeNeeded = false;
-    const data = {query: this.query, currList: this.currList};
+    const data = { query: this.query, currList: this.currList };
     this.sendChangeEvent(data);
   }
 
   async filterCurated() {
-    const resp = await fetch(`${this.collInfo.apiPrefix}/curated/${this.currList}`);
+    const resp = await fetch(
+      `${this.collInfo.apiPrefix}/curated/${this.currList}`,
+    );
     const json = await resp.json();
 
     const curated = json.curated;
@@ -214,7 +216,7 @@ class Pages extends LitElement
   }
 
   sendChangeEvent(data) {
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", {detail: {data}}));
+    this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
   }
 
   addPages(pages) {
@@ -223,19 +225,24 @@ class Pages extends LitElement
     this.flex = flex;
     this.textPages = pages;
 
-    this.hasExtraPages = this.textPages && this.collInfo && this.collInfo.pages &&
-    this.textPages.length > this.collInfo.pages.length;
-    
-    return Promise.all(pages.map((page, index) => {
-      let text = page.url;
-      if (page.title) {
-        text += " " + page.title;
-      }
-      if (page.text) {
-        text += " " + page.text;
-      }
-      return flex.addAsync(index, text);
-    }));
+    this.hasExtraPages =
+      this.textPages &&
+      this.collInfo &&
+      this.collInfo.pages &&
+      this.textPages.length > this.collInfo.pages.length;
+
+    return Promise.all(
+      pages.map((page, index) => {
+        let text = page.url;
+        if (page.title) {
+          text += " " + page.title;
+        }
+        if (page.text) {
+          text += " " + page.text;
+        }
+        return flex.addAsync(index, text);
+      }),
+    );
   }
 
   async updateTextSearch() {
@@ -272,10 +279,8 @@ class Pages extends LitElement
       }
 
       await this.addPages(lines);
-
     } catch (e) {
       console.warn(e);
-
     } finally {
       if (count === 0) {
         await this.addPages(this.collInfo.pages);
@@ -298,7 +303,8 @@ class Pages extends LitElement
         box-sizing: border-box !important;
       }
 
-      div[role="main"], #contents div[role="complementary"] {
+      div[role="main"],
+      #contents div[role="complementary"] {
         height: 100%;
       }
 
@@ -342,7 +348,7 @@ class Pages extends LitElement
       .index-bar-title {
         font-size: 1.25rem;
         text-transform: uppercase;
-        margin-bottom: 1.0rem;
+        margin-bottom: 1rem;
         word-break: break-word;
       }
 
@@ -365,7 +371,7 @@ class Pages extends LitElement
       }
 
       .index-bar-menu {
-        margin-top: 1.0rem;
+        margin-top: 1rem;
       }
 
       #filter-label {
@@ -408,7 +414,8 @@ class Pages extends LitElement
         display: block !important;
       }
 
-      :host(.sidebar) .columns.is-hidden-mobile, :host(.sidebar) .is-hidden-mobile {
+      :host(.sidebar) .columns.is-hidden-mobile,
+      :host(.sidebar) .is-hidden-mobile {
         display: none !important;
       }
 
@@ -427,7 +434,7 @@ class Pages extends LitElement
         flex-direction: column;
         flex: auto;
 
-        padding-bottom: 1.0em;
+        padding-bottom: 1em;
         min-height: 0px;
       }
 
@@ -441,7 +448,7 @@ class Pages extends LitElement
 
       .is-disabled {
         pointer-events: none;
-        opacity: .65;
+        opacity: 0.65;
       }
 
       .page-header {
@@ -451,12 +458,12 @@ class Pages extends LitElement
         width: 100%;
         min-height: fit-content;
 
-        margin-bottom: 1.0em;
+        margin-bottom: 1em;
         border-bottom: 3px solid rgb(237, 237, 237);
       }
 
       .check-select {
-        padding: 0 1.0em 0 0.5em;
+        padding: 0 1em 0 0.5em;
       }
 
       .search-bar {
@@ -472,43 +479,44 @@ class Pages extends LitElement
 
   static sidebarStyles(prefix = css``) {
     return css`
-    ${prefix} .main.columns {
-      position: relative;
-      max-height: 100%;
-      height: 100%;
-    }
+      ${prefix} .main.columns {
+        position: relative;
+        max-height: 100%;
+        height: 100%;
+      }
 
-    ${prefix} .index-bar-menu {
-      max-height: 75px;
-      overflow-y: auto;
-      margin-top: 0.75em;
-    }
+      ${prefix} .index-bar-menu {
+        max-height: 75px;
+        overflow-y: auto;
+        margin-top: 0.75em;
+      }
 
-    ${prefix} .column.main-content {
-      position: relative;
-      overflow-y: auto;
+      ${prefix} .column.main-content {
+        position: relative;
+        overflow-y: auto;
 
-      width: 100%;
-      min-height: 0px;
-      height: 100%;
-      padding: 0px;
-      margin: 0px;
-    }
+        width: 100%;
+        min-height: 0px;
+        height: 100%;
+        padding: 0px;
+        margin: 0px;
+      }
 
-    ${prefix} .mobile-header {
-      margin: 0.5rem;
-      margin-left: 1.0rem;
-      align-items: center;
-      display: flex;
-      justify-content: space-between;
-      flex-flow: row wrap;
-      min-height: 24px;
-      width: 100%;
-    }
+      ${prefix} .mobile-header {
+        margin: 0.5rem;
+        margin-left: 1rem;
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        flex-flow: row wrap;
+        min-height: 24px;
+        width: 100%;
+      }
 
-    ${prefix} .menu {
-      font-size: 0.80rem;
-    }`;
+      ${prefix} .menu {
+        font-size: 0.8rem;
+      }
+    `;
   }
 
   onSelectList(event) {
@@ -525,68 +533,130 @@ class Pages extends LitElement
     const currList = this.currList;
 
     return html`
-    <div class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "2": "1"}">
-      Pages in ${this.collInfo.title}
-    </div>
-    <div class="search-bar notification is-marginless">
-      ${this.isSidebar ? html `<h3 class="is-sr-only">Search and Filter Pages</h3>` : ""}
-      <div class="field flex-auto">
-        <div class="control has-icons-left ${this.loading ? "is-loading" : ""}">
-          <input type="search" class="input" @input="${this.onChangeQuery}" .value="${this.query}" type="text"
-          placeholder="Search by Page URL, Title or Text">
-          <span class="icon is-left"><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon></span>
+      <div
+        class="is-sr-only"
+        role="heading"
+        aria-level="${this.isSidebar ? "2" : "1"}"
+      >
+        Pages in ${this.collInfo.title}
+      </div>
+      <div class="search-bar notification is-marginless">
+        ${this.isSidebar
+          ? html`<h3 class="is-sr-only">Search and Filter Pages</h3>`
+          : ""}
+        <div class="field flex-auto">
+          <div
+            class="control has-icons-left ${this.loading ? "is-loading" : ""}"
+          >
+            <input
+              type="search"
+              class="input"
+              @input="${this.onChangeQuery}"
+              .value="${this.query}"
+              type="text"
+              placeholder="Search by Page URL, Title or Text"
+            />
+            <span class="icon is-left"
+              ><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon
+            ></span>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="main columns">
-      <div class="column index-bar is-one-fifth ${this.isSidebar ? "is-hidden-mobile" : ""}">
+      <div class="main columns">
+        <div
+          class="column index-bar is-one-fifth ${this.isSidebar
+            ? "is-hidden-mobile"
+            : ""}"
+        >
+          ${this.editable && this.editing
+            ? html`
+                <form @submit="${this.onUpdateTitle}">
+                  <input
+                    id="titleEdit"
+                    class="input"
+                    value="${this.collInfo.title}"
+                    @blur="${this.onUpdateTitle}"
+                  />
+                </form>
+              `
+            : html` <div
+                class="index-bar-title"
+                @dblclick="${() => (this.editing = true)}"
+              >
+                ${this.collInfo.title}
+              </div>`}
+          ${this.editable
+            ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`
+            : html``}
+          ${this.hasExtraPages
+            ? html` <span class="check-select">
+                <label class="checkbox">
+                  <input
+                    @change=${(e) =>
+                      (this.showAllPages = e.currentTarget.checked)}
+                    type="checkbox"
+                    .checked="${this.showAllPages}"
+                  />
+                  Show Non-Seed Pages
+                </label>
+              </span>`
+            : ""}
 
-        ${this.editable && this.editing ? html`
-        <form @submit="${this.onUpdateTitle}"><input id="titleEdit" class="input" value="${this.collInfo.title}" @blur="${this.onUpdateTitle}"></form>
-        ` : html`
-        <div class="index-bar-title" @dblclick="${() => this.editing = true}">${this.collInfo.title}</div>`}
+          <span
+            class="num-results is-hidden-mobile"
+            aria-live="polite"
+            aria-atomic="true"
+            >${this.formatResults()}</span
+          >
 
-        ${this.editable ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>` : html``}
-
-        ${this.hasExtraPages ? html`
-        <span class="check-select">
-          <label class="checkbox">
-          <input @change=${e => this.showAllPages = e.currentTarget.checked} type="checkbox" .checked="${this.showAllPages}">
-          Show Non-Seed Pages
-          </label>
-        </span>` : ""}
-
-        <span class="num-results is-hidden-mobile" aria-live="polite" aria-atomic="true">${this.formatResults()}</span>
-
-        ${this.editable ? html`
-        <div class="index-bar-actions">
-          ${this.renderDownloadMenu()}
-        </div>` : ""}
-
-        ${this.collInfo.lists.length ? html`
-        <p id="filter-label" class="menu-label">Filter By List:</p>
-        <div class="index-bar-menu menu">
-          <ul class="menu-list">
-            <li>
-              <a href="#list-0" data-list="0" class="${currList === 0 ? "is-active" : ""}"
-                @click=${this.onSelectList}><i>All Pages</i></a>
-            </li>
-            ${this.collInfo.lists.map(list => html`
-              <li>
-                <a @click=${this.onSelectList} href="#list-${list.id}"
-                data-list="${list.id}"
-                class="${currList === list.id ? "is-active" : ""}">${list.title}</a>
-              </li>`)}
-          </ul>
+          ${this.editable
+            ? html` <div class="index-bar-actions">
+                ${this.renderDownloadMenu()}
+              </div>`
+            : ""}
+          ${this.collInfo.lists.length
+            ? html`
+                <p id="filter-label" class="menu-label">Filter By List:</p>
+                <div class="index-bar-menu menu">
+                  <ul class="menu-list">
+                    <li>
+                      <a
+                        href="#list-0"
+                        data-list="0"
+                        class="${currList === 0 ? "is-active" : ""}"
+                        @click=${this.onSelectList}
+                        ><i>All Pages</i></a
+                      >
+                    </li>
+                    ${this.collInfo.lists.map(
+                      (list) =>
+                        html` <li>
+                          <a
+                            @click=${this.onSelectList}
+                            href="#list-${list.id}"
+                            data-list="${list.id}"
+                            class="${currList === list.id ? "is-active" : ""}"
+                            >${list.title}</a
+                          >
+                        </li>`,
+                    )}
+                  </ul>
+                </div>
+              `
+            : ""}
         </div>
-        ` : ""}
+        <div class="column main-content">
+          <div
+            class="is-sr-only"
+            role="heading"
+            aria-level="${this.isSidebar ? "3" : "2"}"
+          >
+            Page List
+          </div>
+          ${this.renderPages()}
+        </div>
       </div>
-      <div class="column main-content">
-        <div class="is-sr-only" role="heading" aria-level="${this.isSidebar ? "3": "2"}">Page List</div>
-        ${this.renderPages()}
-      </div>
-    </div>
-    ${this.renderDeleteModal()}
+      ${this.renderDeleteModal()}
     `;
   }
 
@@ -594,7 +664,11 @@ class Pages extends LitElement
     return html`
       <div class="dropdown ${this.menuActive ? "is-active" : ""}">
         <div class="dropdown-trigger">
-          <button @click="${this.onMenu}" class="button is-small" aria-haspopup="true" aria-expanded="${this.menuActive}" aria-controls="dropdown-menu">
+          <button @click="${
+            this.onMenu
+          }" class="button is-small" aria-haspopup="true" aria-expanded="${
+            this.menuActive
+          }" aria-controls="dropdown-menu">
             <span>Download</span>
             <span class="icon is-small">
               <fa-icon .svg="${fasAngleDown} aria-hidden="true"></fa-icon>
@@ -607,19 +681,25 @@ class Pages extends LitElement
              @click="${(e) => this.onDownload(e, "wacz")}"
              @keyup="${clickOnSpacebarPress}"
              class="dropdown-item">
-              Download ${this.selectedPages.size === 0 ? "All" : "Selected"} as WACZ (Web Archive Collection Zip)
+              Download ${
+                this.selectedPages.size === 0 ? "All" : "Selected"
+              } as WACZ (Web Archive Collection Zip)
             </a>
             <a role="button" href="#"
              @click="${(e) => this.onDownload(e, "warc")}"
              @keyup="${clickOnSpacebarPress}"
              class="dropdown-item">
-              Download ${this.selectedPages.size === 0 ? "All" : "Selected"} as WARC 1.1 Only
+              Download ${
+                this.selectedPages.size === 0 ? "All" : "Selected"
+              } as WARC 1.1 Only
             </a>
             <a role="button" href="#"
               @click="${(e) => this.onDownload(e, "warc1.0")}"
               @keyup="${clickOnSpacebarPress}"
               class="dropdown-item">
-              Download ${this.selectedPages.size === 0 ? "All" : "Selected"} as WARC 1.0 Only
+              Download ${
+                this.selectedPages.size === 0 ? "All" : "Selected"
+              } as WARC 1.0 Only
             </a>
           </div>
         </div>
@@ -628,33 +708,79 @@ class Pages extends LitElement
 
   renderPageHeader() {
     return html`
-    ${!this.isSidebar && this.editable && this.filteredPages.length ? html`
-    <div class="check-select">
-      <label class="checkbox">
-      <input @change=${this.onSelectAll} type="checkbox" .checked="${this.allSelected}">
-      </label>
-    </div>` : html``}
+      ${!this.isSidebar && this.editable && this.filteredPages.length
+        ? html` <div class="check-select">
+            <label class="checkbox">
+              <input
+                @change=${this.onSelectAll}
+                type="checkbox"
+                .checked="${this.allSelected}"
+              />
+            </label>
+          </div>`
+        : html``}
 
-    <div class="header columns is-hidden-mobile">
-      ${this.query ? html`
-      <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="" class="column is-1 ${this.sortKey === "" ? (this.sortDesc ? "desc" : "asc") : ""}">Match</a>` : ""}
+      <div class="header columns is-hidden-mobile">
+        ${this.query
+          ? html` <a
+              role="button"
+              href="#"
+              @click="${this.onSort}"
+              @keyup="${clickOnSpacebarPress}"
+              data-key=""
+              class="column is-1 ${this.sortKey === ""
+                ? this.sortDesc
+                  ? "desc"
+                  : "asc"
+                : ""}"
+              >Match</a
+            >`
+          : ""}
 
-      <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="date" class="column is-2 ${this.sortKey === "date" ? (this.sortDesc ? "desc" : "asc") : ""}">Date</a>
-      <a role="button" href="#" @click="${this.onSort}" @keyup="${clickOnSpacebarPress}" data-key="title" class="column is-6 pagetitle ${this.sortKey === "title" ? (this.sortDesc ? "desc" : "asc") : ""}">Page Title</a>
-    </div>
+        <a
+          role="button"
+          href="#"
+          @click="${this.onSort}"
+          @keyup="${clickOnSpacebarPress}"
+          data-key="date"
+          class="column is-2 ${this.sortKey === "date"
+            ? this.sortDesc
+              ? "desc"
+              : "asc"
+            : ""}"
+          >Date</a
+        >
+        <a
+          role="button"
+          href="#"
+          @click="${this.onSort}"
+          @keyup="${clickOnSpacebarPress}"
+          data-key="title"
+          class="column is-6 pagetitle ${this.sortKey === "title"
+            ? this.sortDesc
+              ? "desc"
+              : "asc"
+            : ""}"
+          >Page Title</a
+        >
+      </div>
 
-    <div class="is-hidden-tablet mobile-header">
-      <div class="num-results" aria-live="polite" aria-atomic="true">${this.formatResults()}</div>
-      <wr-sorter id="pages"
-      .sortKey="${this.sortKey}"
-      .sortDesc="${this.sortDesc}"
-      .sortKeys="${Pages.sortKeys}"
-      .data="${this.filteredPages}"
-      pageResults="100"
-      @sort-changed="${this.onSortChanged}"
-      class="${this.filteredPages.length ? "" : "is-hidden"}">
-      </wr-sorter>
-    </div>
+      <div class="is-hidden-tablet mobile-header">
+        <div class="num-results" aria-live="polite" aria-atomic="true">
+          ${this.formatResults()}
+        </div>
+        <wr-sorter
+          id="pages"
+          .sortKey="${this.sortKey}"
+          .sortDesc="${this.sortDesc}"
+          .sortKeys="${Pages.sortKeys}"
+          .data="${this.filteredPages}"
+          pageResults="100"
+          @sort-changed="${this.onSortChanged}"
+          class="${this.filteredPages.length ? "" : "is-hidden"}"
+        >
+        </wr-sorter>
+      </div>
     `;
   }
 
@@ -663,17 +789,34 @@ class Pages extends LitElement
       return html``;
     }
 
-    return html`
-    <wr-modal bgClass="has-background-grey-lighter" @modal-closed="${() => this.toDeletePages = this.toDeletePage = null}" title="Confirm Delete">
-      ${this.toDeletePage ? html`
-      <p>Are you sure you want to delete the page <b>${this.toDeletePage.title}</b>?
-      (Size: <b>${prettyBytes(this.toDeletePage.size)}</b>)</p>` : html`
-      <p>Are you sure you want to delete the <b>${this.toDeletePages.size}</b> selected pages?
-      `}
+    return html` <wr-modal
+      bgClass="has-background-grey-lighter"
+      @modal-closed="${() => (this.toDeletePages = this.toDeletePage = null)}"
+      title="Confirm Delete"
+    >
+      ${this.toDeletePage
+        ? html` <p>
+            Are you sure you want to delete the page
+            <b>${this.toDeletePage.title}</b>? (Size:
+            <b>${prettyBytes(this.toDeletePage.size)}</b>)
+          </p>`
+        : html`
+            <p>
+              Are you sure you want to delete the
+              <b>${this.toDeletePages.size}</b> selected pages?
+            </p>
+          `}
       <p>This operation can not be undone.</p>
 
-      <button @click="${this.onDeletePages}"class="button is-danger">Delete</button>
-      <button @click="${() => this.toDeletePages = this.toDeletePage = null}" class="button">Cancel</button>
+      <button @click="${this.onDeletePages}" class="button is-danger">
+        Delete
+      </button>
+      <button
+        @click="${() => (this.toDeletePages = this.toDeletePage = null)}"
+        class="button"
+      >
+        Cancel
+      </button>
     </wr-modal>`;
   }
 
@@ -683,7 +826,7 @@ class Pages extends LitElement
         let ts = page.timestamp;
         if (!ts && page.date) {
           ts = getTS(page.date);
-        } else if (typeof(page.ts) === "string") {
+        } else if (typeof page.ts === "string") {
           ts = getTS(page.ts);
         }
         return ts === this.ts;
@@ -697,31 +840,32 @@ class Pages extends LitElement
     //const name = this.currList === 0 ? "All Pages" : this.collInfo.lists[this.currList - 1].title;
     return html`
       <div class="page-header has-text-weight-bold">
-      ${this.renderPageHeader()}
+        ${this.renderPageHeader()}
       </div>
       <ul class="scroller" @scroll="${this.onScroll}">
-        ${this.sortedPages.length ? html`
-          ${this.sortedPages.map((p, i) => {
-    const selected = this.selectedPages.has(p.id);
+        ${this.sortedPages.length
+          ? html` ${this.sortedPages.map((p, i) => {
+              const selected = this.selectedPages.has(p.id);
 
-    return html`
-          <li class="page-entry ${selected ? "selected" : ""}">
-            <wr-page-entry
-            .index="${this.query || this.isSidebar ? i + 1 : 0}"
-            .editable="${this.editable}"
-            .selected="${selected}"
-            .isCurrent="${this.isCurrPage(p)}"
-            .isSidebar="${this.isSidebar}"
-            .page="${p}"
-            pid="${p.id}"
-            @sel-page="${this.onSelectToggle}"
-            @delete-page="${this.onDeleteConfirm}"
-            replayPrefix="${this.collInfo.replayPrefix}"
-            query="${this.query}"
-            class="${this.isSidebar ? "sidebar" : ""}"
-            >
-            </wr-page-entry>
-          </li>`; })}` : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
+              return html` <li class="page-entry ${selected ? "selected" : ""}">
+                <wr-page-entry
+                  .index="${this.query || this.isSidebar ? i + 1 : 0}"
+                  .editable="${this.editable}"
+                  .selected="${selected}"
+                  .isCurrent="${this.isCurrPage(p)}"
+                  .isSidebar="${this.isSidebar}"
+                  .page="${p}"
+                  pid="${p.id}"
+                  @sel-page="${this.onSelectToggle}"
+                  @delete-page="${this.onDeleteConfirm}"
+                  replayPrefix="${this.collInfo.replayPrefix}"
+                  query="${this.query}"
+                  class="${this.isSidebar ? "sidebar" : ""}"
+                >
+                </wr-page-entry>
+              </li>`;
+            })}`
+          : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
       </ul>
     `;
   }
@@ -741,13 +885,17 @@ class Pages extends LitElement
 
     const title = input.value;
 
-    const body = JSON.stringify({title});
+    const body = JSON.stringify({ title });
 
-    fetch(`${this.collInfo.apiPrefix}/metadata`, {method: "POST", body}).then((res) => {
-      if (res.status === 200) {
-        this.dispatchEvent(new CustomEvent("coll-update", {detail: {title}}));
-      }
-    });
+    fetch(`${this.collInfo.apiPrefix}/metadata`, { method: "POST", body }).then(
+      (res) => {
+        if (res.status === 200) {
+          this.dispatchEvent(
+            new CustomEvent("coll-update", { detail: { title } }),
+          );
+        }
+      },
+    );
   }
 
   onMenu(event) {
@@ -755,9 +903,13 @@ class Pages extends LitElement
     this.menuActive = !this.menuActive;
 
     if (this.menuActive) {
-      document.addEventListener("click", () => {
-        this.menuActive = false;
-      }, {once: true});
+      document.addEventListener(
+        "click",
+        () => {
+          this.menuActive = false;
+        },
+        { once: true },
+      );
     }
   }
 
@@ -780,13 +932,13 @@ class Pages extends LitElement
   }
 
   onSelectToggle(event) {
-    const {page, selected} = event.detail;
+    const { page, selected } = event.detail;
     if (selected) {
       this.selectedPages.add(page);
     } else {
       this.selectedPages.delete(page);
     }
-    this.allSelected = (this.selectedPages.size === this.sortedPages.length);
+    this.allSelected = this.selectedPages.size === this.sortedPages.length;
     this.requestUpdate();
   }
 
@@ -796,7 +948,7 @@ class Pages extends LitElement
       this.selectedPages.clear();
     } else {
       //this.selectedPages = new Set();
-      this.sortedPages.forEach(p => {
+      this.sortedPages.forEach((p) => {
         this.selectedPages.add(p.id);
       });
     }
@@ -810,7 +962,10 @@ class Pages extends LitElement
     const selected = this.selectedPages.size > 0;
 
     const params = new URLSearchParams();
-    params.set("pages", selected ? Array.from(this.selectedPages.keys()).join(",") : "all");
+    params.set(
+      "pages",
+      selected ? Array.from(this.selectedPages.keys()).join(",") : "all",
+    );
     params.set("format", format);
     if (this.collInfo.filename) {
       params.set("filename", this.collInfo.filename);
@@ -826,7 +981,7 @@ class Pages extends LitElement
       this.toDeletePages = this.selectedPages;
       this.toDeletePage = null;
     } else {
-    // else, delete just the page
+      // else, delete just the page
       this.toDeletePages = [page.id];
       this.toDeletePage = page;
     }
@@ -844,7 +999,9 @@ class Pages extends LitElement
     }
 
     for (const id of this.toDeletePages) {
-      const resp = await fetch(`${this.collInfo.apiPrefix}/page/${id}`, {method: "DELETE"});
+      const resp = await fetch(`${this.collInfo.apiPrefix}/page/${id}`, {
+        method: "DELETE",
+      });
       const json = await resp.json();
 
       if (json.error) {
@@ -862,7 +1019,7 @@ class Pages extends LitElement
       if (inx < 0) {
         continue;
       }
-  
+
       this.collInfo.pages.splice(inx, 1);
     }
 
@@ -894,7 +1051,10 @@ class Pages extends LitElement
 
   getNoResultsMessage() {
     if (!this.collInfo || !this.collInfo.pages.length) {
-      return html`<span class="fix-text-wrapping">No Pages are defined in this archive. The archive may be empty. <a href="#view=resources">Try browsing by URL</a>.</span>`;
+      return html`<span class="fix-text-wrapping"
+        >No Pages are defined in this archive. The archive may be empty.
+        <a href="#view=resources">Try browsing by URL</a>.</span
+      >`;
     }
 
     if (this.updatingSearch) {
@@ -906,7 +1066,10 @@ class Pages extends LitElement
     }
 
     if (this.query) {
-      return html `<span class="fix-text-wrapping">No matching pages found. Try changing the search query, or <a href="#view=resources">browse by URL</a>.</span>`;
+      return html`<span class="fix-text-wrapping"
+        >No matching pages found. Try changing the search query, or
+        <a href="#view=resources">browse by URL</a>.</span
+      >`;
     }
 
     return "No Pages Found";
@@ -914,7 +1077,8 @@ class Pages extends LitElement
 
   onScroll(event) {
     const element = event.currentTarget;
-    const diff = (element.scrollHeight - element.scrollTop) - element.clientHeight;
+    const diff =
+      element.scrollHeight - element.scrollTop - element.clientHeight;
     if (diff < 40) {
       const sorter = this.renderRoot.querySelector("wr-sorter");
       if (sorter) {
@@ -923,7 +1087,6 @@ class Pages extends LitElement
     }
   }
 }
-
 
 customElements.define("wr-page-view", Pages);
 

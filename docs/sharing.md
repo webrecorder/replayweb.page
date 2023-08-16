@@ -23,7 +23,7 @@ For example, given the following URL:
 https://replayweb.page/?source=s3://webrecorder-builds/warcs/netpreserve-twitter.warc#view=replay&url=https%3A%2F%2Ftwitter.com%2Fnetpreserve&ts=20190603053135
 ```
 
-ReplayWeb.page will load the web archive from `s3://webrecorder-builds/warcs/netpreserve-twitter.warc`, switch to 
+ReplayWeb.page will load the web archive from `s3://webrecorder-builds/warcs/netpreserve-twitter.warc`, switch to
 the replay view via `https://twitter.com/netpreserve` at timestamp `20190603053135`
 
 The following URL will load the same web archive, and show the search results for Pages that contain the word 'WARC':
@@ -37,9 +37,8 @@ https://replayweb.page/?source=s3://webrecorder-builds/warcs/netpreserve-twitter
 For obvious reasons, URLs that have a `source=file://...` can not be shared as they refer to a local file on your machine.
 Loading that URL by anyone else will result in an error.
 
-{:  .fs-3 .pad .bg-grey-lt-100}
+{: .fs-3 .pad .bg-grey-lt-100}
 A future goal is to provide an option to share local web archives peer-to-peer via the DAT `hyper://` protocol.
-
 
 ### Sharing Google Drive Archives
 
@@ -64,10 +63,7 @@ OR.
 
 3. You can share the direct ReplayWeb.page URL directly. This does not always work, and you may need to share the Google Drive link instead.
 
-
 In this way, web archives can be shared within private networks using existing access control settings in Google Drive.
 
 <hr>
 Next: Offline Usage Options
-
-

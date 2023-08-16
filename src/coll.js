@@ -1,5 +1,13 @@
 import { LitElement, html, css } from "lit";
-import { wrapCss, rwpLogo, IS_APP, VERSION, clickOnSpacebarPress, apiPrefix, replayPrefix } from "./misc";
+import {
+  wrapCss,
+  rwpLogo,
+  IS_APP,
+  VERSION,
+  clickOnSpacebarPress,
+  apiPrefix,
+  replayPrefix,
+} from "./misc";
 
 import { sourceToId, tsToDate, getPageDateTS } from "./pageutils";
 
@@ -27,13 +35,10 @@ import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.
 import { RWPEmbedReceipt } from "./embed-receipt.js";
 import Split from "split.js";
 
-
 const RWP_SCHEME = "search://";
 
-
 // ===========================================================================
-class Coll extends LitElement
-{
+class Coll extends LitElement {
   constructor() {
     super();
     this.sourceUrl = null;
@@ -55,10 +60,10 @@ class Coll extends LitElement
 
     this.tabNames = ["pages", "story", "resources", "info"];
     this.tabLabels = {
-      "pages": "Pages",
-      "story": "Story",
-      "resources": "URLs",
-      "info": "Archive Info",
+      pages: "Pages",
+      story: "Story",
+      resources: "URLs",
+      info: "Archive Info",
     };
 
     this.menuActive = false;
@@ -117,7 +122,7 @@ class Coll extends LitElement
 
       isVisible: { type: Boolean },
 
-      favIconUrl: {type: String },
+      favIconUrl: { type: String },
 
       appName: { type: String },
       appVersion: { type: String },
@@ -125,7 +130,7 @@ class Coll extends LitElement
 
       autoUpdateInterval: { type: Number },
 
-      swName: { type: String }
+      swName: { type: String },
     };
   }
 
@@ -138,7 +143,7 @@ class Coll extends LitElement
     });
 
     if (this.embed && this.loadInfo && this.loadInfo.hideOffscreen) {
-      this.observer = new IntersectionObserver((entries/*, observer*/) => {
+      this.observer = new IntersectionObserver((entries /*, observer*/) => {
         this.isVisible = entries[0].isIntersecting;
       });
 
@@ -149,8 +154,16 @@ class Coll extends LitElement
   async runUpdateLoop() {
     try {
       // only autoupdate if interval is set, and number of pages < 100 to avoid messing up scrolling
-      while (this.editable && this.autoUpdateInterval && (!this.collInfo || !this.collInfo.pages || this.collInfo.pages.length < 100)) {
-        await new Promise(resolve => setTimeout(resolve, this.autoUpdateInterval * 1000));
+      while (
+        this.editable &&
+        this.autoUpdateInterval &&
+        (!this.collInfo ||
+          !this.collInfo.pages ||
+          this.collInfo.pages.length < 100)
+      ) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, this.autoUpdateInterval * 1000),
+        );
         await this.doUpdateInfo(true);
       }
     } finally {
@@ -181,17 +194,22 @@ class Coll extends LitElement
       }
 
       // don't add empty params to shorten query
-      Object.keys(this.tabData).
-        forEach(key => !this.tabData[key] && delete this.tabData[key]);
+      Object.keys(this.tabData).forEach(
+        (key) => !this.tabData[key] && delete this.tabData[key],
+      );
 
       const newHash = "#" + new URLSearchParams(this.tabData).toString();
 
       if (!this.tabData.url) {
-        this.url = RWP_SCHEME + decodeURIComponent(this._paramsToString(this.tabData));
+        this.url =
+          RWP_SCHEME + decodeURIComponent(this._paramsToString(this.tabData));
       }
       if (newHash !== this._locationHash) {
         this._locationHash = newHash;
-        if (this._replaceLoc || Object.keys(changedProperties.get("tabData")).length === 0) {
+        if (
+          this._replaceLoc ||
+          Object.keys(changedProperties.get("tabData")).length === 0
+        ) {
           const newLoc = new URL(window.location.href);
           newLoc.hash = this._locationHash;
           window.history.replaceState({}, "", newLoc.href);
@@ -217,7 +235,10 @@ class Coll extends LitElement
       }
     }
 
-    if (changedProperties.has("tabData") || changedProperties.has("showSidebar")) {
+    if (
+      changedProperties.has("tabData") ||
+      changedProperties.has("showSidebar")
+    ) {
       this.configureSplitter();
     }
   }
@@ -241,7 +262,7 @@ class Coll extends LitElement
 
           onDragEnd() {
             replay.setDisablePointer(false);
-          }
+          },
         };
 
         this.splitter = Split([contents, replay], opts);
@@ -256,8 +277,7 @@ class Coll extends LitElement
     }
   }
 
-  async doUpdateInfo(autorefresh = false)
-  {
+  async doUpdateInfo(autorefresh = false) {
     // if auto-refresh, and replay and no sidebar, than skip update
     if (autorefresh && this.tabData.url && !this.showSidebar) {
       return;
@@ -288,14 +308,18 @@ class Coll extends LitElement
       apiPrefix: collApiPrefix,
       replayPrefix: collReplayPrefix,
       coll,
-      ...json
+      ...json,
     };
 
-    if (this.loadInfo && this.loadInfo.extraConfig && this.loadInfo.extraConfig.headers) {
+    if (
+      this.loadInfo &&
+      this.loadInfo.extraConfig &&
+      this.loadInfo.extraConfig.headers
+    ) {
       const headers = this.loadInfo.extraConfig.headers;
       await fetch(`${collApiPrefix}/updateAuth`, {
         method: "POST",
-        body: JSON.stringify({headers})
+        body: JSON.stringify({ headers }),
       });
     }
 
@@ -309,10 +333,14 @@ class Coll extends LitElement
 
     this.hasStory = this.collInfo.desc || this.collInfo.lists.length;
 
-    this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {
-      collInfo: this.collInfo,
-      alreadyLoaded: true
-    }}));
+    this.dispatchEvent(
+      new CustomEvent("coll-loaded", {
+        detail: {
+          collInfo: this.collInfo,
+          alreadyLoaded: true,
+        },
+      }),
+    );
 
     this.onHashChange();
   }
@@ -323,10 +351,14 @@ class Coll extends LitElement
     if (event.detail.sourceUrl) {
       this.sourceUrl = event.detail.sourceUrl;
     }
-    this.dispatchEvent(new CustomEvent("coll-loaded", {detail: {
-      sourceUrl: this.sourceUrl,
-      collInfo: this.collInfo,
-    }}));
+    this.dispatchEvent(
+      new CustomEvent("coll-loaded", {
+        detail: {
+          sourceUrl: this.sourceUrl,
+          collInfo: this.collInfo,
+        },
+      }),
+    );
   }
 
   onCollUpdate(event) {
@@ -334,21 +366,28 @@ class Coll extends LitElement
       return;
     }
 
-    this.collInfo = {...this.collInfo, ...event.detail};
+    this.collInfo = { ...this.collInfo, ...event.detail };
   }
 
   onHashChange() {
     const hash = window.location.hash;
     if (hash && hash !== this._locationHash) {
-      this.tabData = Object.fromEntries(new URLSearchParams(hash.slice(1)).entries());
+      this.tabData = Object.fromEntries(
+        new URLSearchParams(hash.slice(1)).entries(),
+      );
       this._locationHash = hash;
     }
 
     if (this.collInfo.coll && !this.tabNames.includes(this.tabData.view)) {
-      const view = this.hasStory ? "story" : (this.editable || this.collInfo.pages.length ? "pages" : "resources");
+      const view = this.hasStory
+        ? "story"
+        : this.editable || this.collInfo.pages.length
+        ? "pages"
+        : "resources";
 
       this.tabData = {
-        ...this.tabData, view
+        ...this.tabData,
+        view,
       };
     }
 
@@ -373,7 +412,7 @@ class Coll extends LitElement
   onTabClick(event) {
     event.preventDefault();
     const hash = event.currentTarget.getAttribute("href");
-    this.tabData = {...this.tabData, view: hash.slice(1)};
+    this.tabData = { ...this.tabData, view: hash.slice(1) };
     //this.tabData = {view: hash.slice(1)};
     return false;
   }
@@ -384,15 +423,18 @@ class Coll extends LitElement
       return;
     }
 
-    if (event.target.id === this.tabData.view || event.target.id === "replay" && this.tabData.url) {
+    if (
+      event.target.id === this.tabData.view ||
+      (event.target.id === "replay" && this.tabData.url)
+    ) {
       this.updateTabData(event.detail.data, event.detail.replaceLoc, false);
     } else if (this.showSidebar && this.tabData.url) {
       this.updateTabData(event.detail.data, event.detail.replaceLoc, true);
     }
   }
 
-  updateTabData(data, replaceLoc = false/*, merge = false*/) {
-    this.tabData = {...this.tabData, ...data};
+  updateTabData(data, replaceLoc = false /*, merge = false*/) {
+    this.tabData = { ...this.tabData, ...data };
     if (this.tabData.url) {
       this.url = this.tabData.url || "";
     }
@@ -409,255 +451,262 @@ class Coll extends LitElement
 
   static get compStyles() {
     return css`
-    :host {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      min-width: 0px;
-    }
+      :host {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-width: 0px;
+      }
 
-    .icon {
-      vertical-align: text-top;
-    }
+      .icon {
+        vertical-align: text-top;
+      }
 
-    .back fa-icon {
-      width: 1.5em;
-      vertical-align: bottom;
-      line-height: 0.5em;
-    }
+      .back fa-icon {
+        width: 1.5em;
+        vertical-align: bottom;
+        line-height: 0.5em;
+      }
 
-    li.is-active {
-      font-weight: bold;
-    }
+      li.is-active {
+        font-weight: bold;
+      }
 
-    .tab-label {
-      display: inline;
-    }
-
-    @media screen and (max-width: ${!IS_APP ? css`1053px` : css`1163px`}) {
       .tab-label {
-        display: none;
+        display: inline;
       }
 
-      .main.tabs span.icon {
-        margin: 0px;
+      @media screen and (max-width: ${!IS_APP ? css`1053px` : css`1163px`}) {
+        .tab-label {
+          display: none;
+        }
+
+        .main.tabs span.icon {
+          margin: 0px;
+        }
       }
-    }
 
-    .main.tabs {
-      display: flex;
-      flex-direction: row;
-      margin-bottom: 0px;
-    }
-
-    .main.tabs ul {
-      position: relative;
-    }
-
-    .main.tabs li {
-      line-height: 1.5;
-      padding: 8px 0 6px 0;
-    }
-
-    @media screen and (max-width: 319px) {
-      .main.tabs li a {
-        padding-right: 4px;
-        padding-left: 4px;
+      .main.tabs {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 0px;
       }
-    }
 
-    .sidebar.main.tabs li a {
-      padding-right: 6px;
-      padding-left: 6px;
-    }
+      .main.tabs ul {
+        position: relative;
+      }
 
-    #contents {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      min-height: 0px;
-      flex: auto;
-      background-color: white;
-    }
+      .main.tabs li {
+        line-height: 1.5;
+        padding: 8px 0 6px 0;
+      }
 
-    #tabContents {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      min-height: 0px;
-      flex: auto;
-    }
+      @media screen and (max-width: 319px) {
+        .main.tabs li a {
+          padding-right: 4px;
+          padding-left: 4px;
+        }
+      }
 
-    rwp-embed-receipt {
-      flex-direction: column;
-      display: flex;
-    }
+      .sidebar.main.tabs li a {
+        padding-right: 6px;
+        padding-left: 6px;
+      }
 
-    ${RWPEmbedReceipt.embedStyles}
+      #contents {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        min-height: 0px;
+        flex: auto;
+        background-color: white;
+      }
 
-    ${Coll.replayBarStyles}`;
+      #tabContents {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        min-height: 0px;
+        flex: auto;
+      }
+
+      rwp-embed-receipt {
+        flex-direction: column;
+        display: flex;
+      }
+
+      ${RWPEmbedReceipt.embedStyles}
+
+      ${Coll.replayBarStyles}
+    `;
   }
 
   static get replayBarStyles() {
     return css`
-    .breadbar {
-      display: flex;
-      align-items: center;
-      height: 35px;
-      width: 100%;
-      background-color: aliceblue;
-      padding: 0.5em;
-    }
+      .breadbar {
+        display: flex;
+        align-items: center;
+        height: 35px;
+        width: 100%;
+        background-color: aliceblue;
+        padding: 0.5em;
+      }
 
-    .replay-bar {
-      padding: 0.5em 0em 0.5em 0.5em;
-      max-width: none;
-      border-bottom: solid .1rem #97989A;
-      width: 100%;
-      background-color: white;
-    }
+      .replay-bar {
+        padding: 0.5em 0em 0.5em 0.5em;
+        max-width: none;
+        border-bottom: solid 0.1rem #97989a;
+        width: 100%;
+        background-color: white;
+      }
 
-    input#url {
-      border-radius: 4px;
-    }
+      input#url {
+        border-radius: 4px;
+      }
 
-    .favicon img {
-      width: 20px;
-      height: 20px;
-      margin: 8px;
-      /*filter: drop-shadow(1px 1px 2px grey);*/
-    }
+      .favicon img {
+        width: 20px;
+        height: 20px;
+        margin: 8px;
+        /*filter: drop-shadow(1px 1px 2px grey);*/
+      }
 
-    #datetime {
-      position: absolute;
-      right: 1em;
-      z-index: 10;
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0), #FFF 15%, #FFF);
-      margin: -35px 0 0 0px;
-      padding-left: 3em;
-      line-height: 2;
-    }
+      #datetime {
+        position: absolute;
+        right: 1em;
+        z-index: 10;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          #fff 15%,
+          #fff
+        );
+        margin: -35px 0 0 0px;
+        padding-left: 3em;
+        line-height: 2;
+      }
 
-    .menu-head {
-      font-size: 10px;
-      font-weight: bold;
-      display: block;
-    }
-    .menu-logo {
-      vertical-align: middle;
-    }
-    .menu-version {
-      font-size: 10px;
-    }
-    .dropdown-item.info {
-      font-style: italic;
-    }
+      .menu-head {
+        font-size: 10px;
+        font-weight: bold;
+        display: block;
+      }
+      .menu-logo {
+        vertical-align: middle;
+      }
+      .menu-version {
+        font-size: 10px;
+      }
+      .dropdown-item.info {
+        font-style: italic;
+      }
 
-    input:focus + #datetime {
-      display: none;
-    }
+      input:focus + #datetime {
+        display: none;
+      }
 
-    .grey-disabled {
-      --fa-icon-fill-color: lightgrey;
-      color: lightgrey;
-    }
+      .grey-disabled {
+        --fa-icon-fill-color: lightgrey;
+        color: lightgrey;
+      }
 
-    .replay-bar .button:focus {
-      box-shadow: none;
-    }
+      .replay-bar .button:focus {
+        box-shadow: none;
+      }
 
-    .is-borderless {
-      border: 0px;
-    }
+      .is-borderless {
+        border: 0px;
+      }
 
-    .narrow {
-      padding: calc(0.5em - 1px) 0.8em;
-    }
+      .narrow {
+        padding: calc(0.5em - 1px) 0.8em;
+      }
 
-    form {
-      width: 100%;
-      margin: 0 0 0 0.5em;
-    }
+      form {
+        width: 100%;
+        margin: 0 0 0 0.5em;
+      }
 
-    .gutter.gutter-horizontal {
-      cursor: col-resize;
-      float: left;
-      background-color: rgb(151, 152, 154);
-    }
+      .gutter.gutter-horizontal {
+        cursor: col-resize;
+        float: left;
+        background-color: rgb(151, 152, 154);
+      }
 
-    .gutter.gutter-horizontal:hover {
-      cursor: col-resize;
-    }
+      .gutter.gutter-horizontal:hover {
+        cursor: col-resize;
+      }
 
-    main, wr-coll-replay {
-      width: 100%;
-    }
+      main,
+      wr-coll-replay {
+        width: 100%;
+      }
 
-    .info-bg {
-      background-color: whitesmoke;
-      width: 100%;
-      height: 100%;
-      display: flex;
-    }
+      .info-bg {
+        background-color: whitesmoke;
+        width: 100%;
+        height: 100%;
+        display: flex;
+      }
 
-    .is-list {
-      margin: 1.0em;
-      background-color: whitesmoke;
-    }
+      .is-list {
+        margin: 1em;
+        background-color: whitesmoke;
+      }
 
-    #contents.full-pages {
-      width: 100% !important;
-    }
+      #contents.full-pages {
+        width: 100% !important;
+      }
 
-    .sidebar-nav {
-      position: absolute;
-      vertical-align: middle;
-    }
+      .sidebar-nav {
+        position: absolute;
+        vertical-align: middle;
+      }
 
-    .sidebar-nav a {
-      display: inline-block;
-      border-bottom: 0px;
-    }
+      .sidebar-nav a {
+        display: inline-block;
+        border-bottom: 0px;
+      }
 
-    .sidebar-nav span.nav-hover {
-      font-size: smaller;
-      display: none;
-    }
+      .sidebar-nav span.nav-hover {
+        font-size: smaller;
+        display: none;
+      }
 
-    .sidebar-nav:hover span.nav-hover,
-    .sidebar-nav:focus-within span.nav-hover {
-      display: initial;
-      color: rgb(72, 118, 255);
-    }
+      .sidebar-nav:hover span.nav-hover,
+      .sidebar-nav:focus-within span.nav-hover {
+        display: initial;
+        color: rgb(72, 118, 255);
+      }
 
-    .sidebar-nav fa-icon {
-      vertical-align: bottom;
-    }
+      .sidebar-nav fa-icon {
+        vertical-align: bottom;
+      }
 
-    .sidebar-nav:hover fa-icon {
-      color: rgb(72, 118, 255);
-    }
+      .sidebar-nav:hover fa-icon {
+        color: rgb(72, 118, 255);
+      }
 
-    .sidebar-nav.left {
-      left: 8px;
-    }
+      .sidebar-nav.left {
+        left: 8px;
+      }
 
-    .sidebar-nav.right {
-      right: 8px;
-    }
+      .sidebar-nav.right {
+        right: 8px;
+      }
 
-    /* Since the replay sometimes programmatically receives keyboard focus,
+      /* Since the replay sometimes programmatically receives keyboard focus,
        and that is visually unexpected for mouse-users, and since this won't
        particularly trip up keyboard users, just remove the focus style. */
-    wr-coll-replay:focus {
-      outline: none;
-    }
-    /* Some keyboard-users may see this replacement style */
-    wr-coll-replay:focus-visible {
-      outline: 1px solid rgb(72, 118, 255);
-    }
+      wr-coll-replay:focus {
+        outline: none;
+      }
+      /* Some keyboard-users may see this replacement style */
+      wr-coll-replay:focus-visible {
+        outline: 1px solid rgb(72, 118, 255);
+      }
     `;
   }
 
@@ -667,41 +716,66 @@ class Coll extends LitElement
     const isReplay = !!this.tabData.url;
     const isSidebar = isReplay && this.showSidebar;
 
-    if (!isReplay && this.tabData && this.tabData.view){
-      const detail = {title: this.tabLabels[this.tabData.view], replayTitle: false};
-      this.dispatchEvent(new CustomEvent("update-title", {bubbles: true, composed: true, detail}));
+    if (!isReplay && this.tabData && this.tabData.view) {
+      const detail = {
+        title: this.tabLabels[this.tabData.view],
+        replayTitle: false,
+      };
+      this.dispatchEvent(
+        new CustomEvent("update-title", {
+          bubbles: true,
+          composed: true,
+          detail,
+        }),
+      );
     }
 
     if (this.collInfo && !this.collInfo.coll) {
-      return html`
-      <wr-loader .loadInfo="${this.loadInfo}" embed="${this.embed}" swName="${this.swName}"
-      .coll="${this.coll}" .sourceUrl="${this.sourceUrl}" @coll-loaded=${this.onCollLoaded}></wr-loader>`;
+      return html` <wr-loader
+        .loadInfo="${this.loadInfo}"
+        embed="${this.embed}"
+        swName="${this.swName}"
+        .coll="${this.coll}"
+        .sourceUrl="${this.sourceUrl}"
+        @coll-loaded=${this.onCollLoaded}
+      ></wr-loader>`;
     } else if (this.collInfo) {
       return html`
-      ${this.renderLocationBar()}
-      ${this.renderVerifyInfo()}
-      <div id="tabContents">
-        <div id="contents" class="is-light ${isSidebar ? "sidebar" : (isReplay ? "is-hidden" : "full-pages")}"
-             role="${isSidebar ? "complementary" : ""}" aria-label="${isSidebar ? "Browse Contents" : ""}">
-          ${this.renderTabHeader(isSidebar)}
-          ${isSidebar || !isReplay ? this.renderCollTabs(isSidebar) : html``}
-        </div>
-
-        ${isReplay && this.isVisible ? html`
-          <wr-coll-replay
-          role="main"
-          tabindex="-1"
-          .collInfo="${this.collInfo}"
-          sourceUrl="${this.sourceUrl}"
-          url="${this.tabData.url || ""}"
-          ts="${this.tabData.ts || ""}"
-          @coll-tab-nav="${this.onCollTabNav}" id="replay"
-          @replay-loading="${(e) => this.isLoading = e.detail.loading}"
-          @replay-favicons="${this.onFavIcons}"
+        ${this.renderLocationBar()} ${this.renderVerifyInfo()}
+        <div id="tabContents">
+          <div
+            id="contents"
+            class="is-light ${isSidebar
+              ? "sidebar"
+              : isReplay
+              ? "is-hidden"
+              : "full-pages"}"
+            role="${isSidebar ? "complementary" : ""}"
+            aria-label="${isSidebar ? "Browse Contents" : ""}"
           >
-          </wr-coll-replay>
-        ` : ""}
-      </div>
+            ${this.renderTabHeader(isSidebar)}
+            ${isSidebar || !isReplay ? this.renderCollTabs(isSidebar) : html``}
+          </div>
+
+          ${isReplay && this.isVisible
+            ? html`
+                <wr-coll-replay
+                  role="main"
+                  tabindex="-1"
+                  .collInfo="${this.collInfo}"
+                  sourceUrl="${this.sourceUrl}"
+                  url="${this.tabData.url || ""}"
+                  ts="${this.tabData.ts || ""}"
+                  @coll-tab-nav="${this.onCollTabNav}"
+                  id="replay"
+                  @replay-loading="${(e) =>
+                    (this.isLoading = e.detail.loading)}"
+                  @replay-favicons="${this.onFavIcons}"
+                >
+                </wr-coll-replay>
+              `
+            : ""}
+        </div>
       `;
     } else {
       return html``;
@@ -713,57 +787,149 @@ class Coll extends LitElement
     //   return "";
     // }
 
-    return html`
-      <nav class="main tabs is-centered ${isSidebar ? "sidebar" : ""}" aria-label="tabs">
-        <ul>
-          ${isSidebar ? html`
-          <li class="sidebar-nav left">
-            <a role="button" href="#" @click="${this.onHideSidebar}" @keyup="${clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
-              <fa-icon title="Hide" .svg="${fasAngleLeft}" aria-hidden="true"></fa-icon>
-              <span class="nav-hover" aria-hidden="true">Hide</span>
-              <span class="is-sr-only">Hide Sidebar</span>
-            </a>
-          </li>` : ""}
+    return html` <nav
+      class="main tabs is-centered ${isSidebar ? "sidebar" : ""}"
+      aria-label="tabs"
+    >
+      <ul>
+        ${isSidebar
+          ? html` <li class="sidebar-nav left">
+              <a
+                role="button"
+                href="#"
+                @click="${this.onHideSidebar}"
+                @keyup="${clickOnSpacebarPress}"
+                class="is-marginless is-size-6 is-paddingless"
+              >
+                <fa-icon
+                  title="Hide"
+                  .svg="${fasAngleLeft}"
+                  aria-hidden="true"
+                ></fa-icon>
+                <span class="nav-hover" aria-hidden="true">Hide</span>
+                <span class="is-sr-only">Hide Sidebar</span>
+              </a>
+            </li>`
+          : ""}
+        ${this.hasStory
+          ? html` <li
+              class="${this.tabData.view === "story" ? "is-active" : ""}"
+            >
+              <a
+                @click="${this.onTabClick}"
+                href="#story"
+                class="is-size-6"
+                aria-label="Story"
+                aria-current="${this.tabData.view === "story"
+                  ? "location"
+                  : ""}"
+              >
+                <span class="icon"
+                  ><fa-icon
+                    .svg="${fasBook}"
+                    aria-hidden="true"
+                    title="Story"
+                  ></fa-icon
+                ></span>
+                <span
+                  class="tab-label ${isSidebar ? "is-hidden" : ""}"
+                  title="Story"
+                  >Story</span
+                >
+              </a>
+            </li>`
+          : ""}
 
-          ${this.hasStory ? html`
-          <li class="${this.tabData.view === "story" ? "is-active" : ""}">
-            <a @click="${this.onTabClick}" href="#story" class="is-size-6" aria-label="Story" aria-current="${this.tabData.view === "story" ? "location" : ""}">
-              <span class="icon"><fa-icon .svg="${fasBook}" aria-hidden="true" title="Story"></fa-icon></span>
-              <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="Story">Story</span>
-            </a>
-          </li>` : ""}
+        <li class="${this.tabData.view === "pages" ? "is-active" : ""}">
+          <a
+            @click="${this.onTabClick}"
+            href="#pages"
+            class="is-size-6"
+            aria-label="Pages"
+            aria-current="${this.tabData.view === "pages" ? "location" : ""}"
+          >
+            <span class="icon"
+              ><fa-icon
+                .svg="${farPages}"
+                aria-hidden="true"
+                title="Pages"
+              ></fa-icon
+            ></span>
+            <span
+              class="tab-label ${isSidebar ? "is-hidden" : ""}"
+              title="Pages"
+              >Pages</span
+            >
+          </a>
+        </li>
 
-          <li class="${this.tabData.view === "pages" ? "is-active" : ""}">
-            <a @click="${this.onTabClick}" href="#pages" class="is-size-6" aria-label="Pages" aria-current="${this.tabData.view === "pages" ? "location" : ""}">
-              <span class="icon"><fa-icon .svg="${farPages}" aria-hidden="true" title="Pages"></fa-icon></span>
-              <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="Pages">Pages</span>
-            </a>
-          </li>
+        <li class="${this.tabData.view === "resources" ? "is-active" : ""}">
+          <a
+            @click="${this.onTabClick}"
+            href="#resources"
+            class="is-size-6"
+            aria-label="URLs"
+            aria-current="${this.tabData.view === "resources"
+              ? "location"
+              : ""}"
+          >
+            <span class="icon"
+              ><fa-icon
+                .svg="${farResources}"
+                aria-hidden="true"
+                title="URLs"
+              ></fa-icon
+            ></span>
+            <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="URLs"
+              >URLs</span
+            >
+          </a>
+        </li>
 
-          <li class="${this.tabData.view === "resources" ? "is-active" : ""}">
-            <a @click="${this.onTabClick}" href="#resources" class="is-size-6" aria-label="URLs" aria-current="${this.tabData.view === "resources" ? "location" : ""}">
-              <span class="icon"><fa-icon .svg="${farResources}" aria-hidden="true" title="URLs"></fa-icon></span>
-              <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="URLs">URLs</span>
-            </a>
-          </li>
+        <li class="${this.tabData.view === "info" ? "is-active" : ""}">
+          <a
+            @click="${this.onTabClick}"
+            href="#info"
+            class="is-size-6"
+            aria-label="Archive Info"
+            aria-current="${this.tabData.view === "info" ? "location" : ""}"
+          >
+            <span class="icon"
+              ><fa-icon
+                .svg="${fasInfoIcon}"
+                aria-hidden="true"
+                title="Archive Info"
+              ></fa-icon
+            ></span>
+            <span
+              class="tab-label ${isSidebar ? "is-hidden" : ""}"
+              title="Archive Info"
+              >Info</span
+            >
+          </a>
+        </li>
 
-          <li class="${this.tabData.view === "info" ? "is-active" : ""}">
-            <a @click="${this.onTabClick}" href="#info" class="is-size-6" aria-label="Archive Info" aria-current="${this.tabData.view === "info" ? "location" : ""}">
-              <span class="icon"><fa-icon .svg="${fasInfoIcon}" aria-hidden="true" title="Archive Info"></fa-icon></span>
-              <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="Archive Info">Info</span>
-            </a>
-          </li>
-
-          ${isSidebar ? html`
-          <li class="sidebar-nav right">
-            <a role="button" href="#" @click="${this.onFullPageView}" @keyup="${clickOnSpacebarPress}" class="is-marginless is-size-6 is-paddingless">
-              <span class="nav-hover" aria-hidden="true">Expand</span>
-              <span class="is-sr-only">Expand Sidebar to Full View</span>
-              <fa-icon title="Expand" .svg="${fasAngleRight}" aria-hidden="true"></fa-icon>
-            </a>
-          </li>` : ""}
-        </ul>
-      </nav>`;
+        ${isSidebar
+          ? html` <li class="sidebar-nav right">
+              <a
+                role="button"
+                href="#"
+                @click="${this.onFullPageView}"
+                @keyup="${clickOnSpacebarPress}"
+                class="is-marginless is-size-6 is-paddingless"
+              >
+                <span class="nav-hover" aria-hidden="true">Expand</span>
+                <span class="is-sr-only">Expand Sidebar to Full View</span>
+                <fa-icon
+                  title="Expand"
+                  .svg="${fasAngleRight}"
+                  aria-hidden="true"
+                ></fa-icon>
+              </a>
+            </li>`
+          : ""}
+      </ul>
+    </nav>`;
   }
 
   renderLocationBar() {
@@ -777,130 +943,330 @@ class Coll extends LitElement
 
     const showFavIcon = isReplay && this.favIconUrl;
 
-    return html`
-    <a class="skip-link" href="#skip-replay-target" @click="${this.skipMenu}">Skip replay navigation</a>
-    <nav class="replay-bar" aria-label="replay">
-      <div class="field has-addons">
-        <a href="#" role="button" class="button narrow is-borderless is-hidden-touch" id="fullscreen" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}"
-                title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}" aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}">
-          <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
-          </span>
-        </a>
-        <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile" @click="${this.onGoBack}" @keyup="${clickOnSpacebarPress}"
-                title="Back" aria-label="Back">
-          <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
-          </span>
-        </a>
-        <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile" @click="${this.onGoForward}" @keyup="${clickOnSpacebarPress}"
-                title="Forward" aria-label="Forward">
-          <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
-          </span>
-        </a>
-        <a href="#" role="button" class="button narrow is-borderless ${this.isLoading ? "is-loading" : "is-hidden-mobile"}" id="refresh" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}"
-                title="Reload" aria-label="Reload">
-          <span class="icon is-small">
-            ${!this.isLoading ? html`
-            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
-            ` : ""}
-          </span>
-        </a>
-        ${this.browsable ? html`
-        <a href="#" role="button" class="button narrow is-borderless is-hidden-mobile ${!isReplay ? "grey-disabled" : ""}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}"
-                ?disabled="${!isReplay}" title="Browse Contents" aria-label="Browse Contents" aria-controls="contents">
-          <span class="icon is-small">
-            <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
-          </span>
-        </a>` : ""}
-        ${this.renderExtraToolbar(false)}
-        <form @submit="${this.onSubmit}">
-          <div class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}">
-            <input id="url" class="input" type="text" @keydown="${this.onKeyDown}" @blur="${this.onLostFocus}" .value="${this.url}" placeholder="Enter text to search or a URL to replay"/>
-            ${isReplay ? html`<p id="datetime" class="control is-hidden-mobile">${dateStr}</p>` : html``}
-            ${showFavIcon ? html`
-            <span class="favicon icon is-small is-left">
-              <img src="${this.favIconUrl}"/>
-            </span>` : html``}
-          </div>
-        </form>
+    return html` <a
+        class="skip-link"
+        href="#skip-replay-target"
+        @click="${this.skipMenu}"
+        >Skip replay navigation</a
+      >
+      <nav class="replay-bar" aria-label="replay">
+        <div class="field has-addons">
+          <a
+            href="#"
+            role="button"
+            class="button narrow is-borderless is-hidden-touch"
+            id="fullscreen"
+            @click="${this.onFullscreenToggle}"
+            @keyup="${clickOnSpacebarPress}"
+            title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}"
+            aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}"
+          >
+            <span class="icon is-small">
+              <fa-icon
+                size="1.0em"
+                class="has-text-grey"
+                aria-hidden="true"
+                .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"
+              ></fa-icon>
+            </span>
+          </a>
+          <a
+            href="#"
+            role="button"
+            class="button narrow is-borderless is-hidden-mobile"
+            @click="${this.onGoBack}"
+            @keyup="${clickOnSpacebarPress}"
+            title="Back"
+            aria-label="Back"
+          >
+            <span class="icon is-small">
+              <fa-icon
+                size="1.0em"
+                class="has-text-grey"
+                aria-hidden="true"
+                .svg="${fasLeft}"
+              ></fa-icon>
+            </span>
+          </a>
+          <a
+            href="#"
+            role="button"
+            class="button narrow is-borderless is-hidden-mobile"
+            @click="${this.onGoForward}"
+            @keyup="${clickOnSpacebarPress}"
+            title="Forward"
+            aria-label="Forward"
+          >
+            <span class="icon is-small">
+              <fa-icon
+                size="1.0em"
+                class="has-text-grey"
+                aria-hidden="true"
+                .svg="${fasRight}"
+              ></fa-icon>
+            </span>
+          </a>
+          <a
+            href="#"
+            role="button"
+            class="button narrow is-borderless ${this.isLoading
+              ? "is-loading"
+              : "is-hidden-mobile"}"
+            id="refresh"
+            @click="${this.onRefresh}"
+            @keyup="${clickOnSpacebarPress}"
+            title="Reload"
+            aria-label="Reload"
+          >
+            <span class="icon is-small">
+              ${!this.isLoading
+                ? html`
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasRefresh}"
+                    ></fa-icon>
+                  `
+                : ""}
+            </span>
+          </a>
+          ${this.browsable
+            ? html` <a
+                href="#"
+                role="button"
+                class="button narrow is-borderless is-hidden-mobile ${!isReplay
+                  ? "grey-disabled"
+                  : ""}"
+                @click="${this.onShowPages}"
+                @keyup="${clickOnSpacebarPress}"
+                ?disabled="${!isReplay}"
+                title="Browse Contents"
+                aria-label="Browse Contents"
+                aria-controls="contents"
+              >
+                <span class="icon is-small">
+                  <fa-icon
+                    size="1.0em"
+                    class="has-text-grey"
+                    aria-hidden="true"
+                    .svg="${farListAlt}"
+                  ></fa-icon>
+                </span>
+              </a>`
+            : ""}
+          ${this.renderExtraToolbar(false)}
+          <form @submit="${this.onSubmit}">
+            <div
+              class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}"
+            >
+              <input
+                id="url"
+                class="input"
+                type="text"
+                @keydown="${this.onKeyDown}"
+                @blur="${this.onLostFocus}"
+                .value="${this.url}"
+                placeholder="Enter text to search or a URL to replay"
+              />
+              ${isReplay
+                ? html`<p id="datetime" class="control is-hidden-mobile">
+                    ${dateStr}
+                  </p>`
+                : html``}
+              ${showFavIcon
+                ? html` <span class="favicon icon is-small is-left">
+                    <img src="${this.favIconUrl}" />
+                  </span>`
+                : html``}
+            </div>
+          </form>
 
-        <div class="dropdown is-right ${this.menuActive ? "is-active" : ""}" @click="${() => this.menuActive = false}">
-          <div class="dropdown-trigger">
-            <button class="button is-borderless" aria-haspopup="true" aria-controls="menu-dropdown" aria-expanded="${this.menuActive}" @click="${this.onMenu}"
-                    aria-label="more replay controls">
-              <span class="icon is-small">
-                <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasMenuV}"></fa-icon>
-              </span>
-            </button>
-          </div>
-          <div class="dropdown-menu" id="menu-dropdown">
-            <div class="dropdown-content">
-              <a href="#" role="button" class="dropdown-item is-hidden-desktop" @click="${this.onFullscreenToggle}" @keyup="${clickOnSpacebarPress}">
+          <div
+            class="dropdown is-right ${this.menuActive ? "is-active" : ""}"
+            @click="${() => (this.menuActive = false)}"
+          >
+            <div class="dropdown-trigger">
+              <button
+                class="button is-borderless"
+                aria-haspopup="true"
+                aria-controls="menu-dropdown"
+                aria-expanded="${this.menuActive}"
+                @click="${this.onMenu}"
+                aria-label="more replay controls"
+              >
                 <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"></fa-icon>
+                  <fa-icon
+                    size="1.0em"
+                    class="has-text-grey"
+                    aria-hidden="true"
+                    .svg="${fasMenuV}"
+                  ></fa-icon>
                 </span>
-                <span>Full Screen</span>
-              </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoBack}" @keyup="${clickOnSpacebarPress}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasLeft}"></fa-icon>
-                </span>
-                <span>Back</span>
-              </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onGoForward}" @keyup="${clickOnSpacebarPress}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRight}"></fa-icon>
-                </span>
-                <span>Forward</span>
-              </a>
-              <a href="#" role="button" class="dropdown-item is-hidden-tablet" @click="${this.onRefresh}" @keyup="${clickOnSpacebarPress}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasRefresh}"></fa-icon>
-                </span>
-                <span>Reload</span>
-              </a>
-              ${this.browsable ? html`
-              <a href="#" role="button" class="dropdown-item is-hidden-tablet ${!isReplay ? "grey-disabled" : ""}" @click="${this.onShowPages}" @keyup="${clickOnSpacebarPress}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${farListAlt}"></fa-icon>
-                </span>
-                <span>Browse Contents</span>
-              </a>` : ""}
-              ${this.renderExtraToolbar(true)}
-              ${this.clearable ? html`
-              <hr class="dropdown-divider is-hidden-desktop">
-              <a href="#" role="button" class="dropdown-item" @click="${this.onPurgeCache}" @keyup="${clickOnSpacebarPress}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasSync}"></fa-icon>
-                </span>
-                <span>Purge Cache + Full Reload</span>
-              </a>` : html``}
-              ${!this.editable && this.sourceUrl.startsWith("http://") || this.sourceUrl.startsWith("https://") ? html`
-              <hr class="dropdown-divider">
-              <a href="${this.sourceUrl}" role="button" class="dropdown-item" @keyup="${clickOnSpacebarPress}">
-                <span class="icon is-small">
-                  <fa-icon size="1.0em" class="has-text-grey" aria-hidden="true" .svg="${fasDownload}"></fa-icon>
-                </span>
-                <span>Download Archive</span>
-              </a>` : html``}
-              ${dateStr ? html`
-              <hr class="dropdown-divider is-hidden-desktop">
-              <div class="dropdown-item info is-hidden-desktop">
-                <span class="menu-head">Capture Date</span>${dateStr}
-              </div>` : ""}
-              <hr class="dropdown-divider">
-              <a href="#" role="button" class="dropdown-item" @click="${this.onAbout}">
-                <fa-icon class="menu-logo" size="1.0rem" aria-hidden="true" .svg=${this.appLogo}></fa-icon>
-                <span>&nbsp;About ${this.appName}</span>
-                <span class="menu-version">(${this.appVersion})</span>
-              </a>
+              </button>
+            </div>
+            <div class="dropdown-menu" id="menu-dropdown">
+              <div class="dropdown-content">
+                <a
+                  href="#"
+                  role="button"
+                  class="dropdown-item is-hidden-desktop"
+                  @click="${this.onFullscreenToggle}"
+                  @keyup="${clickOnSpacebarPress}"
+                >
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${this.isFullscreen
+                        ? fasUnfullscreen
+                        : fasFullscreen}"
+                    ></fa-icon>
+                  </span>
+                  <span>Full Screen</span>
+                </a>
+                <a
+                  href="#"
+                  role="button"
+                  class="dropdown-item is-hidden-tablet"
+                  @click="${this.onGoBack}"
+                  @keyup="${clickOnSpacebarPress}"
+                >
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasLeft}"
+                    ></fa-icon>
+                  </span>
+                  <span>Back</span>
+                </a>
+                <a
+                  href="#"
+                  role="button"
+                  class="dropdown-item is-hidden-tablet"
+                  @click="${this.onGoForward}"
+                  @keyup="${clickOnSpacebarPress}"
+                >
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasRight}"
+                    ></fa-icon>
+                  </span>
+                  <span>Forward</span>
+                </a>
+                <a
+                  href="#"
+                  role="button"
+                  class="dropdown-item is-hidden-tablet"
+                  @click="${this.onRefresh}"
+                  @keyup="${clickOnSpacebarPress}"
+                >
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasRefresh}"
+                    ></fa-icon>
+                  </span>
+                  <span>Reload</span>
+                </a>
+                ${this.browsable
+                  ? html` <a
+                      href="#"
+                      role="button"
+                      class="dropdown-item is-hidden-tablet ${!isReplay
+                        ? "grey-disabled"
+                        : ""}"
+                      @click="${this.onShowPages}"
+                      @keyup="${clickOnSpacebarPress}"
+                    >
+                      <span class="icon is-small">
+                        <fa-icon
+                          size="1.0em"
+                          class="has-text-grey"
+                          aria-hidden="true"
+                          .svg="${farListAlt}"
+                        ></fa-icon>
+                      </span>
+                      <span>Browse Contents</span>
+                    </a>`
+                  : ""}
+                ${this.renderExtraToolbar(true)}
+                ${this.clearable
+                  ? html` <hr class="dropdown-divider is-hidden-desktop" />
+                      <a
+                        href="#"
+                        role="button"
+                        class="dropdown-item"
+                        @click="${this.onPurgeCache}"
+                        @keyup="${clickOnSpacebarPress}"
+                      >
+                        <span class="icon is-small">
+                          <fa-icon
+                            size="1.0em"
+                            class="has-text-grey"
+                            aria-hidden="true"
+                            .svg="${fasSync}"
+                          ></fa-icon>
+                        </span>
+                        <span>Purge Cache + Full Reload</span>
+                      </a>`
+                  : html``}
+                ${(!this.editable && this.sourceUrl.startsWith("http://")) ||
+                this.sourceUrl.startsWith("https://")
+                  ? html` <hr class="dropdown-divider" />
+                      <a
+                        href="${this.sourceUrl}"
+                        role="button"
+                        class="dropdown-item"
+                        @keyup="${clickOnSpacebarPress}"
+                      >
+                        <span class="icon is-small">
+                          <fa-icon
+                            size="1.0em"
+                            class="has-text-grey"
+                            aria-hidden="true"
+                            .svg="${fasDownload}"
+                          ></fa-icon>
+                        </span>
+                        <span>Download Archive</span>
+                      </a>`
+                  : html``}
+                ${dateStr
+                  ? html` <hr class="dropdown-divider is-hidden-desktop" />
+                      <div class="dropdown-item info is-hidden-desktop">
+                        <span class="menu-head">Capture Date</span>${dateStr}
+                      </div>`
+                  : ""}
+                <hr class="dropdown-divider" />
+                <a
+                  href="#"
+                  role="button"
+                  class="dropdown-item"
+                  @click="${this.onAbout}"
+                >
+                  <fa-icon
+                    class="menu-logo"
+                    size="1.0rem"
+                    aria-hidden="true"
+                    .svg=${this.appLogo}
+                  ></fa-icon>
+                  <span>&nbsp;About ${this.appName}</span>
+                  <span class="menu-version">(${this.appVersion})</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </nav><p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
+      </nav>
+      <p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
   }
 
   renderVerifyInfo() {
@@ -909,12 +1275,12 @@ class Coll extends LitElement
     }
 
     return html`<rwp-embed-receipt
-            .collInfo=${this.collInfo}
-            url=${this.url}
-            ts=${this.ts}
-            .appLogo=${this.appLogo}
-            >
-            </rwp-embed-receipt>`;
+      .collInfo=${this.collInfo}
+      url=${this.url}
+      ts=${this.ts}
+      .appLogo=${this.appLogo}
+    >
+    </rwp-embed-receipt>`;
   }
 
   dragStart() {
@@ -932,14 +1298,13 @@ class Coll extends LitElement
   }
 
   renderCollInfo() {
-    return html`
-    <div class="info-bg">
+    return html` <div class="info-bg">
       <wr-coll-info
-      class="is-list"
-      .coll="${this.collInfo}"
-      ?detailed="${true}"
-      ?canDelete="${!this.embed}"
-      @coll-purge="${this.onPurgeCache}"
+        class="is-list"
+        .coll="${this.collInfo}"
+        ?detailed="${true}"
+        ?canDelete="${!this.embed}"
+        @coll-purge="${this.onPurgeCache}"
       ></wr-coll-info>
     </div>`;
   }
@@ -955,53 +1320,59 @@ class Coll extends LitElement
     const isInfo = this.tabData.view === "info";
 
     return html`
-
-    ${isInfo ? this.renderCollInfo() : html``}
-
-    ${isStory ? html`
-    <wr-coll-story .collInfo="${this.collInfo}"
-    .active="${isStory}"
-    currList="${this.tabData.currList || 0}"
-    @coll-tab-nav="${this.onCollTabNav}" id="story"
-    .isSidebar="${isSidebar}"
-    class="${isStory ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-    role="${isSidebar ? "" : "main"}"
-    >
-    </wr-coll-story>` : ""}
-
-    ${isResources ? html`
-    <wr-coll-resources .collInfo="${this.collInfo}"
-    .active="${isResources}"
-    query="${this.tabData.query || ""}"
-    urlSearchType="${this.tabData.urlSearchType || ""}"
-    .currMime="${this.tabData.currMime || ""}"
-    @coll-tab-nav="${this.onCollTabNav}" id="resources"
-    .isSidebar="${isSidebar}"
-    class="is-paddingless ${isResources ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-    role="${isSidebar ? "" : "main"}"
-    >
-    </wr-coll-resources>` : ""}
-
-    ${isPages ? html`
-    <wr-page-view
-    .collInfo="${this.collInfo}"
-    .active="${isPages}"
-    .editable="${this.editable}"
-    .isSidebar="${isSidebar}"
-    currList="${this.tabData.currList || 0}"
-    query="${this.tabData.query || ""}"
-    .url="${this.tabData.url || ""}"
-    .ts="${this.tabData.ts || ""}"
-    @coll-tab-nav="${this.onCollTabNav}" id="pages"
-    @coll-update="${this.onCollUpdate}"
-    class="${isPages ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-    role="${isSidebar ? "" : "main"}"
-    >
-    </wr-page-view>` : ""}
+      ${isInfo ? this.renderCollInfo() : html``}
+      ${isStory
+        ? html` <wr-coll-story
+            .collInfo="${this.collInfo}"
+            .active="${isStory}"
+            currList="${this.tabData.currList || 0}"
+            @coll-tab-nav="${this.onCollTabNav}"
+            id="story"
+            .isSidebar="${isSidebar}"
+            class="${isStory ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
+            role="${isSidebar ? "" : "main"}"
+          >
+          </wr-coll-story>`
+        : ""}
+      ${isResources
+        ? html` <wr-coll-resources
+            .collInfo="${this.collInfo}"
+            .active="${isResources}"
+            query="${this.tabData.query || ""}"
+            urlSearchType="${this.tabData.urlSearchType || ""}"
+            .currMime="${this.tabData.currMime || ""}"
+            @coll-tab-nav="${this.onCollTabNav}"
+            id="resources"
+            .isSidebar="${isSidebar}"
+            class="is-paddingless ${isResources ? "" : "is-hidden"} ${isSidebar
+              ? "sidebar"
+              : ""}"
+            role="${isSidebar ? "" : "main"}"
+          >
+          </wr-coll-resources>`
+        : ""}
+      ${isPages
+        ? html` <wr-page-view
+            .collInfo="${this.collInfo}"
+            .active="${isPages}"
+            .editable="${this.editable}"
+            .isSidebar="${isSidebar}"
+            currList="${this.tabData.currList || 0}"
+            query="${this.tabData.query || ""}"
+            .url="${this.tabData.url || ""}"
+            .ts="${this.tabData.ts || ""}"
+            @coll-tab-nav="${this.onCollTabNav}"
+            id="pages"
+            @coll-update="${this.onCollUpdate}"
+            class="${isPages ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
+            role="${isSidebar ? "" : "main"}"
+          >
+          </wr-page-view>`
+        : ""}
     `;
   }
 
-  skipMenu(event){
+  skipMenu(event) {
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
     event.preventDefault();
@@ -1020,9 +1391,13 @@ class Coll extends LitElement
     this.menuActive = !this.menuActive;
 
     if (this.menuActive) {
-      document.addEventListener("click", () => {
-        this.menuActive = false;
-      }, {once: true});
+      document.addEventListener(
+        "click",
+        () => {
+          this.menuActive = false;
+        },
+        { once: true },
+      );
     }
   }
 
@@ -1051,18 +1426,18 @@ class Coll extends LitElement
   onShowPages(event) {
     event.preventDefault();
     // show sidebar for tablet or wider, or hide sidebar
-    if (this.showSidebar || (document.documentElement.clientWidth >= 769)) {
+    if (this.showSidebar || document.documentElement.clientWidth >= 769) {
       this.showSidebar = !this.showSidebar;
     } else {
       // otherwise, just go to full pages view
       this.showSidebar = false;
-      this.updateTabData({url: "", ts: ""});
+      this.updateTabData({ url: "", ts: "" });
     }
   }
 
   onFullPageView(event) {
     event.preventDefault();
-    this.updateTabData({url: "", ts: ""});
+    this.updateTabData({ url: "", ts: "" });
   }
 
   onHideSidebar(event) {
@@ -1089,7 +1464,10 @@ class Coll extends LitElement
   onPurgeCache(event) {
     event.preventDefault();
 
-    const reload = event.detail && event.detail.reload !== undefined ? event.detail.reload : true;
+    const reload =
+      event.detail && event.detail.reload !== undefined
+        ? event.detail.reload
+        : true;
 
     this.deleteFully(reload);
   }
@@ -1135,7 +1513,7 @@ class Coll extends LitElement
     let data;
 
     if (value.startsWith("http://") || value.startsWith("https://")) {
-      data = {url: value};
+      data = { url: value };
 
       if (value === this.tabData.url) {
         const replay = this.renderRoot.querySelector("wr-coll-replay");
@@ -1144,10 +1522,9 @@ class Coll extends LitElement
         }
         return;
       }
-
     } else {
       if (!value.startsWith(RWP_SCHEME)) {
-        data = {query: value, view: "pages"};
+        data = { query: value, view: "pages" };
       } else {
         data = this._stringToParams(value);
       }
@@ -1161,7 +1538,13 @@ class Coll extends LitElement
     data.url = "";
     data.ts = "";
 
-    for (const param of ["query", "view", "currList", "currMime", "urlSearchType"]) {
+    for (const param of [
+      "query",
+      "view",
+      "currList",
+      "currMime",
+      "urlSearchType",
+    ]) {
       if (q.has(param)) {
         data[param] = q.get(param);
       }
@@ -1173,7 +1556,13 @@ class Coll extends LitElement
   _paramsToString(value) {
     const q = new URLSearchParams();
 
-    for (const param of ["query", "view", "currList", "currMime", "urlSearchType"]) {
+    for (const param of [
+      "query",
+      "view",
+      "currList",
+      "currMime",
+      "urlSearchType",
+    ]) {
       if (param in value) {
         q.set(param, value[param]);
       }

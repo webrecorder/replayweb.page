@@ -2,7 +2,7 @@
 
 /*$wr-green: #64e986;*/
 $wr-green: #55be6f;
-$wr-yellow:  #ffd975;
+$wr-yellow: #ffd975;
 $wr-dark-yellow: #ffc42e;
 $wr-light-blue: #43daff;
 $wr-med-blue: #27a0ff;
@@ -22,16 +22,17 @@ $light: $wr-light-green;
 $dark: $wr-dark-green;
 
 $navbar-breakpoint: 840px;
-$navbar-height: 2.0rem;
+$navbar-height: 2rem;
 
 $modal-card-title-size: 1.2rem;
-
 
 // Set placeholder contrast to ~4.5:1 for WCAG AA compliance
 $input-placeholder-color: #757575;
 $input-disabled-placeholder-color: #707070;
-.input::placeholder, .textarea::placeholder, .select select::placeholder {
-    opacity: 1;
+.input::placeholder,
+.textarea::placeholder,
+.select select::placeholder {
+  opacity: 1;
 }
 
 // focus styles for links to match
@@ -41,10 +42,12 @@ a:focus {
 
 // focus/hover styles for buttons
 .file-label:focus-within .file-cta {
-    background-color: #e8e8e8;
-    color: #363636;
+  background-color: #e8e8e8;
+  color: #363636;
 }
-.button.is-primary:focus, .button.is-primary:hover, .button.is-primary:active {
+.button.is-primary:focus,
+.button.is-primary:hover,
+.button.is-primary:active {
   background-color: $dark !important;
   color: white !important;
 }
@@ -64,37 +67,37 @@ a:focus {
 }
 
 .skip-link {
-    border: 0;
-    clip: rect(1px, 1px, 1px, 1px);
-    clip-path: inset(50%);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute !important;
-    width: 1px;
-    word-wrap: normal !important; /* Many screen reader and browser combinations announce broken words as they would appear visually. */
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important;
+  width: 1px;
+  word-wrap: normal !important; /* Many screen reader and browser combinations announce broken words as they would appear visually. */
 
-    &:focus {
-        background-color: black;
-        border-radius: 3px;
-        box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
-        clip: auto !important;
-        clip-path: none;
-        color: white;
-        display: block;
-        font-family: inherit;
-        font-size: 1.3em;
-        font-weight: bold;
-        height: auto;
-        left: 5px;
-        line-height: normal;
-        padding: 15px 23px 14px;
-        text-decoration: none;
-        top: 5px;
-        width: auto;
-        z-index: 100000;
-    }
+  &:focus {
+    background-color: black;
+    border-radius: 3px;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+    clip: auto !important;
+    clip-path: none;
+    color: white;
+    display: block;
+    font-family: inherit;
+    font-size: 1.3em;
+    font-weight: bold;
+    height: auto;
+    left: 5px;
+    line-height: normal;
+    padding: 15px 23px 14px;
+    text-decoration: none;
+    top: 5px;
+    width: auto;
+    z-index: 100000;
+  }
 }
 
 .main-scroll {
@@ -107,7 +110,6 @@ a:focus {
   flex-direction: column;
   overflow-x: hidden;
 }
-
 
 @import "bulma/bulma";
 

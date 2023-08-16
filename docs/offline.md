@@ -7,15 +7,14 @@ permalink: /docs/loading_offline
 ---
 
 # Offline Use
+
 {: .no_toc }
 
 ## ReplayWeb.page is available for offline use in several ways.
+
 {: .no_toc .text-delta }
 
-
-1. 
-{:toc}
-
+1.  {:toc}
 
 ## ReplayWeb.page Offline Cache
 
@@ -25,7 +24,6 @@ That's to say, once you have loaded ReplayWeb.page online (with an Internet conn
 
 To do this, https://replayweb.page/ in your Chrome browser, and the site will start loading local archives even without an Internet connection.
 
-
 <details>
     <summary>
         What's cache?
@@ -34,7 +32,6 @@ To do this, https://replayweb.page/ in your Chrome browser, and the site will st
        Cache is a <i>temporary</i> storage space in your browser that keeps certain files. Cached data is used to quickly load an application or website (like replayweb.page!) every time you log on. 
       </p>
   </details>
-
 
 ## ReplayWeb.page as Progress Web App
 
@@ -55,8 +52,6 @@ To do this, on the ReplayWeb.page site, you might have noticed a "new window ico
 
 <img alt="screenshot of replayweb.page (offline)" src="/docs/assets/replaywebpage-pwa.png">
 
-
-
 ## ReplayWeb.page as Standalone Desktop (Electron) App
 
 ReplayWeb.page is also available as a standalone Electron App. In this mode, ReplayWeb.page packages its own version of Chrome.
@@ -65,12 +60,12 @@ To do this, go to our [GitHub repo for replayweb.page](https://github.com/webrec
 
 Although the Web Page/Progressive Web App versions have almost the same features, the standalone App is useful for two primary reasons:
 
-1) For viewing web archives that contain Flash. Flash is not supported by default in most browsers and will soon be removed. The ReplayWeb.page App will bundle a Flash plugin to continue to make Flash accessible for web archives.
+1. For viewing web archives that contain Flash. Flash is not supported by default in most browsers and will soon be removed. The ReplayWeb.page App will bundle a Flash plugin to continue to make Flash accessible for web archives.
 
-2) Primary use for viewing offline web archive. If your primary use is to view web archives stored locally,
-the ReplayWeb.page App is a better option, as it provides direct access to the file system.
-Once loaded, ReplayWeb.page App can continue to load web archives from disk.
-The desktop app fully replaces [Webrecorder Player](https://github.com/webrecorder/webrecorder-player)
+2. Primary use for viewing offline web archive. If your primary use is to view web archives stored locally,
+   the ReplayWeb.page App is a better option, as it provides direct access to the file system.
+   Once loaded, ReplayWeb.page App can continue to load web archives from disk.
+   The desktop app fully replaces [Webrecorder Player](https://github.com/webrecorder/webrecorder-player)
 
 When using [https://replayweb.page](https://replayweb.page), you may be asked to re-open a local file because a web site can not have persistent access to your file system.
 
@@ -88,4 +83,4 @@ When using [https://replayweb.page](https://replayweb.page), you may be asked to
 <hr>
 Once an archive has successfully loaded, you will be redirected to the archive view from where you can explore the archive.
 
-Next:  [Exploring the Archive](/docs/exploring)
+Next: [Exploring the Archive](/docs/exploring)
