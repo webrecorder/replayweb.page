@@ -1,2 +1,2 @@
-export * from './src/ui.js';
+export * from './ui.js';
 

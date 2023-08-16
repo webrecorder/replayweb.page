@@ -11,6 +11,7 @@ import { Replay } from "./replay";
 import { Sorter } from "./sorter";
 import { URLResources } from "./url-resources";
 import { Embed } from "./embed";
+import "./shoelace";
 
 export {
   ReplayWebApp,
