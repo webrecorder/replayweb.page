@@ -462,7 +462,7 @@ class CollInfo extends LitElement {
       </div>
       <div class="column is-2">
         <p class="minihead">Total Size</p>
-        ${prettyBytes(Number(coll.size || 0))}
+        ${prettyBytes(Number(coll.totalSize || coll.size || 0))}
       </div>
     `;
   }

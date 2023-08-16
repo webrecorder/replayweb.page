@@ -584,7 +584,7 @@ class Pages extends LitElement {
                 >
                   ${this.collInfo.name || this.collInfo.title}
                 </div>
-                ${collInfo.description
+                ${this.collInfo.description
                   ? html`<div
                       class="index-bar-description"
                       @dblclick="${() => (this.editing = true)}"
