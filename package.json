@@ -172,6 +172,7 @@
     ]
   },
   "lint-staged": {
-    "*.ts": "prettier --write"
+    "*.ts": "prettier --write",
+    "src/*": "yarn build"
   }
 }
