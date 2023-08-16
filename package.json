@@ -36,6 +36,8 @@
     "eslint": "^8.23.1",
     "eslint-config-prettier": "^9.0.0",
     "http-server": "^13.0.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.0",
     "mini-css-extract-plugin": "^2.3.0",
     "node-sass": "^9.0.0",
     "prettier": "^3.0.1",
