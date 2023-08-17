@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { wrapCss, apiPrefix } from "./misc";
+import { map } from "lit/directives/map.js";
 
 import prettyBytes from "pretty-bytes";
 
@@ -461,7 +462,7 @@ class CollInfo extends LitElement {
       </div>
       <div class="column is-2">
         <p class="minihead">Total Size</p>
-        ${prettyBytes(Number(coll.size || 0))}
+        ${prettyBytes(Number(coll.totalSize || coll.size || 0))}
       </div>
     `;
   }
@@ -473,7 +474,7 @@ class CollInfo extends LitElement {
       <div class="column col-title is-4">
         <span class="subtitle has-text-weight-bold">
           <a href="?source=${encodeURIComponent(coll.sourceUrl)}"
-            >${coll.title || coll.filename}</a
+            >${coll.name || coll.title || coll.filename}</a
           >
         </span>
       </div>
@@ -503,7 +504,7 @@ class CollInfo extends LitElement {
     return html` <div class="columns">
       <div class="column col-title is-4">
         <span class="subtitle has-text-weight-bold">
-          ${coll.title || coll.filename}
+          ${coll.name || coll.title || coll.filename}
         </span>
       </div>
       ${coll.desc
@@ -512,10 +513,30 @@ class CollInfo extends LitElement {
             ${coll.desc}
           </div>`
         : html``}
-      <div class="column">
-        <p class="minihead">Filename</p>
-        ${coll.filename}
-      </div>
+      ${coll.description
+        ? html`<div class="column">
+            <p class="minihead">Description</p>
+            ${coll.description}
+          </div>`
+        : html``}
+      <!--  Only show filename if coll.resources doesn't exist -->
+      ${coll.resources
+        ? html`<div class="column">
+            <p class="minihead">Files</p>
+            <ol style="padding: revert">
+              ${map(
+                coll.resources,
+                (resource) =>
+                  html`<li>
+                    <a href="${resource.path}">${resource.name + "\n"}</a>
+                  </li>`,
+              )}
+            </ol>
+          </div>`
+        : html`<div class="column">
+            <p class="minihead">Filename</p>
+            ${coll.filename}
+          </div>`}
       ${this.renderSource(coll)}
       ${domain
         ? html`

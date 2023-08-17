@@ -471,8 +471,14 @@ class Pages extends LitElement {
         display: flex;
         flex-direction: column;
       }
+
       .flex-auto {
         flex: auto;
+      }
+
+      .index-bar-description {
+        margin-bottom: 20px;
+        font-style: italic;
       }
     `);
   }
@@ -579,11 +585,19 @@ class Pages extends LitElement {
                 </form>
               `
             : html` <div
-                class="index-bar-title"
-                @dblclick="${() => (this.editing = true)}"
-              >
-                ${this.collInfo.title}
-              </div>`}
+                  class="index-bar-title"
+                  @dblclick="${() => (this.editing = true)}"
+                >
+                  ${this.collInfo.name || this.collInfo.title}
+                </div>
+                ${this.collInfo.description
+                  ? html`<div
+                      class="index-bar-description"
+                      @dblclick="${() => (this.editing = true)}"
+                    >
+                      ${this.collInfo.description}
+                    </div>`
+                  : html``}`}
           ${this.editable
             ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`
             : html``}
@@ -607,7 +621,6 @@ class Pages extends LitElement {
             aria-atomic="true"
             >${this.formatResults()}</span
           >
-
           ${this.editable
             ? html` <div class="index-bar-actions">
                 ${this.renderDownloadMenu()}
