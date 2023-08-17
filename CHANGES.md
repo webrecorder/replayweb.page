@@ -1,7 +1,9 @@
 ## CHANGES
 
-v1.8.8-beta.0
-- Cleanup: source code formatting and fixes
+v1.8.8
+- Source/Build: Format src files with Prettier, add pre-commit check, fix errors in HTML
+- Fidelity: Fix regression from 2.16.8 for rewriting JSON in 'script' tags (via wabac.js 2.16.9)
+- Dependencies: Switch to wabac.js 2.16.9
 
 v1.8.7
 - UI: Fix info tab overflow being hidden
