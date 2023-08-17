@@ -12,7 +12,19 @@ import { Sorter } from "./sorter";
 import { URLResources } from "./url-resources";
 import { Embed } from "./embed";
 
-export { ReplayWebApp, Chooser, CollIndex, CollInfo, Coll, Story, GDrive, 
-  Loader, Pages, PageEntry,
-  Replay, Sorter, URLResources, Embed };
-
+export {
+  ReplayWebApp,
+  Chooser,
+  CollIndex,
+  CollInfo,
+  Coll,
+  Story,
+  GDrive,
+  Loader,
+  Pages,
+  PageEntry,
+  Replay,
+  Sorter,
+  URLResources,
+  Embed,
+};

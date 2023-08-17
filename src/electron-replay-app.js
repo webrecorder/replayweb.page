@@ -3,7 +3,15 @@
 import fetch from "node-fetch";
 import { Headers } from "node-fetch";
 
-import {app, session, BrowserWindow, ipcMain, protocol, screen, shell } from "electron";
+import {
+  app,
+  session,
+  BrowserWindow,
+  ipcMain,
+  protocol,
+  screen,
+  shell,
+} from "electron";
 
 import path from "path";
 import fs from "fs";
@@ -30,9 +38,8 @@ const FILE_PROTO = "file2";
 const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
 // ============================================================================
-class ElectronReplayApp
-{
-  constructor({staticPath="./", profileName=""} = {}) {
+class ElectronReplayApp {
+  constructor({ staticPath = "./", profileName = "" } = {}) {
     this.pluginPath = "";
 
     this.appPath = app.getAppPath();
@@ -50,7 +57,7 @@ class ElectronReplayApp
 
     this.openNextFile = null;
 
-    this.screenSize = {width: 1024, height: 768};
+    this.screenSize = { width: 1024, height: 768 };
 
     this.origUA = null;
   }
@@ -76,10 +83,12 @@ class ElectronReplayApp
     const gotTheLock = app.requestSingleInstanceLock();
 
     if (!gotTheLock) {
-      console.log("App already running, opening new window in first instance and quitting");
+      console.log(
+        "App already running, opening new window in first instance and quitting",
+      );
       app.quit();
     } else {
-      app.on("second-instance", (event, commandLine/*, workingDir*/) => {
+      app.on("second-instance", (event, commandLine /*, workingDir*/) => {
         // Just create a new window in case of second instance request
         this.createMainWindow(commandLine);
       });
@@ -93,21 +102,26 @@ class ElectronReplayApp
     console.log("user data", app.getPath("userData"));
 
     if (this.profileName) {
-      app.setPath("userData", path.join(app.getPath("appData"), this.profileName));
+      app.setPath(
+        "userData",
+        path.join(app.getPath("appData"), this.profileName),
+      );
     }
 
-    protocol.registerSchemesAsPrivileged([{
-      scheme: FILE_PROTO,
-      privileges: {
-        standard: false,
-        secure: true,
-        bypassCSP: true,
-        allowServiceWorkers: true,
-        supportFetchAPI: true,
-        corsEnabled: true,
-        stream: true
-      }
-    }]);
+    protocol.registerSchemesAsPrivileged([
+      {
+        scheme: FILE_PROTO,
+        privileges: {
+          standard: false,
+          secure: true,
+          bypassCSP: true,
+          allowServiceWorkers: true,
+          supportFetchAPI: true,
+          corsEnabled: true,
+          stream: true,
+        },
+      },
+    ]);
 
     app.on("will-finish-launching", () => {
       app.on("open-file", (event, filePath) => {
@@ -149,28 +163,32 @@ class ElectronReplayApp
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
 
     app.on("web-contents-created", (event, contents) => {
-      contents.setWindowOpenHandler(({url}) => {
+      contents.setWindowOpenHandler(({ url }) => {
         // load docs in native browser for now
         if (url === STATIC_PREFIX + "docs") {
           shell.openExternal("https://replayweb.page/docs/");
-          return { action: "deny"};
+          return { action: "deny" };
         }
 
         // load external URLs in native browser
         if (!url.startsWith(STATIC_PREFIX)) {
           shell.openExternal(url);
-          return { action: "deny"};
+          return { action: "deny" };
         }
 
-        return { action: "allow"};
+        return { action: "allow" };
       });
     });
 
     const sesh = session.defaultSession;
 
-    sesh.protocol.interceptStreamProtocol("http", (request, callback) => this.doIntercept(request, callback));
+    sesh.protocol.interceptStreamProtocol("http", (request, callback) =>
+      this.doIntercept(request, callback),
+    );
 
-    protocol.registerStreamProtocol(FILE_PROTO, (request, callback) => this.doHandleFile(request, callback));
+    protocol.registerStreamProtocol(FILE_PROTO, (request, callback) =>
+      this.doHandleFile(request, callback),
+    );
 
     this.origUA = sesh.getUserAgent();
 
@@ -182,13 +200,13 @@ class ElectronReplayApp
     //const filename = parsedUrl.searchParams.get("filename");
 
     if (request.url === FILE_PROTO + "://localhost") {
-      callback({statusCode: 200, data: null});
+      callback({ statusCode: 200, data: null });
       return;
     }
 
     const filename = url.fileURLToPath(request.url.replace(FILE_PROTO, "file"));
 
-    const headers = {"Content-Type": "application/octet-stream"};
+    const headers = { "Content-Type": "application/octet-stream" };
     const reqHeaders = new Headers(request.headers);
 
     if (filename) {
@@ -200,13 +218,19 @@ class ElectronReplayApp
 
       const size = stat.size;
 
-      const {statusCode, start, end} = this.parseRange(reqHeaders, headers, size);
+      const { statusCode, start, end } = this.parseRange(
+        reqHeaders,
+        headers,
+        size,
+      );
 
-      const data = request.method === "HEAD" ? null : fs.createReadStream(filename, {start, end});
+      const data =
+        request.method === "HEAD"
+          ? null
+          : fs.createReadStream(filename, { start, end });
 
-      callback({statusCode, headers, data});
+      callback({ statusCode, headers, data });
       return;
-
     } else {
       return this.notFound("No Resource Specified", callback);
     }
@@ -235,7 +259,6 @@ class ElectronReplayApp
           return await this.resolveArchiveResponse(request, callback);
         }
       } else {
-
         // try serve static file from app dir
         let filename = request.url.slice(STATIC_PREFIX.length).split("?", 1)[0];
         filename = filename.split("#", 1)[0];
@@ -261,10 +284,14 @@ class ElectronReplayApp
 
           const data = fs.createReadStream(fullPath);
 
-          return callback({statusCode: 200, headers: {"content-type": mimeType}, data});
+          return callback({
+            statusCode: 200,
+            headers: { "content-type": mimeType },
+            data,
+          });
         }
       }
-      
+
       return this.notFound(request.url, callback);
     }
 
@@ -278,9 +305,11 @@ class ElectronReplayApp
 
   async proxyLive(request, callback) {
     let headers = request.headers;
-    const {method, url, uploadData} = request;
+    const { method, url, uploadData } = request;
 
-    const body = uploadData ? Readable.from(readBody(uploadData, session.defaultSession)) : null;
+    const body = uploadData
+      ? Readable.from(readBody(uploadData, session.defaultSession))
+      : null;
 
     if (this.origUA) {
       // pass UA if origUA is set
@@ -290,23 +319,29 @@ class ElectronReplayApp
     let response;
 
     try {
-      response = await fetch(url, {method, headers, body});
+      response = await fetch(url, { method, headers, body });
     } catch (e) {
       console.warn("fetch failed for: " + url);
-      callback({statusCode: 502, headers: {}, data: null});
+      callback({ statusCode: 502, headers: {}, data: null });
       return;
     }
     const data = method === "HEAD" ? null : response.body;
     const statusCode = response.status;
 
     headers = Object.fromEntries(response.headers.entries());
-    callback({statusCode, headers, data});
+    callback({ statusCode, headers, data });
   }
 
   notFound(url, callback) {
-    console.log("not found: " +  url);
-    const data = this._bufferToStream(`Sorry, the url <b>${url}</b> could not be found in this archive.`);
-    callback({statusCode: 404, headers: {"Content-Type": "text/html; charset=\"utf-8\""}, data});
+    console.log("not found: " + url);
+    const data = this._bufferToStream(
+      `Sorry, the url <b>${url}</b> could not be found in this archive.`,
+    );
+    callback({
+      statusCode: 404,
+      headers: { "Content-Type": 'text/html; charset="utf-8"' },
+      data,
+    });
   }
 
   async resolveArchiveResponse(request, callback) {
@@ -324,7 +359,13 @@ class ElectronReplayApp
       headers = new Headers(headers);
       const date = new Date();
 
-      let response = new ArchiveResponse({payload, headers, status, date, url});
+      let response = new ArchiveResponse({
+        payload,
+        headers,
+        status,
+        date,
+        url,
+      });
 
       const rewriter = new Rewriter({
         baseUrl: url,
@@ -332,7 +373,7 @@ class ElectronReplayApp
         urlRewrite: false,
         contentRewrite: true,
         decode: true,
-        useBaseRules: true
+        useBaseRules: true,
       });
 
       request.headers = new Headers(request.headers);
@@ -345,7 +386,11 @@ class ElectronReplayApp
         let data = await response.getBuffer();
 
         if (status === 206 || status === 200) {
-          const {statusCode, start, end} = this.parseRange(request.headers, headers, data.length);
+          const { statusCode, start, end } = this.parseRange(
+            request.headers,
+            headers,
+            data.length,
+          );
           if (start !== undefined) {
             data = data.slice(start, end);
           }
@@ -353,16 +398,21 @@ class ElectronReplayApp
         }
 
         data = this._bufferToStream(data);
-    
-        callback({statusCode: status, headers, data});
+
+        callback({ statusCode: status, headers, data });
       } catch (e) {
         console.warn(e);
       }
-
     });
 
     if (this.mainWindow) {
-      this.mainWindow.webContents.send("getresponse", request, this.proxyColl, this.proxyTS, channel);
+      this.mainWindow.webContents.send(
+        "getresponse",
+        request,
+        this.proxyColl,
+        this.proxyTS,
+        channel,
+      );
     }
   }
 
@@ -374,12 +424,12 @@ class ElectronReplayApp
       if (headers) {
         headers["Content-Length"] = "" + size;
       }
-      return {statusCode};
+      return { statusCode };
     }
 
     const m = range.match(/bytes=([\d]+)-([\d]*)/);
     if (!m) {
-      return {statusCode};
+      return { statusCode };
     }
 
     const start = Number(m[1]);
@@ -389,7 +439,7 @@ class ElectronReplayApp
       headers["Content-Range"] = `bytes ${start}-${end}/${size}`;
       headers["Content-Length"] = `${end - start + 1}`;
     }
-    return {statusCode, start, end};
+    return { statusCode, start, end };
   }
 
   createMainWindow(argv) {
@@ -418,7 +468,11 @@ class ElectronReplayApp
   getOpenUrl(argv) {
     argv = require("minimist")(argv.slice(process.defaultApp ? 2 : 1));
 
-    const filename = this.openNextFile || argv.filename || argv.f || (argv._.length && argv._[0]);
+    const filename =
+      this.openNextFile ||
+      argv.filename ||
+      argv.f ||
+      (argv._.length && argv._[0]);
     this.openNextFile = null;
 
     let sourceString = "";
@@ -438,7 +492,7 @@ class ElectronReplayApp
         urlParams.set("url", openUrl);
       }
 
-      if (openTS)  {
+      if (openTS) {
         urlParams.set("ts", openTS);
       }
 
@@ -451,7 +505,7 @@ class ElectronReplayApp
   }
 }
 
-async function * readBody (body, session) {
+async function* readBody(body, session) {
   for (const chunk of body) {
     if (chunk.bytes) {
       yield await Promise.resolve(chunk.bytes);
