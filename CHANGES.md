@@ -3,7 +3,7 @@
 v1.8.8
 - Source/Build: Format src files with Prettier, add pre-commit check, fix errors in HTML
 - Fidelity: Fix regression from 2.16.8 for rewriting JSON in 'script' tags (via wabac.js 2.16.9)
-- UI: Proper display of Multi WACZ collections, list collection name, description + files
+- UI: Better handling of Multi WACZ collections, list collection name, description and files on info tab
 - Dependencies: Switch to wabac.js 2.16.9
 
 v1.8.7
