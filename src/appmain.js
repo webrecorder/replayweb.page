@@ -619,7 +619,8 @@ class ReplayWebApp extends LitElement {
   onCollLoaded(event) {
     this.loadInfo = null;
     if (event.detail.collInfo) {
-      this.collTitle = event.detail.collInfo.title;
+      this.collTitle =
+        event.detail.collInfo.name || event.detail.collInfo.title;
     }
 
     if (event.detail.alreadyLoaded) {
