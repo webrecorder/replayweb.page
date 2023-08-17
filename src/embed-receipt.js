@@ -203,45 +203,76 @@ export class RWPEmbedReceipt extends LitElement {
     const dateStr = tsToDate(this.ts).toLocaleString();
 
     return html`
-    <div class="dropdown mb-4 ${this.active ? "is-active" : ""}">
-      <div class="dropdown-trigger embed-info-container">
-        <button class="embed-info is-small is-rounded mt-4" aria-haspopup="true" aria-controls="embed-dropdown" @click="${
-          this.onEmbedDrop
-        }">
-          <fa-icon class="menu-logo mr-2 embed-globe" size="1rem" aria-hidden="true" .svg=${btGlobe}></fa-icon>
-          <span class="embed-info-buttontext">
-            This embed is part of a web archive. Click here to learn more.
-          </span>
-          <span class="icon is-small mr-4 ml-2">
-            <fa-icon title="Toggle" .svg="${
-              this.active ? btAngleDoubleUp : btAngleDoubleDown
-            }" aria-hidden="true"></fa-icon>
-          </span>
-        </button>
-      </div>
-      <div class="dropdown-menu embed-info-container" id="embed-dropdown" role="menu">
-        <div class="dropdown-content embed-info-drop">
-          <p class="mb-4">
-          Even if the original page goes offline or is changed, the content below will remain unchanged as it is loaded from a web archive.
-          </p>
-          <hr class="dropdown-divider">
-          <h2 class="mt-4">Get A Copy!</h2>
-          <p class="mt-2">After downloading, this web archive can be loaded and viewed directly in your browser via <a style="white-space: nowrap;" target="_blank" href="https://replayweb.page">replayweb.page</a>.</p>
-          <a href="${sourceUrl}" class="button is-primary mt-4" @keyup="${clickOnSpacebarPress}">
-            <span class="icon is-small">
-              <fa-icon size="1.0em" aria-hidden="true" .svg="${fasDownload}"></fa-icon>
+      <div class="dropdown mb-4 ${this.active ? "is-active" : ""}">
+        <div class="dropdown-trigger embed-info-container">
+          <button
+            class="embed-info is-small is-rounded mt-4"
+            aria-haspopup="true"
+            aria-controls="embed-dropdown"
+            @click="${this.onEmbedDrop}"
+          >
+            <fa-icon
+              class="menu-logo mr-2 embed-globe"
+              size="1rem"
+              aria-hidden="true"
+              .svg=${btGlobe}
+            ></fa-icon>
+            <span class="embed-info-buttontext">
+              This embed is part of a web archive. Click here to learn more.
             </span>
-            <span>Download Archive</span>
-          </a>
-          <hr class="dropdown-divider mt-4">
-          <h2 class="mt-4">Technical Information</h2>
-          <div class="embed-info-drop-statscontainer mb-4">
-            <h3>Original URL:</h3>
-            <p><a target="_blank" href="${this.url}">${this.url}</a></p>
-            <h3 class="mt-2">Archived On:</h3>
-            <p>${dateStr}</p>
-            ${
-              domain
+            <span class="icon is-small mr-4 ml-2">
+              <fa-icon
+                title="Toggle"
+                .svg="${this.active ? btAngleDoubleUp : btAngleDoubleDown}"
+                aria-hidden="true"
+              ></fa-icon>
+            </span>
+          </button>
+        </div>
+        <div
+          class="dropdown-menu embed-info-container"
+          id="embed-dropdown"
+          role="menu"
+        >
+          <div class="dropdown-content embed-info-drop">
+            <p class="mb-4">
+              Even if the original page goes offline or is changed, the content
+              below will remain unchanged as it is loaded from a web archive.
+            </p>
+            <hr class="dropdown-divider" />
+            <h2 class="mt-4">Get A Copy!</h2>
+            <p class="mt-2">
+              After downloading, this web archive can be loaded and viewed
+              directly in your browser via
+              <a
+                style="white-space: nowrap;"
+                target="_blank"
+                href="https://replayweb.page"
+                >replayweb.page</a
+              >.
+            </p>
+            <a
+              href="${sourceUrl}"
+              class="button is-primary mt-4"
+              @keyup="${clickOnSpacebarPress}"
+            >
+              <span class="icon is-small">
+                <fa-icon
+                  size="1.0em"
+                  aria-hidden="true"
+                  .svg="${fasDownload}"
+                ></fa-icon>
+              </span>
+              <span>Download Archive</span>
+            </a>
+            <hr class="dropdown-divider mt-4" />
+            <h2 class="mt-4">Technical Information</h2>
+            <div class="embed-info-drop-statscontainer mb-4">
+              <h3>Original URL:</h3>
+              <p><a target="_blank" href="${this.url}">${this.url}</a></p>
+              <h3 class="mt-2">Archived On:</h3>
+              <p>${dateStr}</p>
+              ${domain
                 ? html`
                     <h3 class="mt-2">Observed By:</h3>
                     <p>${domain}</p>
@@ -256,47 +287,61 @@ export class RWPEmbedReceipt extends LitElement {
                 : software
                 ? html` <h3 class="mt-2">Created With:</h3>
                     <p>${software}</p>`
-                : ""
-            }
-            ${
-              !domain && publicKey
+                : ""}
+              ${!domain && publicKey
                 ? html` <h3 class="mt-2">Observer Public Key:</h3>
                     <p class="show-key">${publicKey}</p>`
-                : ""
-            }
-            <h3 class="mt-2">Validation:</h3>
-            ${
-              numValid > 0 || numInvalid > 0
+                : ""}
+              <h3 class="mt-2">Validation:</h3>
+              ${numValid > 0 || numInvalid > 0
                 ? html` <p>
                     ${numValid} hashes
                     verified${numInvalid ? html`, ${numInvalid} invalid` : ""}
                   </p>`
-                : html` <p>Not Available</p> `
-            }
-            <h3 class="mt-2">Package Hash:</h3>
-            <p class="show-hash">${datapackageHash}</p>
-            <h3 class="mt-2">Size</h3>
-            <p>${prettyBytes(Number(this.collInfo.size || 0))}</p>
+                : html` <p>Not Available</p> `}
+              <h3 class="mt-2">Package Hash:</h3>
+              <p class="show-hash">${datapackageHash}</p>
+              <h3 class="mt-2">Size</h3>
+              <p>${prettyBytes(Number(this.collInfo.size || 0))}</p>
+            </div>
+            ${sourceUrl ? html`` : ""}
+            <p
+              class="is-size-7 is-flex is-justify-content-space-between"
+              style="margin-top: 40px"
+            >
+              <span>
+                <a
+                  class="has-text-black"
+                  target="_blank"
+                  href="https://github.com/webrecorder/replayweb.page"
+                >
+                  <fa-icon
+                    class="menu-logo mr-1"
+                    size="1.0rem"
+                    aria-hidden="true"
+                    .svg=${this.appLogo}
+                  ></fa-icon>
+                  Powered by ReplayWeb.page
+                </a>
+              </span>
+              <span>
+                <a
+                  class="has-text-black"
+                  target="_blank"
+                  href="https://github.com/webrecorder/replayweb.page"
+                  >Source Code
+                  <fa-icon
+                    class="menu-logo ml-1"
+                    size="1.0rem"
+                    aria-hidden="true"
+                    .svg=${fabGithub}
+                  ></fa-icon>
+                </a>
+              </span>
+            </p>
           </div>
-          ${sourceUrl ? html`` : ""}
-          <p class="is-size-7 is-flex is-justify-content-space-between" style="margin-top: 40px">
-            <span>
-              <a class="has-text-black" target="_blank" href="https://github.com/webrecorder/replayweb.page">
-                <fa-icon class="menu-logo mr-1" size="1.0rem" aria-hidden="true" .svg=${
-                  this.appLogo
-                }></fa-icon>
-                Powered by ReplayWeb.page
-              </a>
-            </span>
-            <span>
-              <a class="has-text-black" target="_blank" href="https://github.com/webrecorder/replayweb.page">Source Code
-                <fa-icon class="menu-logo ml-1" size="1.0rem" aria-hidden="true" .svg=${fabGithub}></fa-icon>
-              </a>
-            </span>
-          </p>
         </div>
       </div>
-    </div>
     `;
   }
 

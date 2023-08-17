@@ -332,7 +332,7 @@ class CollIndex extends LitElement {
                               Deleting
                             </span>`}
                       </div>
-                    `
+                    `,
                   )}
                 </div>
               `
