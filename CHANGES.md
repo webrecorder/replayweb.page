@@ -1,5 +1,8 @@
 ## CHANGES
 
+v1.8.8-beta.0
+- Cleanup: source code formatting and fixes
+
 v1.8.7
 - UI: Fix info tab overflow being hidden
 - Loading: Improved support for live proxy via wabac.js 2.16.7
