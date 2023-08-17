@@ -509,20 +509,17 @@ class CollInfo extends LitElement {
       </div>
       ${coll.desc
         ? html` <div class="column">
-            <p class="minihead">Description</p>
+            <p 
             ${coll.desc}
           </div>`
         : html``}
-      <!--  Only show description if it exists, otherwise show filename -->
       ${coll.description
         ? html`<div class="column">
             <p class="minihead">Description</p>
             ${coll.description}
           </div>`
-        : html`<div class="column">
-            <p class="minihead">Filename</p>
-            ${coll.filename}
-          </div>`}
+        : html``}
+      <!--  Only show filename if coll.resources doesn't exist -->
       ${coll.resources
         ? html`<div class="column">
             <p class="minihead">Files</p>
@@ -536,7 +533,10 @@ class CollInfo extends LitElement {
               )}
             </ol>
           </div>`
-        : html``}
+        : html`<div class="column">
+            <p class="minihead">Filename</p>
+            ${coll.filename}
+          </div>`}
       ${this.renderSource(coll)}
       ${domain
         ? html`
