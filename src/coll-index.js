@@ -509,7 +509,7 @@ class CollInfo extends LitElement {
       </div>
       ${coll.desc
         ? html` <div class="column">
-            <p 
+            <p class="minihead">Description</p>
             ${coll.desc}
           </div>`
         : html``}
