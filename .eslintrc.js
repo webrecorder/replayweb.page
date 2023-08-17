@@ -13,21 +13,9 @@ module.exports = {
             2,
             "event", "error"
         ],
-        "indent": [
-            "error",
-            2
-        ],
         "linebreak-style": [
             "error",
             "unix"
-        ],
-        "quotes": [
-            "error",
-            "double"
-        ],
-        "semi": [
-            "error",
-            "always"
         ]
     }
 };
