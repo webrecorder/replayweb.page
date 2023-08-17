@@ -34,6 +34,7 @@
     "electron-builder": "^23.0.3",
     "electron-notarize": "^1.1.1",
     "eslint": "^8.23.1",
+    "eslint-config-prettier": "^9.0.0",
     "http-server": "^13.0.2",
     "mini-css-extract-plugin": "^2.3.0",
     "node-sass": "^9.0.0",
