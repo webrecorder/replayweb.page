@@ -474,7 +474,7 @@ class CollInfo extends LitElement {
       <div class="column col-title is-4">
         <span class="subtitle has-text-weight-bold">
           <a href="?source=${encodeURIComponent(coll.sourceUrl)}"
-            >${coll.title || coll.filename}</a
+            >${coll.name || coll.title || coll.filename}</a
           >
         </span>
       </div>
@@ -526,7 +526,7 @@ class CollInfo extends LitElement {
       ${coll.resources
         ? html`<div class="column">
             <p class="minihead">Files</p>
-            <ul>
+            <ol style="padding: revert">
               ${map(
                 coll.resources,
                 (resource) =>
@@ -534,7 +534,7 @@ class CollInfo extends LitElement {
                     <a href="${resource.path}">${resource.name + "\n"}</a>
                   </li>`,
               )}
-            </ul>
+            </ol>
           </div>`
         : html``}
       ${this.renderSource(coll)}
