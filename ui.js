@@ -722,8 +722,9 @@ class se extends oe{}se.directiveName="unsafeSVG",se.resultType=2;const le=ae(se
                         ${this.renderCollInfo(e)}
                         ${this._deleting[e.sourceUrl]?T` <span
                               class="button delete-button is-loading is-static"
-                              >Deleting</span
-                            >`:T`
+                            >
+                              Deleting
+                            </span>`:T`
                               <button
                                 class="delete delete-button"
                                 aria-label="Unload Collection"
