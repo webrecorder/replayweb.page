@@ -471,8 +471,14 @@ class Pages extends LitElement {
         display: flex;
         flex-direction: column;
       }
+
       .flex-auto {
         flex: auto;
+      }
+
+      .index-bar-description {
+        margin-bottom: 20px;
+        font-style: italic;
       }
     `);
   }
