@@ -330,7 +330,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     return html`
       <section class="container">
         <div class="has-text-centered is-flex">
-          <wr-anim-logo class="logo" size="96px" />
+          <wr-anim-logo class="logo" size="96px"></wr-anim-logo>
         </div>
         ${!this.embed
           ? html` <div class="level">
@@ -352,7 +352,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
         return html`<wr-gdrive
           .sourceUrl=${this.sourceUrl}
           @load-ready=${this.onLoadReady}
-        />`;
+        ></wr-gdrive>`;
 
       case "started":
         return html` <div class="progress-div">
@@ -412,7 +412,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
         return html`<progress
           class="progress is-primary is-large"
           style="max-width: 400px"
-        />`;
+        ></progress>`;
     }
   }
 

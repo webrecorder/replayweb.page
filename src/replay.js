@@ -397,7 +397,7 @@ class Replay extends LitElement {
                                 .state="trymanual"
                                 .reauth="${true}"
                                 @load-ready="${this.onReAuthed}"
-                              />`}
+                              ></wr-gdrive>`}
                         </div>
                       </div>
                     </div>
