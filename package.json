@@ -36,6 +36,8 @@
     "eslint": "^8.23.1",
     "eslint-config-prettier": "^9.0.0",
     "http-server": "^13.0.2",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.0",
     "mini-css-extract-plugin": "^2.3.0",
     "node-sass": "^9.0.0",
     "prettier": "^3.0.1",
@@ -70,7 +72,8 @@
     "dist-dev": "yarn run build-dev && yarn run pack",
     "release": "yarn run build && electron-builder",
     "lint": "eslint ./src/ webpack.config.js",
-    "format": "prettier --write ./src"
+    "format": "prettier --write ./src",
+    "prepare": "husky install"
   },
   "build": {
     "afterSign": "build/notarize.js",
@@ -167,5 +170,8 @@
         "role": "Viewer"
       }
     ]
+  },
+  "lint-staged": {
+    "*.ts": "prettier --write"
   }
 }

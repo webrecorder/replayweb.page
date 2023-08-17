@@ -64,6 +64,7 @@ jobs:
                   #popd;
 
                   docker run --rm \
+                    -e CI=${CI} \
                     -e GH_TOKEN=${GH_TOKEN} \
                     -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
                     -v ${PWD}:/project \
@@ -79,6 +80,7 @@ jobs:
                   #popd;
 
                   docker run --rm \
+                    -e CI=${CI} \
                     -e GH_TOKEN=${GH_TOKEN} \
                     -e WIN_CSC_LINK=${WIN_CSC_LINK} \
                     -e WIN_CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD} \
