@@ -513,7 +513,7 @@ class CollInfo extends LitElement {
             ${coll.desc}
           </div>`
         : html``}
-      <!--  Only show description if it exists, otherwise show filename --> 
+      <!--  Only show description if it exists, otherwise show filename -->
       ${coll.description
         ? html`<div class="column">
             <p class="minihead">Description</p>
