@@ -660,56 +660,49 @@ class Pages extends LitElement {
   }
 
   renderDownloadMenu() {
-    return html` <div class="dropdown ${this.menuActive ? "is-active" : ""}">
-      <div class="dropdown-trigger">
-        <button
-          @click="${this.onMenu}"
-          class="button is-small"
-          aria-haspopup="true"
-          aria-expanded="${this.menuActive}"
-          aria-controls="dropdown-menu"
-        >
-          <span>Download</span>
-          <span class="icon is-small">
-            <fa-icon .svg="${fasAngleDown}" aria-hidden="true"></fa-icon>
-          </span>
-        </button>
-      </div>
-      <div class="dropdown-menu" id="dropdown-menu">
-        <div class="dropdown-content">
-          <a
-            role="button"
-            href="#"
-            @click="${(e) => this.onDownload(e, "wacz")}"
-            @keyup="${clickOnSpacebarPress}"
-            class="dropdown-item"
-          >
-            Download ${this.selectedPages.size === 0 ? "All" : "Selected"} as
-            WACZ (Web Archive Collection Zip)
-          </a>
-          <a
-            role="button"
-            href="#"
-            @click="${(e) => this.onDownload(e, "warc")}"
-            @keyup="${clickOnSpacebarPress}"
-            class="dropdown-item"
-          >
-            Download ${this.selectedPages.size === 0 ? "All" : "Selected"} as
-            WARC 1.1 Only
-          </a>
-          <a
-            role="button"
-            href="#"
-            @click="${(e) => this.onDownload(e, "warc1.0")}"
-            @keyup="${clickOnSpacebarPress}"
-            class="dropdown-item"
-          >
-            Download ${this.selectedPages.size === 0 ? "All" : "Selected"} as
-            WARC 1.0 Only
-          </a>
+    return html`
+      <div class="dropdown ${this.menuActive ? "is-active" : ""}">
+        <div class="dropdown-trigger">
+          <button @click="${
+            this.onMenu
+          }" class="button is-small" aria-haspopup="true" aria-expanded="${
+            this.menuActive
+          }" aria-controls="dropdown-menu">
+            <span>Download</span>
+            <span class="icon is-small">
+              <fa-icon .svg="${fasAngleDown}" aria-hidden="true"></fa-icon>
+            </span>
+          </button>
         </div>
-      </div>
-    </div>`;
+        <div class="dropdown-menu" id="dropdown-menu">
+          <div class="dropdown-content">
+            <a role="button" href="#"
+             @click="${(e) => this.onDownload(e, "wacz")}"
+             @keyup="${clickOnSpacebarPress}"
+             class="dropdown-item">
+              Download ${
+                this.selectedPages.size === 0 ? "All" : "Selected"
+              } as WACZ (Web Archive Collection Zip)
+            </a>
+            <a role="button" href="#"
+             @click="${(e) => this.onDownload(e, "warc")}"
+             @keyup="${clickOnSpacebarPress}"
+             class="dropdown-item">
+              Download ${
+                this.selectedPages.size === 0 ? "All" : "Selected"
+              } as WARC 1.1 Only
+            </a>
+            <a role="button" href="#"
+              @click="${(e) => this.onDownload(e, "warc1.0")}"
+              @keyup="${clickOnSpacebarPress}"
+              class="dropdown-item">
+              Download ${
+                this.selectedPages.size === 0 ? "All" : "Selected"
+              } as WARC 1.0 Only
+            </a>
+          </div>
+        </div>
+      </div>`;
   }
 
   renderPageHeader() {

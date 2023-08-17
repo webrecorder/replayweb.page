@@ -328,10 +328,11 @@ class CollIndex extends LitElement {
                             `
                           : html` <span
                               class="button delete-button is-loading is-static"
-                              >Deleting</span
-                            >`}
+                            >
+                              Deleting
+                            </span>`}
                       </div>
-                    `,
+                    `
                   )}
                 </div>
               `
