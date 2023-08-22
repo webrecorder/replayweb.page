@@ -10,6 +10,19 @@ import { wrapCss } from "./misc";
 
 // ===========================================================================
 class PageEntry extends LitElement {
+  query = "";
+  textSnippet: string | null = "";
+  page: any = null;
+  replayPrefix = "";
+  deleting = false;
+  editable = false;
+  iconValid = false;
+  index = 0;
+  isCurrent = false;
+  isSidebar = false;
+  selected = false;
+  favIconData: any;
+
   constructor() {
     super();
     this.query = "";
@@ -296,7 +309,7 @@ class PageEntry extends LitElement {
 
     try {
       this.favIconData = `data:${mime};base64,${btoa(
-        String.fromCharCode.apply(null, payload),
+        String.fromCharCode.apply(null, payload as any),
       )}`;
     } catch (e) {
       console.log(e);
