@@ -29,6 +29,7 @@
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
+    "@types/flexsearch": "^0.7.3",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "electron": "^25.1.1",
@@ -177,5 +178,8 @@
   },
   "lint-staged": {
     "*.ts": "prettier --write"
+  },
+  "prettier": {
+    "trailingComma": "all"
   }
 }

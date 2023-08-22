@@ -9,13 +9,45 @@ import prettyBytes from "pretty-bytes";
 
 import { getTS, getPageDateTS } from "./pageutils";
 
+// @ts-ignore
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
+// @ts-ignore
 import fasAngleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-down.svg";
-
+// @ts-ignore
 import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
+import type { Sorter } from "./sorter";
+import type { PageEntry } from "./pageentry";
 
 // ===========================================================================
 class Pages extends LitElement {
+  filteredPages: any[] = [];
+  sortedPages: any[] = [];
+  query = "";
+  flex: any = null;
+  textPages: any = null;
+  newQuery: any = null;
+  loading = false;
+  updatingSearch = false;
+  showAllPages = false;
+  hasExtraPages = false;
+  currList: number = 0;
+  active = false;
+  editable = false;
+  changeNeeded = false;
+  selectedPages = new Set();
+  menuActive = false;
+  sortKey = "date";
+  sortDesc = true;
+  isSidebar = false;
+  url = "";
+  ts = "";
+  editing: any = false;
+  toDeletePages: any = null;
+  toDeletePage: any = null;
+  collInfo: any;
+  allSelected: any;
+  private _ival: any;
+
   constructor() {
     super();
     this.filteredPages = [];
@@ -114,7 +146,7 @@ class Pages extends LitElement {
     }
   }
 
-  async updated(changedProperties) {
+  async updated(changedProperties: Map<string, any>) {
     if (changedProperties.has("collInfo")) {
       this.updateTextSearch();
     } else if (changedProperties.has("query")) {
@@ -139,7 +171,7 @@ class Pages extends LitElement {
         this.sortKey = "date";
         this.sortDesc = true;
       }
-      const sorter = this.renderRoot.querySelector("wr-sorter");
+      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
       if (sorter) {
         sorter.sortKey = this.sortKey;
         sorter.sortDesc = this.sortDesc;
@@ -155,14 +187,14 @@ class Pages extends LitElement {
           block: "nearest",
           inline: "nearest",
         };
-        setTimeout(() => selected.scrollIntoView(opts), 100);
+        setTimeout(() => selected.scrollIntoView(opts as any), 100);
       }
       //}
     }
   }
 
-  onChangeQuery(event) {
-    this.newQuery = event.currentTarget.value;
+  onChangeQuery(event: Event) {
+    this.newQuery = (event.currentTarget as any).value;
     //this.loading = true;
     if (this._ival) {
       window.clearTimeout(this._ival);
@@ -180,7 +212,7 @@ class Pages extends LitElement {
     this.loading = true;
     if (this.flex && this.query && this.textPages) {
       const results = await this.flex.searchAsync(this.query, 25);
-      this.filteredPages = results.map((inx) => this.textPages[inx]);
+      this.filteredPages = results.map((inx: number) => this.textPages[inx]);
     } else if (this.showAllPages && this.hasExtraPages) {
       this.filteredPages = [...this.textPages];
     } else {
@@ -215,7 +247,7 @@ class Pages extends LitElement {
     this.filteredPages = curated;
   }
 
-  sendChangeEvent(data) {
+  sendChangeEvent(data: any) {
     this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
   }
 
@@ -267,9 +299,9 @@ class Pages extends LitElement {
         }
       }
 
-      const lines = [];
+      const lines: any[] = [];
 
-      for await (const line of ndjson(resp.body.getReader())) {
+      for await (const line of ndjson(resp.body!.getReader())) {
         if (!line.url) {
           continue;
         }
@@ -897,7 +929,9 @@ class Pages extends LitElement {
     if (!this.editable) {
       return;
     }
-    const input = this.renderRoot.querySelector("#titleEdit");
+    const input = this.renderRoot.querySelector(
+      "#titleEdit",
+    ) as HTMLInputElement;
     if (!input || !input.value.trim()) {
       return;
     }
@@ -1010,7 +1044,9 @@ class Pages extends LitElement {
     const pageMap = {};
 
     for (const id of this.toDeletePages) {
-      const p = this.renderRoot.querySelector(`wr-page-entry[pid="${id}"]`);
+      const p = this.renderRoot.querySelector(
+        `wr-page-entry[pid="${id}"]`,
+      ) as PageEntry;
       if (p) {
         p.deleting = true;
         pageMap[id] = p;
@@ -1099,7 +1135,7 @@ class Pages extends LitElement {
     const diff =
       element.scrollHeight - element.scrollTop - element.clientHeight;
     if (diff < 40) {
-      const sorter = this.renderRoot.querySelector("wr-sorter");
+      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
       if (sorter) {
         sorter.getMore();
       }
