@@ -1,4 +1,5 @@
 import { LitElement, html, css } from "lit";
+import { map } from "lit/directives/map.js";
 import {
   wrapCss,
   rwpLogo,
@@ -171,6 +172,17 @@ class Coll extends LitElement {
     }
   }
 
+	async getMultiTimestamps() {
+		console.log(apiPrefix + "/c/" + this.coll + "/ts/?url=" + this.tabData.url);
+		const resp = await fetch(apiPrefix + "/c/" + this.coll + "/ts/?url=" + this.tabData.url);
+		if (resp.status !== 200) {
+			return {};
+		}
+		const json = await resp.json();
+		console.log(json);
+		this.tabData.multiTs = json.timestamps;
+	}
+
   updated(changedProperties) {
     // if (changedProperties.has("url") || changedProperties.has("ts")) {
     //   if (this.url.startsWith("rwp?")) {
@@ -214,6 +226,7 @@ class Coll extends LitElement {
           newLoc.hash = this._locationHash;
           window.history.replaceState({}, "", newLoc.href);
           this._replaceLoc = false;
+					this.getMultiTimestamps();
         } else {
           window.location.hash = this._locationHash;
           if (!this.showSidebar) {
@@ -940,6 +953,8 @@ class Coll extends LitElement {
     }
 
     const dateStr = tsToDate(this.ts).toLocaleString();
+    const multiTs = this.tabData.multiTs;
+		console.log("multiTs: " + multiTs);
 
     const isReplay = !!this.tabData.url;
 
@@ -1074,6 +1089,17 @@ class Coll extends LitElement {
               ${isReplay
                 ? html`<p id="datetime" class="control is-hidden-mobile">
                     ${dateStr}
+                    ${multiTs
+                      ? html`<select
+                          style="float: right;color: white;background: blue"
+                        >
+                          <option value="">${multiTs.length}</option>
+                          ${map(
+                            multiTs, (date) =>
+                              html`<option value="${date}">${date}</option>`,
+                          )}
+                        </select>`
+                      : html``}
                   </p>`
                 : html``}
               ${showFavIcon
