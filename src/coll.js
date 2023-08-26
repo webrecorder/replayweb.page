@@ -10,7 +10,7 @@ import {
   replayPrefix,
 } from "./misc";
 
-import { sourceToId, tsToDate, getPageDateTS } from "./pageutils";
+import { sourceToId, tsToDate, getPageDateTS, getDateFromTS } from "./pageutils";
 
 import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 
@@ -179,8 +179,8 @@ class Coll extends LitElement {
 			return {};
 		}
 		const json = await resp.json();
-		console.log(json);
-		this.tabData.multiTs = json.timestamps;
+		this.updateTabData({"multiTs": json.timestamps});
+		// this.tabData.multiTs = json.timestamps;
 	}
 
   updated(changedProperties) {
@@ -218,6 +218,7 @@ class Coll extends LitElement {
       }
       if (newHash !== this._locationHash) {
         this._locationHash = newHash;
+				this.getMultiTimestamps();
         if (
           this._replaceLoc ||
           Object.keys(changedProperties.get("tabData")).length === 0
@@ -226,7 +227,6 @@ class Coll extends LitElement {
           newLoc.hash = this._locationHash;
           window.history.replaceState({}, "", newLoc.href);
           this._replaceLoc = false;
-					this.getMultiTimestamps();
         } else {
           window.location.hash = this._locationHash;
           if (!this.showSidebar) {
@@ -953,8 +953,15 @@ class Coll extends LitElement {
     }
 
     const dateStr = tsToDate(this.ts).toLocaleString();
-    const multiTs = this.tabData.multiTs;
-		console.log("multiTs: " + multiTs);
+		let multiTs;
+		let marshalledTS;
+		if (this.tabData.multiTs && this.tabData.multiTs.length > 1) {
+			multiTs = this.tabData.multiTs;
+			marshalledTS = multiTs.map((ts) => tsToDate(getDateFromTS(ts)).toLocaleString());
+			console.log("marshalledTS: " + marshalledTS);
+		} else {
+			multiTs = false;
+		}
 
     const isReplay = !!this.tabData.url;
 
@@ -1093,9 +1100,9 @@ class Coll extends LitElement {
                       ? html`<select
                           style="float: right;color: white;background: blue"
                         >
-                          <option value="">${multiTs.length}</option>
+                          <option value="">${marshalledTS.length}</option>
                           ${map(
-                            multiTs, (date) =>
+                           marshalledTS, (date) =>
                               html`<option value="${date}">${date}</option>`,
                           )}
                         </select>`

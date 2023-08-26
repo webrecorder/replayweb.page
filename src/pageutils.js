@@ -37,6 +37,15 @@ function tsToDate(ts) {
 }
 
 // ===========================================================================
+function getDateFromTS(ts) {
+  let date = null;
+	date = new Date(ts);
+  const timestamp = date && !isNaN(date) ? getTS(date.toISOString()) : "";
+	console.log(timestamp);
+	return timestamp
+}
+
+// ===========================================================================
 function getPageDateTS(page) {
   let date = null;
   try {
@@ -114,6 +123,7 @@ export {
   tsToDate,
   getTS,
   getPageDateTS,
+	getDateFromTS,
   getReplayLink,
   sourceToId,
   parseURLSchemeHostPath,
