@@ -1,6 +1,8 @@
 import prettyBytes from "pretty-bytes";
 
 import { LitElement, html, css, unsafeCSS } from "lit";
+import { property, state } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
@@ -10,48 +12,65 @@ import { wrapCss } from "./misc";
 
 // ===========================================================================
 class PageEntry extends LitElement {
+  @property({ type: String })
   query = "";
+
+  @property({ type: String })
   textSnippet: string | null = "";
+
+  @property({ type: Object })
   page: any = null;
+
+  @property({ type: String })
   replayPrefix = "";
+
+  @property({ type: Boolean })
   deleting = false;
-  editable = false;
-  iconValid = false;
-  index = 0;
-  isCurrent = false;
-  isSidebar = false;
+
+  @property({ type: Boolean })
   selected = false;
-  favIconData: any;
 
-  constructor() {
-    super();
-    this.query = "";
-    this.textSnippet = "";
-    this.page = null;
-    this.replayPrefix = "";
-    this.deleting = false;
-    this.editable = false;
-    this.iconValid = false;
-    this.index = 0;
-    this.isCurrent = false;
-    this.isSidebar = false;
-  }
+  @property({ type: Boolean })
+  editable = false;
 
-  static get properties() {
-    return {
-      query: { type: String },
-      textSnippet: { type: String },
-      page: { type: Object },
-      replayPrefix: { type: String },
-      deleting: { type: Boolean },
-      selected: { type: Boolean },
-      editable: { type: Boolean },
-      iconValid: { type: Boolean },
-      index: { type: Number },
-      isCurrent: { type: Boolean },
-      isSidebar: { type: Boolean },
-    };
+  @property({ type: Number })
+  index = 0;
+
+  @property({ type: Boolean })
+  isCurrent = false;
+
+  @property({ type: Boolean })
+  isSidebar = false;
+
+  @state()
+  private favIconData: any;
+
+  @state()
+  private get icon() {
+    if (this._icon) return this._icon;
+    // Try thumbnail first
+    const url = `${this.replayPrefix}/${this.page.timestamp}id_/urn:thumbnail:${this.page.url}`;
+    this._icon = fetch(url, { method: "HEAD" }).then((resp) =>
+      resp.ok
+        ? html`<img class="thumbnail" src="${url}" />`
+        : // Fallback to favicon if thumbnail 404s
+          this.favicon,
+    );
+    return this._icon;
   }
+  private _icon?: Promise<any>;
+
+  @state()
+  private get favicon() {
+    if (!this.page?.favIconUrl) return;
+    if (this._favicon) return this._favicon;
+    const url = `${this.replayPrefix}/${this.page.timestamp}id_/${this.page.favIconUrl}`;
+    this._favicon = fetch(url, { method: "HEAD" }).then((resp) =>
+      resp.ok ? html`<img class="favicon" src="${url}" />` : null,
+    );
+    return this._favicon;
+  }
+  private _favicon?: Promise<any>;
 
   static get styles() {
     return wrapCss(css`
@@ -102,6 +121,7 @@ class PageEntry extends LitElement {
       }
 
       .media-left {
+        width: 6rem;
         align-self: center;
       }
 
@@ -180,7 +200,6 @@ class PageEntry extends LitElement {
   updated(changedProperties) {
     if (changedProperties.has("page") || changedProperties.has("query")) {
       this.updateSnippet();
-      this.iconValid = !!this.page.favIconUrl;
       //this.updateFavIcon();
       this.deleting = false;
     }
@@ -219,18 +238,7 @@ class PageEntry extends LitElement {
         </div>
         <div class="column">
           <div class="media">
-            <figure class="media-left">
-              <p class="">
-                ${this.iconValid
-                  ? html` <img
-                      class="favicon"
-                      @error="${() => (this.iconValid = false)}"
-                      src="${this.replayPrefix}/${this.page
-                        .timestamp}id_/${p.favIconUrl}"
-                    />`
-                  : html` <span class="favicon"></span>`}
-              </p>
-            </figure>
+            <figure class="media-left">${this.renderMedia()}</figure>
             <div class="media-content ${this.isCurrent ? "current" : ""}">
               <div role="heading" aria-level="${this.isSidebar ? "4" : "3"}">
                 <a
@@ -287,6 +295,11 @@ class PageEntry extends LitElement {
           : ""}
       </div>
     `;
+  }
+
+  private renderMedia() {
+    if (!this.page) return;
+    return html`${until(this.icon)}`;
   }
 
   async updateFavIcon() {

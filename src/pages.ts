@@ -356,7 +356,7 @@ class Pages extends LitElement {
       }
 
       .header .column.pagetitle {
-        margin-left: 2.5em;
+        padding-left: 0.25em;
       }
 
       .column.main-content {
@@ -366,6 +366,12 @@ class Pages extends LitElement {
         padding: 0px;
         margin-top: 0.5em;
         margin-left: 0.75em;
+      }
+
+      .thumbnail {
+        width: 6rem;
+        flex: 0 0 auto;
+        box-sizing: content-box;
       }
 
       .index-bar {
@@ -801,13 +807,17 @@ class Pages extends LitElement {
             : ""}"
           >Date</a
         >
+        <div class="column thumbnail">
+          <span class="sr-only">Page thumbnail or favicon</span>
+        </div>
         <a
           role="button"
           href="#"
           @click="${this.onSort}"
           @keyup="${clickOnSpacebarPress}"
           data-key="title"
-          class="column is-6 pagetitle ${this.sortKey === "title"
+          class="column is-6 pagetitle ${this.query ? "is-5" : "is-6"} ${this
+            .sortKey === "title"
             ? this.sortDesc
               ? "desc"
               : "asc"
@@ -901,10 +911,10 @@ class Pages extends LitElement {
               return html` <li class="page-entry ${selected ? "selected" : ""}">
                 <wr-page-entry
                   .index="${this.query || this.isSidebar ? i + 1 : 0}"
-                  .editable="${this.editable}"
-                  .selected="${selected}"
-                  .isCurrent="${this.isCurrPage(p)}"
-                  .isSidebar="${this.isSidebar}"
+                  ?editable="${this.editable}"
+                  ?selected="${selected}"
+                  ?isCurrent="${this.isCurrPage(p)}"
+                  ?isSidebar="${this.isSidebar}"
                   .page="${p}"
                   pid="${p.id}"
                   @sel-page="${this.onSelectToggle}"
