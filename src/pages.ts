@@ -1,6 +1,7 @@
 "use strict";
 
 import { LitElement, html, css, unsafeCSS } from "lit";
+import { property, state } from "lit/decorators.js";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
 import ndjson from "fetch-ndjson";
 
@@ -20,70 +21,88 @@ import type { PageEntry } from "./pageentry";
 
 // ===========================================================================
 class Pages extends LitElement {
+  @property({ type: Array })
   filteredPages: any[] = [];
+
+  @property({ type: Array })
   sortedPages: any[] = [];
+
+  @property({ type: String })
   query = "";
+
+  @property()
   flex: any = null;
+
+  @property()
   textPages: any = null;
+
+  @property()
   newQuery: any = null;
+
+  @property({ type: Boolean })
   loading = false;
+
+  @property({ type: Boolean })
   updatingSearch = false;
+
+  @property({ type: Boolean })
   showAllPages = false;
+
+  @property({ type: Boolean })
   hasExtraPages = false;
+
+  @property({ type: Number })
   currList: number = 0;
+
+  @property({ type: Boolean })
   active = false;
+
+  @property({ type: Boolean })
   editable = false;
+
+  @property({ type: Boolean })
   changeNeeded = false;
+
+  @property({ type: Set })
   selectedPages = new Set();
+
+  @property({ type: Boolean })
   menuActive = false;
+
+  @property({ type: String })
   sortKey = "date";
+
+  @property({ type: Boolean })
   sortDesc = true;
+
+  @property({ type: Boolean })
   isSidebar = false;
+
+  @property({ type: String })
   url = "";
+
+  @property({ type: String })
   ts = "";
+
+  @property({ type: Boolean })
   editing: any = false;
+
+  @property({ type: Object })
   toDeletePages: any = null;
+
+  @property({ type: Object })
   toDeletePage: any = null;
+
+  @property({ type: Object })
   collInfo: any;
-  allSelected: any;
+
+  @property({ type: Boolean })
+  allSelected = false;
+
+  @property({ type: String })
+  defaultKey = "";
+
   private _ival: any;
-
-  constructor() {
-    super();
-    this.filteredPages = [];
-    this.sortedPages = [];
-    this.query = "";
-    this.flex = null;
-    this.textPages = null;
-    this.newQuery = null;
-    this.loading = false;
-    this.updatingSearch = false;
-
-    this.showAllPages = false;
-    this.hasExtraPages = false;
-
-    this.currList = 0;
-
-    this.active = false;
-    this.editable = false;
-    this.changeNeeded = false;
-
-    this.selectedPages = new Set();
-
-    this.menuActive = false;
-
-    this.sortKey = "date";
-    this.sortDesc = true;
-
-    this.isSidebar = false;
-    this.url = "";
-    this.ts = "";
-
-    this.editing = false;
-
-    this.toDeletePages = null;
-    this.toDeletePage = null;
-  }
 
   static get sortKeys() {
     return [
@@ -100,42 +119,6 @@ class Pages extends LitElement {
         name: "Date",
       },
     ];
-  }
-
-  static get properties() {
-    return {
-      active: { type: Boolean },
-      collInfo: { type: Object },
-      currList: { type: Number },
-      filteredPages: { type: Array },
-      sortedPages: { type: Array },
-
-      showAllPages: { type: Boolean },
-
-      query: { type: String },
-      defaultKey: { type: String },
-
-      loading: { type: Boolean },
-      updatingSearch: { type: Boolean },
-      editable: { type: Boolean },
-
-      selectedPages: { type: Set },
-      allSelected: { type: Boolean },
-
-      menuActive: { type: Boolean },
-
-      sortKey: { type: String },
-      sortDesc: { type: Boolean },
-
-      isSidebar: { type: Boolean },
-      url: { type: String },
-      ts: { type: String },
-
-      editing: { type: Boolean },
-
-      toDeletePages: { type: Object },
-      toDeletePage: { type: Object },
-    };
   }
 
   _timedUpdate() {
