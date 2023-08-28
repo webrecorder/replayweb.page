@@ -145,6 +145,9 @@ class PageEntry extends LitElement {
 
       @media screen and (max-width: 768px) {
         ${PageEntry.sidebarStyles()}
+        .media-left {
+          padding-left: 0.75rem;
+        }
       }
 
       ${PageEntry.sidebarStyles(unsafeCSS`:host(.sidebar)`)}
@@ -302,7 +305,7 @@ class PageEntry extends LitElement {
     return html`${until(this.icon)}`;
   }
 
-  async updateFavIcon() {
+  private async updateFavIcon() {
     if (!this.page.favIconUrl) {
       this.favIconData = null;
       return;
