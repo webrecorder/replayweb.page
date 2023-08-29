@@ -8,7 +8,7 @@ coverage/
 **/local-examples/
 **/.DS_Store
 **/.sass-cache/
-_data/package.json
+_data/
 _site/
 dist/
 plugins-*/
