@@ -1,5 +1,12 @@
 ## CHANGES
 
+v1.8.9:
+- Fidelity: Ignore self-redirects when loading (via wabac.js)
+- Fidelity: Don't rewrite 'location = 0' as window.location (via wabac.js)
+- API: Add /api/c/[coll]/ts/?url=... API for returning array for timestamps for given URL (via wabac.js)
+- Source/Build: simplify build, use sw.js directly from wabac.js release instead of rebuilding (except when developing)
+- Dependencies: Switch to wabac.js 2.16.10
+
 v1.8.8
 - Source/Build: Format src files with Prettier, add pre-commit check, fix errors in HTML
 - Fidelity: Fix regression from 2.16.8 for rewriting JSON in 'script' tags (via wabac.js 2.16.9)
