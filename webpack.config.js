@@ -77,15 +77,30 @@ const electronPreloadConfig = (/*env, argv*/) => {
  
 
 const browserConfig = (/*env, argv*/) => {
+  const isDevServer = process.env.WEBPACK_SERVE;
+
+  const entry = {
+    "ui": "./src/ui.js"
+  };
+
+  const patterns = [
+    { from: "package.json", to: "_data/package.json" }
+  ];
+
+  if (isDevServer) {
+    entry["sw"] = "./src/sw.js";
+  } else {
+    patterns.push(
+      { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js"}
+    );
+  }
+
+
   return {
     target: "web",
     mode: "production",
     resolve: {fallback: { "crypto": false }},
-    entry: {
-      "ui": "./src/ui.js",
-      "sw": "./src/sw.js"
-    },
-
+    entry,
     optimization,
 
     output: {
@@ -130,11 +145,7 @@ const browserConfig = (/*env, argv*/) => {
         __VERSION__: JSON.stringify(package_json.version),
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
-      new CopyPlugin({
-        patterns: [
-          { from: "package.json", to: "_data/package.json" }
-        ]
-      }),
+      new CopyPlugin({ patterns })
     ],
 
     module: {
