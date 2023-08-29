@@ -28,6 +28,7 @@
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
+    "concurrently": "^8.2.1",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "electron": "^25.1.1",
@@ -64,6 +65,7 @@
     "build-dev": "webpack --mode development",
     "build-docs": "bundle install; bundle exec jekyll build",
     "start-dev": "webpack serve --mode development",
+    "start-dev-with-wabac": "concurrently --kill-others \"yarn start-dev\" \"npm explore @webrecorder/wabac -- yarn build-dev --watch\"",
     "start-prod": "http-server -p 9990",
     "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
     "pack-signed": "electron-builder",
