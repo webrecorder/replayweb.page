@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.8.10
+- Regression fix: Fix embed loading from different domain being broken in 1.8.9
+- Dependencies: Switch to wabac.js 2.16.11
+
 v1.8.9:
 - Fidelity: Ignore self-redirects when loading (via wabac.js)
 - Fidelity: Don't rewrite 'location = 0' as window.location (via wabac.js)
