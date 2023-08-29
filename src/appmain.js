@@ -419,7 +419,17 @@ class ReplayWebApp extends LitElement {
     this.initRoute();
 
     // service worker name
-    const name = this.swName + (this.useRuffle ? "?ruffle=1" : "");
+    let name = this.swName;
+
+    const qp = new URLSearchParams();
+    let query = "";
+    if (this.useRuffle) {
+      qp.set("injectScripts", "ruffle/ruffle.js");
+    }
+    query = qp.toString();
+    if (query.length) {
+      name += "?" + query;
+    }
 
     this.swmanager = new SWManager({ name, appName: this.appName });
     this.swmanager
