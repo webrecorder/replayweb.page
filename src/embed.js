@@ -1,7 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { wrapCss, rwpLogo } from "./misc";
+import { wrapCss, rwpLogo, EMBED_INDEX_HTML } from "./misc";
 import { SWManager } from "./swmanager";
 
 var scriptSrc = document.currentScript && document.currentScript.src;
@@ -101,7 +101,10 @@ class Embed extends LitElement {
       return;
     }
 
-    const name = this.swName;
+    const query = new URLSearchParams();
+    query.set("indexHtml", EMBED_INDEX_HTML);
+
+    const name = this.swName + "?" + query.toString();
     const appName = this.appName;
     const scope = this.replaybase;
     const requireSubdomainIframe = this.requireSubdomainIframe;

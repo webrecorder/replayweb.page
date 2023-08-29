@@ -11,6 +11,14 @@ import rwpLogo from "../assets/logo.svg";
 const apiPrefix = "./w/api";
 const replayPrefix = "./w";
 
+const EMBED_INDEX_HTML = `
+<!doctype html>
+<html>
+<body>
+<replay-app-main></replay-app-main>
+</body></html>
+`;
+
 // ===========================================================================
 const allCss = unsafeCSS(allCssRaw);
 function wrapCss(custom) {
@@ -232,4 +240,5 @@ export {
   unsafeSVG,
   apiPrefix,
   replayPrefix,
+  EMBED_INDEX_HTML
 };
