@@ -88,7 +88,7 @@ const browserConfig = (/*env, argv*/) => {
   ];
 
   if (isDevServer) {
-    entry["sw"] = "./src/sw.js";
+    entry["sw"] = "@webrecorder/wabac/src/sw.js";
   } else {
     patterns.push(
       { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js"}
