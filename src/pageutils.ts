@@ -38,23 +38,25 @@ function tsToDate(ts) {
 
 // ===========================================================================
 function getDateFromTS(ts) {
-  let date = null;
-	date = new Date(ts);
-  const timestamp = date && !isNaN(date) ? getTS(date.toISOString()) : "";
-	console.log(timestamp);
-	return timestamp
+  let date: Date | null = null;
+  date = new Date(ts);
+  const timestamp =
+    date && date instanceof Date ? getTS(date.toISOString()) : "";
+  console.log(timestamp);
+  return timestamp;
 }
 
 // ===========================================================================
 function getPageDateTS(page) {
-  let date = null;
+  let date: Date | null = null;
   try {
     date = new Date(page.ts || page.date);
   } catch (e) {
     // leave date unchanged in case of error
   }
 
-  const timestamp = date && !isNaN(date) ? getTS(date.toISOString()) : "";
+  const timestamp =
+    date && date instanceof Date ? getTS(date.toISOString()) : "";
   return { date, timestamp };
 }
 
@@ -123,7 +125,7 @@ export {
   tsToDate,
   getTS,
   getPageDateTS,
-	getDateFromTS,
+  getDateFromTS,
   getReplayLink,
   sourceToId,
   parseURLSchemeHostPath,
