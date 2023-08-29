@@ -2,7 +2,6 @@ import prettyBytes from "pretty-bytes";
 
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { property, state } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
@@ -47,30 +46,6 @@ class PageEntry extends LitElement {
 
   @state()
   iconValid = true;
-
-  private renderPageIcon() {
-    if (!this.thumbnailValid) {
-      return this.renderFavicon();
-    }
-    return html`<img
-      class="thumbnail"
-      @error=${() => (this.thumbnailValid = false)}
-      src=${`${this.replayPrefix}/${this.page.timestamp}id_/urn:thumbnail:${this.page.url}`}
-      loading="lazy"
-    />`;
-  }
-
-  private renderFavicon() {
-    if (!this.iconValid || !this.page.favIconUrl) {
-      return;
-    }
-    return html`<img
-      class="favicon"
-      @error=${() => (this.iconValid = false)}
-      src=${`${this.replayPrefix}/${this.page.timestamp}id_/${this.page.favIconUrl}`}
-      loading="lazy"
-    />`;
-  }
 
   static get styles() {
     return wrapCss(css`
@@ -304,6 +279,30 @@ class PageEntry extends LitElement {
           : ""}
       </div>
     `;
+  }
+
+  private renderPageIcon() {
+    if (!this.thumbnailValid) {
+      return this.renderFavicon();
+    }
+    return html`<img
+      class="thumbnail"
+      @error=${() => (this.thumbnailValid = false)}
+      src=${`${this.replayPrefix}/${this.page.timestamp}id_/urn:thumbnail:${this.page.url}`}
+      loading="lazy"
+    />`;
+  }
+
+  private renderFavicon() {
+    if (!this.iconValid || !this.page.favIconUrl) {
+      return;
+    }
+    return html`<img
+      class="favicon"
+      @error=${() => (this.iconValid = false)}
+      src=${`${this.replayPrefix}/${this.page.timestamp}id_/${this.page.favIconUrl}`}
+      loading="lazy"
+    />`;
   }
 
   updateSnippet() {
