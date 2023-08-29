@@ -14,6 +14,7 @@ const replayPrefix = "./w";
 const EMBED_INDEX_HTML = `
 <!doctype html>
 <html>
+<head><script src="./ui.js"></script></head>
 <body>
 <replay-app-main></replay-app-main>
 </body></html>
