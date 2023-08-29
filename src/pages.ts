@@ -10,11 +10,10 @@ import prettyBytes from "pretty-bytes";
 
 import { getTS, getPageDateTS } from "./pageutils";
 
-// @ts-ignore
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
-// @ts-ignore
+
 import fasAngleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-down.svg";
-// @ts-ignore
+
 import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
 import type { Sorter } from "./sorter";
 import type { PageEntry } from "./pageentry";
