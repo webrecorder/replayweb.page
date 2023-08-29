@@ -14,5 +14,6 @@ dist/
 plugins-*/
 sw.js
 ui.js
+.jekyll-cache
 
 ipfs-core.min.js
