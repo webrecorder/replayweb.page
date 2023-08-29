@@ -41,6 +41,7 @@ import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.
 
 import { RWPEmbedReceipt } from "./embed-receipt.js";
 import Split from "split.js";
+import type { Replay } from "./replay";
 
 const RWP_SCHEME = "search://";
 
@@ -142,7 +143,7 @@ class Coll extends LitElement {
 
   firstUpdated() {
     this.inited = true;
-    window.addEventListener("hashchange", (event) => this.onHashChange(event));
+    window.addEventListener("hashchange", (event) => this.onHashChange());
 
     this.addEventListener("fullscreenchange", () => {
       this.isFullscreen = !!document.fullscreenElement;
@@ -237,7 +238,9 @@ class Coll extends LitElement {
         } else {
           window.location.hash = this._locationHash;
           if (!this.showSidebar) {
-            const replay = this.renderRoot.querySelector("wr-coll-replay");
+            const replay = this.renderRoot.querySelector(
+              "wr-coll-replay",
+            ) as Replay;
             if (replay) {
               replay.focus();
             }
@@ -266,7 +269,7 @@ class Coll extends LitElement {
   configureSplitter() {
     if (this.tabData.url && this.showSidebar) {
       const contents = this.renderRoot.querySelector("#contents");
-      const replay = this.renderRoot.querySelector("wr-coll-replay");
+      const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
 
       if (contents && replay && !this.splitter) {
         const opts = {
@@ -285,7 +288,7 @@ class Coll extends LitElement {
           },
         };
 
-        this.splitter = Split([contents, replay], opts);
+        this.splitter = Split([contents as any, replay], opts);
       }
     } else if (this.splitter) {
       try {
@@ -447,9 +450,15 @@ class Coll extends LitElement {
       event.target.id === this.tabData.view ||
       (event.target.id === "replay" && this.tabData.url)
     ) {
-      this.updateTabData(event.detail.data, event.detail.replaceLoc, false);
+      this.updateTabData(
+        event.detail.data,
+        event.detail.replaceLoc /*, false */,
+      );
     } else if (this.showSidebar && this.tabData.url) {
-      this.updateTabData(event.detail.data, event.detail.replaceLoc, true);
+      this.updateTabData(
+        event.detail.data,
+        event.detail.replaceLoc /*, true */,
+      );
     }
   }
 
@@ -758,7 +767,7 @@ class Coll extends LitElement {
         embed="${this.embed}"
         swName="${this.swName}"
         .coll="${this.coll}"
-        .sourceUrl="${this.sourceUrl}"
+        sourceUrl="${this.sourceUrl || ""}"
         @coll-loaded=${this.onCollLoaded}
       ></wr-loader>`;
     } else if (this.collInfo) {
@@ -772,7 +781,7 @@ class Coll extends LitElement {
               : isReplay
               ? "is-hidden"
               : "full-pages"}"
-            role="${isSidebar ? "complementary" : ""}"
+            role="${(isSidebar ? "complementary" : "") as any}"
             aria-label="${isSidebar ? "Browse Contents" : ""}"
           >
             ${this.renderTabHeader(isSidebar)}
@@ -785,7 +794,7 @@ class Coll extends LitElement {
                   role="main"
                   tabindex="-1"
                   .collInfo="${this.collInfo}"
-                  sourceUrl="${this.sourceUrl}"
+                  sourceUrl="${this.sourceUrl || ""}"
                   url="${this.tabData.url || ""}"
                   ts="${this.tabData.ts || ""}"
                   @coll-tab-nav="${this.onCollTabNav}"
@@ -842,9 +851,9 @@ class Coll extends LitElement {
                 href="#story"
                 class="is-size-6"
                 aria-label="Story"
-                aria-current="${this.tabData.view === "story"
+                aria-current="${(this.tabData.view === "story"
                   ? "location"
-                  : ""}"
+                  : "") as any}"
               >
                 <span class="icon"
                   ><fa-icon
@@ -868,7 +877,9 @@ class Coll extends LitElement {
             href="#pages"
             class="is-size-6"
             aria-label="Pages"
-            aria-current="${this.tabData.view === "pages" ? "location" : ""}"
+            aria-current="${(this.tabData.view === "pages"
+              ? "location"
+              : "") as any}"
           >
             <span class="icon"
               ><fa-icon
@@ -891,9 +902,9 @@ class Coll extends LitElement {
             href="#resources"
             class="is-size-6"
             aria-label="URLs"
-            aria-current="${this.tabData.view === "resources"
+            aria-current="${(this.tabData.view === "resources"
               ? "location"
-              : ""}"
+              : "") as any}"
           >
             <span class="icon"
               ><fa-icon
@@ -914,7 +925,9 @@ class Coll extends LitElement {
             href="#info"
             class="is-size-6"
             aria-label="Archive Info"
-            aria-current="${this.tabData.view === "info" ? "location" : ""}"
+            aria-current="${(this.tabData.view === "info"
+              ? "location"
+              : "") as any}"
           >
             <span class="icon"
               ><fa-icon
@@ -1088,7 +1101,7 @@ class Coll extends LitElement {
                 </span>
               </a>`
             : ""}
-          ${this.renderExtraToolbar(false)}
+          ${this.renderExtraToolbar()}
           <form @submit="${this.onSubmit}">
             <div
               class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}"
@@ -1112,7 +1125,7 @@ class Coll extends LitElement {
                           <option value="">${marshalledTS.length}</option>
                           ${map(
                             marshalledTS,
-                            (date) =>
+                            (date: string) =>
                               html`<option value="${date}">${date}</option>`,
                           )}
                         </select>`
@@ -1243,7 +1256,7 @@ class Coll extends LitElement {
                       <span>Browse Contents</span>
                     </a>`
                   : ""}
-                ${this.renderExtraToolbar(true)}
+                ${this.renderExtraToolbar()}
                 ${this.clearable
                   ? html` <hr class="dropdown-divider is-hidden-desktop" />
                       <a
@@ -1264,8 +1277,8 @@ class Coll extends LitElement {
                         <span>Purge Cache + Full Reload</span>
                       </a>`
                   : html``}
-                ${(!this.editable && this.sourceUrl.startsWith("http://")) ||
-                this.sourceUrl.startsWith("https://")
+                ${(!this.editable && this.sourceUrl?.startsWith("http://")) ||
+                this.sourceUrl?.startsWith("https://")
                   ? html` <hr class="dropdown-divider" />
                       <a
                         href="${this.sourceUrl}"
@@ -1329,14 +1342,14 @@ class Coll extends LitElement {
   }
 
   dragStart() {
-    const replay = this.renderRoot.querySelector("wr-coll-replay");
+    const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
     if (replay) {
       replay.setDisablePointer(true);
     }
   }
 
   dragEnd() {
-    const replay = this.renderRoot.querySelector("wr-coll-replay");
+    const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
     if (replay) {
       replay.setDisablePointer(false);
     }
@@ -1375,7 +1388,7 @@ class Coll extends LitElement {
             id="story"
             .isSidebar="${isSidebar}"
             class="${isStory ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-            role="${isSidebar ? "" : "main"}"
+            role="${(isSidebar ? "" : "main") as any}"
           >
           </wr-coll-story>`
         : ""}
@@ -1392,7 +1405,7 @@ class Coll extends LitElement {
             class="is-paddingless ${isResources ? "" : "is-hidden"} ${isSidebar
               ? "sidebar"
               : ""}"
-            role="${isSidebar ? "" : "main"}"
+            role="${(isSidebar ? "" : "main") as any}"
           >
           </wr-coll-resources>`
         : ""}
@@ -1410,7 +1423,7 @@ class Coll extends LitElement {
             id="pages"
             @coll-update="${this.onCollUpdate}"
             class="${isPages ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-            role="${isSidebar ? "" : "main"}"
+            role="${(isSidebar ? "" : "main") as any}"
           >
           </wr-page-view>`
         : ""}
@@ -1421,7 +1434,9 @@ class Coll extends LitElement {
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
     event.preventDefault();
-    this.renderRoot.querySelector("#skip-replay-target").focus();
+    (
+      this.renderRoot.querySelector("#skip-replay-target") as HTMLElement
+    ).focus();
   }
 
   onKeyDown(event) {
@@ -1539,7 +1554,7 @@ class Coll extends LitElement {
 
   onSubmit(event) {
     event.preventDefault();
-    const input = this.renderRoot.querySelector("input");
+    const input = this.renderRoot.querySelector("input")!;
     if (input.value) {
       this.navigateTo(input.value);
     } else {
@@ -1561,7 +1576,9 @@ class Coll extends LitElement {
       data = { url: value };
 
       if (value === this.tabData.url) {
-        const replay = this.renderRoot.querySelector("wr-coll-replay");
+        const replay = this.renderRoot.querySelector(
+          "wr-coll-replay",
+        ) as Replay;
         if (replay) {
           replay.refresh();
         }
@@ -1579,7 +1596,7 @@ class Coll extends LitElement {
 
   _stringToParams(value) {
     const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
-    const data = {};
+    const data: any = {};
     data.url = "";
     data.ts = "";
 
@@ -1624,7 +1641,7 @@ class Coll extends LitElement {
     this.menuActive = false;
 
     if (this.tabData.url) {
-      const replay = this.renderRoot.querySelector("wr-coll-replay");
+      const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
       if (replay) {
         replay.refresh();
       }
