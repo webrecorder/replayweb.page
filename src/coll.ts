@@ -38,6 +38,7 @@ import fasMenuV from "@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg";
 
 import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.svg";
 import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
+import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
 
 import { RWPEmbedReceipt } from "./embed-receipt.js";
 import Split from "split.js";
@@ -72,7 +73,16 @@ class Coll extends LitElement {
   isLoading = false;
 
   @property({ type: Object, attribute: false })
-  tabData: any = {};
+  tabData: {
+    view?: string;
+    url?: string;
+    ts?: string;
+    multiTs?: string[];
+    currList?: number;
+    query?: string;
+    urlSearchType?: string;
+    currMime?: string;
+  } = {};
 
   @property({ type: String })
   url = "";
@@ -178,17 +188,36 @@ class Coll extends LitElement {
     }
   }
 
-  async getMultiTimestamps() {
-    console.log(apiPrefix + "/c/" + this.coll + "/ts/?url=" + this.tabData.url);
+  async getMultiTimestamps(): Promise<void> {
+    if (!this.tabData.url) return;
     const resp = await fetch(
-      apiPrefix + "/c/" + this.coll + "/ts/?url=" + this.tabData.url,
+      apiPrefix +
+        "/c/" +
+        this.coll +
+        "/ts/?url=" +
+        window.encodeURIComponent(this.tabData.url),
     );
     if (resp.status !== 200) {
-      return {};
+      return;
     }
     const json = await resp.json();
     this.updateTabData({ multiTs: json.timestamps });
-    // this.tabData.multiTs = json.timestamps;
+  }
+
+  willUpdate(changedProperties: Map<string, any>) {
+    if (changedProperties.has("tabData") && this.tabData) {
+      // Format tab data from URL query params
+      const tabData = {};
+      Object.entries(this.tabData).forEach(([key, value]) => {
+        if (!value) return;
+        if (key === "multiTs" && typeof value === "string") {
+          tabData[key] = value.split(",");
+        } else {
+          tabData[key] = value;
+        }
+      });
+      this.tabData = tabData;
+    }
   }
 
   updated(changedProperties) {
@@ -212,13 +241,7 @@ class Coll extends LitElement {
       if (!this.collInfo || !this.collInfo.coll) {
         return;
       }
-
-      // don't add empty params to shorten query
-      Object.keys(this.tabData).forEach(
-        (key) => !this.tabData[key] && delete this.tabData[key],
-      );
-
-      const newHash = "#" + new URLSearchParams(this.tabData).toString();
+      const newHash = "#" + new URLSearchParams(this.tabData as any).toString();
 
       if (!this.tabData.url) {
         this.url =
@@ -401,7 +424,10 @@ class Coll extends LitElement {
       this._locationHash = hash;
     }
 
-    if (this.collInfo.coll && !this.tabNames.includes(this.tabData.view)) {
+    if (
+      this.collInfo.coll &&
+      (!this.tabData.view || !this.tabNames.includes(this.tabData.view))
+    ) {
       const view = this.hasStory
         ? "story"
         : this.editable || this.collInfo.pages.length
@@ -615,6 +641,10 @@ class Coll extends LitElement {
         margin: -35px 0 0 0px;
         padding-left: 3em;
         line-height: 2;
+      }
+
+      .timestamp-dropdown {
+        display: inline-block;
       }
 
       .menu-head {
@@ -973,17 +1003,6 @@ class Coll extends LitElement {
     }
 
     const dateStr = tsToDate(this.ts).toLocaleString();
-    let multiTs;
-    let marshalledTS;
-    if (this.tabData.multiTs && this.tabData.multiTs.length > 1) {
-      multiTs = this.tabData.multiTs;
-      marshalledTS = multiTs.map((ts) =>
-        tsToDate(getDateFromTS(ts)).toLocaleString(),
-      );
-      console.log("marshalledTS: " + marshalledTS);
-    } else {
-      multiTs = false;
-    }
 
     const isReplay = !!this.tabData.url;
 
@@ -1115,23 +1134,7 @@ class Coll extends LitElement {
                 .value="${this.url}"
                 placeholder="Enter text to search or a URL to replay"
               />
-              ${isReplay
-                ? html`<p id="datetime" class="control is-hidden-mobile">
-                    ${dateStr}
-                    ${multiTs
-                      ? html`<select
-                          style="float: right;color: white;background: blue"
-                        >
-                          <option value="">${marshalledTS.length}</option>
-                          ${map(
-                            marshalledTS,
-                            (date: string) =>
-                              html`<option value="${date}">${date}</option>`,
-                          )}
-                        </select>`
-                      : html``}
-                  </p>`
-                : html``}
+              ${isReplay ? this.renderTimestamp() : ""}
               ${showFavIcon
                 ? html` <span class="favicon icon is-small is-left">
                     <img src="${this.favIconUrl}" />
@@ -1325,6 +1328,40 @@ class Coll extends LitElement {
         </div>
       </nav>
       <p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
+  }
+
+  private renderTimestamp() {
+    const timestampStrs: { date: string; label: string }[] = [];
+    this.tabData.multiTs?.forEach((ts) => {
+      // Filter out invalid dates
+      try {
+        const date = getDateFromTS(+ts);
+        const dateStr = tsToDate(date).toLocaleString();
+        timestampStrs.push({
+          date,
+          label: dateStr,
+        });
+      } catch {}
+    });
+    const currDateStr = tsToDate(this.ts).toLocaleString();
+    return html`<div id="datetime" class="control is-hidden-mobile">
+      ${timestampStrs.length > 1
+        ? html`
+            <sl-select class="timestamp-dropdown" value=${this.ts} size="small">
+              ${timestampStrs.map(
+                ({ date: ts, label }) =>
+                  html`<sl-option value=${ts}>${label}</sl-option>`,
+              )}
+              <fa-icon
+                slot="expand-icon"
+                .svg="${fasCaretDown}"
+                aria-hidden="true"
+              ></fa-icon>
+            </sl-select>
+            <sl-badge>${timestampStrs.length}</sl-badge>
+          `
+        : currDateStr}
+    </div>`;
   }
 
   renderVerifyInfo() {
