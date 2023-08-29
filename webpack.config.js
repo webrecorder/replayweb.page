@@ -78,9 +78,9 @@ const electronPreloadConfig = (/*env, argv*/) => {
 
 const browserConfig = (/*env, argv*/) => {
   const isDevServer = process.env.WEBPACK_SERVE;
-
+  const swPath = "node_modules/@webrecorder/wabac/dist/sw.js";
   const entry = {
-    "ui": "./src/ui.js"
+    "ui": "./src/ui.js",
   };
 
   const patterns = [
@@ -91,7 +91,8 @@ const browserConfig = (/*env, argv*/) => {
     entry["sw"] = "./src/sw.js";
   } else {
     patterns.push(
-      { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js"}
+      { from: "package.json", to: "_data/package.json" },
+      { from: swPath, to: "sw.js"}
     );
   }
 
@@ -117,25 +118,12 @@ const browserConfig = (/*env, argv*/) => {
       open: false,
       static:  path.join(__dirname),
       //publicPath: "/"
+      watchFiles: [swPath],
     },
 
     plugins: [
-      new webpack.NormalModuleReplacementPlugin(
-        /^node:*/,
-        (resource) => {
-          switch (resource.request) {
-          case "node:stream":
-            resource.request = "stream-browserify";
-            break;
-          }
-        },
-      ),
-
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1,
-      }),
-      new webpack.ProvidePlugin({
-        process: "process/browser",
       }),
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({

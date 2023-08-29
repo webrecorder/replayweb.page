@@ -1,3 +1,1 @@
-// only used to better debug wabac.js
-
-import "@webrecorder/wabac/src/sw";
+import "@webrecorder/wabac/dist/sw.js";
