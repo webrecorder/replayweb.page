@@ -99,6 +99,9 @@ const browserConfig = (/*env, argv*/) => {
   return {
     target: "web",
     mode: "production",
+    cache: {
+      type: isDevServer ? "memory" : "filesystem",
+    },
     resolve: {
       fallback: { "crypto": false },
       extensions: [".ts", ".js"],
