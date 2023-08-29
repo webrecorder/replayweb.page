@@ -37,7 +37,7 @@ function tsToDate(ts) {
 }
 
 // ===========================================================================
-function getDateFromTS(ts) {
+function getDateFromTS(ts: number) {
   let date: Date | null = null;
   date = new Date(ts);
   const timestamp =
