@@ -11,10 +11,9 @@ import prettyBytes from "pretty-bytes";
 import { getTS, getPageDateTS } from "./pageutils";
 
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
-
 import fasAngleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-down.svg";
-
 import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
+
 import type { Sorter } from "./sorter";
 import type { PageEntry } from "./pageentry";
 
@@ -229,7 +228,7 @@ class Pages extends LitElement {
     this.filteredPages = curated;
   }
 
-  sendChangeEvent(data: any) {
+  sendChangeEvent(data) {
     this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
   }
 
