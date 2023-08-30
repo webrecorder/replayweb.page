@@ -1407,6 +1407,7 @@ class Coll extends LitElement {
         ? html`
             <sl-dropdown placement="top-end" hoist>
               <button
+                type="button"
                 class="timestamp-dropdown-btn"
                 slot="trigger"
                 @blur=${this.onTimestampDropdownBtnBlur}
