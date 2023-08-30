@@ -42,7 +42,6 @@ function getDateFromTS(ts: number) {
   date = new Date(ts);
   const timestamp =
     date && date instanceof Date ? getTS(date.toISOString()) : "";
-  console.log(timestamp);
   return timestamp;
 }
 

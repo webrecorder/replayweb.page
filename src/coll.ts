@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
+import type { SlMenu, SlSelectEvent } from "@shoelace-style/shoelace";
 import {
   wrapCss,
   rwpLogo,
@@ -643,8 +644,41 @@ class Coll extends LitElement {
         line-height: 2;
       }
 
-      .timestamp-dropdown {
-        display: inline-block;
+      .timestamp-dropdown-btn {
+        cursor: pointer;
+        display: flex;
+        gap: var(--sl-spacing-x-small);
+        align-items: center;
+        transition: background-color var(--sl-transition-fast);
+        color: var(--sl-color-neutral-600);
+      }
+
+      .timestamp-dropdown-btn:hover {
+        color: var(--sl-color-neutral-900);
+      }
+
+      .timestamp-dropdown-btn:hover .timestamp-count-badge {
+        background-color: var(--sl-color-blue-600);
+      }
+
+      .timestamp-count-badge {
+        display: inline-flex;
+        gap: var(--sl-spacing-2x-small);
+        background-color: var(--sl-color-blue-500);
+        color: var(--sl-color-neutral-0);
+        line-height: 1;
+        padding: var(--sl-spacing-3x-small) var(--sl-spacing-x-small);
+        border-radius: var(--sl-border-radius-small);
+        transition: background-color var(--sl-transition-fast);
+      }
+
+      .timestamp-count {
+        font-weight: 600;
+        transform: translateY(0.075em);
+      }
+
+      .timestamp-menu-item[aria-selected="true"]::part(label) {
+        color: var(--sl-color-blue-600);
       }
 
       .menu-head {
@@ -1347,18 +1381,27 @@ class Coll extends LitElement {
     return html`<div id="datetime" class="control is-hidden-mobile">
       ${timestampStrs.length > 1
         ? html`
-            <sl-select class="timestamp-dropdown" value=${this.ts} size="small">
-              ${timestampStrs.map(
-                ({ date: ts, label }) =>
-                  html`<sl-option value=${ts}>${label}</sl-option>`,
-              )}
-              <fa-icon
-                slot="expand-icon"
-                .svg="${fasCaretDown}"
-                aria-hidden="true"
-              ></fa-icon>
-            </sl-select>
-            <sl-badge>${timestampStrs.length}</sl-badge>
+            <sl-dropdown placement="top-end">
+              <div class="timestamp-dropdown-btn" slot="trigger" role="button">
+                <div>${currDateStr}</div>
+                <div class="timestamp-count-badge">
+                  <div class="timestamp-count">${timestampStrs.length}</div>
+                  <fa-icon .svg="${fasCaretDown}" aria-hidden="true"></fa-icon>
+                </div>
+              </div>
+              <sl-menu @sl-select=${this.onSelectTimestamp}>
+                ${timestampStrs.map(({ date: ts, label }) => {
+                  const selected = this.ts === ts;
+                  return html`<sl-menu-item
+                    class="timestamp-menu-item"
+                    value=${ts}
+                    aria-selected="${selected}"
+                  >
+                    ${label}</sl-menu-item
+                  >`;
+                })}
+              </sl-menu>
+            </sl-dropdown>
           `
         : currDateStr}
     </div>`;
@@ -1604,6 +1647,12 @@ class Coll extends LitElement {
     if (!event.currentTarget.value) {
       event.currentTarget.value = this.url;
     }
+  }
+
+  onSelectTimestamp(event: SlSelectEvent) {
+    const menu = event.currentTarget as SlMenu;
+    const { item } = event.detail;
+    this.updateTabData({ ts: item.value });
   }
 
   navigateTo(value) {

@@ -1,4 +1,4 @@
 // Cherry-picked Shoelace components:
-import "@shoelace-style/shoelace/dist/components/badge/badge.js";
-import "@shoelace-style/shoelace/dist/components/option/option.js";
-import "@shoelace-style/shoelace/dist/components/select/select.js";
+import "@shoelace-style/shoelace/dist/components/dropdown/dropdown.js";
+import "@shoelace-style/shoelace/dist/components/menu/menu.js";
+import "@shoelace-style/shoelace/dist/components/menu-item/menu-item.js";
