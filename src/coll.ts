@@ -1,7 +1,11 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
-import type { SlMenu, SlSelectEvent } from "@shoelace-style/shoelace";
+import type {
+  SlDropdown,
+  SlMenu,
+  SlSelectEvent,
+} from "@shoelace-style/shoelace";
 import {
   wrapCss,
   rwpLogo,
@@ -664,6 +668,7 @@ class Coll extends LitElement {
       }
 
       .timestamp-dropdown-btn {
+        all: unset;
         cursor: pointer;
         display: flex;
         gap: var(--sl-spacing-x-small);
@@ -1401,13 +1406,17 @@ class Coll extends LitElement {
       ${timestampStrs.length > 1
         ? html`
             <sl-dropdown placement="top-end" hoist>
-              <div class="timestamp-dropdown-btn" slot="trigger" role="button">
+              <button
+                class="timestamp-dropdown-btn"
+                slot="trigger"
+                @blur=${this.onTimestampDropdownBtnBlur}
+              >
                 <div>${currDateStr}</div>
                 <div class="timestamp-count-badge">
                   <div class="timestamp-count">${timestampStrs.length}</div>
                   <fa-icon .svg="${fasCaretDown}" aria-hidden="true"></fa-icon>
                 </div>
-              </div>
+              </button>
               <sl-menu @sl-select=${this.onSelectTimestamp}>
                 ${timestampStrs.map(({ date: ts, label }) => {
                   const selected = this.ts === ts;
@@ -1665,6 +1674,18 @@ class Coll extends LitElement {
   onLostFocus(event) {
     if (!event.currentTarget.value) {
       event.currentTarget.value = this.url;
+    }
+  }
+
+  onTimestampDropdownBtnBlur(event: MouseEvent) {
+    const btn = event.currentTarget as HTMLButtonElement;
+    const dropdown = btn.closest("sl-dropdown") as SlDropdown;
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    if (relatedTarget && dropdown.contains(relatedTarget)) {
+      return;
+    }
+    if (dropdown.open) {
+      dropdown.hide();
     }
   }
 
