@@ -218,6 +218,11 @@ class Coll extends LitElement {
         }
       });
       this.tabData = tabData;
+
+      const prevTabData = changedProperties.get("tabData");
+      if (this.tabData.url && this.tabData.url !== prevTabData?.url) {
+        this.getMultiTimestamps();
+      }
     }
   }
 
@@ -250,7 +255,7 @@ class Coll extends LitElement {
       }
       if (newHash !== this._locationHash) {
         this._locationHash = newHash;
-        this.getMultiTimestamps();
+
         if (
           this._replaceLoc ||
           Object.keys(changedProperties.get("tabData")).length === 0
@@ -631,17 +636,31 @@ class Coll extends LitElement {
 
       #datetime {
         position: absolute;
-        right: 1em;
+        right: 0.5rem;
         z-index: 10;
+        background: #fff;
+        top: 1px;
+        bottom: 1px;
+        display: flex;
+        align-items: center;
+        line-height: 2;
+      }
+
+      /* Gradient to indicate URL clipping */
+      #datetime:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 2em;
+        height: 100%;
+        transform: translateX(-100%);
         background: linear-gradient(
           90deg,
           rgba(255, 255, 255, 0),
-          #fff 15%,
+          #fff 50%,
           #fff
         );
-        margin: -35px 0 0 0px;
-        padding-left: 3em;
-        line-height: 2;
+        pointer-events: none;
       }
 
       .timestamp-dropdown-btn {
@@ -1381,7 +1400,7 @@ class Coll extends LitElement {
     return html`<div id="datetime" class="control is-hidden-mobile">
       ${timestampStrs.length > 1
         ? html`
-            <sl-dropdown placement="top-end">
+            <sl-dropdown placement="top-end" hoist>
               <div class="timestamp-dropdown-btn" slot="trigger" role="button">
                 <div>${currDateStr}</div>
                 <div class="timestamp-count-badge">
