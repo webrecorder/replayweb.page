@@ -1,6 +1,7 @@
 "use strict";
 
 import { LitElement, html, css, unsafeCSS } from "lit";
+import { property, state } from "lit/decorators.js";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
 import ndjson from "fetch-ndjson";
 
@@ -11,47 +12,95 @@ import { getTS, getPageDateTS } from "./pageutils";
 
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 import fasAngleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-down.svg";
-
 import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
+
+import type { Sorter } from "./sorter";
+import type { PageEntry } from "./pageentry";
 
 // ===========================================================================
 class Pages extends LitElement {
-  constructor() {
-    super();
-    this.filteredPages = [];
-    this.sortedPages = [];
-    this.query = "";
-    this.flex = null;
-    this.textPages = null;
-    this.newQuery = null;
-    this.loading = false;
-    this.updatingSearch = false;
+  @property({ type: Array })
+  filteredPages: any[] = [];
 
-    this.showAllPages = false;
-    this.hasExtraPages = false;
+  @property({ type: Array })
+  sortedPages: any[] = [];
 
-    this.currList = 0;
+  @property({ type: String })
+  query = "";
 
-    this.active = false;
-    this.editable = false;
-    this.changeNeeded = false;
+  @property()
+  flex: any = null;
 
-    this.selectedPages = new Set();
+  @property()
+  textPages: any = null;
 
-    this.menuActive = false;
+  @property()
+  newQuery: any = null;
 
-    this.sortKey = "date";
-    this.sortDesc = true;
+  @property({ type: Boolean })
+  loading = false;
 
-    this.isSidebar = false;
-    this.url = "";
-    this.ts = "";
+  @property({ type: Boolean })
+  updatingSearch = false;
 
-    this.editing = false;
+  @property({ type: Boolean })
+  showAllPages = false;
 
-    this.toDeletePages = null;
-    this.toDeletePage = null;
-  }
+  @property({ type: Boolean })
+  hasExtraPages = false;
+
+  @property({ type: Number })
+  currList: number = 0;
+
+  @property({ type: Boolean })
+  active = false;
+
+  @property({ type: Boolean })
+  editable = false;
+
+  @property({ type: Boolean })
+  changeNeeded = false;
+
+  @property({ type: Set })
+  selectedPages = new Set();
+
+  @property({ type: Boolean })
+  menuActive = false;
+
+  @property({ type: String })
+  sortKey = "date";
+
+  @property({ type: Boolean })
+  sortDesc = true;
+
+  @property({ type: Boolean })
+  isSidebar = false;
+
+  @property({ type: String })
+  url = "";
+
+  @property({ type: String })
+  ts = "";
+
+  @property({ type: Boolean })
+  editing: any = false;
+
+  @property({ type: Object })
+  toDeletePages: any = null;
+
+  @property({ type: Object })
+  toDeletePage: any = null;
+
+  @property({ type: Object })
+  collInfo: any;
+
+  @property({ type: Boolean })
+  allSelected = false;
+
+  @property({ type: String })
+  defaultKey = "";
+
+  private _ival: any;
 
   static get sortKeys() {
     return [
@@ -70,42 +119,6 @@ class Pages extends LitElement {
     ];
   }
 
-  static get properties() {
-    return {
-      active: { type: Boolean },
-      collInfo: { type: Object },
-      currList: { type: Number },
-      filteredPages: { type: Array },
-      sortedPages: { type: Array },
-
-      showAllPages: { type: Boolean },
-
-      query: { type: String },
-      defaultKey: { type: String },
-
-      loading: { type: Boolean },
-      updatingSearch: { type: Boolean },
-      editable: { type: Boolean },
-
-      selectedPages: { type: Set },
-      allSelected: { type: Boolean },
-
-      menuActive: { type: Boolean },
-
-      sortKey: { type: String },
-      sortDesc: { type: Boolean },
-
-      isSidebar: { type: Boolean },
-      url: { type: String },
-      ts: { type: String },
-
-      editing: { type: Boolean },
-
-      toDeletePages: { type: Object },
-      toDeletePage: { type: Object },
-    };
-  }
-
   _timedUpdate() {
     if (this.newQuery !== null) {
       this.query = this.newQuery;
@@ -114,7 +127,7 @@ class Pages extends LitElement {
     }
   }
 
-  async updated(changedProperties) {
+  async updated(changedProperties: Map<string, any>) {
     if (changedProperties.has("collInfo")) {
       this.updateTextSearch();
     } else if (changedProperties.has("query")) {
@@ -139,7 +152,7 @@ class Pages extends LitElement {
         this.sortKey = "date";
         this.sortDesc = true;
       }
-      const sorter = this.renderRoot.querySelector("wr-sorter");
+      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
       if (sorter) {
         sorter.sortKey = this.sortKey;
         sorter.sortDesc = this.sortDesc;
@@ -155,14 +168,14 @@ class Pages extends LitElement {
           block: "nearest",
           inline: "nearest",
         };
-        setTimeout(() => selected.scrollIntoView(opts), 100);
+        setTimeout(() => selected.scrollIntoView(opts as any), 100);
       }
       //}
     }
   }
 
-  onChangeQuery(event) {
-    this.newQuery = event.currentTarget.value;
+  onChangeQuery(event: Event) {
+    this.newQuery = (event.currentTarget as any).value;
     //this.loading = true;
     if (this._ival) {
       window.clearTimeout(this._ival);
@@ -180,7 +193,7 @@ class Pages extends LitElement {
     this.loading = true;
     if (this.flex && this.query && this.textPages) {
       const results = await this.flex.searchAsync(this.query, 25);
-      this.filteredPages = results.map((inx) => this.textPages[inx]);
+      this.filteredPages = results.map((inx: number) => this.textPages[inx]);
     } else if (this.showAllPages && this.hasExtraPages) {
       this.filteredPages = [...this.textPages];
     } else {
@@ -267,9 +280,9 @@ class Pages extends LitElement {
         }
       }
 
-      const lines = [];
+      const lines: any[] = [];
 
-      for await (const line of ndjson(resp.body.getReader())) {
+      for await (const line of ndjson(resp.body!.getReader())) {
         if (!line.url) {
           continue;
         }
@@ -324,7 +337,7 @@ class Pages extends LitElement {
       }
 
       .header .column.pagetitle {
-        margin-left: 2.5em;
+        padding-left: 0.25em;
       }
 
       .column.main-content {
@@ -334,6 +347,12 @@ class Pages extends LitElement {
         padding: 0px;
         margin-top: 0.5em;
         margin-left: 0.75em;
+      }
+
+      .thumbnail {
+        width: 6rem;
+        flex: 0 0 auto;
+        box-sizing: content-box;
       }
 
       .index-bar {
@@ -769,13 +788,17 @@ class Pages extends LitElement {
             : ""}"
           >Date</a
         >
+        <div class="column thumbnail">
+          <span class="sr-only">Page thumbnail or favicon</span>
+        </div>
         <a
           role="button"
           href="#"
           @click="${this.onSort}"
           @keyup="${clickOnSpacebarPress}"
           data-key="title"
-          class="column is-6 pagetitle ${this.sortKey === "title"
+          class="column is-6 pagetitle ${this.query ? "is-5" : "is-6"} ${this
+            .sortKey === "title"
             ? this.sortDesc
               ? "desc"
               : "asc"
@@ -869,10 +892,10 @@ class Pages extends LitElement {
               return html` <li class="page-entry ${selected ? "selected" : ""}">
                 <wr-page-entry
                   .index="${this.query || this.isSidebar ? i + 1 : 0}"
-                  .editable="${this.editable}"
-                  .selected="${selected}"
-                  .isCurrent="${this.isCurrPage(p)}"
-                  .isSidebar="${this.isSidebar}"
+                  ?editable="${this.editable}"
+                  ?selected="${selected}"
+                  ?isCurrent="${this.isCurrPage(p)}"
+                  ?isSidebar="${this.isSidebar}"
                   .page="${p}"
                   pid="${p.id}"
                   @sel-page="${this.onSelectToggle}"
@@ -897,7 +920,9 @@ class Pages extends LitElement {
     if (!this.editable) {
       return;
     }
-    const input = this.renderRoot.querySelector("#titleEdit");
+    const input = this.renderRoot.querySelector(
+      "#titleEdit",
+    ) as HTMLInputElement;
     if (!input || !input.value.trim()) {
       return;
     }
@@ -1010,7 +1035,9 @@ class Pages extends LitElement {
     const pageMap = {};
 
     for (const id of this.toDeletePages) {
-      const p = this.renderRoot.querySelector(`wr-page-entry[pid="${id}"]`);
+      const p = this.renderRoot.querySelector(
+        `wr-page-entry[pid="${id}"]`,
+      ) as PageEntry;
       if (p) {
         p.deleting = true;
         pageMap[id] = p;
@@ -1099,7 +1126,7 @@ class Pages extends LitElement {
     const diff =
       element.scrollHeight - element.scrollTop - element.clientHeight;
     if (diff < 40) {
-      const sorter = this.renderRoot.querySelector("wr-sorter");
+      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
       if (sorter) {
         sorter.getMore();
       }

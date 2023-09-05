@@ -1,6 +1,7 @@
 import prettyBytes from "pretty-bytes";
 
 import { LitElement, html, css, unsafeCSS } from "lit";
+import { property, state } from "lit/decorators.js";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
@@ -10,35 +11,41 @@ import { wrapCss } from "./misc";
 
 // ===========================================================================
 class PageEntry extends LitElement {
-  constructor() {
-    super();
-    this.query = "";
-    this.textSnippet = "";
-    this.page = null;
-    this.replayPrefix = "";
-    this.deleting = false;
-    this.editable = false;
-    this.iconValid = false;
-    this.index = 0;
-    this.isCurrent = false;
-    this.isSidebar = false;
-  }
+  @property({ type: String })
+  query = "";
 
-  static get properties() {
-    return {
-      query: { type: String },
-      textSnippet: { type: String },
-      page: { type: Object },
-      replayPrefix: { type: String },
-      deleting: { type: Boolean },
-      selected: { type: Boolean },
-      editable: { type: Boolean },
-      iconValid: { type: Boolean },
-      index: { type: Number },
-      isCurrent: { type: Boolean },
-      isSidebar: { type: Boolean },
-    };
-  }
+  @property({ type: String })
+  textSnippet: string | null = "";
+
+  @property({ type: Object })
+  page: any = null;
+
+  @property({ type: String })
+  replayPrefix = "";
+
+  @property({ type: Boolean })
+  deleting = false;
+
+  @property({ type: Boolean })
+  selected = false;
+
+  @property({ type: Boolean })
+  editable = false;
+
+  @property({ type: Number })
+  index = 0;
+
+  @property({ type: Boolean })
+  isCurrent = false;
+
+  @property({ type: Boolean })
+  isSidebar = false;
+
+  @state()
+  thumbnailValid = true;
+
+  @state()
+  iconValid = true;
 
   static get styles() {
     return wrapCss(css`
@@ -79,17 +86,28 @@ class PageEntry extends LitElement {
       }
 
       .favicon {
-        width: 24px !important;
-        height: 24px !important;
         display: inline-block;
         vertical-align: text-bottom;
       }
-      img.favicon {
+
+      .media-left .favicon {
+        width: 2rem;
+        height: 2rem;
+      }
+      .media-left img.favicon {
         filter: drop-shadow(1px 1px 2px grey);
       }
 
+      .media-content .favicon {
+        width: 1.15rem;
+        height: 1.15rem;
+        margin: 0 0.25rem;
+      }
+
       .media-left {
+        width: 6rem;
         align-self: center;
+        text-align: center;
       }
 
       .delete-button {
@@ -148,10 +166,7 @@ class PageEntry extends LitElement {
         display: inline;
       }
       ${prefix} .col-index {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        margin-top: -0.75em;
+        display: none;
       }
       ${prefix} .columns {
         display: flex;
@@ -161,14 +176,15 @@ class PageEntry extends LitElement {
         display: initial !important;
         font-style: italic;
       }
+      ${prefix} .media-left {
+        padding-left: 0.75rem;
+      }
     `;
   }
 
   updated(changedProperties) {
     if (changedProperties.has("page") || changedProperties.has("query")) {
       this.updateSnippet();
-      this.iconValid = !!this.page.favIconUrl;
-      //this.updateFavIcon();
       this.deleting = false;
     }
   }
@@ -206,18 +222,7 @@ class PageEntry extends LitElement {
         </div>
         <div class="column">
           <div class="media">
-            <figure class="media-left">
-              <p class="">
-                ${this.iconValid
-                  ? html` <img
-                      class="favicon"
-                      @error="${() => (this.iconValid = false)}"
-                      src="${this.replayPrefix}/${this.page
-                        .timestamp}id_/${p.favIconUrl}"
-                    />`
-                  : html` <span class="favicon"></span>`}
-              </p>
-            </figure>
+            <figure class="media-left">${this.renderPageIcon()}</figure>
             <div class="media-content ${this.isCurrent ? "current" : ""}">
               <div role="heading" aria-level="${this.isSidebar ? "4" : "3"}">
                 <a
@@ -237,7 +242,7 @@ class PageEntry extends LitElement {
                   <p class="has-text-dark text">
                     <keyword-mark keywords="${this.query}"
                       >${p.url}</keyword-mark
-                    >
+                    >${this.thumbnailValid ? this.renderFavicon() : ""}
                   </p>
                   <p class="has-text-grey-dark text is-inline-date">
                     ${date ? date.toLocaleString() : ""}
@@ -276,32 +281,28 @@ class PageEntry extends LitElement {
     `;
   }
 
-  async updateFavIcon() {
-    if (!this.page.favIconUrl) {
-      this.favIconData = null;
+  private renderPageIcon() {
+    if (!this.thumbnailValid) {
+      return this.renderFavicon();
+    }
+    return html`<img
+      class="thumbnail"
+      @error=${() => (this.thumbnailValid = false)}
+      src=${`${this.replayPrefix}/${this.page.timestamp}id_/urn:thumbnail:${this.page.url}`}
+      loading="lazy"
+    />`;
+  }
+
+  private renderFavicon() {
+    if (!this.iconValid || !this.page.favIconUrl) {
       return;
     }
-
-    const resp = await fetch(
-      `${this.replayPrefix}/${this.page.timestamp}id_/${this.page.favIconUrl}`,
-    );
-
-    if (resp.status != 200) {
-      this.favIconData = null;
-      return;
-    }
-
-    const payload = await resp.arrayBuffer();
-    const mime = resp.headers.get("content-type");
-
-    try {
-      this.favIconData = `data:${mime};base64,${btoa(
-        String.fromCharCode.apply(null, payload),
-      )}`;
-    } catch (e) {
-      console.log(e);
-      this.favIconData = null;
-    }
+    return html`<img
+      class="favicon"
+      @error=${() => (this.iconValid = false)}
+      src=${`${this.replayPrefix}/${this.page.timestamp}id_/${this.page.favIconUrl}`}
+      loading="lazy"
+    />`;
   }
 
   updateSnippet() {
