@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.8.11
+- Loading: Use default html index, avoid custom html injection (via wabac.js 2.16.12)
+- Dependencies: Switch to wabac.js 2.16.12
+
 v1.8.10
 - Regression fix: Fix embed loading from different domain being broken in 1.8.9
 - Dependencies: Switch to wabac.js 2.16.11
