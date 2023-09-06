@@ -1,44 +1,49 @@
 import { LitElement, html, css } from "lit";
+import { property, state } from "lit/decorators.js";
+
 import { wrapCss, rwpLogo } from "./misc";
+import type { Coll } from "./types";
 
 // ===========================================================================
 class Replay extends LitElement {
-  constructor() {
-    super();
-    this.replayUrl = "";
-    this.replayTS = "";
-    this.actualTS = "";
-    this.url = "";
-    this.ts = "";
-    this.title = "";
-    this.collInfo = null;
+  @property({ type: Object })
+  collInfo: Coll | null = null;
 
-    this.showAuth = false;
-    this.reauthWait = null;
-    this.authFileHandle = null;
-  }
+  @property({ type: String })
+  sourceUrl: any = null;
 
-  static get properties() {
-    return {
-      collInfo: { type: Object },
-      sourceUrl: { type: String },
+  // external url set from parent
+  @property({ type: String })
+  url = "";
 
-      // external url set from parent
-      url: { type: String },
-      ts: { type: String },
+  @property({ type: String })
+  ts = "";
 
-      // actual replay url
-      replayUrl: { type: String },
-      replayTS: { type: String },
-      actualTS: { type: String },
-      title: { type: String },
+  // actual replay url
+  @property({ type: String })
+  replayUrl = "";
 
-      iframeUrl: { type: String },
+  @property({ type: String })
+  replayTS = "";
 
-      showAuth: { type: Boolean },
-      authFileHandle: { type: Object },
-    };
-  }
+  @property({ type: String })
+  actualTS = "";
+
+  @property({ type: String })
+  title = "";
+
+  @property({ type: String })
+  iframeUrl: any = null;
+
+  @property({ type: Boolean })
+  showAuth = false;
+
+  @property({ type: Object })
+  authFileHandle: any = null;
+
+  private reauthWait: null | Promise<void> = null;
+
+  private _loadPoll: null | number = null;
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
@@ -81,9 +86,10 @@ class Replay extends LitElement {
   }
 
   doSetIframeUrl() {
-    this.iframeUrl = this.url
-      ? `${this.collInfo.replayPrefix}/${this.ts || ""}mp_/${this.url}`
-      : "";
+    this.iframeUrl =
+      this.url && this.collInfo
+        ? `${this.collInfo.replayPrefix}/${this.ts || ""}mp_/${this.url}`
+        : "";
   }
 
   updated(changedProperties) {
@@ -199,7 +205,7 @@ class Replay extends LitElement {
         // google drive reauth
         const headers = event.detail.headers;
 
-        await fetch(`${this.collInfo.apiPrefix}/updateAuth`, {
+        await fetch(`${this.collInfo!.apiPrefix}/updateAuth`, {
           method: "POST",
           body: JSON.stringify({ headers }),
         });
@@ -231,7 +237,7 @@ class Replay extends LitElement {
         !iframe.contentDocument ||
         !iframe.contentWindow ||
         (iframe.contentDocument.readyState === "complete" &&
-          !iframe.contentWindow._WBWombat)
+          !(iframe.contentWindow as Window & { _WBWombat: any })._WBWombat)
       ) {
         this.clearLoading(iframe && iframe.contentWindow);
       }
@@ -273,7 +279,7 @@ class Replay extends LitElement {
     this.doSetIframeUrl();
     if (oldIframeUrl === this.iframeUrl || this.url === this.replayUrl) {
       this.waitForLoad();
-      iframe.contentWindow.location.reload();
+      iframe.contentWindow?.location.reload();
     }
   }
 
@@ -394,7 +400,7 @@ class Replay extends LitElement {
                               `
                             : html` <wr-gdrive
                                 .sourceUrl="${this.sourceUrl}"
-                                .state="trymanual"
+                                state="trymanual"
                                 .reauth="${true}"
                                 @load-ready="${this.onReAuthed}"
                               ></wr-gdrive>`}
