@@ -361,7 +361,7 @@ class CollIndex extends LitElement {
 // ===========================================================================
 class CollInfo extends LitElement {
   @property({ type: Object })
-  coll!: Coll;
+  coll!: Coll | Record<string, never>;
 
   @property({ type: Boolean })
   detailed = false;

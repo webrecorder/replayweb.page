@@ -1,9 +1,9 @@
 export interface Coll {
-  coll: string;
   filename: string;
   sourceUrl: string;
   replayPrefix: string;
   apiPrefix: string;
+  coll?: string;
   name?: string;
   title?: string;
   loadUrl?: string;
@@ -13,4 +13,5 @@ export interface Coll {
   verify?: any;
   onDemand?: any;
   pages?: any[];
+  lists?: any[];
 }

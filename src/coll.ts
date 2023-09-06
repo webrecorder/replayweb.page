@@ -1,6 +1,5 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
-import { map } from "lit/directives/map.js";
 import type {
   SlDropdown,
   SlMenu,
@@ -47,6 +46,8 @@ import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.sv
 
 import { RWPEmbedReceipt } from "./embed-receipt.js";
 import Split from "split.js";
+
+import type { Coll as CollInfo } from "./types";
 import type { Replay } from "./replay";
 
 const RWP_SCHEME = "search://";
@@ -66,7 +67,7 @@ class Coll extends LitElement {
   showSidebar: boolean | null = null;
 
   @property({ type: Object, attribute: false })
-  collInfo: any = null;
+  collInfo: CollInfo | Record<string, never> | null = null;
 
   @property({ type: String })
   coll = "";
@@ -96,13 +97,13 @@ class Coll extends LitElement {
   ts = "";
 
   @property({ type: Boolean })
-  isFullscreen: any;
+  isFullscreen: boolean | null = null;
 
   @property({ type: Boolean })
   menuActive = false;
 
   @property({ type: String })
-  embed: any;
+  embed: string | null = null;
 
   @property({ type: Boolean })
   embedDropdownActive = false;
@@ -135,24 +136,30 @@ class Coll extends LitElement {
   autoUpdateInterval = 10;
 
   @property({ type: String })
-  swName: any;
+  swName: any = null;
 
-  private tabNames = ["pages", "story", "resources", "info"];
-  private tabLabels = {
+  private splitter: any = null;
+
+  private _replaceLoc = false;
+  private _locUpdateNeeded = false;
+
+  private _locationHash = "";
+
+  private _autoUpdater: null | Promise<void> = null;
+
+  private observer?: IntersectionObserver;
+
+  private readonly tabNames = ["pages", "story", "resources", "info"];
+  private readonly tabLabels = {
     pages: "Pages",
     story: "Story",
     resources: "URLs",
     info: "Archive Info",
   };
-  private splitter: any = null;
-  private _replaceLoc = false;
-  private _locUpdateNeeded = false;
-  private _locationHash = "";
-  private _autoUpdater: Promise<void> | null = null;
-  private observer?: IntersectionObserver;
 
   constructor() {
     super();
+
     this.showSidebar = localStorage.getItem("pages:showSidebar") === "1";
   }
 
@@ -301,7 +308,9 @@ class Coll extends LitElement {
 
   configureSplitter() {
     if (this.tabData.url && this.showSidebar) {
-      const contents = this.renderRoot.querySelector("#contents");
+      const contents = this.renderRoot.querySelector(
+        "#contents",
+      ) as HTMLElement;
       const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
 
       if (contents && replay && !this.splitter) {
@@ -379,15 +388,17 @@ class Coll extends LitElement {
       });
     }
 
-    if (!this.collInfo.title) {
-      this.collInfo.title = this.collInfo.filename;
+    if (!this.collInfo!.title) {
+      this.collInfo!.title = this.collInfo!.filename;
     }
 
     if (this.embed === "replayonly" || this.embed === "replay-with-info") {
       this.showSidebar = false;
     }
 
-    this.hasStory = this.collInfo.desc || this.collInfo.lists.length;
+    this.hasStory = Boolean(
+      this.collInfo!.desc || this.collInfo!.lists?.length,
+    );
 
     this.dispatchEvent(
       new CustomEvent("coll-loaded", {
@@ -435,12 +446,12 @@ class Coll extends LitElement {
     }
 
     if (
-      this.collInfo.coll &&
+      this.collInfo?.coll &&
       (!this.tabData.view || !this.tabNames.includes(this.tabData.view))
     ) {
       const view = this.hasStory
         ? "story"
-        : this.editable || this.collInfo.pages.length
+        : this.editable || this.collInfo.pages?.length
         ? "pages"
         : "resources";
 
@@ -452,7 +463,11 @@ class Coll extends LitElement {
 
     if (this.tabData.url && this.tabData.url.startsWith("page:")) {
       const pageIndex = Number(this.tabData.url.slice("page:".length));
-      if (!isNaN(pageIndex) && pageIndex < this.collInfo.pages.length) {
+      if (
+        this.collInfo?.pages &&
+        !isNaN(pageIndex) &&
+        pageIndex < this.collInfo.pages.length
+      ) {
         const page = this.collInfo.pages[pageIndex];
         this.tabData.url = page.url;
         this.tabData.ts = getPageDateTS(page).timestamp;
@@ -852,7 +867,7 @@ class Coll extends LitElement {
     if (this.collInfo && !this.collInfo.coll) {
       return html` <wr-loader
         .loadInfo="${this.loadInfo}"
-        embed="${this.embed}"
+        embed="${this.embed || ""}"
         swName="${this.swName}"
         .coll="${this.coll}"
         sourceUrl="${this.sourceUrl || ""}"
@@ -1442,7 +1457,7 @@ class Coll extends LitElement {
     }
 
     return html`<rwp-embed-receipt
-      .collInfo=${this.collInfo}
+      .collInfo=${this.collInfo || {}}
       url=${this.url}
       ts=${this.ts}
       .appLogo=${this.appLogo}
@@ -1465,6 +1480,7 @@ class Coll extends LitElement {
   }
 
   renderCollInfo() {
+    if (!this.collInfo) return;
     return html` <div class="info-bg">
       <wr-coll-info
         class="is-list"
@@ -1490,7 +1506,7 @@ class Coll extends LitElement {
       ${isInfo ? this.renderCollInfo() : html``}
       ${isStory
         ? html` <wr-coll-story
-            .collInfo="${this.collInfo}"
+            .collInfo="${this.collInfo || {}}"
             .active="${isStory}"
             currList="${this.tabData.currList || 0}"
             @coll-tab-nav="${this.onCollTabNav}"
@@ -1503,7 +1519,7 @@ class Coll extends LitElement {
         : ""}
       ${isResources
         ? html` <wr-coll-resources
-            .collInfo="${this.collInfo}"
+            .collInfo="${this.collInfo || {}}"
             .active="${isResources}"
             query="${this.tabData.query || ""}"
             urlSearchType="${this.tabData.urlSearchType || ""}"
@@ -1642,7 +1658,7 @@ class Coll extends LitElement {
   }
 
   async deleteFully(reload = false) {
-    const deleteURL = this.collInfo.apiPrefix + (reload ? "?reload=1" : "");
+    const deleteURL = this.collInfo!.apiPrefix + (reload ? "?reload=1" : "");
 
     const resp = await fetch(deleteURL, {
       method: "DELETE",
@@ -1663,7 +1679,7 @@ class Coll extends LitElement {
 
   onSubmit(event) {
     event.preventDefault();
-    const input = this.renderRoot.querySelector("input")!;
+    const input = this.renderRoot.querySelector("input") as HTMLInputElement;
     if (input.value) {
       this.navigateTo(input.value);
     } else {

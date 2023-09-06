@@ -7,7 +7,7 @@ import type { Coll } from "./types";
 // ===========================================================================
 class Replay extends LitElement {
   @property({ type: Object })
-  collInfo: Coll | null = null;
+  collInfo: Coll | Record<string, never> | null = null;
 
   @property({ type: String })
   sourceUrl: any = null;
