@@ -1,4 +1,5 @@
 import { LitElement, html, css } from "lit";
+import { property, state } from "lit/decorators.js";
 import { wrapCss, apiPrefix } from "./misc";
 import { map } from "lit/directives/map.js";
 
@@ -11,26 +12,41 @@ import fasArrowDown from "@fortawesome/fontawesome-free/svgs/solid/angle-double-
 
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 
+import type { Coll } from "./types";
+
 // ===========================================================================
 class CollIndex extends LitElement {
+  @property({ type: Array })
+  colls: Coll[] = [];
+
+  @property({ type: String })
+  query = "";
+
+  @property({ type: Array })
+  filteredColls: any[] = [];
+
+  @property({ type: Array })
+  sortedColls: any[] | null = null;
+
+  @property({ type: Boolean })
+  hideHeader: any = null;
+
+  @property({ type: String })
+  dateName = "Date Loaded";
+
+  @property({ type: String })
+  headerName = "Loaded Archives";
+
+  @state()
+  private _deleting: any = {};
+
+  private typeFilter = "";
+  private indexParams = "";
+
   constructor() {
     super();
 
-    this.colls = [];
-    this.filteredColls = [];
-    this.sortedColls = null;
-
-    this.query = "";
-
     this.hideHeader = localStorage.getItem("index:hideHeader") === "1";
-
-    this._deleting = {};
-
-    this.dateName = "Date Loaded";
-    this.headerName = "Loaded Archives";
-
-    this.typeFilter = "";
-    this.indexParams = "";
   }
 
   get sortKeys() {
@@ -43,25 +59,6 @@ class CollIndex extends LitElement {
 
       { key: "size", name: "Total Size" },
     ];
-  }
-
-  static get properties() {
-    return {
-      colls: { type: Array },
-
-      query: { type: String },
-
-      filteredColls: { type: Array },
-
-      sortedColls: { type: Array },
-
-      hideHeader: { type: Boolean },
-
-      _deleting: { type: Object },
-
-      dateName: { type: String },
-      headerName: { type: String },
-    };
   }
 
   firstUpdated() {
@@ -363,19 +360,14 @@ class CollIndex extends LitElement {
 
 // ===========================================================================
 class CollInfo extends LitElement {
-  constructor() {
-    super();
-    this.detailed = false;
-    this.canDelete = false;
-  }
+  @property({ type: Object })
+  coll!: Coll;
 
-  static get properties() {
-    return {
-      coll: { type: Object },
-      detailed: { type: Boolean },
-      canDelete: { type: Boolean },
-    };
-  }
+  @property({ type: Boolean })
+  detailed = false;
+
+  @property({ type: Boolean })
+  canDelete = false;
 
   static get styles() {
     return wrapCss(CollInfo.compStyles);
@@ -526,7 +518,7 @@ class CollInfo extends LitElement {
             <ol style="padding: revert">
               ${map(
                 coll.resources,
-                (resource) =>
+                (resource: any) =>
                   html`<li>
                     <a href="${resource.path}">${resource.name + "\n"}</a>
                   </li>`,
