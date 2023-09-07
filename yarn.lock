@@ -153,10 +153,10 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@lit-labs/react@^1.1.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@lit-labs/react/-/react-1.2.1.tgz#5b421502cdf68a3639dec431318eeed2285f1c0e"
-  integrity sha512-DiZdJYFU0tBbdQkfwwRSwYyI/mcWkg3sWesKRsHUd4G+NekTmmeq9fzsurvcKTNVa0comNljwtg4Hvi1ds3V+A==
+"@lit-labs/react@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@lit-labs/react/-/react-2.0.1.tgz#a670d4a6f3cb39393af787189e02da2803f61cd0"
+  integrity sha512-Nj+XB3HamqaWefN91lpFPJaqjJ78XzGkPWCedB4jyH22GBFEenpE9A/h8B/2dnIGXtNtd9D/RFpUdQ/dBtWFqA==
 
 "@lit-labs/ssr-dom-shim@^1.0.0", "@lit-labs/ssr-dom-shim@^1.1.0":
   version "1.1.1"
@@ -374,14 +374,14 @@
   resolved "https://registry.yarnpkg.com/@shoelace-style/localize/-/localize-3.1.1.tgz#f5b96e35a9a8709aa46d1aaa2359069c0db71534"
   integrity sha512-NkM/hj3Js6yXCU9WxhsyxRUdyqUUUl/BSvIluUMptQteUWGOJaoyP1iMbOMqO544DYMzBfnoCw66ZHkGuTdKgA==
 
-"@shoelace-style/shoelace@^2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@shoelace-style/shoelace/-/shoelace-2.7.0.tgz#3844488cc1d5de4dfa966949961cb6faf4c2b35a"
-  integrity sha512-w7FnHqBoYR6Ne42WZPW+bIJGIAGsUZgxF3WA9LLfqn3+Q4NOQ4r5jl/DEfsQmRUTmY0nUrs4WGO1CeTrhv6taA==
+"@shoelace-style/shoelace@^2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@shoelace-style/shoelace/-/shoelace-2.8.0.tgz#995377abcff7d055c0c07dab63d97460453546ad"
+  integrity sha512-WigVUaW+MptefOW4zUlZaq+zn0n2hP+I4/mztoeJii5u3ex1CGexfQGcdw2gx6d7P7LAa6/NW0TlgAELzJQnCA==
   dependencies:
     "@ctrl/tinycolor" "^3.5.0"
     "@floating-ui/dom" "^1.2.1"
-    "@lit-labs/react" "^1.1.1"
+    "@lit-labs/react" "^2.0.1"
     "@shoelace-style/animations" "^1.1.0"
     "@shoelace-style/localize" "^3.1.1"
     composed-offset-position "^0.0.4"

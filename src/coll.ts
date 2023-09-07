@@ -1,4 +1,11 @@
 import { LitElement, html, css } from "lit";
+import { property, state } from "lit/decorators.js";
+import { map } from "lit/directives/map.js";
+import type {
+  SlDropdown,
+  SlMenu,
+  SlSelectEvent,
+} from "@shoelace-style/shoelace";
 import {
   wrapCss,
   rwpLogo,
@@ -9,7 +16,12 @@ import {
   replayPrefix,
 } from "./misc";
 
-import { sourceToId, tsToDate, getPageDateTS } from "./pageutils";
+import {
+  sourceToId,
+  tsToDate,
+  getPageDateTS,
+  getDateFromTS,
+} from "./pageutils";
 
 import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 
@@ -31,112 +43,122 @@ import fasMenuV from "@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg";
 
 import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.svg";
 import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
+import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
 
 import { RWPEmbedReceipt } from "./embed-receipt.js";
 import Split from "split.js";
+import type { Replay } from "./replay";
 
 const RWP_SCHEME = "search://";
 
 // ===========================================================================
 class Coll extends LitElement {
+  @property({ type: Boolean })
+  inited = false;
+
+  @property({ type: String })
+  sourceUrl: string | null = null;
+
+  @property({ type: Object, attribute: false })
+  loadInfo: any;
+
+  @property({ type: Boolean })
+  showSidebar: boolean | null = null;
+
+  @property({ type: Object, attribute: false })
+  collInfo: any = null;
+
+  @property({ type: String })
+  coll = "";
+
+  @property({ type: Boolean })
+  hasStory = false;
+
+  @property({ type: Boolean })
+  isLoading = false;
+
+  @property({ type: Object, attribute: false })
+  tabData: {
+    view?: string;
+    url?: string;
+    ts?: string;
+    multiTs?: string[];
+    currList?: number;
+    query?: string;
+    urlSearchType?: string;
+    currMime?: string;
+  } = {};
+
+  @property({ type: String })
+  url = "";
+
+  @property({ type: String })
+  ts = "";
+
+  @property({ type: Boolean })
+  isFullscreen: any;
+
+  @property({ type: Boolean })
+  menuActive = false;
+
+  @property({ type: String })
+  embed: any;
+
+  @property({ type: Boolean })
+  embedDropdownActive = false;
+
+  @property({ type: Boolean })
+  editable = false;
+
+  @property({ type: Boolean })
+  browsable = true;
+
+  @property({ type: Boolean })
+  clearable = true;
+
+  @property({ type: Boolean })
+  isVisible = true;
+
+  @property({ type: String })
+  favIconUrl = "";
+
+  @property({ type: String })
+  appName = "ReplayWeb.page";
+
+  @property({ type: String })
+  appVersion = VERSION;
+
+  @property({ type: String })
+  appLogo = rwpLogo;
+
+  @property({ type: Number })
+  autoUpdateInterval = 10;
+
+  @property({ type: String })
+  swName: any;
+
+  private tabNames = ["pages", "story", "resources", "info"];
+  private tabLabels = {
+    pages: "Pages",
+    story: "Story",
+    resources: "URLs",
+    info: "Archive Info",
+  };
+  private splitter: any = null;
+  private _replaceLoc = false;
+  private _locUpdateNeeded = false;
+  private _locationHash = "";
+  private _autoUpdater: Promise<void> | null = null;
+  private observer?: IntersectionObserver;
+
   constructor() {
     super();
-    this.sourceUrl = null;
-    this.inited = false;
-    this.isLoading = false;
-
-    this.coll = "";
-
-    this.collInfo = null;
-
-    this._replaceLoc = false;
-    this._locUpdateNeeded = false;
-
-    this._locationHash = "";
-
-    this.tabData = {};
-    this.url = "";
-    this.ts = "";
-
-    this.tabNames = ["pages", "story", "resources", "info"];
-    this.tabLabels = {
-      pages: "Pages",
-      story: "Story",
-      resources: "URLs",
-      info: "Archive Info",
-    };
-
-    this.menuActive = false;
-    this.embedDropdownActive = false;
-
-    this.hasStory = false;
-
-    this.editable = false;
-    this.browsable = true;
-    this.clearable = true;
-
     this.showSidebar = localStorage.getItem("pages:showSidebar") === "1";
-    this.splitter = null;
-
-    this.isVisible = true;
-
-    this.favIconUrl = "";
-
-    this.autoUpdateInterval = 10;
-    this._autoUpdater = null;
-
-    this.appName = "ReplayWeb.page";
-    this.appVersion = VERSION;
-    this.appLogo = rwpLogo;
-  }
-
-  static get properties() {
-    return {
-      inited: { type: Boolean },
-
-      sourceUrl: { type: String },
-      loadInfo: { type: Object, attribute: false },
-
-      showSidebar: { type: Boolean },
-
-      collInfo: { type: Object, attribute: false },
-      coll: { type: String },
-
-      hasStory: { type: Boolean },
-      isLoading: { type: Boolean },
-
-      tabData: { type: Object, attribute: false },
-
-      url: { type: String },
-      ts: { type: String },
-
-      isFullscreen: { type: Boolean },
-      menuActive: { type: Boolean },
-
-      embed: { type: String },
-      embedDropdownActive: { type: Boolean },
-
-      editable: { type: Boolean },
-      browsable: { type: Boolean },
-      clearable: { type: Boolean },
-
-      isVisible: { type: Boolean },
-
-      favIconUrl: { type: String },
-
-      appName: { type: String },
-      appVersion: { type: String },
-      appLogo: { type: String },
-
-      autoUpdateInterval: { type: Number },
-
-      swName: { type: String },
-    };
   }
 
   firstUpdated() {
     this.inited = true;
-    window.addEventListener("hashchange", (event) => this.onHashChange(event));
+    window.addEventListener("hashchange", (event) => this.onHashChange());
 
     this.addEventListener("fullscreenchange", () => {
       this.isFullscreen = !!document.fullscreenElement;
@@ -171,6 +193,43 @@ class Coll extends LitElement {
     }
   }
 
+  async getMultiTimestamps(): Promise<void> {
+    if (!this.tabData.url) return;
+    const resp = await fetch(
+      apiPrefix +
+        "/c/" +
+        this.coll +
+        "/ts/?url=" +
+        window.encodeURIComponent(this.tabData.url),
+    );
+    if (resp.status !== 200) {
+      return;
+    }
+    const json = await resp.json();
+    this.updateTabData({ multiTs: json.timestamps });
+  }
+
+  willUpdate(changedProperties: Map<string, any>) {
+    if (changedProperties.has("tabData") && this.tabData) {
+      // Format tab data from URL query params
+      const tabData = {};
+      Object.entries(this.tabData).forEach(([key, value]) => {
+        if (!value) return;
+        if (key === "multiTs" && typeof value === "string") {
+          tabData[key] = value.split(",");
+        } else {
+          tabData[key] = value;
+        }
+      });
+      this.tabData = tabData;
+
+      const prevTabData = changedProperties.get("tabData");
+      if (this.tabData.url && this.tabData.url !== prevTabData?.url) {
+        this.getMultiTimestamps();
+      }
+    }
+  }
+
   updated(changedProperties) {
     // if (changedProperties.has("url") || changedProperties.has("ts")) {
     //   if (this.url.startsWith("rwp?")) {
@@ -192,13 +251,7 @@ class Coll extends LitElement {
       if (!this.collInfo || !this.collInfo.coll) {
         return;
       }
-
-      // don't add empty params to shorten query
-      Object.keys(this.tabData).forEach(
-        (key) => !this.tabData[key] && delete this.tabData[key],
-      );
-
-      const newHash = "#" + new URLSearchParams(this.tabData).toString();
+      const newHash = "#" + new URLSearchParams(this.tabData as any).toString();
 
       if (!this.tabData.url) {
         this.url =
@@ -206,6 +259,7 @@ class Coll extends LitElement {
       }
       if (newHash !== this._locationHash) {
         this._locationHash = newHash;
+
         if (
           this._replaceLoc ||
           Object.keys(changedProperties.get("tabData")).length === 0
@@ -217,7 +271,9 @@ class Coll extends LitElement {
         } else {
           window.location.hash = this._locationHash;
           if (!this.showSidebar) {
-            const replay = this.renderRoot.querySelector("wr-coll-replay");
+            const replay = this.renderRoot.querySelector(
+              "wr-coll-replay",
+            ) as Replay;
             if (replay) {
               replay.focus();
             }
@@ -246,7 +302,7 @@ class Coll extends LitElement {
   configureSplitter() {
     if (this.tabData.url && this.showSidebar) {
       const contents = this.renderRoot.querySelector("#contents");
-      const replay = this.renderRoot.querySelector("wr-coll-replay");
+      const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
 
       if (contents && replay && !this.splitter) {
         const opts = {
@@ -265,7 +321,7 @@ class Coll extends LitElement {
           },
         };
 
-        this.splitter = Split([contents, replay], opts);
+        this.splitter = Split([contents as any, replay], opts);
       }
     } else if (this.splitter) {
       try {
@@ -378,7 +434,10 @@ class Coll extends LitElement {
       this._locationHash = hash;
     }
 
-    if (this.collInfo.coll && !this.tabNames.includes(this.tabData.view)) {
+    if (
+      this.collInfo.coll &&
+      (!this.tabData.view || !this.tabNames.includes(this.tabData.view))
+    ) {
       const view = this.hasStory
         ? "story"
         : this.editable || this.collInfo.pages.length
@@ -427,9 +486,15 @@ class Coll extends LitElement {
       event.target.id === this.tabData.view ||
       (event.target.id === "replay" && this.tabData.url)
     ) {
-      this.updateTabData(event.detail.data, event.detail.replaceLoc, false);
+      this.updateTabData(
+        event.detail.data,
+        event.detail.replaceLoc /*, false */,
+      );
     } else if (this.showSidebar && this.tabData.url) {
-      this.updateTabData(event.detail.data, event.detail.replaceLoc, true);
+      this.updateTabData(
+        event.detail.data,
+        event.detail.replaceLoc /*, true */,
+      );
     }
   }
 
@@ -575,17 +640,69 @@ class Coll extends LitElement {
 
       #datetime {
         position: absolute;
-        right: 1em;
+        right: 0.5rem;
         z-index: 10;
+        background: #fff;
+        top: 1px;
+        bottom: 1px;
+        display: flex;
+        align-items: center;
+        line-height: 2;
+      }
+
+      /* Gradient to indicate URL clipping */
+      #datetime:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 2em;
+        height: 100%;
+        transform: translateX(-100%);
         background: linear-gradient(
           90deg,
           rgba(255, 255, 255, 0),
-          #fff 15%,
+          #fff 50%,
           #fff
         );
-        margin: -35px 0 0 0px;
-        padding-left: 3em;
-        line-height: 2;
+        pointer-events: none;
+      }
+
+      .timestamp-dropdown-btn {
+        all: unset;
+        cursor: pointer;
+        display: flex;
+        gap: var(--sl-spacing-x-small);
+        align-items: center;
+        transition: background-color var(--sl-transition-fast);
+        color: var(--sl-color-neutral-600);
+      }
+
+      .timestamp-dropdown-btn:hover {
+        color: var(--sl-color-neutral-900);
+      }
+
+      .timestamp-dropdown-btn:hover .timestamp-count-badge {
+        background-color: var(--sl-color-blue-600);
+      }
+
+      .timestamp-count-badge {
+        display: inline-flex;
+        gap: var(--sl-spacing-2x-small);
+        background-color: var(--sl-color-blue-500);
+        color: var(--sl-color-neutral-0);
+        line-height: 1;
+        padding: var(--sl-spacing-3x-small) var(--sl-spacing-x-small);
+        border-radius: var(--sl-border-radius-small);
+        transition: background-color var(--sl-transition-fast);
+      }
+
+      .timestamp-count {
+        font-weight: 600;
+        transform: translateY(0.075em);
+      }
+
+      .timestamp-menu-item[aria-selected="true"]::part(label) {
+        color: var(--sl-color-blue-600);
       }
 
       .menu-head {
@@ -720,7 +837,7 @@ class Coll extends LitElement {
 
     if (!isReplay && this.tabData && this.tabData.view) {
       const detail = {
-        title: this.tabLabels[this.tabData.view],
+        title: (this.tabLabels as any)[this.tabData.view],
         replayTitle: false,
       };
       this.dispatchEvent(
@@ -738,7 +855,7 @@ class Coll extends LitElement {
         embed="${this.embed}"
         swName="${this.swName}"
         .coll="${this.coll}"
-        .sourceUrl="${this.sourceUrl}"
+        sourceUrl="${this.sourceUrl || ""}"
         @coll-loaded=${this.onCollLoaded}
       ></wr-loader>`;
     } else if (this.collInfo) {
@@ -752,7 +869,7 @@ class Coll extends LitElement {
               : isReplay
               ? "is-hidden"
               : "full-pages"}"
-            role="${isSidebar ? "complementary" : ""}"
+            role="${(isSidebar ? "complementary" : "") as any}"
             aria-label="${isSidebar ? "Browse Contents" : ""}"
           >
             ${this.renderTabHeader(isSidebar)}
@@ -765,7 +882,7 @@ class Coll extends LitElement {
                   role="main"
                   tabindex="-1"
                   .collInfo="${this.collInfo}"
-                  sourceUrl="${this.sourceUrl}"
+                  sourceUrl="${this.sourceUrl || ""}"
                   url="${this.tabData.url || ""}"
                   ts="${this.tabData.ts || ""}"
                   @coll-tab-nav="${this.onCollTabNav}"
@@ -822,9 +939,9 @@ class Coll extends LitElement {
                 href="#story"
                 class="is-size-6"
                 aria-label="Story"
-                aria-current="${this.tabData.view === "story"
+                aria-current="${(this.tabData.view === "story"
                   ? "location"
-                  : ""}"
+                  : "") as any}"
               >
                 <span class="icon"
                   ><fa-icon
@@ -848,7 +965,9 @@ class Coll extends LitElement {
             href="#pages"
             class="is-size-6"
             aria-label="Pages"
-            aria-current="${this.tabData.view === "pages" ? "location" : ""}"
+            aria-current="${(this.tabData.view === "pages"
+              ? "location"
+              : "") as any}"
           >
             <span class="icon"
               ><fa-icon
@@ -871,9 +990,9 @@ class Coll extends LitElement {
             href="#resources"
             class="is-size-6"
             aria-label="URLs"
-            aria-current="${this.tabData.view === "resources"
+            aria-current="${(this.tabData.view === "resources"
               ? "location"
-              : ""}"
+              : "") as any}"
           >
             <span class="icon"
               ><fa-icon
@@ -894,7 +1013,9 @@ class Coll extends LitElement {
             href="#info"
             class="is-size-6"
             aria-label="Archive Info"
-            aria-current="${this.tabData.view === "info" ? "location" : ""}"
+            aria-current="${(this.tabData.view === "info"
+              ? "location"
+              : "") as any}"
           >
             <span class="icon"
               ><fa-icon
@@ -1057,7 +1178,7 @@ class Coll extends LitElement {
                 </span>
               </a>`
             : ""}
-          ${this.renderExtraToolbar(false)}
+          ${this.renderExtraToolbar()}
           <form @submit="${this.onSubmit}">
             <div
               class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}"
@@ -1071,11 +1192,7 @@ class Coll extends LitElement {
                 .value="${this.url}"
                 placeholder="Enter text to search or a URL to replay"
               />
-              ${isReplay
-                ? html`<p id="datetime" class="control is-hidden-mobile">
-                    ${dateStr}
-                  </p>`
-                : html``}
+              ${isReplay ? this.renderTimestamp() : ""}
               ${showFavIcon
                 ? html` <span class="favicon icon is-small is-left">
                     <img src="${this.favIconUrl}" />
@@ -1200,7 +1317,7 @@ class Coll extends LitElement {
                       <span>Browse Contents</span>
                     </a>`
                   : ""}
-                ${this.renderExtraToolbar(true)}
+                ${this.renderExtraToolbar()}
                 ${this.clearable
                   ? html` <hr class="dropdown-divider is-hidden-desktop" />
                       <a
@@ -1221,8 +1338,8 @@ class Coll extends LitElement {
                         <span>Purge Cache + Full Reload</span>
                       </a>`
                   : html``}
-                ${(!this.editable && this.sourceUrl.startsWith("http://")) ||
-                this.sourceUrl.startsWith("https://")
+                ${(!this.editable && this.sourceUrl?.startsWith("http://")) ||
+                this.sourceUrl?.startsWith("https://")
                   ? html` <hr class="dropdown-divider" />
                       <a
                         href="${this.sourceUrl}"
@@ -1271,6 +1388,54 @@ class Coll extends LitElement {
       <p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
   }
 
+  private renderTimestamp() {
+    const timestampStrs: { date: string; label: string }[] = [];
+    this.tabData.multiTs?.forEach((ts) => {
+      // Filter out invalid dates
+      try {
+        const date = getDateFromTS(+ts);
+        const dateStr = tsToDate(date).toLocaleString();
+        timestampStrs.push({
+          date,
+          label: dateStr,
+        });
+      } catch {}
+    });
+    const currDateStr = tsToDate(this.ts).toLocaleString();
+    return html`<div id="datetime" class="control is-hidden-mobile">
+      ${timestampStrs.length > 1
+        ? html`
+            <sl-dropdown placement="top-end" hoist>
+              <button
+                type="button"
+                class="timestamp-dropdown-btn"
+                slot="trigger"
+                @blur=${this.onTimestampDropdownBtnBlur}
+              >
+                <div>${currDateStr}</div>
+                <div class="timestamp-count-badge">
+                  <div class="timestamp-count">${timestampStrs.length}</div>
+                  <fa-icon .svg="${fasCaretDown}" aria-hidden="true"></fa-icon>
+                </div>
+              </button>
+              <sl-menu @sl-select=${this.onSelectTimestamp}>
+                ${timestampStrs.map(({ date: ts, label }) => {
+                  const selected = this.ts === ts;
+                  return html`<sl-menu-item
+                    class="timestamp-menu-item"
+                    value=${ts}
+                    aria-selected="${selected}"
+                  >
+                    ${label}</sl-menu-item
+                  >`;
+                })}
+              </sl-menu>
+            </sl-dropdown>
+          `
+        : currDateStr}
+    </div>`;
+  }
+
   renderVerifyInfo() {
     if (this.embed !== "replay-with-info") {
       return "";
@@ -1286,14 +1451,14 @@ class Coll extends LitElement {
   }
 
   dragStart() {
-    const replay = this.renderRoot.querySelector("wr-coll-replay");
+    const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
     if (replay) {
       replay.setDisablePointer(true);
     }
   }
 
   dragEnd() {
-    const replay = this.renderRoot.querySelector("wr-coll-replay");
+    const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
     if (replay) {
       replay.setDisablePointer(false);
     }
@@ -1332,7 +1497,7 @@ class Coll extends LitElement {
             id="story"
             .isSidebar="${isSidebar}"
             class="${isStory ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-            role="${isSidebar ? "" : "main"}"
+            role="${(isSidebar ? "" : "main") as any}"
           >
           </wr-coll-story>`
         : ""}
@@ -1349,7 +1514,7 @@ class Coll extends LitElement {
             class="is-paddingless ${isResources ? "" : "is-hidden"} ${isSidebar
               ? "sidebar"
               : ""}"
-            role="${isSidebar ? "" : "main"}"
+            role="${(isSidebar ? "" : "main") as any}"
           >
           </wr-coll-resources>`
         : ""}
@@ -1367,7 +1532,7 @@ class Coll extends LitElement {
             id="pages"
             @coll-update="${this.onCollUpdate}"
             class="${isPages ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-            role="${isSidebar ? "" : "main"}"
+            role="${(isSidebar ? "" : "main") as any}"
           >
           </wr-page-view>`
         : ""}
@@ -1378,7 +1543,9 @@ class Coll extends LitElement {
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
     event.preventDefault();
-    this.renderRoot.querySelector("#skip-replay-target").focus();
+    (
+      this.renderRoot.querySelector("#skip-replay-target") as HTMLElement
+    ).focus();
   }
 
   onKeyDown(event) {
@@ -1496,7 +1663,7 @@ class Coll extends LitElement {
 
   onSubmit(event) {
     event.preventDefault();
-    const input = this.renderRoot.querySelector("input");
+    const input = this.renderRoot.querySelector("input")!;
     if (input.value) {
       this.navigateTo(input.value);
     } else {
@@ -1511,6 +1678,24 @@ class Coll extends LitElement {
     }
   }
 
+  onTimestampDropdownBtnBlur(event: MouseEvent) {
+    const btn = event.currentTarget as HTMLButtonElement;
+    const dropdown = btn.closest("sl-dropdown") as SlDropdown;
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    if (relatedTarget && dropdown.contains(relatedTarget)) {
+      return;
+    }
+    if (dropdown.open) {
+      dropdown.hide();
+    }
+  }
+
+  onSelectTimestamp(event: SlSelectEvent) {
+    const menu = event.currentTarget as SlMenu;
+    const { item } = event.detail;
+    this.updateTabData({ ts: item.value });
+  }
+
   navigateTo(value) {
     let data;
 
@@ -1518,7 +1703,9 @@ class Coll extends LitElement {
       data = { url: value };
 
       if (value === this.tabData.url) {
-        const replay = this.renderRoot.querySelector("wr-coll-replay");
+        const replay = this.renderRoot.querySelector(
+          "wr-coll-replay",
+        ) as Replay;
         if (replay) {
           replay.refresh();
         }
@@ -1536,7 +1723,7 @@ class Coll extends LitElement {
 
   _stringToParams(value) {
     const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
-    const data = {};
+    const data: any = {};
     data.url = "";
     data.ts = "";
 
@@ -1581,7 +1768,7 @@ class Coll extends LitElement {
     this.menuActive = false;
 
     if (this.tabData.url) {
-      const replay = this.renderRoot.querySelector("wr-coll-replay");
+      const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
       if (replay) {
         replay.refresh();
       }
