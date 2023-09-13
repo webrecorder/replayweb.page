@@ -447,6 +447,7 @@ export class ReplayWebApp extends LitElement {
     if (this.useRuffle) {
       qp.set("injectScripts", "ruffle/ruffle.js");
     }
+    qp.set("serveIndex", "1");
     query = qp.toString();
     if (query.length) {
       name += "?" + query;
