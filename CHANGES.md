@@ -1,5 +1,8 @@
 ## CHANGES
 
+v1.8.12
+- Loading: Fixes embed 'Purge Cache + Reload', ensure '?serveIndex=1' is always set on all service worker loading
+
 v1.8.11
 - Loading: Use default html index, avoid custom html injection (via wabac.js 2.16.12)
 - Dependencies: Switch to wabac.js 2.16.12
