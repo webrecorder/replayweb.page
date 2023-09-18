@@ -1,4 +1,6 @@
 import { LitElement, html, css } from "lit";
+import { property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
   rwpLogo,
@@ -14,24 +16,60 @@ import { SWManager } from "./swmanager";
 
 // ===========================================================================
 class ReplayWebApp extends LitElement {
+  @property({ type: Boolean })
+  inited = false;
+
+  @property({ type: Object })
+  pageParams: URLSearchParams = new URLSearchParams();
+
+  @property({ type: String })
+  sourceUrl: string | null = null;
+
+  @property({ type: Boolean })
+  navMenuShown = false;
+
+  @property({ type: Boolean })
+  showAbout = false;
+
+  @property({ type: Boolean })
+  showFileDropOverlay = false;
+
+  @property({ type: String })
+  collTitle: string | null = null;
+
+  @property({ type: Object })
+  loadInfo: any = null;
+
+  @property({ type: String })
+  embed: any = null;
+
+  @property({ type: String })
+  collPageUrl = "";
+
+  @property({ type: String })
+  pageTitle = "";
+
+  @property({ type: Boolean })
+  pageReplay = false;
+
+  @property({ type: String })
+  source: any = null;
+
+  @property({ type: Boolean })
+  skipRuffle = false;
+
+  @property({ type: Object })
+  swErrorMsg: any = null;
+
+  private swName?: string;
+  private swmanager: SWManager | null;
+  private useRuffle = false;
+
+  private droppedFile: File | null = null;
+
   // eslint-disable-next-line no-undef
   constructor(swName = __SW_NAME__) {
     super();
-    this.sourceUrl = null;
-    this.collTitle = null;
-    this.showAbout = false;
-    this.showFileDropOverlay = false;
-
-    this.pageParams = new URLSearchParams();
-
-    this.inited = false;
-    this.navMenuShown = false;
-
-    this.collPageUrl = "";
-    this.pageTitle = "";
-    this.pageReplay = false;
-
-    this.loadInfo = null;
 
     this.swName = swName;
     this.swmanager = null;
@@ -58,20 +96,20 @@ class ReplayWebApp extends LitElement {
     });
 
     this.addEventListener("drop", (dragEvent) => {
-      this.droppedFile = dragEvent.dataTransfer.files[0];
+      this.droppedFile = dragEvent.dataTransfer?.files[0] || null;
       this.showFileDropOverlay = false;
       dragEvent.preventDefault();
     });
-
-    this.maybeStartFileDrop = (dragEvent) => {
-      if (this.sourceUrl) {
-        // A source is already loaded. Don't allow dropping a file.
-        return;
-      }
-      this.showFileDropOverlay = true;
-      dragEvent.preventDefault();
-    };
   }
+
+  private maybeStartFileDrop = (dragEvent) => {
+    if (this.sourceUrl) {
+      // A source is already loaded. Don't allow dropping a file.
+      return;
+    }
+    this.showFileDropOverlay = true;
+    dragEvent.preventDefault();
+  };
 
   get appName() {
     return "ReplayWeb.page";
@@ -79,27 +117,6 @@ class ReplayWebApp extends LitElement {
 
   get homeUrl() {
     return window.location.pathname;
-  }
-
-  static get properties() {
-    return {
-      inited: { type: Boolean },
-      pageParams: { type: Object },
-      sourceUrl: { type: String },
-      navMenuShown: { type: Boolean },
-      showAbout: { type: Boolean },
-      showFileDropOverlay: { type: Boolean },
-      collTitle: { type: String },
-      loadInfo: { type: Object },
-      embed: { type: String },
-      collPageUrl: { type: String },
-      pageTitle: { type: String },
-      pageReplay: { type: Boolean },
-      source: { type: String },
-      skipRuffle: { type: Boolean },
-
-      swErrorMsg: { type: Object },
-    };
   }
 
   static get styles() {
@@ -364,10 +381,10 @@ class ReplayWebApp extends LitElement {
   renderColl() {
     return html` <wr-coll
       .loadInfo="${this.loadInfo}"
-      sourceUrl="${this.sourceUrl}"
+      sourceUrl="${this.sourceUrl || ""}"
       embed="${this.embed}"
       appName="${this.appName}"
-      swName="${this.swName}"
+      swName="${ifDefined(this.swName)}"
       .appLogo="${this.mainLogo}"
       @replay-favicons=${this.onFavIcons}
       @update-title=${this.onTitle}
@@ -436,7 +453,7 @@ class ReplayWebApp extends LitElement {
       .register()
       .catch(
         () =>
-          (this.swErrorMsg = this.swmanager.renderErrorReport(this.mainLogo)),
+          (this.swErrorMsg = this.swmanager?.renderErrorReport(this.mainLogo)),
       );
 
     window.addEventListener("popstate", () => {
@@ -451,7 +468,7 @@ class ReplayWebApp extends LitElement {
   }
 
   onFavIcons(event) {
-    const head = document.querySelector("head");
+    const head = document.querySelector("head")!;
     const oldLinks = document.querySelectorAll("link[rel*='icon']");
 
     for (const link of oldLinks) {
@@ -470,7 +487,7 @@ class ReplayWebApp extends LitElement {
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
     event.preventDefault();
-    this.renderRoot.querySelector("#skip-main-target").focus();
+    (this.renderRoot.querySelector("#skip-main-target") as HTMLElement).focus();
   }
 
   onNavMenu(event) {
@@ -487,7 +504,9 @@ class ReplayWebApp extends LitElement {
         (event) => {
           event.preventDefault();
           this.navMenuShown = false;
-          this.renderRoot.querySelector("#menu-button").focus();
+          (
+            this.renderRoot.querySelector("#menu-button") as HTMLElement
+          ).focus();
         },
         { once: true },
       );
@@ -497,7 +516,9 @@ class ReplayWebApp extends LitElement {
           if (event.key == "Escape") {
             event.preventDefault();
             this.navMenuShown = false;
-            this.renderRoot.querySelector("#menu-button").focus();
+            (
+              this.renderRoot.querySelector("#menu-button") as HTMLElement
+            ).focus();
           }
         },
         { once: true },
@@ -510,7 +531,7 @@ class ReplayWebApp extends LitElement {
     this.pageParams = new URLSearchParams(window.location.search);
 
     // Google Drive
-    let state = this.pageParams.get("state");
+    let state: any = this.pageParams.get("state");
     if (state) {
       try {
         state = JSON.parse(state);
@@ -557,7 +578,9 @@ class ReplayWebApp extends LitElement {
 
     if (this.pageParams.get("config")) {
       try {
-        this.loadInfo.extraConfig = JSON.parse(this.pageParams.get("config"));
+        this.loadInfo.extraConfig = JSON.parse(
+          this.pageParams.get("config") || "",
+        );
       } catch (e) {
         console.log("invalid config: " + e);
       }
@@ -596,7 +619,7 @@ class ReplayWebApp extends LitElement {
     }
 
     if (this.pageParams.get("swName")) {
-      this.swName = this.pageParams.get("swName");
+      this.swName = this.pageParams.get("swName") || undefined;
     }
 
     if (IS_APP && this.sourceUrl.startsWith("file://")) {
