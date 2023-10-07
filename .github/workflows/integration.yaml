@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  playwright:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,5 +21,8 @@ jobs:
       - name: Yarn Install
         run: yarn install --frozen-lockfile
 
-      - name: Yarn Run Playwright
+      - name: Playwright Install Browsers
+        run: yarn playwright install
+
+      - name: Playwright Run Tests
         run: yarn run playwright test
