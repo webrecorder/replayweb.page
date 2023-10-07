@@ -1,5 +1,6 @@
 import { defineConfig } from '@playwright/test';
 export default defineConfig({
+  reporter: process.env.CI ? 'github' : 'list',
   webServer: [
     {
       command: 'yarn run start-prod',

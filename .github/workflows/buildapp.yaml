@@ -71,7 +71,7 @@ jobs:
                     -v ~/.cache/electron:/root/.cache/electron \
                     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
                     electronuserland/builder:14-wine-05.22 \
-                    /bin/bash -c "yarn --link-duplicates --pure-lockfile --ignore-optional --ignore-engines install && yarn run $YARN_BUILD_CMD --linux --x64"
+                    /bin/bash -c "yarn --link-duplicates --pure-lockfile --ignore-engines install && yarn run $YARN_BUILD_CMD --linux --x64"
                 else
                   #mkdir -p plugins-win;
                   #pushd plugins-win;
@@ -89,7 +89,7 @@ jobs:
                     -v ~/.cache/electron:/root/.cache/electron \
                     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
                     electronuserland/builder:14-wine-05.22 \
-                    /bin/bash -c "yarn --link-duplicates --pure-lockfile --ignore-optional --ignore-engines install && yarn run $YARN_BUILD_CMD --win --x64 --ia32"
+                    /bin/bash -c "yarn --link-duplicates --pure-lockfile --ignore-engines install && yarn run $YARN_BUILD_CMD --win --x64 --ia32"
                 fi
               else
                 #mkdir -p plugins-mac;
@@ -98,7 +98,7 @@ jobs:
                 #unzip PepperFlashPlayer.plugin.zip;
                 #rm PepperFlashPlayer.plugin.zip;
                 #popd;
-                yarn --link-duplicates --pure-lockfile --ignore-optional --ignore-engines install
+                yarn --link-duplicates --pure-lockfile --ignore-engines install
                 yarn run $YARN_BUILD_CMD
               fi
                
