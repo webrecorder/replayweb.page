@@ -9,10 +9,16 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
     },
     {
-      command: 'yarn run start-test-embed',
+      command: 'yarn run test-start-embed',
       url: 'http://127.0.0.1:8020',
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
     },
+    {
+      command: 'yarn run test-start-sandbox',
+      url: 'http://127.0.0.1:8030',
+      timeout: 120 * 1000,
+      reuseExistingServer: !process.env.CI,
+    }
   ]
 });
