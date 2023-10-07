@@ -28,6 +28,7 @@
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.38.1",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "electron": "^25.1.1",
@@ -41,6 +42,7 @@
     "lint-staged": "^14.0.0",
     "mini-css-extract-plugin": "^2.3.0",
     "node-sass": "^9.0.0",
+    "playwright": "^1.38.1",
     "prettier": "^3.0.1",
     "raw-loader": "^4.0.2",
     "sass-loader": "^13.3.2",
@@ -64,7 +66,8 @@
     "build-dev": "webpack --mode development",
     "build-docs": "bundle install; bundle exec jekyll build",
     "start-dev": "webpack serve --mode development",
-    "start-prod": "http-server -p 9990",
+    "start-prod": "http-server -p 9990 --cors",
+    "start-test-embed": "cd tests/embed; http-server -p 8020",
     "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
     "pack-signed": "electron-builder",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
