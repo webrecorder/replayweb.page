@@ -106,7 +106,7 @@ location / {
      if ($request_method = 'OPTIONS') {
         add_header 'Access-Control-Allow-Origin' 'https://replayweb.page';
         add_header 'Access-Control-Allow-Methods' 'GET, HEAD, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' '*'
+        add_header 'Access-Control-Allow-Headers' '*' ;
         return 204;
      }
 
