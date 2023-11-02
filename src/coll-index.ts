@@ -380,7 +380,6 @@ class CollInfo extends LitElement {
       .column {
         word-break: break-word;
         position: relative;
-        /* font-family: monospace; */
       }
 
       :host {
