@@ -1,10 +1,14 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
+import { ref, createRef, type Ref } from "lit/directives/ref.js";
 import type {
+  SlDialog,
   SlDropdown,
   SlMenu,
   SlSelectEvent,
 } from "@shoelace-style/shoelace";
+import "@shoelace-style/shoelace/dist/components/dialog/dialog.js";
+import "@shoelace-style/shoelace/dist/components/button/button.js";
 import {
   wrapCss,
   rwpLogo,
@@ -80,7 +84,7 @@ class Coll extends LitElement {
 
   @property({ type: Object, attribute: false })
   tabData: {
-    view?: string;
+    view?: "story" | "pages" | "resources";
     url?: string;
     ts?: string;
     multiTs?: string[];
@@ -148,6 +152,8 @@ class Coll extends LitElement {
   private _autoUpdater: null | Promise<void> = null;
 
   private observer?: IntersectionObserver;
+
+  private archiveInfoDialog: Ref<SlDialog> = createRef();
 
   private readonly tabNames = ["pages", "story", "resources", "info"];
   private readonly tabLabels = {
@@ -876,6 +882,15 @@ class Coll extends LitElement {
     } else if (this.collInfo) {
       return html`
         ${this.renderLocationBar()} ${this.renderVerifyInfo()}
+        <sl-dialog label="Archive Info" ${ref(this.archiveInfoDialog)}>
+          ${this.renderCollInfo()}
+          <sl-button
+            slot="footer"
+            variant="primary"
+            @click="${this.onHideInfoDialog}"
+            >Close</sl-button
+          >
+        </sl-dialog>
         <div id="tabContents">
           <div
             id="contents"
@@ -1018,31 +1033,6 @@ class Coll extends LitElement {
             ></span>
             <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="URLs"
               >URLs</span
-            >
-          </a>
-        </li>
-
-        <li class="${this.tabData.view === "info" ? "is-active" : ""}">
-          <a
-            @click="${this.onTabClick}"
-            href="#info"
-            class="is-size-6"
-            aria-label="Archive Info"
-            aria-current="${(this.tabData.view === "info"
-              ? "location"
-              : "") as any}"
-          >
-            <span class="icon"
-              ><fa-icon
-                .svg="${fasInfoIcon}"
-                aria-hidden="true"
-                title="Archive Info"
-              ></fa-icon
-            ></span>
-            <span
-              class="tab-label ${isSidebar ? "is-hidden" : ""}"
-              title="Archive Info"
-              >Info</span
             >
           </a>
         </li>
@@ -1379,6 +1369,21 @@ class Coll extends LitElement {
                         <span class="menu-head">Capture Date</span>${dateStr}
                       </div>`
                   : ""}
+                <a
+                  href="#"
+                  role="button"
+                  class="dropdown-item"
+                  @click="${this.onShowInfoDialog}"
+                >
+                  <span class="icon is-small">
+                    <fa-icon
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasInfoIcon}"
+                    ></fa-icon>
+                  </span>
+                  <span>Archive Info</span>
+                </a>
                 <hr class="dropdown-divider" />
                 <a
                   href="#"
@@ -1500,10 +1505,8 @@ class Coll extends LitElement {
     const isStory = this.hasStory && this.tabData.view === "story";
     const isPages = this.tabData.view === "pages";
     const isResources = this.tabData.view === "resources";
-    const isInfo = this.tabData.view === "info";
 
     return html`
-      ${isInfo ? this.renderCollInfo() : html``}
       ${isStory
         ? html` <wr-coll-story
             .collInfo="${this.collInfo || {}}"
@@ -1795,6 +1798,12 @@ class Coll extends LitElement {
 
   onAbout() {
     this.dispatchEvent(new CustomEvent("about-show"));
+  }
+  onShowInfoDialog() {
+    this.archiveInfoDialog.value?.show();
+  }
+  onHideInfoDialog() {
+    this.archiveInfoDialog.value?.hide();
   }
 }
 
