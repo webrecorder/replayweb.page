@@ -189,7 +189,6 @@ class CollIndex extends LitElement {
         line-height: 0.4em;
         padding: 6px;
         border-radius: 10px;
-        display: none;
         position: absolute;
       }
       .copy:active {
@@ -346,7 +345,7 @@ class CollIndex extends LitElement {
     `;
   }
 
-  renderCollInfo(coll) {
+  renderCollInfo(coll: Coll) {
     return html`<wr-coll-info .coll=${coll}></wr-coll-info>`;
   }
 
@@ -405,56 +404,74 @@ class CollInfo extends LitElement {
         height: 100%;
       }
       .column:hover > .copy,
-      .source-text:hover + .copy,
+      .col-content:hover .copy,
       .copy:hover {
-        display: inline;
+        color: inherit;
       }
       .copy {
         color: black;
         margin: 0px;
-        margin: 0;
+        margin: -4px 0 0;
         line-height: 0.4em;
         padding: 6px;
         border-radius: 10px;
-        display: none;
         position: absolute;
       }
       .copy:active {
         background-color: lightgray;
       }
+      .col-content {
+        font-family: monospace;
+        font-size: 14px;
+        color: #1f2937;
+      }
       .minihead {
-        font-size: 10px;
-        font-weight: bold;
+        font-size: 12px;
+        line-height: 16px;
+        margin-bottom: 4px;
       }
     `;
   }
 
-  renderSource(coll) {
+  renderSource() {
+    const coll = this.coll;
     return html`
       <div class="column is-4">
-        <span class="source-text"
-          ><p class="minihead">Source</p>
+        <p class="minihead">Source</p>
+        <div class="col-content">
           ${coll.sourceUrl &&
           (coll.sourceUrl.startsWith("http://") ||
             coll.sourceUrl.startsWith("https://"))
-            ? html` <a href="${coll.sourceUrl}">${coll.sourceUrl}&nbsp;</a>`
-            : html` ${coll.sourceUrl}&nbsp;`}
-        </span>
-
-        <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy">
-          <fa-icon .svg="${fasCopy}"></fa-icon>
-        </a>
-        ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://")
-          ? html` <p><i>(${coll.filename})</i></p>`
-          : ""}
+            ? html` <a href="${coll.sourceUrl}">${coll.sourceUrl}</a> `
+            : html` ${coll.sourceUrl}`}
+          ${coll.sourceUrl && coll.sourceUrl.startsWith("googledrive://")
+            ? html` <i>(${coll.filename})</i>`
+            : ""}
+          <a @click="${(e) => this.onCopy(e, coll.sourceUrl)}" class="copy">
+            <fa-icon .svg="${fasCopy}"></fa-icon>
+          </a>
+        </div>
+      </div>
+      <div class="column">
+        <p class="minihead">Collection id</p>
+        <div class="col-content">
+          ${coll.coll}
+          <a @click="${(e) => this.onCopy(e, coll.coll)}" class="copy">
+            <fa-icon .svg="${fasCopy}"></fa-icon>
+          </a>
+        </div>
       </div>
       <div class="column is-2">
         <p class="minihead">Date Loaded</p>
-        ${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}
+        <div class="col-content">
+          ${coll.ctime ? new Date(coll.ctime).toLocaleString() : ""}
+        </div>
       </div>
       <div class="column is-2">
         <p class="minihead">Total Size</p>
-        ${prettyBytes(Number(coll.totalSize || coll.size || 0))}
+        <div class="col-content">
+          ${prettyBytes(Number(coll.totalSize || coll.size || 0))}
+        </div>
       </div>
     `;
   }
@@ -470,7 +487,7 @@ class CollInfo extends LitElement {
           >
         </span>
       </div>
-      ${this.renderSource(coll)}
+      ${this.renderSource()}
     </div>`;
   }
 
@@ -494,24 +511,16 @@ class CollInfo extends LitElement {
       : "";
 
     return html` <div class="columns">
-      <div class="column col-title is-4">
-        <span class="subtitle has-text-weight-bold">
-          ${coll.name || coll.title || coll.filename}
-        </span>
-      </div>
-      ${coll.desc
-        ? html` <div class="column">
-            <p class="minihead">Description</p>
-            ${coll.desc}
-          </div>`
-        : html``}
-      ${coll.description
+      ${coll.name || coll.title
         ? html`<div class="column">
-            <p class="minihead">Description</p>
-            ${coll.description}
+            <p class="minihead">Title</p>
+            <div class="col-content">${coll.name || coll.title}</div>
           </div>`
-        : html``}
-      <!--  Only show filename if coll.resources doesn't exist -->
+        : ""}
+      <div class="column">
+        <p class="minihead">Filename</p>
+        <div class="col-content">${coll.filename}</div>
+      </div>
       ${coll.resources
         ? html`<div class="column">
             <p class="minihead">Files</p>
@@ -525,61 +534,70 @@ class CollInfo extends LitElement {
               )}
             </ol>
           </div>`
-        : html`<div class="column">
-            <p class="minihead">Filename</p>
-            ${coll.filename}
-          </div>`}
-      ${this.renderSource(coll)}
+        : ""}
+      ${this.renderSource()}
       ${domain
         ? html`
             <div class="column">
               <p class="minihead">Observed By</p>
-              <p>${domain}</p>
-              ${certFingerprintUrl
-                ? html`<span
-                    ><a target="_blank" href="${certFingerprintUrl}"
-                      >View Certificate</a
-                    ></span
-                  >`
-                : ""}
+              <span class="col-content">
+                <p>${domain}</p>
+                ${certFingerprintUrl
+                  ? html`<span
+                      ><a target="_blank" href="${certFingerprintUrl}"
+                        >View Certificate</a
+                      ></span
+                    >`
+                  : ""}
+              </span>
             </div>
           `
         : software
         ? html`
             <div class="column">
               <p class="minihead">Created With</p>
-              ${software || "Unknown"}
+              <div class="col-content">${software || "Unknown"}</div>
             </div>
           `
         : ""}
 
       <div class="column">
         <p class="minihead">Validation</p>
-        ${numValid > 0 || numInvalid > 0
-          ? html` <p>
-              ${numValid} hashes
-              verified${numInvalid ? html`, ${numInvalid} invalid` : ""}
-            </p>`
-          : html` Not Available`}
+        <div class="col-content">
+          ${numValid > 0 || numInvalid > 0
+            ? html` <p>
+                ${numValid} hashes
+                verified${numInvalid ? html`, ${numInvalid} invalid` : ""}
+              </p>`
+            : html` Not Available`}
+        </div>
       </div>
 
       <div class="column">
         <p class="minihead">Package Hash</p>
-        ${datapackageHash || "Not Available"}
+        <div class="col-content">
+          ${datapackageHash || "Not Available"}
+          <a @click="${(e) => this.onCopy(e, datapackageHash)}" class="copy">
+            <fa-icon .svg="${fasCopy}"></fa-icon>
+          </a>
+        </div>
       </div>
 
       <div class="column">
         <p class="minihead">Observer Public Key</p>
-        ${publicKey || "Not Available"}
+        <div class="col-content">
+          ${publicKey || "Not Available"}
+          <a @click="${(e) => this.onCopy(e, publicKey)}" class="copy">
+            <fa-icon .svg="${fasCopy}"></fa-icon>
+          </a>
+        </div>
       </div>
 
       <div class="column">
         <p class="minihead">Loading Mode</p>
-        ${coll.onDemand ? "Download On-Demand" : "Fully Local"}
-      </div>
-      <div class="column">
-        <p class="minihead">Collection id</p>
-        ${coll.coll}
+        <div class="col-content">
+          ${coll.onDemand ? "Download On-Demand" : "Fully Local"}
+        </div>
       </div>
     </div>`;
   }
@@ -588,10 +606,10 @@ class CollInfo extends LitElement {
     return this.detailed ? this.renderDetailed() : this.renderSummaryView();
   }
 
-  onCopy(event, sourceUrl) {
+  onCopy(event: Event, text: string | undefined) {
     event.preventDefault();
     event.stopPropagation();
-    navigator.clipboard.writeText(sourceUrl);
+    if (text) navigator.clipboard.writeText(text);
     return false;
   }
 

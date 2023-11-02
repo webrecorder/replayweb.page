@@ -14,4 +14,7 @@ export interface Coll {
   onDemand?: any;
   pages?: any[];
   lists?: any[];
+  ctime?: string;
+  totalSize?: unknown;
+  size?: unknown;
 }
