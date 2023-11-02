@@ -7,8 +7,9 @@ import type {
   SlMenu,
   SlSelectEvent,
 } from "@shoelace-style/shoelace";
-import "@shoelace-style/shoelace/dist/components/dialog/dialog.js";
+import "@shoelace-style/shoelace/dist/components/alert/alert.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
+import "@shoelace-style/shoelace/dist/components/dialog/dialog.js";
 import {
   wrapCss,
   rwpLogo,
@@ -782,17 +783,7 @@ class Coll extends LitElement {
         width: 100%;
       }
 
-      .info-bg {
-        background-color: whitesmoke;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        overflow: auto;
-      }
-
       .is-list {
-        margin: 1em;
-        background-color: whitesmoke;
         height: fit-content;
       }
 
@@ -1485,16 +1476,19 @@ class Coll extends LitElement {
   }
 
   renderCollInfo() {
-    if (!this.collInfo) return;
-    return html` <div class="info-bg">
-      <wr-coll-info
-        class="is-list"
-        .coll="${this.collInfo}"
-        ?detailed="${true}"
-        ?canDelete="${!this.embed}"
-        @coll-purge="${this.onPurgeCache}"
-      ></wr-coll-info>
-    </div>`;
+    if (!this.collInfo)
+      return html`<sl-alert open variant="warning">
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <strong>Archive info is not available</strong><br />
+        Please reload and try again.
+      </sl-alert>`;
+    return html`<wr-coll-info
+      class="is-list"
+      .coll="${this.collInfo}"
+      ?detailed="${true}"
+      ?canDelete="${!this.embed}"
+      @coll-purge="${this.onPurgeCache}"
+    ></wr-coll-info>`;
   }
 
   renderExtraToolbar(/*isDropdown = false*/) {
