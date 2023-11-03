@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import { wrapCss, rwpLogo } from "./misc";
 import type { Coll } from "./types";

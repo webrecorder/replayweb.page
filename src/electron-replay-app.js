@@ -466,6 +466,7 @@ class ElectronReplayApp {
   }
 
   getOpenUrl(argv) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     argv = require("minimist")(argv.slice(process.defaultApp ? 2 : 1));
 
     const filename =

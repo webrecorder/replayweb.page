@@ -21,4 +21,5 @@ module.exports = {
     "linebreak-style": ["error", "unix"],
     "@typescript-eslint/no-explicit-any": "warn",
   },
+  ignorePatterns: ["ruffle/**/*", "build/**/*"],
 };

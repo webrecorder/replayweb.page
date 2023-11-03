@@ -79,8 +79,8 @@
     "dist": "yarn run build && yarn run pack",
     "dist-dev": "yarn run build-dev && yarn run pack",
     "release": "yarn run build && electron-builder",
-    "lint": "eslint ./src/ webpack.config.js",
-    "format": "prettier --write ./src",
+    "lint": "eslint ./",
+    "format": "prettier --write ./",
     "prepare": "husky install"
   },
   "build": {
