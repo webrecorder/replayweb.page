@@ -25,7 +25,10 @@
           // https://github.com/runem/lit-analyzer/issues/293
           // https://github.com/runem/lit-analyzer/issues/302
           // https://github.com/runem/lit-analyzer/issues/266
-          "no-missing-import": "off"
+          "no-missing-import": "off",
+
+          // ts-lit-plugin also doesn't seem to understand string interpolations in CSS, so this is also turned off.
+          "no-invalid-css": "off"
         }
       }
     ]
