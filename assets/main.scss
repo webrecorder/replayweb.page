@@ -119,9 +119,7 @@ a:focus {
   font-size: $body-size;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  min-width: $body-min-width;
-  overflow-x: $body-overflow-x;
-  overflow-y: $body-overflow-y;
+  min-width: $body-min-width; // @todo(emma, 2023-11-06) investigate why this is here
   text-rendering: $body-rendering;
   text-size-adjust: 100%;
 
@@ -132,7 +130,6 @@ a:focus {
   line-height: $body-line-height;
 
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 // Make available to screen readers while hiding element visually:

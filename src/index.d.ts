@@ -1,2 +1,2 @@
 declare module "*.svg";
-declare var __SW_NAME__: string;
+declare let __SW_NAME__: string;

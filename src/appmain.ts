@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
@@ -13,6 +13,9 @@ import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.sv
 import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
 import fasArrowRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
 import { SWManager } from "./swmanager";
+import "./item";
+import "./item-index";
+import "./chooser";
 
 // ===========================================================================
 class ReplayWebApp extends LitElement {
@@ -157,7 +160,7 @@ class ReplayWebApp extends LitElement {
         min-width: 0px;
         flex-direction: column;
       }
-      wr-coll {
+      wr-item {
         height: 100%;
       }
       .navbar {
@@ -379,7 +382,7 @@ class ReplayWebApp extends LitElement {
   }
 
   renderColl() {
-    return html` <wr-coll
+    return html` <wr-item
       .loadInfo="${this.loadInfo}"
       sourceUrl="${this.sourceUrl || ""}"
       embed="${this.embed}"
@@ -390,11 +393,11 @@ class ReplayWebApp extends LitElement {
       @update-title=${this.onTitle}
       @coll-loaded=${this.onCollLoaded}
       @about-show=${() => (this.showAbout = true)}
-    ></wr-coll>`;
+    ></wr-item>`;
   }
 
   renderHomeIndex() {
-    return html` <wr-coll-index>
+    return html` <wr-item-index>
       ${!IS_APP
         ? html`
             <p slot="header" class="tagline is-size-5 has-text-centered">
@@ -412,7 +415,7 @@ class ReplayWebApp extends LitElement {
         @did-drop-file="${() => (this.droppedFile = null)}"
         @load-start=${this.onStartLoad}
       ></wr-chooser>
-    </wr-coll-index>`;
+    </wr-item-index>`;
   }
 
   render() {
@@ -763,7 +766,7 @@ class ReplayWebApp extends LitElement {
                     <summary>Legalese:</summary>
                     <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE"
                     AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
-                    INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+                    INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</p>
                   </details>
                   <div class="has-text-centered">
                     <a class="button is-warning" href="#" @click="${

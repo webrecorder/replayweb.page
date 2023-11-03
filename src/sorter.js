@@ -3,8 +3,11 @@ import { wrapCss } from "./misc";
 
 import fasSortDown from "@fortawesome/fontawesome-free/svgs/solid/sort-down.svg";
 import fasSortUp from "@fortawesome/fontawesome-free/svgs/solid/sort-up.svg";
-
 // ===========================================================================
+/**
+ * @typedef {{key: string;name: string;}[]} SortKeys
+ * @prop {SortKeys} sortKeys
+ */
 class Sorter extends LitElement {
   constructor() {
     super();

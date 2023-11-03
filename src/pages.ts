@@ -1,7 +1,7 @@
 "use strict";
 
 import { LitElement, html, css, unsafeCSS } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
 import ndjson from "fetch-ndjson";
 
@@ -61,7 +61,7 @@ class Pages extends LitElement {
   @property({ type: Boolean })
   changeNeeded = false;
 
-  @property({ type: Set })
+  @property({ attribute: false })
   selectedPages = new Set();
 
   @property({ type: Boolean })

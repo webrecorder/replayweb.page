@@ -320,8 +320,8 @@ class PageEntry extends LitElement {
     let inx = textContent.indexOf(this.query);
 
     if (inx < 0) {
-      let textLower = textContent.toLowerCase();
-      let queryLower = query.toLowerCase();
+      const textLower = textContent.toLowerCase();
+      const queryLower = query.toLowerCase();
 
       inx = textLower.indexOf(queryLower);
 

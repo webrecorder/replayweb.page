@@ -8,6 +8,9 @@ import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 import "keyword-mark-element/lib/keyword-mark.js";
 
 // ===========================================================================
+/**
+ * @prop {boolean | undefined} active
+ */
 class URLResources extends LitElement {
   static get filters() {
     return [
