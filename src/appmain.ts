@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
@@ -13,6 +13,9 @@ import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.sv
 import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
 import fasArrowRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
 import { SWManager } from "./swmanager";
+import "./coll";
+import "./coll-index";
+import "./chooser";
 
 // ===========================================================================
 class ReplayWebApp extends LitElement {
@@ -763,7 +766,7 @@ class ReplayWebApp extends LitElement {
                     <summary>Legalese:</summary>
                     <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE"
                     AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
-                    INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+                    INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</p>
                   </details>
                   <div class="has-text-centered">
                     <a class="button is-warning" href="#" @click="${

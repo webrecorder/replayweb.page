@@ -37,7 +37,8 @@ class Chooser extends LitElement {
   static get properties() {
     return {
       fileDisplayName: { type: String },
-      droppedFile: { type: File },
+      /** @type File */
+      droppedFile: { attribute: false },
       newFullImport: { type: Boolean },
       noHead: { type: Boolean },
     };
