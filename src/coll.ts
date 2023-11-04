@@ -1,10 +1,6 @@
 import { LitElement, html, css } from "lit";
-import { property, state } from "lit/decorators.js";
-import type {
-  SlDropdown,
-  SlMenu,
-  SlSelectEvent,
-} from "@shoelace-style/shoelace";
+import { property } from "lit/decorators.js";
+import type { SlDropdown, SlSelectEvent } from "@shoelace-style/shoelace";
 import {
   wrapCss,
   rwpLogo,
@@ -165,7 +161,7 @@ class Coll extends LitElement {
 
   firstUpdated() {
     this.inited = true;
-    window.addEventListener("hashchange", (event) => this.onHashChange());
+    window.addEventListener("hashchange", () => this.onHashChange());
 
     this.addEventListener("fullscreenchange", () => {
       this.isFullscreen = !!document.fullscreenElement;
@@ -1414,7 +1410,9 @@ class Coll extends LitElement {
           date,
           label: dateStr,
         });
-      } catch {}
+      } catch {
+        /* empty */
+      }
     });
     const currDateStr = tsToDate(this.ts).toLocaleString();
     return html`<div id="datetime" class="control is-hidden-mobile">
@@ -1707,7 +1705,6 @@ class Coll extends LitElement {
   }
 
   onSelectTimestamp(event: SlSelectEvent) {
-    const menu = event.currentTarget as SlMenu;
     const { item } = event.detail;
     this.updateTabData({ ts: item.value });
   }

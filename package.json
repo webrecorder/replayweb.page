@@ -30,12 +30,14 @@
   },
   "devDependencies": {
     "@types/flexsearch": "^0.7.3",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "electron": "^25.1.1",
     "electron-builder": "^23.0.3",
     "electron-notarize": "^1.1.1",
-    "eslint": "^8.23.1",
+    "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-lit": "^1.9.1",
     "http-server": "^13.0.2",
@@ -48,8 +50,9 @@
     "sass-loader": "^13.3.2",
     "style-loader": "^3.2.1",
     "svg-inline-loader": "^0.8.2",
+    "ts-lit-plugin": "^2.0.0-pre.1",
     "ts-loader": "^9.4.4",
-    "typescript": "^5.1.6",
+    "typescript": "^5.2.2",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
@@ -76,8 +79,8 @@
     "dist": "yarn run build && yarn run pack",
     "dist-dev": "yarn run build-dev && yarn run pack",
     "release": "yarn run build && electron-builder",
-    "lint": "eslint ./src/ webpack.config.js",
-    "format": "prettier --write ./src",
+    "lint": "eslint ./",
+    "format": "prettier --write ./",
     "prepare": "husky install"
   },
   "build": {

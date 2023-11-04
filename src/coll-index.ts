@@ -477,17 +477,15 @@ class CollInfo extends LitElement {
   renderDetailed() {
     const coll = this.coll;
 
-    let {
-      numValid,
-      numInvalid,
+    const {
+      numValid = 0,
+      numInvalid = 0,
       domain,
       certFingerprint,
       datapackageHash,
       publicKey,
       software,
     } = this.coll.verify || {};
-    numValid = numValid || 0;
-    numInvalid = numInvalid || 0;
 
     const certFingerprintUrl = certFingerprint
       ? `https://crt.sh/?q=${certFingerprint}`
