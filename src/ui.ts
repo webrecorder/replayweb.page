@@ -1,7 +1,8 @@
 import { ReplayWebApp } from "./appmain";
 import { Chooser } from "./chooser";
-import { CollIndex, CollInfo } from "./coll-index";
-import { Coll } from "./coll";
+import { CollIndex } from "./item-index";
+import { ItemInfo } from "./item-info";
+import { Item } from "./item";
 import { Story } from "./story";
 import { GDrive } from "./gdrive";
 import { Loader } from "./loader";
@@ -17,8 +18,8 @@ export {
   ReplayWebApp,
   Chooser,
   CollIndex,
-  CollInfo,
-  Coll,
+  ItemInfo as CollInfo, // @todo(2023-11-06) complete rename
+  Item as Coll, // @todo(2023-11-06) complete rename
   Story,
   GDrive,
   Loader,

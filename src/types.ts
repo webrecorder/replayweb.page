@@ -1,8 +1,12 @@
-export interface Coll {
+export interface Item {
   filename: string;
   sourceUrl: string;
   replayPrefix: string;
   apiPrefix: string;
+
+  /**
+   * Archived Item ID
+   */
   coll?: string;
   name?: string;
   title?: string;
