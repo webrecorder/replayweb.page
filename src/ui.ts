@@ -1,6 +1,6 @@
 import { ReplayWebApp } from "./appmain";
 import { Chooser } from "./chooser";
-import { CollIndex } from "./item-index";
+import { ItemIndex } from "./item-index";
 import { ItemInfo } from "./item-info";
 import { Item } from "./item";
 import { Story } from "./story";
@@ -17,7 +17,7 @@ import "./shoelace";
 export {
   ReplayWebApp,
   Chooser,
-  CollIndex,
+  ItemIndex as CollIndex, // @todo(2023-11-06) complete rename
   ItemInfo as CollInfo, // @todo(2023-11-06) complete rename
   Item as Coll, // @todo(2023-11-06) complete rename
   Story,

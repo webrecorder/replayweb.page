@@ -14,16 +14,16 @@ import "./item-info";
 // ===========================================================================
 class ItemIndex extends LitElement {
   @property({ type: Array })
-  colls: Item[] = [];
+  items: Item[] = [];
 
   @property({ type: String })
   query = "";
 
   @property({ type: Array })
-  filteredColls: any[] = [];
+  filteredItems: any[] = [];
 
   @property({ type: Array })
-  sortedColls: any[] | null = null;
+  sortedItems: any[] | null = null;
 
   @property({ type: Boolean })
   hideHeader: any = null;
@@ -59,7 +59,7 @@ class ItemIndex extends LitElement {
   }
 
   firstUpdated() {
-    this.loadColls();
+    this.loadItems();
   }
 
   updated(changedProperties) {
@@ -73,67 +73,67 @@ class ItemIndex extends LitElement {
 
   filter() {
     if (!this.query) {
-      this.filteredColls = this.colls;
+      this.filteredItems = this.items;
       return;
     }
 
-    this.filteredColls = [];
+    this.filteredItems = [];
 
-    for (const coll of this.colls) {
+    for (const item of this.items) {
       if (
-        coll.sourceUrl.indexOf(this.query) >= 0 ||
-        coll.filename.indexOf(this.query) >= 0 ||
-        (coll.loadUrl && coll.loadUrl.indexOf(this.query) >= 0) ||
-        (coll.title && coll.title.indexOf(this.query) >= 0)
+        item.sourceUrl.indexOf(this.query) >= 0 ||
+        item.filename.indexOf(this.query) >= 0 ||
+        (item.loadUrl && item.loadUrl.indexOf(this.query) >= 0) ||
+        (item.title && item.title.indexOf(this.query) >= 0)
       ) {
-        this.filteredColls.push(coll);
+        this.filteredItems.push(item);
       }
     }
   }
 
-  async loadColls() {
+  async loadItems() {
     const resp = await fetch(`${apiPrefix}/coll-index?${this.indexParams}`);
     try {
       if (resp.status !== 200) {
         throw new Error("Invalid API Response, Retry");
       }
       const json = await resp.json();
-      this.colls = json.colls.map((coll) => {
-        coll.title = coll.title || coll.filename;
-        return coll;
+      this.items = json.colls.map((item: Item) => {
+        item.title = item.title || item.filename;
+        return item;
       });
 
       this._deleting = {};
-      this.sortedColls = [];
+      this.sortedItems = [];
     } catch (e) {
       // likely no sw registered yet, or waiting for new sw to register, retry again
-      setTimeout(() => this.loadColls(), 500);
+      setTimeout(() => this.loadItems(), 500);
     }
   }
 
-  async onDeleteColl(event) {
+  async onDeleteItem(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (!this.sortedColls) {
+    if (!this.sortedItems) {
       return;
     }
 
     const index = Number(event.currentTarget.getAttribute("data-coll-index"));
 
-    const coll = this.sortedColls[index];
+    const item = this.sortedItems[index];
 
-    if (!coll || this._deleting[coll.sourceUrl]) {
+    if (!item || this._deleting[item.sourceUrl]) {
       return;
     }
 
-    this._deleting[coll.sourceUrl] = true;
+    this._deleting[item.sourceUrl] = true;
     this.requestUpdate();
 
-    const resp = await fetch(`${apiPrefix}/c/${coll.id}`, { method: "DELETE" });
+    const resp = await fetch(`${apiPrefix}/c/${item.id}`, { method: "DELETE" });
     if (resp.status === 200) {
       const json = await resp.json();
-      this.colls = json.colls;
+      this.items = json.colls;
     }
     return false;
   }
@@ -276,7 +276,7 @@ class ItemIndex extends LitElement {
         </div>
         <div class="panel">
           ${this.renderHeader()}
-          ${this.colls.length
+          ${this.items.length
             ? html`
                 <div class="panel-block sort-header is-small">
                   ${this.renderSearchHeader()}
@@ -297,27 +297,27 @@ class ItemIndex extends LitElement {
                     sortKey="ctime"
                     ?sortDesc="${true}"
                     .sortKeys="${this.sortKeys}"
-                    .data="${this.filteredColls}"
+                    .data="${this.filteredItems}"
                     @sort-changed="${(e) =>
-                      (this.sortedColls = e.detail.sortedData)}"
+                      (this.sortedItems = e.detail.sortedData)}"
                   >
                   </wr-sorter>
                 </div>
 
                 <div class="coll-list">
-                  ${this.sortedColls &&
-                  this.sortedColls.map(
-                    (coll, i) => html`
+                  ${this.sortedItems &&
+                  this.sortedItems.map(
+                    (item, i) => html`
                       <div class="coll-block panel-block">
-                        ${this.renderCollInfo(coll)}
-                        ${!this._deleting[coll.sourceUrl]
+                        ${this.renderItemInfo(item)}
+                        ${!this._deleting[item.sourceUrl]
                           ? html`
                               <button
                                 class="delete delete-button"
-                                aria-label="Unload Collection"
-                                title="Unload Collection"
+                                aria-label="Unload Item"
+                                title="Unload Item"
                                 data-coll-index="${i}"
-                                @click="${this.onDeleteColl}"
+                                @click="${this.onDeleteItem}"
                               ></button>
                             `
                           : html` <span
@@ -332,7 +332,7 @@ class ItemIndex extends LitElement {
               `
             : html`
                 <div class="panel-block extra-padding">
-                  ${this.sortedColls === null
+                  ${this.sortedItems === null
                     ? html`<i>Loading Archives...</i>`
                     : this.renderEmpty()}
                 </div>
@@ -342,7 +342,7 @@ class ItemIndex extends LitElement {
     `;
   }
 
-  renderCollInfo(item: Item) {
+  renderItemInfo(item: Item) {
     return html`<wr-item-info .item=${item}></wr-item-info>`;
   }
 
@@ -356,4 +356,4 @@ class ItemIndex extends LitElement {
 
 customElements.define("wr-item-index", ItemIndex);
 
-export { ItemIndex as CollIndex };
+export { ItemIndex };
