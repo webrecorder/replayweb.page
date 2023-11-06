@@ -102,7 +102,11 @@ class ItemInfo extends LitElement {
           : nothing}
       </wr-labeled-field>
       ${showItemID
-        ? html`<wr-labeled-field label="Archived Item ID" copy class="column">
+        ? html`<wr-labeled-field
+            label="Archived Item ID"
+            .copy=${item.coll}
+            class="column"
+          >
             ${item.coll || "No ID"}
           </wr-labeled-field>`
         : nothing}

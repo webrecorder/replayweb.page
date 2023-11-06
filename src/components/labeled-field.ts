@@ -1,19 +1,13 @@
 import { LitElement, css, html, nothing } from "lit";
-import { property } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
-import fasCopy from "@fortawesome/fontawesome-free/svgs/regular/copy.svg";
-import "./../misc";
 import { wrapCss } from "./../misc";
+import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
 
+@customElement("wr-labeled-field")
 class LabeledField extends LitElement {
-  @property({
-    converter: (value) => {
-      if (value === "") return true;
-      if (value == null) return false;
-      return value;
-    },
-  })
-  copy?: boolean | string = false;
+  @property({ type: String })
+  copy?: string;
 
   @property({ type: String })
   label?: string;
@@ -28,31 +22,16 @@ class LabeledField extends LitElement {
   static get compStyles() {
     return css`
       :host {
-        word-break: break-word;
-        position: relative;
         min-width: unset; /* @todo(emma, 2023-11-06) see about removing this, if the min-width set on all web components is unnecessary */
       }
 
-      .copy {
-        color: black;
-        margin: 0px;
-        margin: -4px 0 0;
-        line-height: 0.4em;
-        padding: 6px;
-        border-radius: 10px;
-        position: absolute;
-        appearance: none;
-        background: none;
-        border: none;
-        cursor: pointer;
-      }
-      .copy:active {
-        background-color: lightgray;
-      }
+      /* @todo(emma, 2023-11-06) add option for monospace treatment, rather than making everything mono. this could also be a class on the host element? */
       .col-content {
         font-family: monospace;
         font-size: 14px;
         color: #1f2937;
+        display: flex;
+        align-items: center;
       }
       .minihead {
         font-size: 12px;
@@ -62,43 +41,17 @@ class LabeledField extends LitElement {
     `;
   }
 
-  private get _copyableContent() {
-    const slot = this.shadowRoot?.querySelector("slot");
-    const content =
-      typeof this.copy === "string"
-        ? this.copy
-        : slot
-            ?.assignedNodes({ flatten: true })
-            .map((node) => node.textContent?.replace(/^\s+|\s+$/g, " "))
-            .join("")
-            .trim();
-    return content;
-  }
-
   render() {
-    console.log(this.label, "copy", this.copy);
     return html`${this.label
         ? html`<p class="minihead">${this.label}</p>`
         : nothing}
       <div class="col-content">
         <slot></slot>
         ${this.copy
-          ? html`<button @click="${this.onCopy}" class="copy">
-              <fa-icon .svg="${fasCopy}"></fa-icon>
-            </button>`
-          : ""}
+          ? html` <sl-copy-button .value=${this.copy || ""}></sl-copy-button>`
+          : nothing}
       </div>`;
   }
-
-  onCopy(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const text = this._copyableContent;
-    if (text) navigator.clipboard.writeText(text);
-    return false;
-  }
 }
-
-customElements.define("wr-labeled-field", LabeledField);
 
 export { LabeledField };
