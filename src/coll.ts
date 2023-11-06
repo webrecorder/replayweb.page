@@ -1,10 +1,9 @@
 import { LitElement, html, css } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { ref, createRef, type Ref } from "lit/directives/ref.js";
 import type {
   SlDialog,
   SlDropdown,
-  SlMenu,
   SlSelectEvent,
 } from "@shoelace-style/shoelace";
 import "@shoelace-style/shoelace/dist/components/alert/alert.js";
