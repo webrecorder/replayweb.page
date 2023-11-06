@@ -2,6 +2,7 @@
 
 import { CollectionLoader } from "@webrecorder/wabac/src/loaders";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ipcRenderer, contextBridge } = require("electron");
 
 contextBridge.exposeInMainWorld("electron", { IS_APP: true });

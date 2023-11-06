@@ -231,5 +231,5 @@ export {
   unsafeCSS,
   unsafeSVG,
   apiPrefix,
-  replayPrefix
+  replayPrefix,
 };
