@@ -1,10 +1,12 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { wrapCss } from "./misc";
 import { map } from "lit/directives/map.js";
 import prettyBytes from "pretty-bytes";
-import fasCopy from "@fortawesome/fontawesome-free/svgs/regular/copy.svg";
+
 import type { Item } from "./types";
+
+import "./components/labeled-field";
 
 // ===========================================================================
 class ItemInfo extends LitElement {
@@ -44,6 +46,7 @@ class ItemInfo extends LitElement {
 
       :host(.is-list) .column {
         width: 100% !important;
+        flex: 1 1 auto;
       }
 
       .col-title:hover {
@@ -82,46 +85,33 @@ class ItemInfo extends LitElement {
     `;
   }
 
-  renderSource() {
+  renderSource(showItemID = true) {
     const item = this.item;
     return html`
-      <div class="column is-4">
-        <p class="minihead">Source</p>
-        <div class="col-content">
-          ${item.sourceUrl &&
-          (item.sourceUrl.startsWith("http://") ||
-            item.sourceUrl.startsWith("https://"))
-            ? html` <a href="${item.sourceUrl}">${item.sourceUrl}</a> `
-            : html` ${item.sourceUrl}`}
-          ${item.sourceUrl && item.sourceUrl.startsWith("googledrive://")
-            ? html` <i>(${item.filename})</i>`
-            : ""}
-          <a @click="${(e) => this.onCopy(e, item.sourceUrl)}" class="copy">
-            <fa-icon .svg="${fasCopy}"></fa-icon>
-          </a>
-        </div>
-      </div>
-      <div class="column">
-        <p class="minihead">Archived Item ID</p>
-        <div class="col-content">
-          ${item.coll}
-          <a @click="${(e) => this.onCopy(e, item.coll)}" class="copy">
-            <fa-icon .svg="${fasCopy}"></fa-icon>
-          </a>
-        </div>
-      </div>
-      <div class="column is-2">
-        <p class="minihead">Date Loaded</p>
-        <div class="col-content">
-          ${item.ctime ? new Date(item.ctime).toLocaleString() : ""}
-        </div>
-      </div>
-      <div class="column is-2">
-        <p class="minihead">Total Size</p>
-        <div class="col-content">
-          ${prettyBytes(Number(item.totalSize || item.size || 0))}
-        </div>
-      </div>
+      <wr-labeled-field
+        label="Source"
+        copy="${item.sourceUrl}"
+        class="column is-4"
+        >${item.sourceUrl &&
+        (item.sourceUrl.startsWith("http://") ||
+          item.sourceUrl.startsWith("https://"))
+          ? html` <a href="${item.sourceUrl}">${item.sourceUrl}</a> `
+          : html` ${item.sourceUrl}`}
+        ${item.sourceUrl && item.sourceUrl.startsWith("googledrive://")
+          ? html` <i>(${item.filename})</i>`
+          : nothing}
+      </wr-labeled-field>
+      ${showItemID
+        ? html`<wr-labeled-field label="Archived Item ID" copy class="column">
+            ${item.coll || "No ID"}
+          </wr-labeled-field>`
+        : nothing}
+      <wr-labeled-field label="Date Loaded" class="column is-2">
+        ${item.ctime ? new Date(item.ctime).toLocaleString() : nothing}
+      </wr-labeled-field>
+      <wr-labeled-field label="Total Size" class="column is-2">
+        ${prettyBytes(Number(item.totalSize || item.size || 0))}
+      </wr-labeled-field>
     `;
   }
 
@@ -136,7 +126,7 @@ class ItemInfo extends LitElement {
           >
         </span>
       </div>
-      ${this.renderSource()}
+      ${this.renderSource(false)}
     </div>`;
   }
 
@@ -159,93 +149,77 @@ class ItemInfo extends LitElement {
 
     return html` <div class="columns">
       ${item.name || item.title
-        ? html`<div class="column">
-            <p class="minihead">Title</p>
-            <div class="col-content">${item.name || item.title}</div>
-          </div>`
-        : ""}
-      <div class="column">
-        <p class="minihead">Filename</p>
-        <div class="col-content">${item.filename}</div>
-      </div>
+        ? html`<wr-labeled-field label="Title" class="column">
+            ${item.name || item.title}
+          </wr-labeled-field>`
+        : nothing}
+      <wr-labeled-field label="Filename" class="column">
+        ${item.filename}
+      </wr-labeled-field>
       ${item.resources
-        ? html`<div class="column">
-            <p class="minihead">Files</p>
+        ? html`<wr-labeled-field label="Files" class="column">
             <ol style="padding: revert">
               ${map(
                 item.resources,
-                (resource: any) =>
+                (resource) =>
                   html`<li>
                     <a href="${resource.path}">${resource.name + "\n"}</a>
                   </li>`,
               )}
             </ol>
-          </div>`
-        : ""}
+          </wr-labeled-field>`
+        : nothing}
       ${this.renderSource()}
       ${domain
         ? html`
-            <div class="column">
-              <p class="minihead">Observed By</p>
-              <span class="col-content">
-                <p>${domain}</p>
-                ${certFingerprintUrl
-                  ? html`<span
-                      ><a target="_blank" href="${certFingerprintUrl}"
-                        >View Certificate</a
-                      ></span
-                    >`
-                  : ""}
-              </span>
-            </div>
+            <wr-labeled-field label="Observed By" class="column">
+              <p>${domain}</p>
+              ${certFingerprintUrl
+                ? html`<span
+                    ><a target="_blank" href="${certFingerprintUrl}"
+                      >View Certificate</a
+                    ></span
+                  >`
+                : nothing}
+            </wr-labeled-field>
           `
-        : software
+        : nothing}
+      ${software
         ? html`
-            <div class="column">
-              <p class="minihead">Created With</p>
-              <div class="col-content">${software || "Unknown"}</div>
-            </div>
+            <wr-labeled-field label="Created With" class="column">
+              ${software || "Unknown"}
+            </wr-labeled-field>
           `
-        : ""}
+        : nothing}
 
-      <div class="column">
-        <p class="minihead">Validation</p>
-        <div class="col-content">
-          ${numValid > 0 || numInvalid > 0
-            ? html` <p>
-                ${numValid} hashes
-                verified${numInvalid ? html`, ${numInvalid} invalid` : ""}
-              </p>`
-            : html` Not Available`}
-        </div>
-      </div>
+      <wr-labeled-field label="Validation" class="column">
+        ${numValid > 0 || numInvalid > 0
+          ? html` <p>
+              ${numValid} hashes
+              verified${numInvalid ? html`, ${numInvalid} invalid` : nothing}
+            </p>`
+          : html` Not Available`}
+      </wr-labeled-field>
 
-      <div class="column">
-        <p class="minihead">Package Hash</p>
-        <div class="col-content">
-          ${datapackageHash || "Not Available"}
-          <a @click="${(e) => this.onCopy(e, datapackageHash)}" class="copy">
-            <fa-icon .svg="${fasCopy}"></fa-icon>
-          </a>
-        </div>
-      </div>
+      <wr-labeled-field
+        label="Package Hash"
+        class="column"
+        .copy=${datapackageHash}
+      >
+        ${datapackageHash || "Not Available"}
+      </wr-labeled-field>
 
-      <div class="column">
-        <p class="minihead">Observer Public Key</p>
-        <div class="col-content">
-          ${publicKey || "Not Available"}
-          <a @click="${(e) => this.onCopy(e, publicKey)}" class="copy">
-            <fa-icon .svg="${fasCopy}"></fa-icon>
-          </a>
-        </div>
-      </div>
+      <wr-labeled-field
+        label="Observer Public Key"
+        class="column"
+        .copy=${publicKey}
+      >
+        ${publicKey || "Not Available"}
+      </wr-labeled-field>
 
-      <div class="column">
-        <p class="minihead">Loading Mode</p>
-        <div class="col-content">
-          ${item.onDemand ? "Download On-Demand" : "Fully Local"}
-        </div>
-      </div>
+      <wr-labeled-field label="Loading Mode" class="column">
+        ${item.onDemand ? "Download On-Demand" : "Fully Local"}
+      </wr-labeled-field>
     </div>`;
   }
 

@@ -14,8 +14,16 @@ export interface Item {
   desc?: string;
   description?: string;
   resources?: { path: string; name: string }[];
-  verify?: any;
-  onDemand?: any;
+  verify?: {
+    numValid?: number;
+    numInvalid?: number;
+    domain?: string;
+    certFingerprint?: string;
+    datapackageHash?: string;
+    publicKey?: string;
+    software?: string;
+  };
+  onDemand?: boolean;
   pages?: any[];
   lists?: any[];
   ctime?: string;
