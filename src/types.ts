@@ -1,8 +1,12 @@
-export interface Coll {
+export interface Item {
   filename: string;
   sourceUrl: string;
   replayPrefix: string;
   apiPrefix: string;
+
+  /**
+   * Archived Item ID
+   */
   coll?: string;
   name?: string;
   title?: string;
@@ -10,8 +14,19 @@ export interface Coll {
   desc?: string;
   description?: string;
   resources?: { path: string; name: string }[];
-  verify?: any;
-  onDemand?: any;
+  verify?: {
+    numValid?: number;
+    numInvalid?: number;
+    domain?: string;
+    certFingerprint?: string;
+    datapackageHash?: string;
+    publicKey?: string;
+    software?: string;
+  };
+  onDemand?: boolean;
   pages?: any[];
   lists?: any[];
+  ctime?: string;
+  totalSize?: unknown;
+  size?: unknown;
 }
