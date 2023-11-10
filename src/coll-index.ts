@@ -23,12 +23,15 @@ class CollIndex extends LitElement {
   query = "";
 
   @property({ type: Array })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   filteredColls: any[] = [];
 
   @property({ type: Array })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   sortedColls: any[] | null = null;
 
   @property({ type: Boolean })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   hideHeader: any = null;
 
   @property({ type: String })
@@ -38,6 +41,7 @@ class CollIndex extends LitElement {
   headerName = "Loaded Archives";
 
   @state()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   private _deleting: any = {};
 
   private typeFilter = "";
@@ -516,6 +520,7 @@ class CollInfo extends LitElement {
             <ol style="padding: revert">
               ${map(
                 coll.resources,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
                 (resource: any) =>
                   html`<li>
                     <a href="${resource.path}">${resource.name + "\n"}</a>

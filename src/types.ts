@@ -10,8 +10,12 @@ export interface Coll {
   desc?: string;
   description?: string;
   resources?: { path: string; name: string }[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   verify?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   onDemand?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   pages?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   lists?: any[];
 }

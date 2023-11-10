@@ -41,9 +41,11 @@ class ReplayWebApp extends LitElement {
   collTitle: string | null = null;
 
   @property({ type: Object })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   loadInfo: any = null;
 
   @property({ type: String })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   embed: any = null;
 
   @property({ type: String })
@@ -56,12 +58,14 @@ class ReplayWebApp extends LitElement {
   pageReplay = false;
 
   @property({ type: String })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   source: any = null;
 
   @property({ type: Boolean })
   skipRuffle = false;
 
   @property({ type: Object })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   swErrorMsg: any = null;
 
   private swName?: string;
@@ -533,6 +537,7 @@ class ReplayWebApp extends LitElement {
     this.pageParams = new URLSearchParams(window.location.search);
 
     // Google Drive
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
     let state: any = this.pageParams.get("state");
     if (state) {
       try {

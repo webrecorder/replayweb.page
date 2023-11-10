@@ -10,6 +10,7 @@ class Replay extends LitElement {
   collInfo: Coll | Record<string, never> | null = null;
 
   @property({ type: String })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   sourceUrl: any = null;
 
   // external url set from parent
@@ -33,12 +34,14 @@ class Replay extends LitElement {
   title = "";
 
   @property({ type: String })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   iframeUrl: any = null;
 
   @property({ type: Boolean })
   showAuth = false;
 
   @property({ type: Object })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   authFileHandle: any = null;
 
   private reauthWait: null | Promise<void> = null;
@@ -237,6 +240,7 @@ class Replay extends LitElement {
         !iframe.contentDocument ||
         !iframe.contentWindow ||
         (iframe.contentDocument.readyState === "complete" &&
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
           !(iframe.contentWindow as Window & { _WBWombat: any })._WBWombat)
       ) {
         this.clearLoading(iframe && iframe.contentWindow);

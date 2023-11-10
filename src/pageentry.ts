@@ -18,6 +18,7 @@ class PageEntry extends LitElement {
   textSnippet: string | null = "";
 
   @property({ type: Object })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   page: any = null;
 
   @property({ type: String })
