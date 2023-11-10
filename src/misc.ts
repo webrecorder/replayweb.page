@@ -4,6 +4,7 @@ import { LitElement, html, css, unsafeCSS } from "lit";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 import { styleMap } from "lit/directives/style-map.js";
 
+// @ts-expect-error - TS2307 - Cannot find module '../assets/main.scss' or its corresponding type declarations.
 import allCssRaw from "../assets/main.scss";
 
 import rwpLogo from "../assets/logo.svg";
@@ -18,7 +19,9 @@ function wrapCss(custom) {
 }
 
 const IS_APP =
+  // @ts-expect-error - TS2339 - Property 'IS_APP' does not exist on type 'Window & typeof globalThis'.
   window.IS_APP ||
+  // @ts-expect-error - TS2551 - Property 'electron' does not exist on type 'Window & typeof globalThis'. Did you mean 'Electron'? | TS2551 - Property 'electron' does not exist on type 'Window & typeof globalThis'. Did you mean 'Electron'?
   (window.electron && window.electron.IS_APP) ||
   window.matchMedia("(display-mode: standalone)").matches;
 
@@ -39,8 +42,11 @@ function clickOnSpacebarPress(event) {
 class FaIcon extends LitElement {
   constructor() {
     super();
+    // @ts-expect-error - TS2339 - Property 'size' does not exist on type 'FaIcon'.
     this.size = "1.1em";
+    // @ts-expect-error - TS2339 - Property 'width' does not exist on type 'FaIcon'.
     this.width = null;
+    // @ts-expect-error - TS2339 - Property 'height' does not exist on type 'FaIcon'.
     this.height = null;
   }
 
@@ -70,26 +76,39 @@ class FaIcon extends LitElement {
   }
 
   render() {
+    // @ts-expect-error - TS2339 - Property 'svg' does not exist on type 'FaIcon'.
     if (!this.svg) {
       return html``;
     }
 
     const styles = {};
 
+    // @ts-expect-error - TS2339 - Property 'size' does not exist on type 'FaIcon'.
     if (this.size) {
+      // @ts-expect-error - TS2339 - Property 'width' does not exist on type '{}'. | TS2339 - Property 'size' does not exist on type 'FaIcon'.
       styles.width = this.size;
+      // @ts-expect-error - TS2339 - Property 'height' does not exist on type '{}'. | TS2339 - Property 'size' does not exist on type 'FaIcon'.
       styles.height = this.size;
     } else {
+      // @ts-expect-error - TS2339 - Property 'width' does not exist on type 'FaIcon'.
       if (this.width) {
+        // @ts-expect-error - TS2339 - Property 'width' does not exist on type '{}'. | TS2339 - Property 'width' does not exist on type 'FaIcon'.
         styles.width = this.width;
       }
+      // @ts-expect-error - TS2339 - Property 'height' does not exist on type 'FaIcon'.
       if (this.height) {
+        // @ts-expect-error - TS2339 - Property 'height' does not exist on type '{}'. | TS2339 - Property 'height' does not exist on type 'FaIcon'.
         styles.height = this.height;
       }
     }
 
     return html`<svg style="${styleMap(styles)}">
-      <g>${unsafeSVG(this.svg)}</g>
+      <g>
+        ${
+          // @ts-expect-error - TS2339 - Property 'svg' does not exist on type 'FaIcon'.
+          unsafeSVG(this.svg)
+        }
+      </g>
     </svg>`;
   }
 }
@@ -98,6 +117,7 @@ class FaIcon extends LitElement {
 class AnimLogo extends FaIcon {
   constructor() {
     super();
+    // @ts-expect-error - TS2339 - Property 'svg' does not exist on type 'AnimLogo'.
     this.svg = rwpLogo;
   }
 
@@ -155,7 +175,9 @@ class WrModal extends LitElement {
   constructor() {
     super();
     this.title = "";
+    // @ts-expect-error - TS2339 - Property 'bgClass' does not exist on type 'WrModal'.
     this.bgClass = "";
+    // @ts-expect-error - TS2339 - Property 'noBgClose' does not exist on type 'WrModal'.
     this.noBgClose = false;
   }
 
@@ -188,10 +210,18 @@ class WrModal extends LitElement {
     return html` <div class="modal is-active">
       <div
         class="modal-background"
-        @click="${() => !this.noBgClose && this.onClose()}"
+        @click="${
+          // @ts-expect-error - TS2339 - Property 'noBgClose' does not exist on type 'WrModal'.
+          () => !this.noBgClose && this.onClose()
+        }"
       ></div>
       <div class="modal-card">
-        <header class="modal-card-head ${this.bgClass}">
+        <header
+          class="modal-card-head ${
+            // @ts-expect-error - TS2339 - Property 'bgClass' does not exist on type 'WrModal'.
+            this.bgClass
+          }"
+        >
           <p class="modal-card-title is-3">${this.title}</p>
           <button
             class="delete"

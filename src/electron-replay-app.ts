@@ -26,7 +26,9 @@ import log from "electron-log";
 import mime from "mime-types";
 import url from "url";
 
+// @ts-expect-error - TS2322 - Type 'typeof Headers' is not assignable to type '{ new (init?: HeadersInit | undefined): Headers; prototype: Headers; }'.
 global.Headers = Headers;
+// @ts-expect-error - TS2322 - Type '(url: RequestInfo, init?: RequestInit | undefined) => Promise<Response>' is not assignable to type '(input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>'.
 global.fetch = fetch;
 
 const STATIC_PREFIX = "http://localhost:5471/";
@@ -40,25 +42,36 @@ const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 // ============================================================================
 class ElectronReplayApp {
   constructor({ staticPath = "./", profileName = "" } = {}) {
+    // @ts-expect-error - TS2339 - Property 'pluginPath' does not exist on type 'ElectronReplayApp'.
     this.pluginPath = "";
 
+    // @ts-expect-error - TS2339 - Property 'appPath' does not exist on type 'ElectronReplayApp'.
     this.appPath = app.getAppPath();
 
+    // @ts-expect-error - TS2339 - Property 'projPath' does not exist on type 'ElectronReplayApp'. | TS2339 - Property 'appPath' does not exist on type 'ElectronReplayApp'.
     this.projPath = path.join(this.appPath, "../");
 
+    // @ts-expect-error - TS2339 - Property 'staticContentPath' does not exist on type 'ElectronReplayApp'.
     this.staticContentPath = staticPath;
 
+    // @ts-expect-error - TS2339 - Property 'profileName' does not exist on type 'ElectronReplayApp'.
     this.profileName = profileName;
 
+    // @ts-expect-error - TS2339 - Property 'proxyColl' does not exist on type 'ElectronReplayApp'.
     this.proxyColl = null;
+    // @ts-expect-error - TS2339 - Property 'proxyTS' does not exist on type 'ElectronReplayApp'.
     this.proxyTS = null;
 
+    // @ts-expect-error - TS2339 - Property 'mainWindow' does not exist on type 'ElectronReplayApp'.
     this.mainWindow = null;
 
+    // @ts-expect-error - TS2339 - Property 'openNextFile' does not exist on type 'ElectronReplayApp'.
     this.openNextFile = null;
 
+    // @ts-expect-error - TS2339 - Property 'screenSize' does not exist on type 'ElectronReplayApp'.
     this.screenSize = { width: 1024, height: 768 };
 
+    // @ts-expect-error - TS2339 - Property 'origUA' does not exist on type 'ElectronReplayApp'.
     this.origUA = null;
   }
 
@@ -94,16 +107,20 @@ class ElectronReplayApp {
       });
     }
 
+    // @ts-expect-error - TS2339 - Property 'appPath' does not exist on type 'ElectronReplayApp'.
     console.log("app path", this.appPath);
     console.log("dir name", __dirname);
+    // @ts-expect-error - TS2339 - Property 'projPath' does not exist on type 'ElectronReplayApp'.
     console.log("proj path", this.projPath);
 
     console.log("app data", app.getPath("appData"));
     console.log("user data", app.getPath("userData"));
 
+    // @ts-expect-error - TS2339 - Property 'profileName' does not exist on type 'ElectronReplayApp'.
     if (this.profileName) {
       app.setPath(
         "userData",
+        // @ts-expect-error - TS2339 - Property 'profileName' does not exist on type 'ElectronReplayApp'.
         path.join(app.getPath("appData"), this.profileName),
       );
     }
@@ -125,7 +142,9 @@ class ElectronReplayApp {
 
     app.on("will-finish-launching", () => {
       app.on("open-file", (event, filePath) => {
+        // @ts-expect-error - TS2339 - Property 'openNextFile' does not exist on type 'ElectronReplayApp'.
         this.openNextFile = filePath;
+        // @ts-expect-error - TS2339 - Property 'mainWindow' does not exist on type 'ElectronReplayApp'.
         if (this.mainWindow) {
           this.createMainWindow(process.argv);
         }
@@ -136,6 +155,7 @@ class ElectronReplayApp {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (BrowserWindow.getAllWindows().length === 0) {
+        // @ts-expect-error - TS2683 - 'this' implicitly has type 'any' because it does not have a type annotation. | TS2683 - 'this' implicitly has type 'any' because it does not have a type annotation.
         this.mainWindow = this.createMainWindow(process.argv);
       }
     });
@@ -153,6 +173,7 @@ class ElectronReplayApp {
 
   checkUpdates() {
     autoUpdater.logger = log;
+    // @ts-expect-error - TS2339 - Property 'transports' does not exist on type 'Logger'.
     autoUpdater.logger.transports.file.level = "info";
     autoUpdater.checkForUpdatesAndNotify();
   }
@@ -160,6 +181,7 @@ class ElectronReplayApp {
   onAppReady() {
     this.checkUpdates();
 
+    // @ts-expect-error - TS2339 - Property 'screenSize' does not exist on type 'ElectronReplayApp'.
     this.screenSize = screen.getPrimaryDisplay().workAreaSize;
 
     app.on("web-contents-created", (event, contents) => {
@@ -190,8 +212,10 @@ class ElectronReplayApp {
       this.doHandleFile(request, callback),
     );
 
+    // @ts-expect-error - TS2339 - Property 'origUA' does not exist on type 'ElectronReplayApp'.
     this.origUA = sesh.getUserAgent();
 
+    // @ts-expect-error - TS2339 - Property 'mainWindow' does not exist on type 'ElectronReplayApp'.
     this.mainWindow = this.createMainWindow(process.argv);
   }
 
@@ -252,7 +276,9 @@ class ElectronReplayApp {
       if (request.url.startsWith(REPLAY_PREFIX)) {
         const m = request.url.slice(REPLAY_PREFIX.length).match(URL_RX);
         if (m) {
+          // @ts-expect-error - TS2339 - Property 'proxyColl' does not exist on type 'ElectronReplayApp'.
           this.proxyColl = m[1];
+          // @ts-expect-error - TS2339 - Property 'proxyTS' does not exist on type 'ElectronReplayApp'.
           this.proxyTS = m[2];
 
           request.url = m[3];
@@ -278,6 +304,7 @@ class ElectronReplayApp {
         const mimeType = mime.contentType(ext);
 
         if (mimeType) {
+          // @ts-expect-error - TS2339 - Property 'staticContentPath' does not exist on type 'ElectronReplayApp'.
           const fullPath = path.join(this.staticContentPath, filename);
 
           console.log("fullPath: " + fullPath);
@@ -311,8 +338,10 @@ class ElectronReplayApp {
       ? Readable.from(readBody(uploadData, session.defaultSession))
       : null;
 
+    // @ts-expect-error - TS2339 - Property 'origUA' does not exist on type 'ElectronReplayApp'.
     if (this.origUA) {
       // pass UA if origUA is set
+      // @ts-expect-error - TS2339 - Property 'origUA' does not exist on type 'ElectronReplayApp'.
       headers["User-Agent"] = this.origUA;
     }
 
@@ -405,11 +434,15 @@ class ElectronReplayApp {
       }
     });
 
+    // @ts-expect-error - TS2339 - Property 'mainWindow' does not exist on type 'ElectronReplayApp'.
     if (this.mainWindow) {
+      // @ts-expect-error - TS2339 - Property 'mainWindow' does not exist on type 'ElectronReplayApp'.
       this.mainWindow.webContents.send(
         "getresponse",
         request,
+        // @ts-expect-error - TS2339 - Property 'proxyColl' does not exist on type 'ElectronReplayApp'.
         this.proxyColl,
+        // @ts-expect-error - TS2339 - Property 'proxyTS' does not exist on type 'ElectronReplayApp'.
         this.proxyTS,
         channel,
       );
@@ -447,8 +480,11 @@ class ElectronReplayApp {
 
     // Create the browser window.
     const theWindow = new BrowserWindow({
+      // @ts-expect-error - TS2339 - Property 'screenSize' does not exist on type 'ElectronReplayApp'.
       width: this.screenSize.width,
+      // @ts-expect-error - TS2339 - Property 'screenSize' does not exist on type 'ElectronReplayApp'.
       height: this.screenSize.height,
+      // @ts-expect-error - TS2345 - Argument of type '{ width: any; height: any; isMaximized: boolean; show: false; webPreferences: { plugins: boolean; preload: string; nativeWindowOpen: boolean; contextIsolation: boolean; enableRemoteModule: boolean; sandbox: boolean; nodeIntegration: boolean; }; }' is not assignable to parameter of type 'BrowserWindowConstructorOptions'.
       isMaximized: true,
       show: false,
       webPreferences: this.mainWindowWebPreferences,
@@ -470,10 +506,12 @@ class ElectronReplayApp {
     argv = require("minimist")(argv.slice(process.defaultApp ? 2 : 1));
 
     const filename =
+      // @ts-expect-error - TS2339 - Property 'openNextFile' does not exist on type 'ElectronReplayApp'.
       this.openNextFile ||
       argv.filename ||
       argv.f ||
       (argv._.length && argv._[0]);
+    // @ts-expect-error - TS2339 - Property 'openNextFile' does not exist on type 'ElectronReplayApp'.
     this.openNextFile = null;
 
     let sourceString = "";

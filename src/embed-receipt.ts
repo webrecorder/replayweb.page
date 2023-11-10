@@ -14,13 +14,19 @@ import prettyBytes from "pretty-bytes";
 export class RWPEmbedReceipt extends LitElement {
   constructor() {
     super();
+    // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'RWPEmbedReceipt'.
     this.collInfo = null;
+    // @ts-expect-error - TS2339 - Property 'appLogo' does not exist on type 'RWPEmbedReceipt'.
     this.appLogo = null;
+    // @ts-expect-error - TS2339 - Property 'ts' does not exist on type 'RWPEmbedReceipt'.
     this.ts = null;
+    // @ts-expect-error - TS2339 - Property 'url' does not exist on type 'RWPEmbedReceipt'.
     this.url = null;
+    // @ts-expect-error - TS2339 - Property 'active' does not exist on type 'RWPEmbedReceipt'.
     this.active = false;
   }
 
+  // @ts-expect-error - TS2611 - 'renderRoot' is defined as a property in class 'LitElement', but is overridden here in 'RWPEmbedReceipt' as an accessor.
   get renderRoot() {
     return this;
   }
@@ -185,25 +191,38 @@ export class RWPEmbedReceipt extends LitElement {
     let {
       numValid,
       numInvalid,
+      // eslint-disable-next-line prefer-const
       domain,
+      // eslint-disable-next-line prefer-const
       certFingerprint,
+      // eslint-disable-next-line prefer-const
       datapackageHash,
+      // eslint-disable-next-line prefer-const
       publicKey,
+      // eslint-disable-next-line prefer-const
       software,
+      // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'RWPEmbedReceipt'.
     } = this.collInfo.verify || {};
     numValid = numValid || 0;
     numInvalid = numInvalid || 0;
 
+    // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'RWPEmbedReceipt'.
     const sourceUrl = this.collInfo.sourceUrl;
 
     const certFingerprintUrl = certFingerprint
       ? `https://crt.sh/?q=${certFingerprint}`
       : "";
 
+    // @ts-expect-error - TS2339 - Property 'ts' does not exist on type 'RWPEmbedReceipt'.
     const dateStr = tsToDate(this.ts).toLocaleString();
 
     return html`
-      <div class="dropdown mb-4 ${this.active ? "is-active" : ""}">
+      <div
+        class="dropdown mb-4 ${
+          // @ts-expect-error - TS2339 - Property 'active' does not exist on type 'RWPEmbedReceipt'.
+          this.active ? "is-active" : ""
+        }"
+      >
         <div class="dropdown-trigger embed-info-container">
           <button
             class="embed-info is-small is-rounded mt-4"
@@ -223,7 +242,10 @@ export class RWPEmbedReceipt extends LitElement {
             <span class="icon is-small mr-4 ml-2">
               <fa-icon
                 title="Toggle"
-                .svg="${this.active ? btAngleDoubleUp : btAngleDoubleDown}"
+                .svg="${
+                  // @ts-expect-error - TS2339 - Property 'active' does not exist on type 'RWPEmbedReceipt'.
+                  this.active ? btAngleDoubleUp : btAngleDoubleDown
+                }"
                 aria-hidden="true"
               ></fa-icon>
             </span>
@@ -269,7 +291,19 @@ export class RWPEmbedReceipt extends LitElement {
             <h2 class="mt-4">Technical Information</h2>
             <div class="embed-info-drop-statscontainer mb-4">
               <h3>Original URL:</h3>
-              <p><a target="_blank" href="${this.url}">${this.url}</a></p>
+              <p>
+                <a
+                  target="_blank"
+                  href="${
+                    // @ts-expect-error - TS2339 - Property 'url' does not exist on type 'RWPEmbedReceipt'.
+                    this.url
+                  }"
+                  >${
+                    // @ts-expect-error - TS2339 - Property 'url' does not exist on type 'RWPEmbedReceipt'.
+                    this.url
+                  }</a
+                >
+              </p>
               <h3 class="mt-2">Archived On:</h3>
               <p>${dateStr}</p>
               ${domain
@@ -302,7 +336,12 @@ export class RWPEmbedReceipt extends LitElement {
               <h3 class="mt-2">Package Hash:</h3>
               <p class="show-hash">${datapackageHash}</p>
               <h3 class="mt-2">Size</h3>
-              <p>${prettyBytes(Number(this.collInfo.size || 0))}</p>
+              <p>
+                ${
+                  // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'RWPEmbedReceipt'.
+                  prettyBytes(Number(this.collInfo.size || 0))
+                }
+              </p>
             </div>
             ${sourceUrl ? html`` : ""}
             <p
@@ -319,7 +358,10 @@ export class RWPEmbedReceipt extends LitElement {
                     class="menu-logo mr-1"
                     size="1.0rem"
                     aria-hidden="true"
-                    .svg=${this.appLogo}
+                    .svg=${
+                      // @ts-expect-error - TS2339 - Property 'appLogo' does not exist on type 'RWPEmbedReceipt'.
+                      this.appLogo
+                    }
                   ></fa-icon>
                   Powered by ReplayWeb.page
                 </a>
@@ -347,6 +389,7 @@ export class RWPEmbedReceipt extends LitElement {
 
   onEmbedDrop(event) {
     event.stopPropagation();
+    // @ts-expect-error - TS2339 - Property 'active' does not exist on type 'RWPEmbedReceipt'. | TS2339 - Property 'active' does not exist on type 'RWPEmbedReceipt'.
     this.active = !this.active;
   }
 }
