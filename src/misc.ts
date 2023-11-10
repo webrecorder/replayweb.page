@@ -25,7 +25,6 @@ const IS_APP =
   (window.electron && window.electron.IS_APP) ||
   window.matchMedia("(display-mode: standalone)").matches;
 
-// eslint-disable-next-line no-undef
 const VERSION = __VERSION__;
 
 // ===========================================================================

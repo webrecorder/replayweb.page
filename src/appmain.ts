@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, type TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
@@ -41,12 +41,25 @@ class ReplayWebApp extends LitElement {
   collTitle: string | null = null;
 
   @property({ type: Object })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  loadInfo: any = null;
+  loadInfo:
+    | {
+        extraConfig?: {
+          baseUrlSourcePrefix?: unknown;
+          baseUrl?: unknown;
+        };
+        customColl?: string | null;
+        noWebWorker?: boolean;
+        noCache?: boolean;
+        hideOffscreen?: boolean;
+        loadEager?: boolean;
+        sourceUrl?: string;
+        loadUrl?: string;
+      }
+    | Record<string, never>
+    | null = null;
 
   @property({ type: String })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  embed: any = null;
+  embed: string | null = null;
 
   @property({ type: String })
   collPageUrl = "";
@@ -58,15 +71,13 @@ class ReplayWebApp extends LitElement {
   pageReplay = false;
 
   @property({ type: String })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  source: any = null;
+  source: string | null = null;
 
   @property({ type: Boolean })
   skipRuffle = false;
 
   @property({ type: Object })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  swErrorMsg: any = null;
+  swErrorMsg: TemplateResult<1> | "" | null = null;
 
   private swName?: string;
   private swmanager: SWManager | null;
@@ -74,7 +85,6 @@ class ReplayWebApp extends LitElement {
 
   private droppedFile: File | null = null;
 
-  // eslint-disable-next-line no-undef
   constructor(swName = __SW_NAME__) {
     super();
 
@@ -389,7 +399,7 @@ class ReplayWebApp extends LitElement {
     return html` <wr-coll
       .loadInfo="${this.loadInfo}"
       sourceUrl="${this.sourceUrl || ""}"
-      embed="${this.embed}"
+      embed="${ifDefined(this.embed === null ? undefined : this.embed)}"
       appName="${this.appName}"
       swName="${ifDefined(this.swName)}"
       .appLogo="${this.mainLogo}"
@@ -537,17 +547,21 @@ class ReplayWebApp extends LitElement {
     this.pageParams = new URLSearchParams(window.location.search);
 
     // Google Drive
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-    let state: any = this.pageParams.get("state");
+    const state = this.pageParams.get("state");
+    type State = {
+      ids?: string[];
+      userId?: string;
+      action?: string;
+    };
     if (state) {
       try {
-        state = JSON.parse(state);
+        const parsedState: State = JSON.parse(state);
         if (
-          state.ids instanceof Array &&
-          state.userId &&
-          state.action === "open"
+          parsedState.ids instanceof Array &&
+          parsedState.userId &&
+          parsedState.action === "open"
         ) {
-          this.pageParams.set("source", "googledrive://" + state.ids[0]);
+          this.pageParams.set("source", "googledrive://" + parsedState.ids[0]);
           this.pageParams.delete("state");
           window.location.search = this.pageParams.toString();
           return;
@@ -585,7 +599,7 @@ class ReplayWebApp extends LitElement {
 
     if (this.pageParams.get("config")) {
       try {
-        this.loadInfo.extraConfig = JSON.parse(
+        this.loadInfo!.extraConfig = JSON.parse(
           this.pageParams.get("config") || "",
         );
       } catch (e) {
@@ -594,35 +608,35 @@ class ReplayWebApp extends LitElement {
     }
 
     if (this.pageParams.get("baseUrlSourcePrefix")) {
-      this.loadInfo.extraConfig = this.loadInfo.extraConfig || {};
-      this.loadInfo.extraConfig.baseUrlSourcePrefix = this.pageParams.get(
+      this.loadInfo!.extraConfig = this.loadInfo!.extraConfig || {};
+      this.loadInfo!.extraConfig.baseUrlSourcePrefix = this.pageParams.get(
         "baseUrlSourcePrefix",
       );
     }
 
     if (this.pageParams.get("basePageUrl")) {
-      this.loadInfo.extraConfig = this.loadInfo.extraConfig || {};
-      this.loadInfo.extraConfig.baseUrl = this.pageParams.get("basePageUrl");
+      this.loadInfo!.extraConfig = this.loadInfo!.extraConfig || {};
+      this.loadInfo!.extraConfig.baseUrl = this.pageParams.get("basePageUrl");
     }
 
     if (this.pageParams.get("customColl")) {
-      this.loadInfo.customColl = this.pageParams.get("customColl");
+      this.loadInfo!.customColl = this.pageParams.get("customColl");
     }
 
     if (this.pageParams.get("noWebWorker") === "1") {
-      this.loadInfo.noWebWorker = true;
+      this.loadInfo!.noWebWorker = true;
     }
 
     if (this.pageParams.get("noCache") === "1") {
-      this.loadInfo.noCache = true;
+      this.loadInfo!.noCache = true;
     }
 
     if (this.pageParams.get("hideOffscreen") === "1") {
-      this.loadInfo.hideOffscreen = true;
+      this.loadInfo!.hideOffscreen = true;
     }
 
     if (this.pageParams.get("loading") === "eager") {
-      this.loadInfo.loadEager = true;
+      this.loadInfo!.loadEager = true;
     }
 
     if (this.pageParams.get("swName")) {

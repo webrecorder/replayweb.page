@@ -75,7 +75,6 @@ class Loader extends LitElement {
 
     // @ts-expect-error - TS2339 - Property 'noWebWorker' does not exist on type 'Loader'.
     if (!this.noWebWorker) {
-      // eslint-disable-next-line no-undef
       // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'. | TS2339 - Property 'swName' does not exist on type 'Loader'.
       this.worker = new Worker(this.swName);
     } else {

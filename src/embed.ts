@@ -19,7 +19,6 @@ class Embed extends LitElement {
     this.replaybase = "./replay/";
     // @ts-expect-error - TS2339 - Property 'replayfile' does not exist on type 'Embed'.
     this.replayfile = defaultReplayFile;
-    // eslint-disable-next-line no-undef
     // @ts-expect-error - TS2339 - Property 'swName' does not exist on type 'Embed'.
     this.swName = __SW_NAME__;
     // @ts-expect-error - TS2339 - Property 'mainElementName' does not exist on type 'Embed'.
@@ -327,7 +326,6 @@ class Embed extends LitElement {
         params.loading = "eager";
       }
 
-      // eslint-disable-next-line no-undef
       // @ts-expect-error - TS2339 - Property 'swName' does not exist on type 'Embed'.
       if (this.swName !== __SW_NAME__) {
         // @ts-expect-error - TS2339 - Property 'swName' does not exist on type '{ source: URL; customColl: any; config: any; basePageUrl: string; baseUrlSourcePrefix: any; embed: any; }'. | TS2339 - Property 'swName' does not exist on type 'Embed'.

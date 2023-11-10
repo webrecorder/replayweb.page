@@ -138,7 +138,6 @@ class Chooser extends LitElement {
       // file.path only available in electron app
       // @ts-expect-error - TS2339 - Property 'file' does not exist on type 'Chooser'.
       if (this.file.path) {
-        // eslint-disable-next-line no-undef
         // @ts-expect-error - TS2339 - Property 'loadUrl' does not exist on type '{ sourceUrl: any; }'. | TS2339 - Property 'file' does not exist on type 'Chooser'.
         loadInfo.loadUrl = "file2://" + this.file.path;
         // @ts-expect-error - TS2339 - Property 'noCache' does not exist on type '{ sourceUrl: any; }'.

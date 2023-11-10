@@ -47,7 +47,6 @@ class GDrive extends LitElement {
       // @ts-expect-error - TS2339 - Property 'sourceUrl' does not exist on type 'GDrive'.
       const sourceUrl = this.sourceUrl;
       const fileId = sourceUrl.slice("googledrive://".length);
-      // eslint-disable-next-line no-undef
       const publicCheckUrl = `${__HELPER_PROXY__}/g/${fileId}`;
 
       let resp = null;
@@ -224,7 +223,6 @@ class GDrive extends LitElement {
       // @ts-expect-error - TS2339 - Property 'gapi' does not exist on type 'Window & typeof globalThis'.
       self.gapi.auth2.authorize(
         {
-          // eslint-disable-next-line no-undef
           client_id: __GDRIVE_CLIENT_ID__,
           scope: "https://www.googleapis.com/auth/drive.file",
           response_type: "token",
