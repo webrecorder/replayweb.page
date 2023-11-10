@@ -1,5 +1,5 @@
 import { LitElement, html, css, type TemplateResult } from "lit";
-import { property } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
@@ -16,9 +16,11 @@ import { SWManager } from "./swmanager";
 import "./coll";
 import "./coll-index";
 import "./chooser";
+import { LoadInfo } from "./coll";
 
 // ===========================================================================
-class ReplayWebApp extends LitElement {
+@customElement("replay-app-main")
+export class ReplayWebApp extends LitElement {
   @property({ type: Boolean })
   inited = false;
 
@@ -41,22 +43,7 @@ class ReplayWebApp extends LitElement {
   collTitle: string | null = null;
 
   @property({ type: Object })
-  loadInfo:
-    | {
-        extraConfig?: {
-          baseUrlSourcePrefix?: unknown;
-          baseUrl?: unknown;
-        };
-        customColl?: string | null;
-        noWebWorker?: boolean;
-        noCache?: boolean;
-        hideOffscreen?: boolean;
-        loadEager?: boolean;
-        sourceUrl?: string;
-        loadUrl?: string;
-      }
-    | Record<string, never>
-    | null = null;
+  loadInfo: LoadInfo = null;
 
   @property({ type: String })
   embed: string | null = null;
@@ -119,7 +106,7 @@ class ReplayWebApp extends LitElement {
     });
   }
 
-  private maybeStartFileDrop = (dragEvent) => {
+  private maybeStartFileDrop = (dragEvent: DragEvent) => {
     if (this.sourceUrl) {
       // A source is already loaded. Don't allow dropping a file.
       return;
@@ -386,7 +373,7 @@ class ReplayWebApp extends LitElement {
     -->
       <a
         href="?terms"
-        @click="${(e) => {
+        @click="${(e: Event) => {
           e.preventDefault();
           this.showAbout = true;
         }}"
@@ -809,7 +796,3 @@ class ReplayWebApp extends LitElement {
     `;
   }
 }
-
-customElements.define("replay-app-main", ReplayWebApp);
-
-export { ReplayWebApp };

@@ -9,5 +9,4 @@ const replayApp = new ElectronReplayApp({
   profileName: "replaywebpage",
 });
 
-// @ts-expect-error - TS2554 - Expected 0 arguments, but got 1.
-replayApp.init(true);
+replayApp.init();

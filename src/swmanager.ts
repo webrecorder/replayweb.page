@@ -143,7 +143,7 @@ export class SWManager {
   Please try a different browser.`;
   }
 
-  renderErrorReport(logo, override) {
+  renderErrorReport(logo: string, override?: string) {
     // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
     const msg = this.errorMsg || override;
 

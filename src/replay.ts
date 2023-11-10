@@ -164,7 +164,7 @@ class Replay extends LitElement {
     }
   }
 
-  setDisablePointer(disable) {
+  setDisablePointer(disable: any) {
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe) {
@@ -172,7 +172,7 @@ class Replay extends LitElement {
     }
   }
 
-  onReplayMessage(event) {
+  onReplayMessage(event: any) {
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe && event.source === iframe.contentWindow) {

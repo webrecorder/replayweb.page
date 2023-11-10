@@ -45,8 +45,27 @@ import Split from "split.js";
 
 import type { Coll as CollInfo } from "./types";
 import type { Replay } from "./replay";
+import { ifDefined } from "lit/directives/if-defined";
 
 const RWP_SCHEME = "search://";
+
+export type LoadInfo =
+  | {
+      extraConfig?: {
+        baseUrlSourcePrefix?: unknown;
+        baseUrl?: unknown;
+        headers?: unknown;
+      };
+      customColl?: string | null;
+      noWebWorker?: boolean;
+      noCache?: boolean;
+      hideOffscreen?: boolean;
+      loadEager?: boolean;
+      sourceUrl?: string;
+      loadUrl?: string;
+    }
+  | Record<string, never>
+  | null;
 
 // ===========================================================================
 class Coll extends LitElement {
@@ -57,8 +76,7 @@ class Coll extends LitElement {
   sourceUrl: string | null = null;
 
   @property({ type: Object, attribute: false })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  loadInfo: any;
+  loadInfo: LoadInfo = null;
 
   @property({ type: Boolean })
   showSidebar: boolean | null = null;
@@ -133,11 +151,9 @@ class Coll extends LitElement {
   autoUpdateInterval = 10;
 
   @property({ type: String })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  swName: any = null;
+  swName: string | null = null;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  private splitter: any = null;
+  private splitter: Split.Instance | null = null;
 
   private _replaceLoc = false;
   private _locUpdateNeeded = false;
@@ -215,8 +231,7 @@ class Coll extends LitElement {
     this.updateTabData({ multiTs: json.timestamps });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  willUpdate(changedProperties: Map<string, any>) {
+  willUpdate(changedProperties: Map<string, Record<string, unknown>>) {
     if (changedProperties.has("tabData") && this.tabData) {
       // Format tab data from URL query params
       const tabData = {};
@@ -258,8 +273,9 @@ class Coll extends LitElement {
       if (!this.collInfo || !this.collInfo.coll) {
         return;
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-      const newHash = "#" + new URLSearchParams(this.tabData as any).toString();
+      const newHash =
+        "#" +
+        new URLSearchParams(this.tabData as Record<string, string>).toString();
 
       if (!this.tabData.url) {
         this.url =
@@ -331,8 +347,7 @@ class Coll extends LitElement {
           },
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-        this.splitter = Split([contents as any, replay], opts);
+        this.splitter = Split([contents, replay], opts);
       }
     } else if (this.splitter) {
       try {
@@ -871,7 +886,7 @@ class Coll extends LitElement {
       return html` <wr-loader
         .loadInfo="${this.loadInfo}"
         embed="${this.embed || ""}"
-        swName="${this.swName}"
+        swName="${ifDefined(this.swName === null ? undefined : this.swName)}"
         .coll="${this.coll}"
         sourceUrl="${this.sourceUrl || ""}"
         @coll-loaded=${this.onCollLoaded}
@@ -887,10 +902,7 @@ class Coll extends LitElement {
               : isReplay
               ? "is-hidden"
               : "full-pages"}"
-            role="${
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-              (isSidebar ? "complementary" : "") as any
-            }"
+            role="${ifDefined(isSidebar ? "complementary" : undefined)}"
             aria-label="${isSidebar ? "Browse Contents" : ""}"
           >
             ${this.renderTabHeader(isSidebar)}
@@ -960,10 +972,9 @@ class Coll extends LitElement {
                 href="#story"
                 class="is-size-6"
                 aria-label="Story"
-                aria-current="${(this.tabData.view === "story"
-                  ? "location"
-                  : // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-                    "") as any}"
+                aria-current="${ifDefined(
+                  this.tabData.view === "story" ? "location" : undefined,
+                )}"
               >
                 <span class="icon"
                   ><fa-icon
@@ -987,10 +998,9 @@ class Coll extends LitElement {
             href="#pages"
             class="is-size-6"
             aria-label="Pages"
-            aria-current="${(this.tabData.view === "pages"
-              ? "location"
-              : // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-                "") as any}"
+            aria-current="${ifDefined(
+              this.tabData.view === "pages" ? "location" : undefined,
+            )}"
           >
             <span class="icon"
               ><fa-icon
@@ -1013,10 +1023,9 @@ class Coll extends LitElement {
             href="#resources"
             class="is-size-6"
             aria-label="URLs"
-            aria-current="${(this.tabData.view === "resources"
-              ? "location"
-              : // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-                "") as any}"
+            aria-current="${ifDefined(
+              this.tabData.view === "resources" ? "location" : undefined,
+            )}"
           >
             <span class="icon"
               ><fa-icon
@@ -1037,10 +1046,9 @@ class Coll extends LitElement {
             href="#info"
             class="is-size-6"
             aria-label="Archive Info"
-            aria-current="${(this.tabData.view === "info"
-              ? "location"
-              : // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-                "") as any}"
+            aria-current="${ifDefined(
+              this.tabData.view === "info" ? "location" : undefined,
+            )}"
           >
             <span class="icon"
               ><fa-icon
@@ -1525,10 +1533,7 @@ class Coll extends LitElement {
             id="story"
             .isSidebar="${isSidebar}"
             class="${isStory ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-            role="${
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-              (isSidebar ? "" : "main") as any
-            }"
+            role="${ifDefined(isSidebar ? undefined : "main")}"
           >
           </wr-coll-story>`
         : ""}
@@ -1545,10 +1550,7 @@ class Coll extends LitElement {
             class="is-paddingless ${isResources ? "" : "is-hidden"} ${isSidebar
               ? "sidebar"
               : ""}"
-            role="${
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-              (isSidebar ? "" : "main") as any
-            }"
+            role="${ifDefined(isSidebar ? undefined : "main")}"
           >
           </wr-coll-resources>`
         : ""}
@@ -1566,10 +1568,7 @@ class Coll extends LitElement {
             id="pages"
             @coll-update="${this.onCollUpdate}"
             class="${isPages ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-            role="${
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-              (isSidebar ? "" : "main") as any
-            }"
+            role="${ifDefined(isSidebar ? undefined : "main")}"
           >
           </wr-page-view>`
         : ""}
@@ -1779,7 +1778,7 @@ class Coll extends LitElement {
     return data;
   }
 
-  _paramsToString(value) {
+  _paramsToString(value: Record<string, unknown>) {
     const q = new URLSearchParams();
 
     for (const param of [
@@ -1790,14 +1789,14 @@ class Coll extends LitElement {
       "urlSearchType",
     ]) {
       if (param in value) {
-        q.set(param, value[param]);
+        q.set(param, String(value[param]));
       }
     }
 
     return q.toString();
   }
 
-  onRefresh(event, replayOnly = false) {
+  onRefresh(event: Event | null, replayOnly = false) {
     if (event) {
       event.preventDefault();
     }

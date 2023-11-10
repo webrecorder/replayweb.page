@@ -2,81 +2,69 @@ import { LitElement, html, css } from "lit";
 import { IS_APP, wrapCss } from "./misc";
 
 import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
+import { customElement, property } from "lit/decorators";
 
 // ===========================================================================
-class Chooser extends LitElement {
-  constructor() {
-    super();
+@customElement("wr-chooser")
+export class Chooser extends LitElement {
+  @property({ type: String })
+  fileDisplayName = "";
 
-    // @ts-expect-error - TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
-    this.fileDisplayName = "";
-    // @ts-expect-error - TS2339 - Property 'file' does not exist on type 'Chooser'.
-    this.file = null;
-    // @ts-expect-error - TS2339 - Property 'droppedFile' does not exist on type 'Chooser'.
-    this.droppedFile = null;
+  @property({ attribute: false })
+  file: File | null = null;
 
-    // @ts-expect-error - TS2339 - Property 'hasNativeFS' does not exist on type 'Chooser'. | TS2339 - Property 'showOpenFilePicker' does not exist on type 'Window & typeof globalThis'.
-    this.hasNativeFS = !!window.showOpenFilePicker && !IS_APP;
+  @property({ attribute: false })
+  droppedFile: File | null = null;
 
-    // @ts-expect-error - TS2339 - Property 'newFullImport' does not exist on type 'Chooser'.
-    this.newFullImport = false;
+  @property({ type: Boolean })
+  hasNativeFS = !!window.showOpenFilePicker && !IS_APP;
 
-    // @ts-expect-error - TS2339 - Property 'noHead' does not exist on type 'Chooser'.
-    this.noHead = false;
-
-    // @ts-expect-error - TS2339 - Property 'showOpenFilePickerOptions' does not exist on type 'Chooser'.
-    this.showOpenFilePickerOptions = {
-      types: [
-        {
-          description: "WARC, WACZ, HAR and WBN Files",
-          accept: {
-            "application/warc": [".warc", ".gz"],
-            "application/har": [".har"],
-            "application/wacz": [".wacz"],
-            "application/wbn": [".wbn"],
-            "application/json": [".json"],
-          },
+  @property({ type: Object })
+  showOpenFilePickerOptions = {
+    types: [
+      {
+        description: "WARC, WACZ, HAR and WBN Files",
+        accept: {
+          "application/warc": [".warc", ".gz"],
+          "application/har": [".har"],
+          "application/wacz": [".wacz"],
+          "application/wbn": [".wbn"],
+          "application/json": [".json"],
         },
-      ],
-    };
-  }
+      },
+    ],
+  };
 
-  static get properties() {
-    return {
-      fileDisplayName: { type: String },
-      /** @type File */
-      droppedFile: { attribute: false },
-      newFullImport: { type: Boolean },
-      noHead: { type: Boolean },
-    };
-  }
+  @property({ type: Boolean })
+  newFullImport = false;
+
+  @property({ type: Boolean })
+  noHead = false;
+
+  fileHandle?: FileSystemFileHandle;
 
   updated(changedProperties) {
-    // @ts-expect-error - TS2339 - Property 'droppedFile' does not exist on type 'Chooser'.
     if (changedProperties.has("droppedFile") && this.droppedFile) {
       this.onDropFile();
     }
   }
 
   onDropFile() {
-    // @ts-expect-error - TS2339 - Property 'showOpenFilePickerOptions' does not exist on type 'Chooser'.
     const allowedFileExtensions = this.showOpenFilePickerOptions.types
       .map((type) => type.accept)
       .map(Object.values)
       .flat(2);
 
-    const fileHasAllowedExtension = allowedFileExtensions.some((extension) =>
-      // @ts-expect-error - TS2339 - Property 'droppedFile' does not exist on type 'Chooser'.
-      this.droppedFile.name.endsWith(extension),
+    const fileHasAllowedExtension = allowedFileExtensions.some(
+      (extension) => this.droppedFile?.name.endsWith(extension),
     );
 
     if (fileHasAllowedExtension) {
-      // @ts-expect-error - TS2339 - Property 'droppedFile' does not exist on type 'Chooser'.
+      if (this.droppedFile === null) return;
       this.setFile(this.droppedFile);
       this.dispatchEvent(
         new CustomEvent("did-drop-file", { bubbles: true, composed: true }),
       );
-      // @ts-expect-error - TS2554 - Expected 1 arguments, but got 0.
       this.onStartLoad(); // Automatically load the file
     }
   }
@@ -88,31 +76,25 @@ class Chooser extends LitElement {
     this.setFile(event.currentTarget.files[0]);
   }
 
-  setFile(file) {
-    // @ts-expect-error - TS2339 - Property 'file' does not exist on type 'Chooser'.
+  setFile(file: File) {
     this.file = file;
     // file.path only available in electron app
-    // @ts-expect-error - TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'. | TS2339 - Property 'file' does not exist on type 'Chooser'. | TS2339 - Property 'file' does not exist on type 'Chooser'.
     this.fileDisplayName = "file://" + (this.file.path || this.file.name);
   }
 
   async onChooseNativeFile() {
-    // @ts-expect-error - TS2339 - Property 'hasNativeFS' does not exist on type 'Chooser'.
     if (!this.hasNativeFS) {
       return;
     }
 
-    // @ts-expect-error - TS2339 - Property 'showOpenFilePicker' does not exist on type 'Window & typeof globalThis'.
     const [fileHandle] = await window.showOpenFilePicker(
-      // @ts-expect-error - TS2339 - Property 'showOpenFilePickerOptions' does not exist on type 'Chooser'.
       this.showOpenFilePickerOptions,
     );
-    // @ts-expect-error - TS2339 - Property 'fileHandle' does not exist on type 'Chooser'.
+
     this.fileHandle = fileHandle;
 
-    // @ts-expect-error - TS2339 - Property 'file' does not exist on type 'Chooser'.
     this.file = await fileHandle.getFile();
-    // @ts-expect-error - TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
+
     this.fileDisplayName = "file://" + fileHandle.name;
   }
 
@@ -123,49 +105,46 @@ class Chooser extends LitElement {
     );
   }
 
-  onStartLoad(event) {
+  onStartLoad(event?: Event) {
     if (event) {
       event.preventDefault();
     }
 
-    // @ts-expect-error - TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
-    const loadInfo = { sourceUrl: this.fileDisplayName };
+    type LoadInfo = {
+      sourceUrl: string;
+      isFile?: boolean;
+      loadUrl?: string;
+      noCache?: boolean;
+      extra?: { fileHandle: FileSystemFileHandle };
+      blob?: Blob;
+      size?: number;
+      name?: string;
+      newFullImport: boolean;
+    };
 
-    // @ts-expect-error - TS2339 - Property 'file' does not exist on type 'Chooser'.
+    const loadInfo: LoadInfo = {
+      sourceUrl: this.fileDisplayName,
+      newFullImport: this.newFullImport,
+    };
+
     if (this.file) {
-      // @ts-expect-error - TS2339 - Property 'isFile' does not exist on type '{ sourceUrl: any; }'.
       loadInfo.isFile = true;
       // file.path only available in electron app
-      // @ts-expect-error - TS2339 - Property 'file' does not exist on type 'Chooser'.
       if (this.file.path) {
-        // @ts-expect-error - TS2339 - Property 'loadUrl' does not exist on type '{ sourceUrl: any; }'. | TS2339 - Property 'file' does not exist on type 'Chooser'.
         loadInfo.loadUrl = "file2://" + this.file.path;
-        // @ts-expect-error - TS2339 - Property 'noCache' does not exist on type '{ sourceUrl: any; }'.
         loadInfo.noCache = true;
-        // @ts-expect-error - TS2339 - Property 'fileHandle' does not exist on type 'Chooser'.
       } else if (this.fileHandle) {
-        // @ts-expect-error - TS2339 - Property 'loadUrl' does not exist on type '{ sourceUrl: any; }'. | TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
         loadInfo.loadUrl = this.fileDisplayName;
-        // @ts-expect-error - TS2339 - Property 'extra' does not exist on type '{ sourceUrl: any; }'. | TS2339 - Property 'fileHandle' does not exist on type 'Chooser'.
         loadInfo.extra = { fileHandle: this.fileHandle };
-        // @ts-expect-error - TS2339 - Property 'noCache' does not exist on type '{ sourceUrl: any; }'.
         loadInfo.noCache = false;
       } else {
-        // @ts-expect-error - TS2339 - Property 'loadUrl' does not exist on type '{ sourceUrl: any; }'. | TS2339 - Property 'file' does not exist on type 'Chooser'.
         loadInfo.loadUrl = URL.createObjectURL(this.file);
-        // @ts-expect-error - TS2339 - Property 'blob' does not exist on type '{ sourceUrl: any; }'. | TS2339 - Property 'file' does not exist on type 'Chooser'.
         loadInfo.blob = this.file;
-        // @ts-expect-error - TS2339 - Property 'noCache' does not exist on type '{ sourceUrl: any; }'.
         loadInfo.noCache = false;
       }
-      // @ts-expect-error - TS2339 - Property 'size' does not exist on type '{ sourceUrl: any; }'. | TS2339 - Property 'file' does not exist on type 'Chooser'.
       loadInfo.size = this.file.size;
-      // @ts-expect-error - TS2339 - Property 'name' does not exist on type '{ sourceUrl: any; }'. | TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
       loadInfo.name = this.fileDisplayName;
     }
-
-    // @ts-expect-error - TS2339 - Property 'newFullImport' does not exist on type '{ sourceUrl: any; }'. | TS2339 - Property 'newFullImport' does not exist on type 'Chooser'.
-    loadInfo.newFullImport = this.newFullImport;
 
     this.dispatchEvent(
       new CustomEvent("load-start", {
@@ -179,20 +158,15 @@ class Chooser extends LitElement {
   }
 
   onInput(event) {
-    // @ts-expect-error - TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
     this.fileDisplayName = event.currentTarget.value;
 
     if (
-      // @ts-expect-error - TS2339 - Property 'file' does not exist on type 'Chooser'.
       this.file &&
-      // @ts-expect-error - TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
       this.fileDisplayName &&
-      // @ts-expect-error - TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
       this.fileDisplayName.startsWith("file://")
     ) {
-      // @ts-expect-error - TS2339 - Property 'file' does not exist on type 'Chooser'.
       this.file = null;
-      // @ts-expect-error - TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
+
       this.fileDisplayName = "";
     }
   }
@@ -255,50 +229,29 @@ class Chooser extends LitElement {
 
   render() {
     return html` <section
-      class="section ${
-        // @ts-expect-error - TS2339 - Property 'noHead' does not exist on type 'Chooser'.
-        this.noHead ? "is-paddingless" : "less-padding"
-      }"
+      class="section ${this.noHead ? "is-paddingless" : "less-padding"}"
     >
-      <div
-        class="${
-          // @ts-expect-error - TS2339 - Property 'noHead' does not exist on type 'Chooser'.
-          this.noHead ? "" : "panel"
-        }"
-      >
+      <div class="${this.noHead ? "" : "panel"}">
         <div
-          class="${
-            // @ts-expect-error - TS2339 - Property 'noHead' does not exist on type 'Chooser'.
-            this.noHead ? "is-hidden" : "panel-heading"
-          } heading-size"
+          class="${this.noHead ? "is-hidden" : "panel-heading"} heading-size"
         >
-          ${
-            // @ts-expect-error - TS2339 - Property 'newFullImport' does not exist on type 'Chooser'.
-            this.newFullImport ? "Import Existing" : "Load"
-          }
-          Web Archive
+          ${this.newFullImport ? "Import Existing" : "Load"} Web Archive
         </div>
         <div
-          class="${
-            // @ts-expect-error - TS2339 - Property 'noHead' does not exist on type 'Chooser'.
-            this.noHead ? "" : "panel-body extra-padding"
-          } file has-name"
+          class="${this.noHead ? "" : "panel-body extra-padding"} file has-name"
         >
           <form class="is-flex" @submit="${this.onStartLoad}">
             <label class="file-label">
-              ${
-                // @ts-expect-error - TS2339 - Property 'hasNativeFS' does not exist on type 'Chooser'.
-                !this.hasNativeFS
-                  ? html` <input
-                      class="file-input"
-                      @click="${(e) => (e.currentTarget.value = null)}"
-                      @change=${this.onChooseFile}
-                      type="file"
-                      id="fileupload"
-                      name="fileupload"
-                    />`
-                  : ""
-              }
+              ${!this.hasNativeFS
+                ? html` <input
+                    class="file-input"
+                    @click="${(e) => (e.currentTarget.value = null)}"
+                    @change=${this.onChooseFile}
+                    type="file"
+                    id="fileupload"
+                    name="fileupload"
+                  />`
+                : ""}
               <span class="file-cta" @click="${this.onChooseNativeFile}">
                 <span class="file-icon">
                   <fa-icon
@@ -319,18 +272,12 @@ class Chooser extends LitElement {
                   name="filename"
                   id="filename"
                   pattern="((file|http|https|ipfs|s3)://.*.(warc|warc.gz|zip|wacz|har|wbn|json)([?#].*)?)|(googledrive://.+)|(ssb://.+)"
-                  .value="${
-                    // @ts-expect-error - TS2339 - Property 'fileDisplayName' does not exist on type 'Chooser'.
-                    this.fileDisplayName
-                  }"
+                  .value="${this.fileDisplayName}"
                   @input="${this.onInput}"
                   autocomplete="off"
-                  placeholder="${
-                    // @ts-expect-error - TS2339 - Property 'newFullImport' does not exist on type 'Chooser'.
-                    this.newFullImport
-                      ? "Click 'Choose File' to select a local archive to import"
-                      : "Enter a URL or click 'Choose File' to select a WARC, WACZ, HAR or WBN archive source"
-                  }"
+                  placeholder="${this.newFullImport
+                    ? "Click 'Choose File' to select a local archive to import"
+                    : "Enter a URL or click 'Choose File' to select a WARC, WACZ, HAR or WBN archive source"}"
                 />
               </p>
               <div class="control">
@@ -338,10 +285,7 @@ class Chooser extends LitElement {
                   type="submit"
                   class="button is-hidden-mobile is-primary"
                 >
-                  ${
-                    // @ts-expect-error - TS2339 - Property 'newFullImport' does not exist on type 'Chooser'.
-                    this.newFullImport ? "Import" : "Load"
-                  }
+                  ${this.newFullImport ? "Import" : "Load"}
                 </button>
               </div>
             </div>
@@ -351,7 +295,3 @@ class Chooser extends LitElement {
     </section>`;
   }
 }
-
-customElements.define("wr-chooser", Chooser);
-
-export { Chooser };
