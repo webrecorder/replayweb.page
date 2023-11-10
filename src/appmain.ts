@@ -452,12 +452,11 @@ class ReplayWebApp extends LitElement {
     }
 
     this.swmanager = new SWManager({ name, appName: this.appName });
-    this.swmanager
-      .register()
-      .catch(
-        () =>
-          (this.swErrorMsg = this.swmanager?.renderErrorReport(this.mainLogo)),
-      );
+    this.swmanager.register().catch(
+      () =>
+        // @ts-expect-error - TS2554 - Expected 2 arguments, but got 1.
+        (this.swErrorMsg = this.swmanager?.renderErrorReport(this.mainLogo)),
+    );
 
     window.addEventListener("popstate", () => {
       this.initRoute();

@@ -5,9 +5,9 @@ import { wrapCss, rwpLogo } from "./misc";
 import { SWManager } from "./swmanager";
 
 // @ts-expect-error - TS2339 - Property 'src' does not exist on type 'HTMLOrSVGScriptElement'.
-var scriptSrc = document.currentScript && document.currentScript.src;
+const scriptSrc = document.currentScript && document.currentScript.src;
 
-var defaultReplayFile = "";
+let defaultReplayFile = "";
 
 const DEFAULT_REPLAY_BASE = "https://replayweb.page/";
 
@@ -399,7 +399,8 @@ class Embed extends LitElement {
          allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts\
          allow-same-origin allow-forms"
                     : undefined,
-                )}"
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the typedef for the `sandbox` attribute here is incorrect, it doesn't support multiple values
+                ) as any}"
                 @load="${this.onLoad}"
                 src="${
                   // @ts-expect-error - TS2339 - Property 'replaybase' does not exist on type 'Embed'.
