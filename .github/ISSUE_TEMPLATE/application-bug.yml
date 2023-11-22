@@ -1,7 +1,7 @@
-name: Replay Bug Report
-description: "If archived content isn't displaying as expected, please file this type of issue!"
-title: "[Replay Bug]: "
-labels: ["replay bug", "bug"]
+name: Application Bug Report
+description: "If a feature of ReplayWeb.page isn't working as expected and you're sure your issue is reproducible, please file this type of issue!"
+title: "[Bug]: "
+labels: ["bug"]
 body:
   # Version number
   - type: input
@@ -12,30 +12,26 @@ body:
       placeholder: "v1.8.13"
     validations:
       required: true
-  # What did the user expect to happen? What was the actual behavior?
+# What did the user expect to happen? What was the actual behavior?
   - type: textarea
     attributes:
       label: What did you expect to happen? What happened instead?
       description: |
-        "On the live site, the element displays properly on hover. When replayed..."
+        "I was trying to search for content in a loaded archived item, however..."
 
         Please submit any screenshots/videos that can be used to understand how to reproduce the issue. You can attach images by clicking this area to highlight it and then dragging files into the browser window.
-        
-        Please include a link to any relevant archived items if possible.
     validations:
       required: true
   # Step-by-step reproduction instructions
   - type: textarea
     attributes:
       label: Step-by-step reproduction instructions
-      description: |
-        Please include step-by-step instructions for how to reproduce the issue if it is not immediately visible or already made clear in the above section.
       placeholder: |
         1. Navigate to...
         2. Click on...
         3. See error...
     validations:
-      required: false
+      required: true
   # Additional details
   - type: textarea
     attributes:
