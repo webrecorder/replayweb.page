@@ -1,6 +1,14 @@
 import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
-import type { SlDropdown, SlSelectEvent } from "@shoelace-style/shoelace";
+import { ref, createRef, type Ref } from "lit/directives/ref.js";
+import type {
+  SlDialog,
+  SlDropdown,
+  SlSelectEvent,
+} from "@shoelace-style/shoelace";
+import "@shoelace-style/shoelace/dist/components/alert/alert.js";
+import "@shoelace-style/shoelace/dist/components/button/button.js";
+import "@shoelace-style/shoelace/dist/components/dialog/dialog.js";
 import {
   wrapCss,
   rwpLogo,
@@ -43,9 +51,11 @@ import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.sv
 import { RWPEmbedReceipt } from "./embed-receipt.js";
 import Split from "split.js";
 
-import type { Coll as CollInfo } from "./types";
+import type { Item as ItemInfo } from "./types";
 import type { Replay } from "./replay";
 import { ifDefined } from "lit/directives/if-defined";
+
+import "./item-info";
 
 const RWP_SCHEME = "search://";
 
@@ -68,7 +78,7 @@ export type LoadInfo =
   | null;
 
 // ===========================================================================
-class Coll extends LitElement {
+class Item extends LitElement {
   @property({ type: Boolean })
   inited = false;
 
@@ -82,10 +92,10 @@ class Coll extends LitElement {
   showSidebar: boolean | null = null;
 
   @property({ type: Object, attribute: false })
-  collInfo: CollInfo | Record<string, never> | null = null;
+  itemInfo: ItemInfo | Record<string, never> | null = null;
 
   @property({ type: String })
-  coll = "";
+  item = "";
 
   @property({ type: Boolean })
   hasStory = false;
@@ -95,7 +105,7 @@ class Coll extends LitElement {
 
   @property({ type: Object, attribute: false })
   tabData: {
-    view?: string;
+    view?: "story" | "pages" | "resources";
     url?: string;
     ts?: string;
     multiTs?: string[];
@@ -164,6 +174,8 @@ class Coll extends LitElement {
 
   private observer?: IntersectionObserver;
 
+  private archiveInfoDialog: Ref<SlDialog> = createRef();
+
   private readonly tabNames = ["pages", "story", "resources", "info"];
   private readonly tabLabels = {
     pages: "Pages",
@@ -201,9 +213,9 @@ class Coll extends LitElement {
       while (
         this.editable &&
         this.autoUpdateInterval &&
-        (!this.collInfo ||
-          !this.collInfo.pages ||
-          this.collInfo.pages.length < 100)
+        (!this.itemInfo ||
+          !this.itemInfo.pages ||
+          this.itemInfo.pages.length < 100)
       ) {
         await new Promise((resolve) =>
           setTimeout(resolve, this.autoUpdateInterval * 1000),
@@ -220,7 +232,7 @@ class Coll extends LitElement {
     const resp = await fetch(
       apiPrefix +
         "/c/" +
-        this.coll +
+        this.item +
         "/ts/?url=" +
         window.encodeURIComponent(this.tabData.url),
     );
@@ -270,7 +282,7 @@ class Coll extends LitElement {
       }
     }
     if (changedProperties.has("tabData")) {
-      if (!this.collInfo || !this.collInfo.coll) {
+      if (!this.itemInfo || !this.itemInfo.coll) {
         return;
       }
       const newHash =
@@ -365,31 +377,31 @@ class Coll extends LitElement {
       return;
     }
 
-    let coll = this.loadInfo && this.loadInfo.customColl;
+    let item = this.loadInfo && this.loadInfo.customColl; // @todo(2023-11-06) update customColl -> customItem
 
-    if (!coll) {
+    if (!item) {
       const res = await sourceToId(this.sourceUrl);
-      coll = res.coll;
+      item = res.coll;
     }
 
-    this.coll = coll;
+    this.item = item;
 
-    const collApiPrefix = apiPrefix + "/c/" + coll;
-    const collReplayPrefix = replayPrefix + "/" + coll;
+    const itemApiPrefix = apiPrefix + "/c/" + item;
+    const itemReplayPrefix = replayPrefix + "/" + item;
 
-    const resp = await fetch(collApiPrefix + "?all=1");
+    const resp = await fetch(itemApiPrefix + "?all=1");
 
     if (resp.status != 200) {
-      this.collInfo = {};
+      this.itemInfo = {};
       return;
     }
 
     const json = await resp.json();
 
-    this.collInfo = {
-      apiPrefix: collApiPrefix,
-      replayPrefix: collReplayPrefix,
-      coll,
+    this.itemInfo = {
+      apiPrefix: itemApiPrefix,
+      replayPrefix: itemReplayPrefix,
+      coll: item,
       ...json,
     };
 
@@ -399,14 +411,14 @@ class Coll extends LitElement {
       this.loadInfo.extraConfig.headers
     ) {
       const headers = this.loadInfo.extraConfig.headers;
-      await fetch(`${collApiPrefix}/updateAuth`, {
+      await fetch(`${itemApiPrefix}/updateAuth`, {
         method: "POST",
         body: JSON.stringify({ headers }),
       });
     }
 
-    if (!this.collInfo!.title) {
-      this.collInfo!.title = this.collInfo!.filename;
+    if (!this.itemInfo!.title) {
+      this.itemInfo!.title = this.itemInfo!.filename;
     }
 
     if (this.embed === "replayonly" || this.embed === "replay-with-info") {
@@ -414,13 +426,13 @@ class Coll extends LitElement {
     }
 
     this.hasStory = Boolean(
-      this.collInfo!.desc || this.collInfo!.lists?.length,
+      this.itemInfo!.desc || this.itemInfo!.lists?.length,
     );
 
     this.dispatchEvent(
       new CustomEvent("coll-loaded", {
         detail: {
-          collInfo: this.collInfo,
+          collInfo: this.itemInfo,
           alreadyLoaded: true,
         },
       }),
@@ -429,7 +441,7 @@ class Coll extends LitElement {
     this.onHashChange();
   }
 
-  onCollLoaded(event) {
+  onItemLoaded(event) {
     this.doUpdateInfo();
     this.loadInfo = null;
     if (event.detail.sourceUrl) {
@@ -439,18 +451,18 @@ class Coll extends LitElement {
       new CustomEvent("coll-loaded", {
         detail: {
           sourceUrl: this.sourceUrl,
-          collInfo: this.collInfo,
+          collInfo: this.itemInfo,
         },
       }),
     );
   }
 
-  onCollUpdate(event) {
+  onItemUpdate(event) {
     if (!this.editable) {
       return;
     }
 
-    this.collInfo = { ...this.collInfo, ...event.detail };
+    this.itemInfo = { ...this.itemInfo, ...event.detail };
   }
 
   onHashChange() {
@@ -463,12 +475,12 @@ class Coll extends LitElement {
     }
 
     if (
-      this.collInfo?.coll &&
+      this.itemInfo?.coll &&
       (!this.tabData.view || !this.tabNames.includes(this.tabData.view))
     ) {
       const view = this.hasStory
         ? "story"
-        : this.editable || this.collInfo.pages?.length
+        : this.editable || this.itemInfo.pages?.length
         ? "pages"
         : "resources";
 
@@ -481,11 +493,11 @@ class Coll extends LitElement {
     if (this.tabData.url && this.tabData.url.startsWith("page:")) {
       const pageIndex = Number(this.tabData.url.slice("page:".length));
       if (
-        this.collInfo?.pages &&
+        this.itemInfo?.pages &&
         !isNaN(pageIndex) &&
-        pageIndex < this.collInfo.pages.length
+        pageIndex < this.itemInfo.pages.length
       ) {
-        const page = this.collInfo.pages[pageIndex];
+        const page = this.itemInfo.pages[pageIndex];
         this.tabData.url = page.url;
         this.tabData.ts = getPageDateTS(page).timestamp;
       }
@@ -508,7 +520,7 @@ class Coll extends LitElement {
     return false;
   }
 
-  onCollTabNav(event) {
+  onItemTabNav(event) {
     if (event.detail.reload) {
       this.onRefresh(null, true);
       return;
@@ -543,7 +555,7 @@ class Coll extends LitElement {
   }
 
   static get styles() {
-    return wrapCss(Coll.compStyles);
+    return wrapCss(Item.compStyles);
   }
 
   static get compStyles() {
@@ -636,7 +648,7 @@ class Coll extends LitElement {
 
       ${RWPEmbedReceipt.embedStyles}
 
-      ${Coll.replayBarStyles}
+      ${Item.replayBarStyles}
     `;
   }
 
@@ -793,17 +805,7 @@ class Coll extends LitElement {
         width: 100%;
       }
 
-      .info-bg {
-        background-color: whitesmoke;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        overflow: auto;
-      }
-
       .is-list {
-        margin: 1em;
-        background-color: whitesmoke;
         height: fit-content;
       }
 
@@ -882,18 +884,27 @@ class Coll extends LitElement {
       );
     }
 
-    if (this.collInfo && !this.collInfo.coll) {
+    if (this.itemInfo && !this.itemInfo.coll) {
       return html` <wr-loader
         .loadInfo="${this.loadInfo}"
         embed="${this.embed || ""}"
-        swName="${ifDefined(this.swName === null ? undefined : this.swName)}"
-        .coll="${this.coll}"
+        swName="${this.swName}"
+        .coll="${this.item}"
         sourceUrl="${this.sourceUrl || ""}"
-        @coll-loaded=${this.onCollLoaded}
+        @coll-loaded=${this.onItemLoaded}
       ></wr-loader>`;
-    } else if (this.collInfo) {
+    } else if (this.itemInfo) {
       return html`
         ${this.renderLocationBar()} ${this.renderVerifyInfo()}
+        <sl-dialog label="Archive Info" ${ref(this.archiveInfoDialog)}>
+          ${this.renderItemInfo()}
+          <sl-button
+            slot="footer"
+            variant="primary"
+            @click="${this.onHideInfoDialog}"
+            >Close</sl-button
+          >
+        </sl-dialog>
         <div id="tabContents">
           <div
             id="contents"
@@ -906,7 +917,7 @@ class Coll extends LitElement {
             aria-label="${isSidebar ? "Browse Contents" : ""}"
           >
             ${this.renderTabHeader(isSidebar)}
-            ${isSidebar || !isReplay ? this.renderCollTabs(isSidebar) : html``}
+            ${isSidebar || !isReplay ? this.renderItemTabs(isSidebar) : html``}
           </div>
 
           ${isReplay && this.isVisible
@@ -914,11 +925,11 @@ class Coll extends LitElement {
                 <wr-coll-replay
                   role="main"
                   tabindex="-1"
-                  .collInfo="${this.collInfo}"
+                  .collInfo="${this.itemInfo}"
                   sourceUrl="${this.sourceUrl || ""}"
                   url="${this.tabData.url || ""}"
                   ts="${this.tabData.ts || ""}"
-                  @coll-tab-nav="${this.onCollTabNav}"
+                  @coll-tab-nav="${this.onItemTabNav}"
                   id="replay"
                   @replay-loading="${(e) =>
                     (this.isLoading = e.detail.loading)}"
@@ -1036,31 +1047,6 @@ class Coll extends LitElement {
             ></span>
             <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="URLs"
               >URLs</span
-            >
-          </a>
-        </li>
-
-        <li class="${this.tabData.view === "info" ? "is-active" : ""}">
-          <a
-            @click="${this.onTabClick}"
-            href="#info"
-            class="is-size-6"
-            aria-label="Archive Info"
-            aria-current="${ifDefined(
-              this.tabData.view === "info" ? "location" : undefined,
-            )}"
-          >
-            <span class="icon"
-              ><fa-icon
-                .svg="${fasInfoIcon}"
-                aria-hidden="true"
-                title="Archive Info"
-              ></fa-icon
-            ></span>
-            <span
-              class="tab-label ${isSidebar ? "is-hidden" : ""}"
-              title="Archive Info"
-              >Info</span
             >
           </a>
         </li>
@@ -1397,6 +1383,21 @@ class Coll extends LitElement {
                         <span class="menu-head">Capture Date</span>${dateStr}
                       </div>`
                   : ""}
+                <a
+                  href="#"
+                  role="button"
+                  class="dropdown-item"
+                  @click="${this.onShowInfoDialog}"
+                >
+                  <span class="icon is-small">
+                    <fa-icon
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasInfoIcon}"
+                    ></fa-icon>
+                  </span>
+                  <span>Archive Info</span>
+                </a>
                 <hr class="dropdown-divider" />
                 <a
                   href="#"
@@ -1477,7 +1478,7 @@ class Coll extends LitElement {
     }
 
     return html`<rwp-embed-receipt
-      .collInfo=${this.collInfo || {}}
+      .collInfo=${this.itemInfo || {}}
       url=${this.url}
       ts=${this.ts}
       .appLogo=${this.appLogo}
@@ -1499,37 +1500,38 @@ class Coll extends LitElement {
     }
   }
 
-  renderCollInfo() {
-    if (!this.collInfo) return;
-    return html` <div class="info-bg">
-      <wr-coll-info
-        class="is-list"
-        .coll="${this.collInfo}"
-        ?detailed="${true}"
-        ?canDelete="${!this.embed}"
-        @coll-purge="${this.onPurgeCache}"
-      ></wr-coll-info>
-    </div>`;
+  renderItemInfo() {
+    if (!this.itemInfo)
+      return html`<sl-alert open variant="warning">
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <strong>Archive info is not available</strong><br />
+        Please reload and try again.
+      </sl-alert>`;
+    return html`<wr-item-info
+      class="is-list"
+      .item="${this.itemInfo}"
+      ?detailed="${true}"
+      ?canDelete="${!this.embed}"
+      @item-purge="${this.onPurgeCache}"
+    ></wr-item-info>`;
   }
 
   renderExtraToolbar(/*isDropdown = false*/) {
     return "";
   }
 
-  renderCollTabs(isSidebar) {
+  renderItemTabs(isSidebar) {
     const isStory = this.hasStory && this.tabData.view === "story";
     const isPages = this.tabData.view === "pages";
     const isResources = this.tabData.view === "resources";
-    const isInfo = this.tabData.view === "info";
 
     return html`
-      ${isInfo ? this.renderCollInfo() : html``}
       ${isStory
         ? html` <wr-coll-story
-            .collInfo="${this.collInfo || {}}"
+            .collInfo="${this.itemInfo || {}}"
             .active="${isStory}"
             currList="${this.tabData.currList || 0}"
-            @coll-tab-nav="${this.onCollTabNav}"
+            @coll-tab-nav="${this.onItemTabNav}"
             id="story"
             .isSidebar="${isSidebar}"
             class="${isStory ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
@@ -1539,12 +1541,12 @@ class Coll extends LitElement {
         : ""}
       ${isResources
         ? html` <wr-coll-resources
-            .collInfo="${this.collInfo || {}}"
+            .collInfo="${this.itemInfo || {}}"
             .active="${isResources}"
             query="${this.tabData.query || ""}"
             urlSearchType="${this.tabData.urlSearchType || ""}"
             .currMime="${this.tabData.currMime || ""}"
-            @coll-tab-nav="${this.onCollTabNav}"
+            @coll-tab-nav="${this.onItemTabNav}"
             id="resources"
             .isSidebar="${isSidebar}"
             class="is-paddingless ${isResources ? "" : "is-hidden"} ${isSidebar
@@ -1556,7 +1558,7 @@ class Coll extends LitElement {
         : ""}
       ${isPages
         ? html` <wr-page-view
-            .collInfo="${this.collInfo}"
+            .collInfo="${this.itemInfo}"
             .active="${isPages}"
             .editable="${this.editable}"
             .isSidebar="${isSidebar}"
@@ -1564,9 +1566,9 @@ class Coll extends LitElement {
             query="${this.tabData.query || ""}"
             .url="${this.tabData.url || ""}"
             .ts="${this.tabData.ts || ""}"
-            @coll-tab-nav="${this.onCollTabNav}"
+            @coll-tab-nav="${this.onItemTabNav}"
             id="pages"
-            @coll-update="${this.onCollUpdate}"
+            @coll-update="${this.onItemUpdate}"
             class="${isPages ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
             role="${ifDefined(isSidebar ? undefined : "main")}"
           >
@@ -1678,7 +1680,7 @@ class Coll extends LitElement {
   }
 
   async deleteFully(reload = false) {
-    const deleteURL = this.collInfo!.apiPrefix + (reload ? "?reload=1" : "");
+    const deleteURL = this.itemInfo!.apiPrefix + (reload ? "?reload=1" : "");
 
     const resp = await fetch(deleteURL, {
       method: "DELETE",
@@ -1816,8 +1818,14 @@ class Coll extends LitElement {
   onAbout() {
     this.dispatchEvent(new CustomEvent("about-show"));
   }
+  onShowInfoDialog() {
+    this.archiveInfoDialog.value?.show();
+  }
+  onHideInfoDialog() {
+    this.archiveInfoDialog.value?.hide();
+  }
 }
 
-customElements.define("wr-coll", Coll);
+customElements.define("wr-item", Item);
 
-export { Coll };
+export { Item };

@@ -13,8 +13,8 @@ import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.sv
 import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
 import fasArrowRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
 import { SWManager } from "./swmanager";
-import "./coll";
-import "./coll-index";
+import "./item";
+import "./item-index";
 import "./chooser";
 import { LoadInfo } from "./coll";
 
@@ -161,7 +161,7 @@ export class ReplayWebApp extends LitElement {
         min-width: 0px;
         flex-direction: column;
       }
-      wr-coll {
+      wr-item {
         height: 100%;
       }
       .navbar {
@@ -383,7 +383,7 @@ export class ReplayWebApp extends LitElement {
   }
 
   renderColl() {
-    return html` <wr-coll
+    return html` <wr-item
       .loadInfo="${this.loadInfo}"
       sourceUrl="${this.sourceUrl || ""}"
       embed="${ifDefined(this.embed === null ? undefined : this.embed)}"
@@ -394,11 +394,11 @@ export class ReplayWebApp extends LitElement {
       @update-title=${this.onTitle}
       @coll-loaded=${this.onCollLoaded}
       @about-show=${() => (this.showAbout = true)}
-    ></wr-coll>`;
+    ></wr-item>`;
   }
 
   renderHomeIndex() {
-    return html` <wr-coll-index>
+    return html` <wr-item-index>
       ${!IS_APP
         ? html`
             <p slot="header" class="tagline is-size-5 has-text-centered">
@@ -416,7 +416,7 @@ export class ReplayWebApp extends LitElement {
         @did-drop-file="${() => (this.droppedFile = null)}"
         @load-start=${this.onStartLoad}
       ></wr-chooser>
-    </wr-coll-index>`;
+    </wr-item-index>`;
   }
 
   render() {

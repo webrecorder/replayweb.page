@@ -2,12 +2,12 @@ import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
 
 import { wrapCss, rwpLogo } from "./misc";
-import type { Coll } from "./types";
+import type { Item } from "./types";
 
 // ===========================================================================
 class Replay extends LitElement {
   @property({ type: Object })
-  collInfo: Coll | Record<string, never> | null = null;
+  collInfo: Item | Record<string, never> | null = null;
 
   @property({ type: String })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
