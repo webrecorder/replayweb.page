@@ -1,0 +1,41 @@
+name: Application Bug Report
+description: "If a feature of ReplayWeb.page isn't working as expected and you're sure your issue is reproducible, please file this type of issue!"
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  # Version number
+  - type: input
+    id: version
+    attributes:
+      label: ReplayWeb.page Version
+      description: "This can be found in the "About ReplayWeb.page" dialog"
+      placeholder: "v1.8.13"
+    validations:
+      required: true
+# What did the user expect to happen? What was the actual behavior?
+  - type: textarea
+    attributes:
+      label: What did you expect to happen? What happened instead?
+      description: |
+        "I was trying to search for content in a loaded archived item, however..."
+
+        Please submit any screenshots/videos that can be used to understand how to reproduce the issue. You can attach images by clicking this area to highlight it and then dragging files into the browser window.
+    validations:
+      required: true
+  # Step-by-step reproduction instructions
+  - type: textarea
+    attributes:
+      label: Step-by-step reproduction instructions
+      placeholder: |
+        1. Navigate to...
+        2. Click on...
+        3. See error...
+    validations:
+      required: true
+  # Additional details
+  - type: textarea
+    attributes:
+      label: Additional details
+      description: Add any other relevant information here.
+    validations:
+      required: false
