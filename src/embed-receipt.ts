@@ -11,7 +11,7 @@ import { tsToDate } from "./pageutils";
 import prettyBytes from "pretty-bytes";
 import { property } from "lit/decorators";
 import type { Item as ItemType } from "./types";
-import { assertNonNullish } from "./utils/assertDefined";
+import { assertNonNullish } from "./utils/assertNonNullish";
 
 // ===========================================================================
 export class RWPEmbedReceipt extends LitElement {
