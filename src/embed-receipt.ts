@@ -10,12 +10,12 @@ import { LitElement, html, css } from "lit";
 import { tsToDate } from "./pageutils";
 import prettyBytes from "pretty-bytes";
 import { property } from "lit/decorators";
-import type { Coll as CollType } from "./types";
+import type { Item as ItemType } from "./types";
 import { assertNonNullish } from "./utils/assertDefined";
 
 // ===========================================================================
 export class RWPEmbedReceipt extends LitElement {
-  @property({ type: Object }) collInfo: CollType | null = null;
+  @property({ type: Object }) collInfo: ItemType | null = null;
   @property({ type: Object }) appLogo = null;
   @property({ type: String }) ts: string | null = null;
   @property({ type: String }) url: string | null = null;

@@ -59,23 +59,24 @@ import "./item-info";
 
 const RWP_SCHEME = "search://";
 
-export type LoadInfo =
-  | {
-      extraConfig?: {
-        baseUrlSourcePrefix?: unknown;
-        baseUrl?: unknown;
-        headers?: unknown;
-      };
-      customColl?: string | null;
-      noWebWorker?: boolean;
-      noCache?: boolean;
-      hideOffscreen?: boolean;
-      loadEager?: boolean;
-      sourceUrl?: string;
-      loadUrl?: string;
-    }
-  | Record<string, never>
-  | null;
+export type LoadInfo = {
+  extraConfig?: {
+    baseUrlSourcePrefix?: unknown;
+    baseUrl?: unknown;
+    headers?: unknown;
+    recording?: unknown;
+  };
+  customColl?: string | null;
+  noWebWorker?: boolean;
+  noCache?: boolean;
+  hideOffscreen?: boolean;
+  loadEager?: boolean;
+  sourceUrl?: string;
+  loadUrl?: string;
+  swError?: string;
+  newFullImport?: unknown;
+  name?: string;
+};
 
 // ===========================================================================
 class Item extends LitElement {
@@ -86,7 +87,7 @@ class Item extends LitElement {
   sourceUrl: string | null = null;
 
   @property({ type: Object, attribute: false })
-  loadInfo: LoadInfo = null;
+  loadInfo: LoadInfo | null = null;
 
   @property({ type: Boolean })
   showSidebar: boolean | null = null;
@@ -888,7 +889,7 @@ class Item extends LitElement {
       return html` <wr-loader
         .loadInfo="${this.loadInfo}"
         embed="${this.embed || ""}"
-        swName="${this.swName}"
+        swName="${ifDefined(this.swName === null ? undefined : this.swName)}"
         .coll="${this.item}"
         sourceUrl="${this.sourceUrl || ""}"
         @coll-loaded=${this.onItemLoaded}

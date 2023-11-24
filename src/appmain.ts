@@ -16,7 +16,7 @@ import { SWManager } from "./swmanager";
 import "./item";
 import "./item-index";
 import "./chooser";
-import { LoadInfo } from "./coll";
+import { LoadInfo } from "./item";
 
 // ===========================================================================
 @customElement("replay-app-main")
@@ -43,7 +43,7 @@ export class ReplayWebApp extends LitElement {
   collTitle: string | null = null;
 
   @property({ type: Object })
-  loadInfo: LoadInfo = null;
+  loadInfo: LoadInfo | null = null;
 
   @property({ type: String })
   embed: string | null = null;

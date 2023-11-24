@@ -4,65 +4,36 @@ import { wrapCss } from "./misc";
 import prettyBytes from "pretty-bytes";
 
 import { parseURLSchemeHostPath } from "./pageutils";
+import { property } from "lit/decorators";
+import { LoadInfo } from "./item";
 
 // ===========================================================================
 class Loader extends LitElement {
-  constructor() {
-    super();
-    // @ts-expect-error - TS2551 - Property 'progress' does not exist on type 'Loader'. Did you mean 'onprogress'?
-    this.progress = 0;
-    // @ts-expect-error - TS2339 - Property 'total' does not exist on type 'Loader'.
-    this.total = 0;
-    // @ts-expect-error - TS2339 - Property 'percent' does not exist on type 'Loader'.
-    this.percent = 0;
-    // @ts-expect-error - TS2339 - Property 'coll' does not exist on type 'Loader'.
-    this.coll = "";
-    // @ts-expect-error - TS2339 - Property 'state' does not exist on type 'Loader'.
-    this.state = "waiting";
-    // @ts-expect-error - TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
-    this.loadInfo = null;
+  @property({ type: String }) sourceUrl?: string;
+  @property({ type: Object }) loadInfo: LoadInfo | null = null;
+  @property({ type: String }) state = "waiting";
+  @property({ type: Number }) progress = 0;
+  @property({ type: Number }) percent = 0;
+  @property({ type: Number }) currentSize = 0;
+  @property({ type: Number }) totalSize = 0;
+  @property({ type: String }) error?: string;
+  @property({ type: Number }) total = 0;
+  @property({ type: String }) status?: string;
+  @property({ type: String }) coll = "";
+  @property({ type: String }) embed?: string;
+  @property({ type: Boolean }) tryFileHandle = !!window.showOpenFilePicker;
+  @property({ type: Boolean }) errorAllowRetry = false;
+  @property({ type: String }) extraMsg?: string;
+  @property({ type: String }) swName?: string;
 
-    // @ts-expect-error - TS2339 - Property 'currentSize' does not exist on type 'Loader'.
-    this.currentSize = 0;
-    // @ts-expect-error - TS2339 - Property 'totalSize' does not exist on type 'Loader'.
-    this.totalSize = 0;
+  pingInterval: number | NodeJS.Timer = 0;
+  fileHandle: FileSystemHandle | null = null;
+  noWebWorker = false;
+  worker?: Worker | null;
 
-    // @ts-expect-error - TS2339 - Property 'tryFileHandle' does not exist on type 'Loader'. | TS2339 - Property 'showOpenFilePicker' does not exist on type 'Window & typeof globalThis'.
-    this.tryFileHandle = !!window.showOpenFilePicker;
-
-    // @ts-expect-error - TS2339 - Property 'fileHandle' does not exist on type 'Loader'.
-    this.fileHandle = null;
-
-    // @ts-expect-error - TS2339 - Property 'errorAllowRetry' does not exist on type 'Loader'.
-    this.errorAllowRetry = false;
-
-    // @ts-expect-error - TS2339 - Property 'pingInterval' does not exist on type 'Loader'.
-    this.pingInterval = 0;
-
-    // @ts-expect-error - TS2339 - Property 'noWebWorker' does not exist on type 'Loader'.
-    this.noWebWorker = false;
-  }
-
-  static get properties() {
-    return {
-      sourceUrl: { type: String },
-      loadInfo: { type: Object },
-      state: { type: String },
-      progress: { type: Number },
-      percent: { type: Number },
-      currentSize: { type: Number },
-      totalSize: { type: Number },
-      error: { type: String },
-      total: { type: Number },
-      status: { type: String },
-      coll: { type: String },
-      embed: { type: String },
-      tryFileHandle: { type: Boolean },
-      errorAllowRetry: { type: Boolean },
-      extraMsg: { type: String },
-      swName: { type: String },
-    };
-  }
+  // Google Drive
+  _gdWait?: Promise<LoadInfo>;
+  _gdResolve!: (value: LoadInfo | PromiseLike<LoadInfo>) => void;
 
   firstUpdated() {
     this.initMessages();
@@ -70,92 +41,65 @@ class Loader extends LitElement {
   }
 
   initMessages() {
-    // @ts-expect-error - TS2339 - Property 'noWebWorker' does not exist on type 'Loader'. | TS2339 - Property 'loadInfo' does not exist on type 'Loader'. | TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
-    this.noWebWorker = this.loadInfo && this.loadInfo.noWebWorker;
+    this.noWebWorker = Boolean(this.loadInfo && this.loadInfo.noWebWorker);
 
-    // @ts-expect-error - TS2339 - Property 'noWebWorker' does not exist on type 'Loader'.
     if (!this.noWebWorker) {
-      // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'. | TS2339 - Property 'swName' does not exist on type 'Loader'.
-      this.worker = new Worker(this.swName);
+      this.worker = new Worker(this.swName!);
     } else {
       if (!navigator.serviceWorker) {
         return;
       }
 
-      // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'.
-      this.worker = navigator.serviceWorker;
+      // TODO figure out if this is okay?
+      this.worker = navigator.serviceWorker as unknown as Worker;
     }
 
-    // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'.
     this.worker.addEventListener("message", (event) => {
       switch (event.data.msg_type) {
         case "collProgress":
-          // @ts-expect-error - TS2339 - Property 'coll' does not exist on type 'Loader'.
           if (event.data.name === this.coll) {
-            // @ts-expect-error - TS2339 - Property 'percent' does not exist on type 'Loader'.
             this.percent = event.data.percent;
             if (event.data.error) {
-              // @ts-expect-error - TS2339 - Property 'error' does not exist on type 'Loader'.
               this.error = event.data.error;
-              // @ts-expect-error - TS2339 - Property 'state' does not exist on type 'Loader'.
               this.state = "errored";
-              // @ts-expect-error - TS2339 - Property 'errorAllowRetry' does not exist on type 'Loader'.
               this.errorAllowRetry = true;
-              // @ts-expect-error - TS2339 - Property 'fileHandle' does not exist on type 'Loader'.
               this.fileHandle = event.data.fileHandle;
-              // @ts-expect-error - TS2339 - Property 'error' does not exist on type 'Loader'.
               if (this.error === "missing_local_file") {
-                // @ts-expect-error - TS2339 - Property 'tryFileHandle' does not exist on type 'Loader'.
                 this.tryFileHandle = false;
               } else if (
-                // @ts-expect-error - TS2339 - Property 'error' does not exist on type 'Loader'.
                 this.error === "permission_needed" &&
                 event.data.fileHandle
               ) {
-                // @ts-expect-error - TS2339 - Property 'state' does not exist on type 'Loader'.
                 this.state = "permission_needed";
                 break;
               }
             }
             if (event.data.currentSize && event.data.totalSize) {
-              // @ts-expect-error - TS2339 - Property 'currentSize' does not exist on type 'Loader'.
               this.currentSize = event.data.currentSize;
-              // @ts-expect-error - TS2339 - Property 'totalSize' does not exist on type 'Loader'.
               this.totalSize = event.data.totalSize;
             }
-            // @ts-expect-error - TS2339 - Property 'extraMsg' does not exist on type 'Loader'.
             this.extraMsg = event.data.extraMsg;
           }
           break;
 
         case "collAdded":
-          // @ts-expect-error - TS2339 - Property 'coll' does not exist on type 'Loader'.
           if (event.data.name === this.coll) {
-            // @ts-expect-error - TS2339 - Property 'total' does not exist on type 'Loader'.
             if (!this.total) {
-              // @ts-expect-error - TS2339 - Property 'total' does not exist on type 'Loader'.
               this.total = 100;
             }
-            // @ts-expect-error - TS2551 - Property 'progress' does not exist on type 'Loader'. Did you mean 'onprogress'? | TS2339 - Property 'total' does not exist on type 'Loader'.
             this.progress = this.total;
-            // @ts-expect-error - TS2339 - Property 'percent' does not exist on type 'Loader'.
             this.percent = 100;
             this.dispatchEvent(
               new CustomEvent("coll-loaded", { detail: event.data }),
             );
 
-            // @ts-expect-error - TS2339 - Property 'noWebWorker' does not exist on type 'Loader'.
             if (!this.noWebWorker) {
-              // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'.
-              this.worker.terminate();
+              this.worker?.terminate();
             } else {
-              // @ts-expect-error - TS2339 - Property 'pingInterval' does not exist on type 'Loader'.
               if (this.pingInterval) {
-                // @ts-expect-error - TS2339 - Property 'pingInterval' does not exist on type 'Loader'.
                 clearInterval(this.pingInterval);
               }
             }
-            // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'.
             this.worker = null;
           }
           break;
@@ -164,22 +108,16 @@ class Loader extends LitElement {
   }
 
   async doLoad() {
-    // @ts-expect-error - TS2339 - Property 'sourceUrl' does not exist on type 'Loader'.
     let sourceUrl = this.sourceUrl;
-    let source = null;
+    let source: LoadInfo | null = null;
 
-    // @ts-expect-error - TS2339 - Property 'percent' does not exist on type 'Loader'. | TS2339 - Property 'currentSize' does not exist on type 'Loader'. | TS2339 - Property 'totalSize' does not exist on type 'Loader'.
     this.percent = this.currentSize = this.totalSize = 0;
 
     // const noSWError = getSWErrorMsg();
 
-    // @ts-expect-error - TS2339 - Property 'loadInfo' does not exist on type 'Loader'. | TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
     if (this.loadInfo && this.loadInfo.swError) {
-      // @ts-expect-error - TS2339 - Property 'state' does not exist on type 'Loader'.
       this.state = "errored";
-      // @ts-expect-error - TS2339 - Property 'error' does not exist on type 'Loader'. | TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
       this.error = this.loadInfo.swError;
-      // @ts-expect-error - TS2339 - Property 'errorAllowRetry' does not exist on type 'Loader'.
       this.errorAllowRetry = false;
       return;
     }
@@ -190,41 +128,33 @@ class Loader extends LitElement {
 
       switch (scheme) {
         case "googledrive":
-          // @ts-expect-error - TS2339 - Property 'state' does not exist on type 'Loader'.
           this.state = "googledrive";
-          source = await this.googledriveInit();
+          source = (await this.googledriveInit()) ?? null;
           break;
 
         case "s3":
-          // @ts-expect-error - TS2322 - Type '{ sourceUrl: any; loadUrl: string; name: any; }' is not assignable to type 'null'.
           source = {
             sourceUrl,
             loadUrl: `https://${host}.s3.amazonaws.com${path}`,
-            // @ts-expect-error - TS2339 - Property 'sourceUrl' does not exist on type 'Loader'.
             name: this.sourceUrl,
           };
           break;
 
         case "file":
-          // @ts-expect-error - TS2339 - Property 'loadInfo' does not exist on type 'Loader'. | TS2339 - Property 'tryFileHandle' does not exist on type 'Loader'.
           if (!this.loadInfo && !this.tryFileHandle) {
-            // @ts-expect-error - TS2339 - Property 'state' does not exist on type 'Loader'.
             this.state = "errored";
-            // @ts-expect-error - TS2339 - Property 'error' does not exist on type 'Loader'.
             this.error = `\
 File URLs can not be entered directly or shared.
 You can select a file to upload from the main page by clicking the 'Choose File...' button.`;
-            // @ts-expect-error - TS2339 - Property 'errorAllowRetry' does not exist on type 'Loader'.
             this.errorAllowRetry = false;
             return;
           }
 
-          // @ts-expect-error - TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
           source = this.loadInfo;
           break;
 
         case "proxy":
-          sourceUrl = "proxy:" + sourceUrl.slice("proxy://".length);
+          sourceUrl = "proxy:" + sourceUrl!.slice("proxy://".length);
           break;
       }
     } catch (e) {
@@ -232,35 +162,26 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     }
 
     if (!source) {
-      // @ts-expect-error - TS2322 - Type '{ sourceUrl: any; }' is not assignable to type 'null'.
       source = { sourceUrl };
     }
 
-    // @ts-expect-error - TS2339 - Property 'state' does not exist on type 'Loader'.
     this.state = "started";
 
     let type = undefined;
-    let extraConfig = undefined;
+    let extraConfig: LoadInfo["extraConfig"] = undefined;
 
-    // @ts-expect-error - TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
     if (this.loadInfo) {
-      // @ts-expect-error - TS2531 - Object is possibly 'null'. | TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
       source.newFullImport = this.loadInfo.newFullImport;
-      // @ts-expect-error - TS2531 - Object is possibly 'null'. | TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
       source.loadEager = this.loadInfo.loadEager;
-      // @ts-expect-error - TS2531 - Object is possibly 'null'. | TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
       source.noCache = this.loadInfo.noCache;
 
-      // @ts-expect-error - TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
       if (this.loadInfo.extraConfig) {
-        // @ts-expect-error - TS2339 - Property 'loadInfo' does not exist on type 'Loader'.
         extraConfig = this.loadInfo.extraConfig;
       }
       // todo: too special case?
       if (
-        sourceUrl.startsWith("proxy:") &&
+        sourceUrl!.startsWith("proxy:") &&
         extraConfig &&
-        // @ts-expect-error - TS2339 - Property 'recording' does not exist on type 'never'.
         extraConfig.recording
       ) {
         // @ts-expect-error - TS2322 - Type '"recordingproxy"' is not assignable to type 'undefined'.
@@ -270,7 +191,6 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
     const msg = {
       msg_type: "addColl",
-      // @ts-expect-error - TS2339 - Property 'coll' does not exist on type 'Loader'.
       name: this.coll,
       extraConfig,
       type,
@@ -287,11 +207,8 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       });
     }
 
-    // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'.
     if (this.worker) {
-      // @ts-expect-error - TS2339 - Property 'noWebWorker' does not exist on type 'Loader'.
       if (!this.noWebWorker) {
-        // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'.
         this.worker.postMessage(msg);
       } else {
         // @ts-expect-error - TS2531 - Object is possibly 'null'.
@@ -299,7 +216,6 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
         // ping service worker with messages to avoid shutdown while loading
         // (mostly for Firefox)
-        // @ts-expect-error - TS2339 - Property 'pingInterval' does not exist on type 'Loader'.
         this.pingInterval = setInterval(() => {
           // @ts-expect-error - TS2531 - Object is possibly 'null'.
           navigator.serviceWorker.controller.postMessage({ msg_type: "ping" });
@@ -309,44 +225,34 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   }
 
   googledriveInit() {
-    // @ts-expect-error - TS2339 - Property '_gdWait' does not exist on type 'Loader'. | TS2339 - Property '_gdResolve' does not exist on type 'Loader'.
     this._gdWait = new Promise((resolve) => (this._gdResolve = resolve));
-    // @ts-expect-error - TS2339 - Property '_gdWait' does not exist on type 'Loader'.
     return this._gdWait;
   }
 
   async onLoadReady(event) {
-    // @ts-expect-error - TS2339 - Property '_gdResolve' does not exist on type 'Loader'.
     if (this._gdResolve) {
       //const digest = await digestMessage(url, 'SHA-256');
       //this.coll = "id-" + digest.slice(0, 12);
 
-      // @ts-expect-error - TS2339 - Property '_gdResolve' does not exist on type 'Loader'.
       this._gdResolve(event.detail);
     }
   }
 
   onCancel() {
-    // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'.
     if (!this.worker) {
       return;
     }
 
-    // @ts-expect-error - TS2339 - Property 'coll' does not exist on type 'Loader'.
     const msg = { msg_type: "cancelLoad", name: this.coll };
 
-    // @ts-expect-error - TS2339 - Property 'noWebWorker' does not exist on type 'Loader'.
     if (!this.noWebWorker) {
-      // @ts-expect-error - TS2339 - Property 'worker' does not exist on type 'Loader'.
       this.worker.postMessage(msg);
       return;
     }
 
     if (navigator.serviceWorker && navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage(msg);
-      // @ts-expect-error - TS2339 - Property 'pingInterval' does not exist on type 'Loader'.
       if (this.pingInterval) {
-        // @ts-expect-error - TS2339 - Property 'pingInterval' does not exist on type 'Loader'.
         clearInterval(this.pingInterval);
       }
     }
@@ -354,7 +260,6 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
   updated(changedProperties) {
     if (
-      // @ts-expect-error - TS2339 - Property 'sourceUrl' does not exist on type 'Loader'.
       (this.sourceUrl && changedProperties.has("sourceUrl")) ||
       changedProperties.has("tryFileHandle")
     ) {
@@ -415,19 +320,11 @@ You can select a file to upload from the main page by clicking the 'Choose File.
         <div class="has-text-centered is-flex">
           <wr-anim-logo class="logo" size="96px"></wr-anim-logo>
         </div>
-        ${
-          // @ts-expect-error - TS2339 - Property 'embed' does not exist on type 'Loader'.
-          !this.embed
-            ? html` <div class="level">
-                <p class="level-item">
-                  Loading&nbsp;<b>${
-                    // @ts-expect-error - TS2339 - Property 'sourceUrl' does not exist on type 'Loader'.
-                    this.sourceUrl
-                  }</b>...
-                </p>
-              </div>`
-            : ""
-        }
+        ${!this.embed
+          ? html` <div class="level">
+              <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
+            </div>`
+          : ""}
         <div class="level">
           <div class="level-item has-text-centered">
             ${this.renderContent()}
@@ -438,14 +335,10 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   }
 
   renderContent() {
-    // @ts-expect-error - TS2339 - Property 'state' does not exist on type 'Loader'.
     switch (this.state) {
       case "googledrive":
         return html`<wr-gdrive
-          .sourceUrl=${
-            // @ts-expect-error - TS2339 - Property 'sourceUrl' does not exist on type 'Loader'.
-            this.sourceUrl
-          }
+          .sourceUrl=${this.sourceUrl!}
           @load-ready=${this.onLoadReady}
         ></wr-gdrive>`;
 
@@ -454,86 +347,44 @@ You can select a file to upload from the main page by clicking the 'Choose File.
           <progress
             id="progress"
             class="progress is-primary is-large"
-            value="${
-              // @ts-expect-error - TS2339 - Property 'percent' does not exist on type 'Loader'.
-              this.percent
-            }"
+            value="${this.percent}"
             max="100"
           ></progress>
-          <label class="progress-label" for="progress"
-            >${
-              // @ts-expect-error - TS2339 - Property 'percent' does not exist on type 'Loader'.
-              this.percent
-            }%</label
-          >
+          <label class="progress-label" for="progress">${this.percent}%</label>
 
-          ${
-            // @ts-expect-error - TS2339 - Property 'currentSize' does not exist on type 'Loader'. | TS2339 - Property 'totalSize' does not exist on type 'Loader'.
-            this.currentSize && this.totalSize
-              ? html` <div class="loaded-prog">
-                  Loaded
-                  <b
-                    >${
-                      // @ts-expect-error - TS2339 - Property 'currentSize' does not exist on type 'Loader'.
-                      prettyBytes(this.currentSize)
-                    }</b
-                  >
-                  of
+          ${this.currentSize && this.totalSize
+            ? html` <div class="loaded-prog">
+                Loaded
+                <b>${prettyBytes(this.currentSize)}</b>
+                of
 
-                  <b
-                    >${
-                      // @ts-expect-error - TS2339 - Property 'totalSize' does not exist on type 'Loader'.
-                      prettyBytes(this.totalSize)
-                    }</b
-                  >
+                <b>${prettyBytes(this.totalSize)}</b>
 
-                  ${
-                    // @ts-expect-error - TS2339 - Property 'extraMsg' does not exist on type 'Loader'.
-                    this.extraMsg &&
-                    // @ts-expect-error - TS2339 - Property 'extraMsg' does not exist on type 'Loader'.
-                    html` <p class="extra-msg">(${this.extraMsg})</p> `
-                  }
-                </div>`
-              : html``
-          }
-          ${
-            // @ts-expect-error - TS2339 - Property 'embed' does not exist on type 'Loader'.
-            !this.embed
-              ? html` <button
-                  @click="${this.onCancel}"
-                  class="button is-danger"
-                >
-                  Cancel
-                </button>`
-              : ""
-          }
+                ${this.extraMsg &&
+                html` <p class="extra-msg">(${this.extraMsg})</p> `}
+              </div>`
+            : html``}
+          ${!this.embed
+            ? html` <button @click="${this.onCancel}" class="button is-danger">
+                Cancel
+              </button>`
+            : ""}
         </div>`;
 
       case "errored":
         return html` <div class="has-text-left">
-          <div class="error has-text-danger">
-            ${
-              // @ts-expect-error - TS2339 - Property 'error' does not exist on type 'Loader'.
-              this.error
-            }
-          </div>
+          <div class="error has-text-danger">${this.error}</div>
           <div>
-            ${
-              // @ts-expect-error - TS2339 - Property 'errorAllowRetry' does not exist on type 'Loader'.
-              this.errorAllowRetry
-                ? html` <a
-                    class="button is-warning"
-                    @click=${() => window.parent.location.reload()}
-                    >Try Again</a
-                  >`
-                : ""
-            }
-            ${
-              // @ts-expect-error - TS2339 - Property 'embed' does not exist on type 'Loader'.
-              this.embed
-                ? html``
-                : html` <a href="/" class="button is-warning">Back</a>`
-            }
+            ${this.errorAllowRetry
+              ? html` <a
+                  class="button is-warning"
+                  @click=${() => window.parent.location.reload()}
+                  >Try Again</a
+                >`
+              : ""}
+            ${this.embed
+              ? html``
+              : html` <a href="/" class="button is-warning">Back</a>`}
           </div>
         </div>`;
 
@@ -559,8 +410,10 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   }
 
   async onAskPermission() {
-    // @ts-expect-error - TS2339 - Property 'fileHandle' does not exist on type 'Loader'.
-    const result = await this.fileHandle.requestPermission({ mode: "read" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await (this.fileHandle as any)?.requestPermission({
+      mode: "read",
+    });
     if (result === "granted") {
       this.doLoad();
     }

@@ -31,7 +31,8 @@
           "no-invalid-css": "off"
         }
       }
-    ]
+    ],
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts"]
 }
