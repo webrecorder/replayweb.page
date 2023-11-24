@@ -41,7 +41,10 @@ const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
 // ============================================================================
 class ElectronReplayApp {
-  pluginPath: string = "";
+  /**
+   * @type {string}
+   */
+  pluginPath = "";
 
   appPath = app.getAppPath();
 
@@ -55,13 +58,22 @@ class ElectronReplayApp {
 
   proxyTS = null;
 
-  mainWindow: BrowserWindow | null = null;
+  /**
+   * @type {BrowserWindow | null}
+   */
+  mainWindow = null;
 
-  openNextFile: string | null = null;
+  /**
+   * @type {string | null}
+   */
+  openNextFile = null;
 
   screenSize = { width: 1024, height: 768 };
 
-  origUA: string | null = null;
+  /**
+   * @type {string | null}
+   */
+  origUA = null;
 
   constructor({ staticPath = "./", profileName = "" } = {}) {
     this.staticContentPath = staticPath;
@@ -339,14 +351,16 @@ class ElectronReplayApp {
     callback({ statusCode, headers, data });
   }
 
-  notFound(
-    url: string,
-    callback: (props: {
-      statusCode: number;
-      headers: Record<string, string>;
-      data: unknown;
-    }) => void,
-  ) {
+  /**
+   *
+   * @param {string} url
+   * @param {(props: {
+   *    statusCode: number;
+   *    headers: Record<string, string>;
+   *    data: unknown;
+   * }) => void} callback
+   */
+  notFound(url, callback) {
     console.log("not found: " + url);
     const data = this._bufferToStream(
       `Sorry, the url <b>${url}</b> could not be found in this archive.`,

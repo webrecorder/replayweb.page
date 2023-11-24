@@ -80,10 +80,10 @@ export class Chooser extends LitElement {
     this.setFile(event.currentTarget.files[0]);
   }
 
-  setFile(file: File) {
+  setFile(file: FileWithPath) {
     this.file = file;
     // file.path only available in electron app
-    this.fileDisplayName = "file://" + (this.file.path || this.file.name);
+    this.fileDisplayName = "file://" + (file.path || file.name);
   }
 
   async onChooseNativeFile() {
@@ -97,7 +97,7 @@ export class Chooser extends LitElement {
 
     this.fileHandle = fileHandle;
 
-    this.file = await fileHandle.getFile();
+    this.file = (await fileHandle.getFile()) as FileWithPath;
 
     this.fileDisplayName = "file://" + fileHandle.name;
   }
