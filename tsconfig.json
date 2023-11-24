@@ -34,5 +34,5 @@
     ],
     "skipLibCheck": true
   },
-  "include": ["src/**/*.{ts,js}"]
+  "include": ["src/**/*.ts", "src/**/*.js"]
 }
