@@ -2,7 +2,11 @@ import { LitElement, html, css } from "lit";
 import { IS_APP, wrapCss } from "./misc";
 
 import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
+
+export interface FileWithPath extends File {
+  readonly path: string;
+}
 
 // ===========================================================================
 @customElement("wr-chooser")
@@ -11,10 +15,10 @@ export class Chooser extends LitElement {
   fileDisplayName = "";
 
   @property({ attribute: false })
-  file: File | null = null;
+  file: FileWithPath | null = null;
 
   @property({ attribute: false })
-  droppedFile: File | null = null;
+  droppedFile: FileWithPath | null = null;
 
   @property({ type: Boolean })
   hasNativeFS = !!window.showOpenFilePicker && !IS_APP;

@@ -48,12 +48,12 @@ import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.sv
 import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
 import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
 
-import { RWPEmbedReceipt } from "./embed-receipt.js";
+import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
 
 import type { Item as ItemInfo } from "./types";
 import type { Replay } from "./replay";
-import { ifDefined } from "lit/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import "./item-info";
 

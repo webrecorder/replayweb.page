@@ -9,7 +9,7 @@ import { clickOnSpacebarPress } from "./misc";
 import { LitElement, html, css } from "lit";
 import { tsToDate } from "./pageutils";
 import prettyBytes from "pretty-bytes";
-import { property } from "lit/decorators";
+import { property } from "lit/decorators.js";
 import type { Item as ItemType } from "./types";
 import { assertNonNullish } from "./utils/assertNonNullish";
 

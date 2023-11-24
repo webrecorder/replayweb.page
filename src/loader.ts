@@ -4,7 +4,7 @@ import { wrapCss } from "./misc";
 import prettyBytes from "pretty-bytes";
 
 import { parseURLSchemeHostPath } from "./pageutils";
-import { property } from "lit/decorators";
+import { property } from "lit/decorators.js";
 import { LoadInfo } from "./item";
 
 // ===========================================================================

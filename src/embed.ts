@@ -3,7 +3,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { wrapCss, rwpLogo } from "./misc";
 import { SWManager } from "./swmanager";
-import { property } from "lit/decorators";
+import { property } from "lit/decorators.js";
 
 const scriptSrc =
   document.currentScript && (document.currentScript as HTMLScriptElement).src;
