@@ -20,12 +20,15 @@ class ItemIndex extends LitElement {
   query = "";
 
   @property({ type: Array })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   filteredItems: any[] = [];
 
   @property({ type: Array })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   sortedItems: any[] | null = null;
 
   @property({ type: Boolean })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   hideHeader: any = null;
 
   @property({ type: String })
@@ -35,6 +38,7 @@ class ItemIndex extends LitElement {
   headerName = "Loaded Archives";
 
   @state()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   private _deleting: any = {};
 
   private typeFilter = "";

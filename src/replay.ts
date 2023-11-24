@@ -164,6 +164,7 @@ class Replay extends LitElement {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   setDisablePointer(disable: any) {
     const iframe = this.renderRoot.querySelector("iframe");
 
@@ -172,6 +173,7 @@ class Replay extends LitElement {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   onReplayMessage(event: any) {
     const iframe = this.renderRoot.querySelector("iframe");
 
