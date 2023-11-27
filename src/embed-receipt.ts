@@ -6,12 +6,11 @@ import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
 
 import { clickOnSpacebarPress } from "./misc";
 
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing } from "lit";
 import { tsToDate } from "./pageutils";
 import prettyBytes from "pretty-bytes";
 import { property } from "lit/decorators.js";
 import type { Item as ItemType } from "./types";
-import { assertNonNullish } from "./utils/assertNonNullish";
 
 // ===========================================================================
 export class RWPEmbedReceipt extends LitElement {
@@ -173,11 +172,6 @@ export class RWPEmbedReceipt extends LitElement {
   }
 
   render() {
-    assertNonNullish(this.url, "url");
-    assertNonNullish(this.ts, "ts");
-    assertNonNullish(this.collInfo, "collInfo");
-    assertNonNullish(this.appLogo, "appLogo");
-
     const {
       numValid = 0,
       numInvalid = 0,
@@ -186,9 +180,9 @@ export class RWPEmbedReceipt extends LitElement {
       datapackageHash,
       publicKey,
       software,
-    } = this.collInfo.verify || {};
+    } = this.collInfo?.verify || {};
 
-    const sourceUrl = this.collInfo.sourceUrl;
+    const sourceUrl = this.collInfo?.sourceUrl;
 
     const certFingerprintUrl = certFingerprint
       ? `https://crt.sh/?q=${certFingerprint}`
@@ -245,27 +239,35 @@ export class RWPEmbedReceipt extends LitElement {
                 >replayweb.page</a
               >.
             </p>
-            <a
-              href="${sourceUrl}"
-              class="button is-primary mt-4"
-              @keyup="${clickOnSpacebarPress}"
-            >
-              <span class="icon is-small">
-                <fa-icon
-                  size="1.0em"
-                  aria-hidden="true"
-                  .svg="${fasDownload}"
-                ></fa-icon>
-              </span>
-              <span>Download Archive</span>
-            </a>
-            <hr class="dropdown-divider mt-4" />
+            ${sourceUrl
+              ? html`
+                  <a
+                    href="${sourceUrl}"
+                    class="button is-primary mt-4"
+                    @keyup="${clickOnSpacebarPress}"
+                  >
+                    <span class="icon is-small">
+                      <fa-icon
+                        size="1.0em"
+                        aria-hidden="true"
+                        .svg="${fasDownload}"
+                      ></fa-icon>
+                    </span>
+                    <span>Download Archive</span>
+                  </a>
+                  <hr class="dropdown-divider mt-4" />
+                `
+              : nothing}
             <h2 class="mt-4">Technical Information</h2>
             <div class="embed-info-drop-statscontainer mb-4">
-              <h3>Original URL:</h3>
-              <p>
-                <a target="_blank" href="${this.url}">${this.url}</a>
-              </p>
+              ${this.url
+                ? html`
+                    <h3>Original URL:</h3>
+                    <p>
+                      <a target="_blank" href="${this.url}">${this.url}</a>
+                    </p>
+                  `
+                : nothing}
               <h3 class="mt-2">Archived On:</h3>
               <p>${dateStr}</p>
               ${domain
@@ -297,8 +299,12 @@ export class RWPEmbedReceipt extends LitElement {
                 : html` <p>Not Available</p> `}
               <h3 class="mt-2">Package Hash:</h3>
               <p class="show-hash">${datapackageHash}</p>
-              <h3 class="mt-2">Size</h3>
-              <p>${prettyBytes(Number(this.collInfo.size || 0))}</p>
+              ${this.collInfo?.size != null
+                ? html`
+                    <h3 class="mt-2">Size</h3>
+                    <p>${prettyBytes(Number(this.collInfo.size || 0))}</p>
+                  `
+                : nothing}
             </div>
             ${sourceUrl ? html`` : ""}
             <p
@@ -310,13 +316,16 @@ export class RWPEmbedReceipt extends LitElement {
                   class="has-text-black"
                   target="_blank"
                   href="https://github.com/webrecorder/replayweb.page"
-                >
-                  <fa-icon
-                    class="menu-logo mr-1"
-                    size="1.0rem"
-                    aria-hidden="true"
-                    .svg=${this.appLogo}
-                  ></fa-icon>
+                  >${this.appLogo
+                    ? html`
+                        <fa-icon
+                          class="menu-logo mr-1"
+                          size="1.0rem"
+                          aria-hidden="true"
+                          .svg=${this.appLogo}
+                        ></fa-icon>
+                      `
+                    : nothing}
                   Powered by ReplayWeb.page
                 </a>
               </span>
