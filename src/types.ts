@@ -8,6 +8,8 @@ export interface Item {
    * Archived Item ID
    */
   coll?: string;
+  // TODO(emma) is `id` the same as `coll`? should they be merged?
+  id?: string;
   name?: string;
   title?: string;
   loadUrl?: string;
@@ -24,9 +26,11 @@ export interface Item {
     software?: string;
   };
   onDemand?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   pages?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   lists?: any[];
   ctime?: string;
   totalSize?: unknown;
-  size?: unknown;
+  size?: number | string;
 }

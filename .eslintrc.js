@@ -1,4 +1,5 @@
 /* eslint-env node */
+/** @type { import("eslint").Linter.Config } */
 module.exports = {
   env: {
     browser: true,
@@ -19,7 +20,7 @@ module.exports = {
   rules: {
     "no-restricted-globals": [2, "event", "error"],
     "linebreak-style": ["error", "unix"],
-    "@typescript-eslint/no-explicit-any": "warn",
   },
-  ignorePatterns: ["ruffle/**/*", "build/**/*"],
+  ignorePatterns: ["ruffle/**/*", "build/**/*", "/sw.js", "/ui.js"],
+  reportUnusedDisableDirectives: true,
 };

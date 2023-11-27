@@ -58,24 +58,37 @@ class URLResources extends LitElement {
 
   constructor() {
     super();
+    // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'URLResources'.
     this.collInfo = null;
+    // @ts-expect-error - TS2339 - Property 'isSidebar' does not exist on type 'URLResources'.
     this.isSidebar = false;
 
+    // @ts-expect-error - TS2339 - Property 'currMime' does not exist on type 'URLResources'.
     this.currMime = "";
+    // @ts-expect-error - TS2339 - Property 'query' does not exist on type 'URLResources'.
     this.query = "";
+    // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'.
     this.urlSearchType = "";
 
+    // @ts-expect-error - TS2339 - Property 'filteredResults' does not exist on type 'URLResources'.
     this.filteredResults = [];
+    // @ts-expect-error - TS2339 - Property 'sortedResults' does not exist on type 'URLResources'.
     this.sortedResults = [];
 
+    // @ts-expect-error - TS2339 - Property 'results' does not exist on type 'URLResources'.
     this.results = [];
 
+    // @ts-expect-error - TS2339 - Property 'newQuery' does not exist on type 'URLResources'.
     this.newQuery = null;
 
+    // @ts-expect-error - TS2339 - Property 'tryMore' does not exist on type 'URLResources'.
     this.tryMore = false;
+    // @ts-expect-error - TS2339 - Property 'loading' does not exist on type 'URLResources'.
     this.loading = false;
 
+    // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'URLResources'.
     this.sortKey = "url";
+    // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'URLResources'.
     this.sortDesc = false;
   }
 
@@ -96,14 +109,19 @@ class URLResources extends LitElement {
 
   firstUpdated() {
     //this.doLoadResources();
+    // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'.
     if (this.urlSearchType === "") {
+      // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'.
       this.urlSearchType = "prefix";
     }
   }
 
   _timedUpdate() {
+    // @ts-expect-error - TS2339 - Property 'newQuery' does not exist on type 'URLResources'.
     if (this.newQuery !== null) {
+      // @ts-expect-error - TS2339 - Property 'query' does not exist on type 'URLResources'. | TS2339 - Property 'newQuery' does not exist on type 'URLResources'.
       this.query = this.newQuery;
+      // @ts-expect-error - TS2339 - Property 'newQuery' does not exist on type 'URLResources'.
       this.newQuery = null;
     }
   }
@@ -116,8 +134,11 @@ class URLResources extends LitElement {
     ) {
       this.doLoadResources();
       const data = {
+        // @ts-expect-error - TS2339 - Property 'query' does not exist on type 'URLResources'.
         query: this.query,
+        // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'.
         urlSearchType: this.urlSearchType,
+        // @ts-expect-error - TS2339 - Property 'currMime' does not exist on type 'URLResources'.
         currMime: this.currMime,
       };
       const replaceLoc =
@@ -136,16 +157,21 @@ class URLResources extends LitElement {
   async doLoadResources(isMore = false) {
     const count = 100;
 
+    // @ts-expect-error - TS2339 - Property 'tryMore' does not exist on type 'URLResources'. | TS2339 - Property 'results' does not exist on type 'URLResources'.
     if (isMore && (!this.tryMore || !this.results.length)) {
       return;
     }
 
+    // @ts-expect-error - TS2339 - Property 'loading' does not exist on type 'URLResources'.
     if (this.loading) {
       return;
     }
 
+    // @ts-expect-error - TS2339 - Property 'loading' does not exist on type 'URLResources'.
     this.loading = true;
+    // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'. | TS2339 - Property 'query' does not exist on type 'URLResources'.
     let url = this.urlSearchType !== "contains" ? this.query : "";
+    // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'.
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
 
     // optimization: if not starting with http, likely won't have a match here, so just add https://
@@ -153,8 +179,10 @@ class URLResources extends LitElement {
       url = "https://" + url;
     }
 
+    // @ts-expect-error - TS2339 - Property 'currMime' does not exist on type 'URLResources'.
     const mime = this.currMime;
 
+    // @ts-expect-error - TS2345 - Argument of type '{ mime: any; url: any; prefix: number; count: number; }' is not assignable to parameter of type 'string | Record<string, string> | URLSearchParams | string[][] | undefined'.
     const params = new URLSearchParams({
       mime,
       url,
@@ -163,50 +191,66 @@ class URLResources extends LitElement {
     });
 
     if (isMore) {
+      // @ts-expect-error - TS2339 - Property 'results' does not exist on type 'URLResources'. | TS2339 - Property 'results' does not exist on type 'URLResources'.
       const last = this.results[this.results.length - 1];
       params.set("fromMime", last.mime);
       params.set("fromUrl", last.url);
       params.set("fromStatus", last.status);
+      // @ts-expect-error - TS2345 - Argument of type 'number' is not assignable to parameter of type 'string'.
       params.set("fromTs", new Date(last.date).getTime());
     }
 
     let resp = await fetch(
+      // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'URLResources'.
       `${this.collInfo.apiPrefix}/urls?${params.toString()}`,
     );
     resp = await resp.json();
+    // @ts-expect-error - TS2339 - Property 'results' does not exist on type 'URLResources'. | TS2339 - Property 'results' does not exist on type 'URLResources'. | TS2551 - Property 'urls' does not exist on type 'Response'. Did you mean 'url'? | TS2551 - Property 'urls' does not exist on type 'Response'. Did you mean 'url'?
     this.results = isMore ? this.results.concat(resp.urls) : resp.urls;
     // can be more than count if multiple mimes
+    // @ts-expect-error - TS2339 - Property 'tryMore' does not exist on type 'URLResources'. | TS2551 - Property 'urls' does not exist on type 'Response'. Did you mean 'url'?
     this.tryMore = resp.urls.length >= count;
     this.filter();
 
+    // @ts-expect-error - TS2339 - Property 'loading' does not exist on type 'URLResources'.
     this.loading = false;
   }
 
   onChangeTypeSearch(event) {
+    // @ts-expect-error - TS2339 - Property 'currMime' does not exist on type 'URLResources'.
     this.currMime = event.currentTarget.value;
   }
 
   onChangeQuery(event) {
+    // @ts-expect-error - TS2339 - Property 'newQuery' does not exist on type 'URLResources'.
     this.newQuery = event.currentTarget.value;
+    // @ts-expect-error - TS2339 - Property '_ival' does not exist on type 'URLResources'.
     if (this._ival) {
+      // @ts-expect-error - TS2339 - Property '_ival' does not exist on type 'URLResources'.
       window.clearTimeout(this._ival);
     }
+    // @ts-expect-error - TS2339 - Property '_ival' does not exist on type 'URLResources'.
     this._ival = window.setTimeout(() => this._timedUpdate(), 250);
   }
 
   onClickUrlType(event) {
+    // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'.
     this.urlSearchType = event.currentTarget.value;
   }
 
   filter() {
     const filteredResults = [];
+    // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'. | TS2339 - Property 'query' does not exist on type 'URLResources'.
     const filterText = this.urlSearchType === "contains" ? this.query : "";
+    // @ts-expect-error - TS2339 - Property 'results' does not exist on type 'URLResources'.
     for (const result of this.results) {
       if (!filterText || result.url.indexOf(filterText) >= 0) {
+        // @ts-expect-error - TS2345 - Argument of type 'any' is not assignable to parameter of type 'never'.
         filteredResults.push(result);
       }
     }
 
+    // @ts-expect-error - TS2339 - Property 'filteredResults' does not exist on type 'URLResources'.
     this.filteredResults = filteredResults;
   }
 
@@ -214,6 +258,7 @@ class URLResources extends LitElement {
     const element = event.currentTarget;
     const diff =
       element.scrollHeight - element.scrollTop - element.clientHeight;
+    // @ts-expect-error - TS2339 - Property 'tryMore' does not exist on type 'URLResources'.
     if (this.tryMore && diff < 40) {
       this.doLoadResources(true);
     }
@@ -320,15 +365,25 @@ class URLResources extends LitElement {
     return html`
       <div
         role="heading"
-        aria-level="${this.isSidebar ? "2" : "1"}"
+        aria-level="${
+          // @ts-expect-error - TS2339 - Property 'isSidebar' does not exist on type 'URLResources'.
+          this.isSidebar ? "2" : "1"
+        }"
         class="is-sr-only"
       >
-        URLs in ${this.collInfo.title}
+        URLs in
+        ${
+          // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'URLResources'.
+          this.collInfo.title
+        }
       </div>
 
       <div
         role="heading"
-        aria-level="${this.isSidebar ? "3" : "2"}"
+        aria-level="${
+          // @ts-expect-error - TS2339 - Property 'isSidebar' does not exist on type 'URLResources'.
+          this.isSidebar ? "3" : "2"
+        }"
         class="is-sr-only"
       >
         Search and Filter
@@ -343,7 +398,10 @@ class URLResources extends LitElement {
                   (filter) => html`
                     <option
                       value="${filter.filter}"
-                      ?selected="${filter.filter === this.currMime}"
+                      ?selected="${
+                        // @ts-expect-error - TS2339 - Property 'currMime' does not exist on type 'URLResources'.
+                        filter.filter === this.currMime
+                      }"
                     >
                       ${filter.name}
                     </option>
@@ -353,15 +411,19 @@ class URLResources extends LitElement {
             </div>
             <div class="field flex-auto">
               <div
-                class="control has-icons-left ${this.loading
-                  ? "is-loading"
-                  : ""}"
+                class="control has-icons-left ${
+                  // @ts-expect-error - TS2339 - Property 'loading' does not exist on type 'URLResources'.
+                  this.loading ? "is-loading" : ""
+                }"
               >
                 <input
                   type="text"
                   class="input"
                   @input="${this.onChangeQuery}"
-                  .value="${this.query}"
+                  .value="${
+                    // @ts-expect-error - TS2339 - Property 'query' does not exist on type 'URLResources'.
+                    this.query
+                  }"
                   placeholder="Enter URL to Search"
                 />
                 <span class="icon is-left"
@@ -378,7 +440,10 @@ class URLResources extends LitElement {
                 type="radio"
                 name="urltype"
                 value="contains"
-                ?checked="${this.urlSearchType === "contains"}"
+                ?checked="${
+                  // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'.
+                  this.urlSearchType === "contains"
+                }"
                 @click="${this.onClickUrlType}"
               />&nbsp;Contains</label
             >
@@ -387,7 +452,10 @@ class URLResources extends LitElement {
                 type="radio"
                 name="urltype"
                 value="prefix"
-                ?checked="${this.urlSearchType === "prefix"}"
+                ?checked="${
+                  // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'.
+                  this.urlSearchType === "prefix"
+                }"
                 @click="${this.onClickUrlType}"
               />&nbsp;Prefix</label
             >
@@ -396,7 +464,10 @@ class URLResources extends LitElement {
                 type="radio"
                 name="urltype"
                 value="exact"
-                ?checked="${this.urlSearchType === "exact"}"
+                ?checked="${
+                  // @ts-expect-error - TS2339 - Property 'urlSearchType' does not exist on type 'URLResources'.
+                  this.urlSearchType === "exact"
+                }"
                 @click="${this.onClickUrlType}"
               />&nbsp;Exact</label
             >
@@ -406,7 +477,11 @@ class URLResources extends LitElement {
               is-pulled-right
               aria-live="polite"
               aria-atomic="true"
-              >${this.filteredResults.length} Result(s)</span
+              >${
+                // @ts-expect-error - TS2339 - Property 'filteredResults' does not exist on type 'URLResources'.
+                this.filteredResults.length
+              }
+              Result(s)</span
             >
           </div>
         </div>
@@ -415,10 +490,19 @@ class URLResources extends LitElement {
       <div class="sort-header is-hidden-tablet">
         <wr-sorter
           id="urls"
-          .sortKey="${this.sortKey}"
-          .sortDesc="${this.sortDesc}"
+          .sortKey="${
+            // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'URLResources'.
+            this.sortKey
+          }"
+          .sortDesc="${
+            // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'URLResources'.
+            this.sortDesc
+          }"
           .sortKeys="${URLResources.sortKeys}"
-          .data="${this.filteredResults}"
+          .data="${
+            // @ts-expect-error - TS2339 - Property 'filteredResults' does not exist on type 'URLResources'.
+            this.filteredResults
+          }"
           @sort-changed="${this.onSortChanged}"
         >
         </wr-sorter>
@@ -426,7 +510,10 @@ class URLResources extends LitElement {
 
       <div
         role="heading"
-        aria-level="${this.isSidebar ? "3" : "2"}"
+        aria-level="${
+          // @ts-expect-error - TS2339 - Property 'isSidebar' does not exist on type 'URLResources'.
+          this.isSidebar ? "3" : "2"
+        }"
         id="results-heading"
         class="is-sr-only"
       >
@@ -443,11 +530,15 @@ class URLResources extends LitElement {
                 @click="${this.onSort}"
                 @keyup="${clickOnSpacebarPress}"
                 data-key="url"
-                class="${this.sortKey === "url"
-                  ? this.sortDesc
-                    ? "desc"
-                    : "asc"
-                  : ""}"
+                class="${
+                  // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'URLResources'.
+                  this.sortKey === "url"
+                    ? // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'URLResources'.
+                      this.sortDesc
+                      ? "desc"
+                      : "asc"
+                    : ""
+                }"
                 >URL</a
               >
             </th>
@@ -458,11 +549,15 @@ class URLResources extends LitElement {
                 @click="${this.onSort}"
                 @keyup="${clickOnSpacebarPress}"
                 data-key="ts"
-                class="${this.sortKey === "ts"
-                  ? this.sortDesc
-                    ? "desc"
-                    : "asc"
-                  : ""}"
+                class="${
+                  // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'URLResources'.
+                  this.sortKey === "ts"
+                    ? // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'URLResources'.
+                      this.sortDesc
+                      ? "desc"
+                      : "asc"
+                    : ""
+                }"
                 >Date</a
               >
             </th>
@@ -473,11 +568,15 @@ class URLResources extends LitElement {
                 @click="${this.onSort}"
                 @keyup="${clickOnSpacebarPress}"
                 data-key="mime"
-                class="${this.sortKey === "mime"
-                  ? this.sortDesc
-                    ? "desc"
-                    : "asc"
-                  : ""}"
+                class="${
+                  // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'URLResources'.
+                  this.sortKey === "mime"
+                    ? // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'URLResources'.
+                      this.sortDesc
+                      ? "desc"
+                      : "asc"
+                    : ""
+                }"
                 >Mime Type</a
               >
             </th>
@@ -488,11 +587,15 @@ class URLResources extends LitElement {
                 @click="${this.onSort}"
                 @keyup="${clickOnSpacebarPress}"
                 data-key="status"
-                class="${this.sortKey === "status"
-                  ? this.sortDesc
-                    ? "desc"
-                    : "asc"
-                  : ""}"
+                class="${
+                  // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'URLResources'.
+                  this.sortKey === "status"
+                    ? // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'URLResources'.
+                      this.sortDesc
+                      ? "desc"
+                      : "asc"
+                    : ""
+                }"
                 >Status</a
               >
             </th>
@@ -500,45 +603,53 @@ class URLResources extends LitElement {
         </thead>
 
         <tbody class="main-scroll" @scroll="${this.onScroll}">
-          ${this.sortedResults.length
-            ? this.sortedResults.map(
-                (result) => html`
-                  <tr class="columns result">
-                    <td class="column col-url is-6">
-                      <p class="minihead is-hidden-tablet">URL</p>
-                      <a
-                        @click="${this.onReplay}"
-                        data-url="${result.url}"
-                        data-ts="${result.ts}"
-                        href="${getReplayLink(
-                          "resources",
-                          result.url,
-                          result.ts,
-                        )}"
-                      >
-                        <keyword-mark keywords="${this.query}"
-                          >${result.url}</keyword-mark
+          ${
+            // @ts-expect-error - TS2339 - Property 'sortedResults' does not exist on type 'URLResources'.
+            this.sortedResults.length
+              ? // @ts-expect-error - TS2339 - Property 'sortedResults' does not exist on type 'URLResources'.
+                this.sortedResults.map(
+                  (result) => html`
+                    <tr class="columns result">
+                      <td class="column col-url is-6">
+                        <p class="minihead is-hidden-tablet">URL</p>
+                        <a
+                          @click="${this.onReplay}"
+                          data-url="${result.url}"
+                          data-ts="${result.ts}"
+                          href="${getReplayLink(
+                            "resources",
+                            result.url,
+                            result.ts,
+                          )}"
                         >
-                      </a>
-                    </td>
-                    <td class="column col-ts is-2">
-                      <p class="minihead is-hidden-tablet">Date</p>
-                      ${new Date(result.date).toLocaleString()}
-                    </td>
-                    <td class="column col-mime is-3">
-                      <p class="minihead is-hidden-tablet">Mime Type</p>
-                      ${result.mime}
-                    </td>
-                    <td class="column col-status is-1">
-                      <p class="minihead is-hidden-tablet">Status</p>
-                      ${result.status}
-                    </td>
-                  </tr>
-                `,
-              )
-            : html`<tr class="section">
-                <td colspan="4"><i>No Results Found.</i></td>
-              </tr>`}
+                          <keyword-mark
+                            keywords="${
+                              // @ts-expect-error - TS2339 - Property 'query' does not exist on type 'URLResources'.
+                              this.query
+                            }"
+                            >${result.url}</keyword-mark
+                          >
+                        </a>
+                      </td>
+                      <td class="column col-ts is-2">
+                        <p class="minihead is-hidden-tablet">Date</p>
+                        ${new Date(result.date).toLocaleString()}
+                      </td>
+                      <td class="column col-mime is-3">
+                        <p class="minihead is-hidden-tablet">Mime Type</p>
+                        ${result.mime}
+                      </td>
+                      <td class="column col-status is-1">
+                        <p class="minihead is-hidden-tablet">Status</p>
+                        ${result.status}
+                      </td>
+                    </tr>
+                  `,
+                )
+              : html`<tr class="section">
+                  <td colspan="4"><i>No Results Found.</i></td>
+                </tr>`
+          }
         </tbody>
       </table>
     `;
@@ -548,17 +659,24 @@ class URLResources extends LitElement {
     event.preventDefault();
 
     const key = event.currentTarget.getAttribute("data-key");
+    // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'URLResources'.
     if (key === this.sortKey) {
+      // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'URLResources'. | TS2339 - Property 'sortDesc' does not exist on type 'URLResources'.
       this.sortDesc = !this.sortDesc;
     } else {
+      // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'URLResources'.
       this.sortDesc = false;
+      // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'URLResources'.
       this.sortKey = key;
     }
   }
 
   onSortChanged(event) {
+    // @ts-expect-error - TS2339 - Property 'sortedResults' does not exist on type 'URLResources'.
     this.sortedResults = event.detail.sortedData;
+    // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'URLResources'.
     this.sortKey = event.detail.sortKey;
+    // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'URLResources'.
     this.sortDesc = event.detail.sortDesc;
   }
 

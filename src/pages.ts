@@ -20,21 +20,26 @@ import type { PageEntry } from "./pageentry";
 // ===========================================================================
 class Pages extends LitElement {
   @property({ type: Array })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   filteredPages: any[] = [];
 
   @property({ type: Array })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   sortedPages: any[] = [];
 
   @property({ type: String })
   query = "";
 
   @property()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   flex: any = null;
 
   @property()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   textPages: any = null;
 
   @property()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   newQuery: any = null;
 
   @property({ type: Boolean })
@@ -83,15 +88,19 @@ class Pages extends LitElement {
   ts = "";
 
   @property({ type: Boolean })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   editing: any = false;
 
   @property({ type: Object })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   toDeletePages: any = null;
 
   @property({ type: Object })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   toDeletePage: any = null;
 
   @property({ type: Object })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   collInfo: any;
 
   @property({ type: Boolean })
@@ -100,6 +109,7 @@ class Pages extends LitElement {
   @property({ type: String })
   defaultKey = "";
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   private _ival: any;
 
   static get sortKeys() {
@@ -127,6 +137,7 @@ class Pages extends LitElement {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
   async updated(changedProperties: Map<string, any>) {
     if (changedProperties.has("collInfo")) {
       this.updateTextSearch();
@@ -154,7 +165,9 @@ class Pages extends LitElement {
       }
       const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
       if (sorter) {
+        // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'Sorter'.
         sorter.sortKey = this.sortKey;
+        // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'Sorter'.
         sorter.sortDesc = this.sortDesc;
       }
     }
@@ -168,6 +181,7 @@ class Pages extends LitElement {
           block: "nearest",
           inline: "nearest",
         };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
         setTimeout(() => selected.scrollIntoView(opts as any), 100);
       }
       //}
@@ -175,6 +189,7 @@ class Pages extends LitElement {
   }
 
   onChangeQuery(event: Event) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
     this.newQuery = (event.currentTarget as any).value;
     //this.loading = true;
     if (this._ival) {
@@ -280,6 +295,7 @@ class Pages extends LitElement {
         }
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
       const lines: any[] = [];
 
       for await (const line of ndjson(resp.body!.getReader())) {

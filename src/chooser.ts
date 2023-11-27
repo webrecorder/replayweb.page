@@ -2,47 +2,50 @@ import { LitElement, html, css } from "lit";
 import { IS_APP, wrapCss } from "./misc";
 
 import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
+import { customElement, property } from "lit/decorators.js";
+
+export interface FileWithPath extends File {
+  readonly path: string;
+}
 
 // ===========================================================================
-class Chooser extends LitElement {
-  constructor() {
-    super();
+@customElement("wr-chooser")
+export class Chooser extends LitElement {
+  @property({ type: String })
+  fileDisplayName = "";
 
-    this.fileDisplayName = "";
-    this.file = null;
-    this.droppedFile = null;
+  @property({ attribute: false })
+  file: FileWithPath | null = null;
 
-    this.hasNativeFS = !!window.showOpenFilePicker && !IS_APP;
+  @property({ attribute: false })
+  droppedFile: FileWithPath | null = null;
 
-    this.newFullImport = false;
+  @property({ type: Boolean })
+  hasNativeFS = !!window.showOpenFilePicker && !IS_APP;
 
-    this.noHead = false;
-
-    this.showOpenFilePickerOptions = {
-      types: [
-        {
-          description: "WARC, WACZ, HAR and WBN Files",
-          accept: {
-            "application/warc": [".warc", ".gz"],
-            "application/har": [".har"],
-            "application/wacz": [".wacz"],
-            "application/wbn": [".wbn"],
-            "application/json": [".json"],
-          },
+  @property({ type: Object })
+  showOpenFilePickerOptions = {
+    types: [
+      {
+        description: "WARC, WACZ, HAR and WBN Files",
+        accept: {
+          "application/warc": [".warc", ".gz"],
+          "application/har": [".har"],
+          "application/wacz": [".wacz"],
+          "application/wbn": [".wbn"],
+          "application/json": [".json"],
         },
-      ],
-    };
-  }
+      },
+    ],
+  };
 
-  static get properties() {
-    return {
-      fileDisplayName: { type: String },
-      /** @type File */
-      droppedFile: { attribute: false },
-      newFullImport: { type: Boolean },
-      noHead: { type: Boolean },
-    };
-  }
+  @property({ type: Boolean })
+  newFullImport = false;
+
+  @property({ type: Boolean })
+  noHead = false;
+
+  fileHandle?: FileSystemFileHandle;
 
   updated(changedProperties) {
     if (changedProperties.has("droppedFile") && this.droppedFile) {
@@ -56,11 +59,12 @@ class Chooser extends LitElement {
       .map(Object.values)
       .flat(2);
 
-    const fileHasAllowedExtension = allowedFileExtensions.some((extension) =>
-      this.droppedFile.name.endsWith(extension),
+    const fileHasAllowedExtension = allowedFileExtensions.some(
+      (extension) => this.droppedFile?.name.endsWith(extension),
     );
 
     if (fileHasAllowedExtension) {
+      if (this.droppedFile === null) return;
       this.setFile(this.droppedFile);
       this.dispatchEvent(
         new CustomEvent("did-drop-file", { bubbles: true, composed: true }),
@@ -76,10 +80,10 @@ class Chooser extends LitElement {
     this.setFile(event.currentTarget.files[0]);
   }
 
-  setFile(file) {
+  setFile(file: FileWithPath) {
     this.file = file;
     // file.path only available in electron app
-    this.fileDisplayName = "file://" + (this.file.path || this.file.name);
+    this.fileDisplayName = "file://" + (file.path || file.name);
   }
 
   async onChooseNativeFile() {
@@ -90,9 +94,11 @@ class Chooser extends LitElement {
     const [fileHandle] = await window.showOpenFilePicker(
       this.showOpenFilePickerOptions,
     );
+
     this.fileHandle = fileHandle;
 
-    this.file = await fileHandle.getFile();
+    this.file = (await fileHandle.getFile()) as FileWithPath;
+
     this.fileDisplayName = "file://" + fileHandle.name;
   }
 
@@ -103,18 +109,32 @@ class Chooser extends LitElement {
     );
   }
 
-  onStartLoad(event) {
+  onStartLoad(event?: Event) {
     if (event) {
       event.preventDefault();
     }
 
-    const loadInfo = { sourceUrl: this.fileDisplayName };
+    type LoadInfo = {
+      sourceUrl: string;
+      isFile?: boolean;
+      loadUrl?: string;
+      noCache?: boolean;
+      extra?: { fileHandle: FileSystemFileHandle };
+      blob?: Blob;
+      size?: number;
+      name?: string;
+      newFullImport: boolean;
+    };
+
+    const loadInfo: LoadInfo = {
+      sourceUrl: this.fileDisplayName,
+      newFullImport: this.newFullImport,
+    };
 
     if (this.file) {
       loadInfo.isFile = true;
       // file.path only available in electron app
       if (this.file.path) {
-        // eslint-disable-next-line no-undef
         loadInfo.loadUrl = "file2://" + this.file.path;
         loadInfo.noCache = true;
       } else if (this.fileHandle) {
@@ -129,8 +149,6 @@ class Chooser extends LitElement {
       loadInfo.size = this.file.size;
       loadInfo.name = this.fileDisplayName;
     }
-
-    loadInfo.newFullImport = this.newFullImport;
 
     this.dispatchEvent(
       new CustomEvent("load-start", {
@@ -152,6 +170,7 @@ class Chooser extends LitElement {
       this.fileDisplayName.startsWith("file://")
     ) {
       this.file = null;
+
       this.fileDisplayName = "";
     }
   }
@@ -280,7 +299,3 @@ class Chooser extends LitElement {
     </section>`;
   }
 }
-
-customElements.define("wr-chooser", Chooser);
-
-export { Chooser };

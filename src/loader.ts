@@ -4,52 +4,36 @@ import { wrapCss } from "./misc";
 import prettyBytes from "pretty-bytes";
 
 import { parseURLSchemeHostPath } from "./pageutils";
+import { property } from "lit/decorators.js";
+import { LoadInfo } from "./item";
 
 // ===========================================================================
 class Loader extends LitElement {
-  constructor() {
-    super();
-    this.progress = 0;
-    this.total = 0;
-    this.percent = 0;
-    this.coll = "";
-    this.state = "waiting";
-    this.loadInfo = null;
+  @property({ type: String }) sourceUrl?: string;
+  @property({ type: Object }) loadInfo: LoadInfo | null = null;
+  @property({ type: String }) state = "waiting";
+  @property({ type: Number }) progress = 0;
+  @property({ type: Number }) percent = 0;
+  @property({ type: Number }) currentSize = 0;
+  @property({ type: Number }) totalSize = 0;
+  @property({ type: String }) error?: string;
+  @property({ type: Number }) total = 0;
+  @property({ type: String }) status?: string;
+  @property({ type: String }) coll = "";
+  @property({ type: String }) embed?: string;
+  @property({ type: Boolean }) tryFileHandle = !!window.showOpenFilePicker;
+  @property({ type: Boolean }) errorAllowRetry = false;
+  @property({ type: String }) extraMsg?: string;
+  @property({ type: String }) swName?: string;
 
-    this.currentSize = 0;
-    this.totalSize = 0;
+  pingInterval: number | NodeJS.Timer = 0;
+  fileHandle: FileSystemHandle | null = null;
+  noWebWorker = false;
+  worker?: Worker | null;
 
-    this.tryFileHandle = !!window.showOpenFilePicker;
-
-    this.fileHandle = null;
-
-    this.errorAllowRetry = false;
-
-    this.pingInterval = 0;
-
-    this.noWebWorker = false;
-  }
-
-  static get properties() {
-    return {
-      sourceUrl: { type: String },
-      loadInfo: { type: Object },
-      state: { type: String },
-      progress: { type: Number },
-      percent: { type: Number },
-      currentSize: { type: Number },
-      totalSize: { type: Number },
-      error: { type: String },
-      total: { type: Number },
-      status: { type: String },
-      coll: { type: String },
-      embed: { type: String },
-      tryFileHandle: { type: Boolean },
-      errorAllowRetry: { type: Boolean },
-      extraMsg: { type: String },
-      swName: { type: String },
-    };
-  }
+  // Google Drive
+  _gdWait?: Promise<LoadInfo>;
+  _gdResolve!: (value: LoadInfo | PromiseLike<LoadInfo>) => void;
 
   firstUpdated() {
     this.initMessages();
@@ -57,17 +41,17 @@ class Loader extends LitElement {
   }
 
   initMessages() {
-    this.noWebWorker = this.loadInfo && this.loadInfo.noWebWorker;
+    this.noWebWorker = Boolean(this.loadInfo && this.loadInfo.noWebWorker);
 
     if (!this.noWebWorker) {
-      // eslint-disable-next-line no-undef
-      this.worker = new Worker(this.swName);
+      this.worker = new Worker(this.swName!);
     } else {
       if (!navigator.serviceWorker) {
         return;
       }
 
-      this.worker = navigator.serviceWorker;
+      // TODO figure out if this is okay?
+      this.worker = navigator.serviceWorker as unknown as Worker;
     }
 
     this.worker.addEventListener("message", (event) => {
@@ -110,7 +94,7 @@ class Loader extends LitElement {
             );
 
             if (!this.noWebWorker) {
-              this.worker.terminate();
+              this.worker?.terminate();
             } else {
               if (this.pingInterval) {
                 clearInterval(this.pingInterval);
@@ -125,7 +109,7 @@ class Loader extends LitElement {
 
   async doLoad() {
     let sourceUrl = this.sourceUrl;
-    let source = null;
+    let source: LoadInfo | null = null;
 
     this.percent = this.currentSize = this.totalSize = 0;
 
@@ -145,7 +129,7 @@ class Loader extends LitElement {
       switch (scheme) {
         case "googledrive":
           this.state = "googledrive";
-          source = await this.googledriveInit();
+          source = (await this.googledriveInit()) ?? null;
           break;
 
         case "s3":
@@ -170,7 +154,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
           break;
 
         case "proxy":
-          sourceUrl = "proxy:" + sourceUrl.slice("proxy://".length);
+          sourceUrl = "proxy:" + sourceUrl!.slice("proxy://".length);
           break;
       }
     } catch (e) {
@@ -184,7 +168,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     this.state = "started";
 
     let type = undefined;
-    let extraConfig = undefined;
+    let extraConfig: LoadInfo["extraConfig"] = undefined;
 
     if (this.loadInfo) {
       source.newFullImport = this.loadInfo.newFullImport;
@@ -196,10 +180,11 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       }
       // todo: too special case?
       if (
-        sourceUrl.startsWith("proxy:") &&
+        sourceUrl!.startsWith("proxy:") &&
         extraConfig &&
         extraConfig.recording
       ) {
+        // @ts-expect-error - TS2322 - Type '"recordingproxy"' is not assignable to type 'undefined'.
         type = "recordingproxy";
       }
     }
@@ -216,6 +201,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     if (!navigator.serviceWorker.controller) {
       await new Promise((resolve) => {
         navigator.serviceWorker.addEventListener("controllerchange", () =>
+          // @ts-expect-error - TS2794 - Expected 1 arguments, but got 0. Did you forget to include 'void' in your type argument to 'Promise'?
           resolve(),
         );
       });
@@ -225,11 +211,13 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       if (!this.noWebWorker) {
         this.worker.postMessage(msg);
       } else {
+        // @ts-expect-error - TS2531 - Object is possibly 'null'.
         navigator.serviceWorker.controller.postMessage(msg);
 
         // ping service worker with messages to avoid shutdown while loading
         // (mostly for Firefox)
         this.pingInterval = setInterval(() => {
+          // @ts-expect-error - TS2531 - Object is possibly 'null'.
           navigator.serviceWorker.controller.postMessage({ msg_type: "ping" });
         }, 15000);
       }
@@ -350,7 +338,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     switch (this.state) {
       case "googledrive":
         return html`<wr-gdrive
-          .sourceUrl=${this.sourceUrl}
+          .sourceUrl=${this.sourceUrl!}
           @load-ready=${this.onLoadReady}
         ></wr-gdrive>`;
 
@@ -363,10 +351,15 @@ You can select a file to upload from the main page by clicking the 'Choose File.
             max="100"
           ></progress>
           <label class="progress-label" for="progress">${this.percent}%</label>
+
           ${this.currentSize && this.totalSize
             ? html` <div class="loaded-prog">
-                Loaded <b>${prettyBytes(this.currentSize)}</b> of
+                Loaded
+                <b>${prettyBytes(this.currentSize)}</b>
+                of
+
                 <b>${prettyBytes(this.totalSize)}</b>
+
                 ${this.extraMsg &&
                 html` <p class="extra-msg">(${this.extraMsg})</p> `}
               </div>`
@@ -417,7 +410,10 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   }
 
   async onAskPermission() {
-    const result = await this.fileHandle.requestPermission({ mode: "read" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await (this.fileHandle as any)?.requestPermission({
+      mode: "read",
+    });
     if (result === "granted") {
       this.doLoad();
     }
