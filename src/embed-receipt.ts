@@ -6,34 +6,24 @@ import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
 
 import { clickOnSpacebarPress } from "./misc";
 
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing } from "lit";
 import { tsToDate } from "./pageutils";
 import prettyBytes from "pretty-bytes";
+import { property } from "lit/decorators.js";
+import type { Item as ItemType } from "./types";
 
 // ===========================================================================
 export class RWPEmbedReceipt extends LitElement {
-  constructor() {
-    super();
-    this.collInfo = null;
-    this.appLogo = null;
-    this.ts = null;
-    this.url = null;
-    this.active = false;
-  }
+  @property({ type: Object }) collInfo: ItemType | null = null;
+  @property({ type: Object }) appLogo = null;
+  @property({ type: String }) ts: string | null = null;
+  @property({ type: String }) url: string | null = null;
 
+  @property({ type: Boolean }) active = false;
+
+  // @ts-expect-error - TS2611 - 'renderRoot' is defined as a property in class 'LitElement', but is overridden here in 'RWPEmbedReceipt' as an accessor.
   get renderRoot() {
     return this;
-  }
-
-  static get properties() {
-    return {
-      collInfo: { type: Object },
-      appLogo: { type: Object },
-      url: { type: String },
-      ts: { type: String },
-
-      active: { type: Boolean },
-    };
   }
 
   static get embedStyles() {
@@ -182,19 +172,17 @@ export class RWPEmbedReceipt extends LitElement {
   }
 
   render() {
-    let {
-      numValid,
-      numInvalid,
+    const {
+      numValid = 0,
+      numInvalid = 0,
       domain,
       certFingerprint,
       datapackageHash,
       publicKey,
       software,
-    } = this.collInfo.verify || {};
-    numValid = numValid || 0;
-    numInvalid = numInvalid || 0;
+    } = this.collInfo?.verify || {};
 
-    const sourceUrl = this.collInfo.sourceUrl;
+    const sourceUrl = this.collInfo?.sourceUrl;
 
     const certFingerprintUrl = certFingerprint
       ? `https://crt.sh/?q=${certFingerprint}`
@@ -251,25 +239,35 @@ export class RWPEmbedReceipt extends LitElement {
                 >replayweb.page</a
               >.
             </p>
-            <a
-              href="${sourceUrl}"
-              class="button is-primary mt-4"
-              @keyup="${clickOnSpacebarPress}"
-            >
-              <span class="icon is-small">
-                <fa-icon
-                  size="1.0em"
-                  aria-hidden="true"
-                  .svg="${fasDownload}"
-                ></fa-icon>
-              </span>
-              <span>Download Archive</span>
-            </a>
-            <hr class="dropdown-divider mt-4" />
+            ${sourceUrl
+              ? html`
+                  <a
+                    href="${sourceUrl}"
+                    class="button is-primary mt-4"
+                    @keyup="${clickOnSpacebarPress}"
+                  >
+                    <span class="icon is-small">
+                      <fa-icon
+                        size="1.0em"
+                        aria-hidden="true"
+                        .svg="${fasDownload}"
+                      ></fa-icon>
+                    </span>
+                    <span>Download Archive</span>
+                  </a>
+                  <hr class="dropdown-divider mt-4" />
+                `
+              : nothing}
             <h2 class="mt-4">Technical Information</h2>
             <div class="embed-info-drop-statscontainer mb-4">
-              <h3>Original URL:</h3>
-              <p><a target="_blank" href="${this.url}">${this.url}</a></p>
+              ${this.url
+                ? html`
+                    <h3>Original URL:</h3>
+                    <p>
+                      <a target="_blank" href="${this.url}">${this.url}</a>
+                    </p>
+                  `
+                : nothing}
               <h3 class="mt-2">Archived On:</h3>
               <p>${dateStr}</p>
               ${domain
@@ -301,8 +299,12 @@ export class RWPEmbedReceipt extends LitElement {
                 : html` <p>Not Available</p> `}
               <h3 class="mt-2">Package Hash:</h3>
               <p class="show-hash">${datapackageHash}</p>
-              <h3 class="mt-2">Size</h3>
-              <p>${prettyBytes(Number(this.collInfo.size || 0))}</p>
+              ${this.collInfo?.size != null
+                ? html`
+                    <h3 class="mt-2">Size</h3>
+                    <p>${prettyBytes(Number(this.collInfo.size || 0))}</p>
+                  `
+                : nothing}
             </div>
             ${sourceUrl ? html`` : ""}
             <p
@@ -314,13 +316,16 @@ export class RWPEmbedReceipt extends LitElement {
                   class="has-text-black"
                   target="_blank"
                   href="https://github.com/webrecorder/replayweb.page"
-                >
-                  <fa-icon
-                    class="menu-logo mr-1"
-                    size="1.0rem"
-                    aria-hidden="true"
-                    .svg=${this.appLogo}
-                  ></fa-icon>
+                  >${this.appLogo
+                    ? html`
+                        <fa-icon
+                          class="menu-logo mr-1"
+                          size="1.0rem"
+                          aria-hidden="true"
+                          .svg=${this.appLogo}
+                        ></fa-icon>
+                      `
+                    : nothing}
                   Powered by ReplayWeb.page
                 </a>
               </span>

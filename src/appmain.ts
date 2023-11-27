@@ -1,5 +1,5 @@
-import { LitElement, html, css } from "lit";
-import { property } from "lit/decorators.js";
+import { LitElement, html, css, type TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
@@ -16,9 +16,11 @@ import { SWManager } from "./swmanager";
 import "./item";
 import "./item-index";
 import "./chooser";
+import { LoadInfo } from "./item";
 
 // ===========================================================================
-class ReplayWebApp extends LitElement {
+@customElement("replay-app-main")
+export class ReplayWebApp extends LitElement {
   @property({ type: Boolean })
   inited = false;
 
@@ -41,10 +43,10 @@ class ReplayWebApp extends LitElement {
   collTitle: string | null = null;
 
   @property({ type: Object })
-  loadInfo: any = null;
+  loadInfo: LoadInfo | null = null;
 
   @property({ type: String })
-  embed: any = null;
+  embed: string | null = null;
 
   @property({ type: String })
   collPageUrl = "";
@@ -56,13 +58,13 @@ class ReplayWebApp extends LitElement {
   pageReplay = false;
 
   @property({ type: String })
-  source: any = null;
+  source: string | null = null;
 
   @property({ type: Boolean })
   skipRuffle = false;
 
   @property({ type: Object })
-  swErrorMsg: any = null;
+  swErrorMsg: TemplateResult<1> | "" | null = null;
 
   private swName?: string;
   private swmanager: SWManager | null;
@@ -70,7 +72,6 @@ class ReplayWebApp extends LitElement {
 
   private droppedFile: File | null = null;
 
-  // eslint-disable-next-line no-undef
   constructor(swName = __SW_NAME__) {
     super();
 
@@ -105,7 +106,7 @@ class ReplayWebApp extends LitElement {
     });
   }
 
-  private maybeStartFileDrop = (dragEvent) => {
+  private maybeStartFileDrop = (dragEvent: DragEvent) => {
     if (this.sourceUrl) {
       // A source is already loaded. Don't allow dropping a file.
       return;
@@ -372,7 +373,7 @@ class ReplayWebApp extends LitElement {
     -->
       <a
         href="?terms"
-        @click="${(e) => {
+        @click="${(e: Event) => {
           e.preventDefault();
           this.showAbout = true;
         }}"
@@ -385,7 +386,7 @@ class ReplayWebApp extends LitElement {
     return html` <wr-item
       .loadInfo="${this.loadInfo}"
       sourceUrl="${this.sourceUrl || ""}"
-      embed="${this.embed}"
+      embed="${ifDefined(this.embed === null ? undefined : this.embed)}"
       appName="${this.appName}"
       swName="${ifDefined(this.swName)}"
       .appLogo="${this.mainLogo}"
@@ -452,12 +453,11 @@ class ReplayWebApp extends LitElement {
     }
 
     this.swmanager = new SWManager({ name, appName: this.appName });
-    this.swmanager
-      .register()
-      .catch(
-        () =>
-          (this.swErrorMsg = this.swmanager?.renderErrorReport(this.mainLogo)),
-      );
+    this.swmanager.register().catch(
+      () =>
+        // @ts-expect-error - TS2554 - Expected 2 arguments, but got 1.
+        (this.swErrorMsg = this.swmanager?.renderErrorReport(this.mainLogo)),
+    );
 
     window.addEventListener("popstate", () => {
       this.initRoute();
@@ -534,16 +534,21 @@ class ReplayWebApp extends LitElement {
     this.pageParams = new URLSearchParams(window.location.search);
 
     // Google Drive
-    let state: any = this.pageParams.get("state");
+    const state = this.pageParams.get("state");
+    type State = {
+      ids?: string[];
+      userId?: string;
+      action?: string;
+    };
     if (state) {
       try {
-        state = JSON.parse(state);
+        const parsedState: State = JSON.parse(state);
         if (
-          state.ids instanceof Array &&
-          state.userId &&
-          state.action === "open"
+          parsedState.ids instanceof Array &&
+          parsedState.userId &&
+          parsedState.action === "open"
         ) {
-          this.pageParams.set("source", "googledrive://" + state.ids[0]);
+          this.pageParams.set("source", "googledrive://" + parsedState.ids[0]);
           this.pageParams.delete("state");
           window.location.search = this.pageParams.toString();
           return;
@@ -581,7 +586,7 @@ class ReplayWebApp extends LitElement {
 
     if (this.pageParams.get("config")) {
       try {
-        this.loadInfo.extraConfig = JSON.parse(
+        this.loadInfo!.extraConfig = JSON.parse(
           this.pageParams.get("config") || "",
         );
       } catch (e) {
@@ -590,35 +595,35 @@ class ReplayWebApp extends LitElement {
     }
 
     if (this.pageParams.get("baseUrlSourcePrefix")) {
-      this.loadInfo.extraConfig = this.loadInfo.extraConfig || {};
-      this.loadInfo.extraConfig.baseUrlSourcePrefix = this.pageParams.get(
+      this.loadInfo!.extraConfig = this.loadInfo!.extraConfig || {};
+      this.loadInfo!.extraConfig.baseUrlSourcePrefix = this.pageParams.get(
         "baseUrlSourcePrefix",
       );
     }
 
     if (this.pageParams.get("basePageUrl")) {
-      this.loadInfo.extraConfig = this.loadInfo.extraConfig || {};
-      this.loadInfo.extraConfig.baseUrl = this.pageParams.get("basePageUrl");
+      this.loadInfo!.extraConfig = this.loadInfo!.extraConfig || {};
+      this.loadInfo!.extraConfig.baseUrl = this.pageParams.get("basePageUrl");
     }
 
     if (this.pageParams.get("customColl")) {
-      this.loadInfo.customColl = this.pageParams.get("customColl");
+      this.loadInfo!.customColl = this.pageParams.get("customColl");
     }
 
     if (this.pageParams.get("noWebWorker") === "1") {
-      this.loadInfo.noWebWorker = true;
+      this.loadInfo!.noWebWorker = true;
     }
 
     if (this.pageParams.get("noCache") === "1") {
-      this.loadInfo.noCache = true;
+      this.loadInfo!.noCache = true;
     }
 
     if (this.pageParams.get("hideOffscreen") === "1") {
-      this.loadInfo.hideOffscreen = true;
+      this.loadInfo!.hideOffscreen = true;
     }
 
     if (this.pageParams.get("loading") === "eager") {
-      this.loadInfo.loadEager = true;
+      this.loadInfo!.loadEager = true;
     }
 
     if (this.pageParams.get("swName")) {
@@ -791,7 +796,3 @@ class ReplayWebApp extends LitElement {
     `;
   }
 }
-
-customElements.define("replay-app-main", ReplayWebApp);
-
-export { ReplayWebApp };

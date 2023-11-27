@@ -1,94 +1,75 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { wrapCss, rwpLogo } from "./misc";
 import { SWManager } from "./swmanager";
+import { property } from "lit/decorators.js";
 
-var scriptSrc = document.currentScript && document.currentScript.src;
+const scriptSrc =
+  document.currentScript && (document.currentScript as HTMLScriptElement).src;
 
-var defaultReplayFile = "";
+let defaultReplayFile = "";
 
 const DEFAULT_REPLAY_BASE = "https://replayweb.page/";
 
 // ===========================================================================
 class Embed extends LitElement {
-  constructor() {
-    super();
-    this.replaybase = "./replay/";
-    this.replayfile = defaultReplayFile;
-    // eslint-disable-next-line no-undef
-    this.swName = __SW_NAME__;
-    this.mainElementName = "replay-app-main";
-    this.appName = "ReplayWeb.page";
-    this.view = "replay";
-    this.ts = "";
-    this.url = "";
-    this.query = "";
-    this.config = "";
-    this.customConfig = null;
-    this.coll = "";
-    this.paramString = null;
-    this.deepLink = false;
-    this.newWindowBase = "";
-    this.inited = false;
-    this.embed = null;
-    this.reloadCount = 0;
-    this.sandbox = false;
-    this.noWebWorker = false;
-    this.noCache = false;
-    // deprecated;
-    this.noSandbox = null;
-    this.logo = rwpLogo;
-    this.loading = "";
-    this.useRuffle = false;
-  }
+  @property({ type: String }) url = "";
+  @property({ type: String }) ts = "";
+  @property({ type: String }) query = "";
+
+  @property({ type: String }) source;
+  @property({ type: String }) src;
+
+  @property({ type: String }) view = "replay";
+  @property({ type: String }) embed: string | null = null;
+
+  @property({ type: String }) replaybase = "./replay/";
+  @property({ type: String }) swName = __SW_NAME__;
+
+  @property({ type: String }) title!: string;
+
+  @property({ type: String }) coll = "";
+  @property({ type: String }) config = "";
+
+  @property({ type: Boolean }) inited = false;
+
+  @property({ type: String }) paramString: string | null = null;
+  @property({ type: String }) hashString: string | undefined;
+
+  @property({ type: Boolean }) deepLink = false;
+  @property({ type: Boolean }) sandbox = false;
+  @property({ type: Boolean }) noSandbox: boolean | null = null;
+  @property({ type: Boolean }) noWebWorker = false;
+  @property({ type: Boolean }) noCache = false;
+  @property({ type: Boolean }) hideOffscreen: boolean | undefined;
+
+  @property({ type: String }) newWindowBase = "";
+
+  @property({ type: String }) errorMessage:
+    | ""
+    | TemplateResult<1>
+    | string
+    | undefined;
+
+  @property({ type: Boolean }) requireSubdomainIframe;
+
+  @property({ type: String }) loading = "";
+
+  @property({ type: Boolean }) useRuffle = false;
+
+  replayfile = defaultReplayFile;
+  mainElementName = "replay-app-main";
+  appName = "ReplayWeb.page";
+  customConfig = null;
+  reloadCount = 0;
+  logo = rwpLogo;
+
+  isCrossOrigin: boolean | undefined;
+  swmanager: SWManager | undefined;
 
   static setDefaultReplayFile(replayfile) {
     defaultReplayFile = replayfile;
-  }
-
-  static get properties() {
-    return {
-      url: { type: String },
-      ts: { type: String },
-      query: { type: String },
-
-      source: { type: String },
-      src: { type: String },
-
-      view: { type: String },
-      embed: { type: String },
-
-      replaybase: { type: String },
-      swName: { type: String },
-
-      title: { type: String },
-
-      coll: { type: String },
-      config: { type: String },
-
-      inited: { type: Boolean },
-
-      paramString: { type: String },
-      hashString: { type: String },
-
-      deepLink: { type: Boolean },
-      sandbox: { type: Boolean },
-      noSandbox: { type: Boolean },
-      noWebWorker: { type: Boolean },
-      noCache: { type: Boolean },
-      hideOffscreen: { type: Boolean },
-
-      newWindowBase: { type: String },
-
-      errorMessage: { type: String },
-
-      requireSubdomainIframe: { type: Boolean },
-
-      loading: { type: String },
-
-      useRuffle: { type: Boolean },
-    };
   }
 
   async doRegister() {
@@ -168,6 +149,7 @@ class Embed extends LitElement {
 
     // likely safari < 16, don't use web workers due to issues with split storage state
     if (
+      // @ts-expect-error - TS2339 - Property 'GestureEvent' does not exist on type 'Window & typeof globalThis'.
       window.GestureEvent !== undefined &&
       window.SharedWorker === undefined
     ) {
@@ -184,15 +166,19 @@ class Embed extends LitElement {
     const qs = new URLSearchParams(window.location.hash.slice(1));
 
     if (qs.has("url")) {
+      // @ts-expect-error - TS2339 - Property 'url' does not exist on type 'Embed'.
       this.url = qs.get("url");
     }
     if (qs.has("ts")) {
+      // @ts-expect-error - TS2339 - Property 'ts' does not exist on type 'Embed'.
       this.ts = qs.get("ts");
     }
     if (qs.has("query")) {
+      // @ts-expect-error - TS2339 - Property 'query' does not exist on type 'Embed'.
       this.query = qs.get("query");
     }
     if (qs.has("view")) {
+      // @ts-expect-error - TS2339 - Property 'view' does not exist on type 'Embed'.
       this.view = qs.get("view");
     }
   }
@@ -203,6 +189,7 @@ class Embed extends LitElement {
     }
 
     if (this.config) {
+      // @ts-expect-error - TS2339 - Property 'customConfig' does not exist on type 'Embed'. | TS2339 - Property 'config' does not exist on type 'Embed'.
       const config = { ...this.customConfig, ...JSON.parse(this.config) };
       return JSON.stringify(config);
     } else {
@@ -229,7 +216,20 @@ class Embed extends LitElement {
 
       const config = this.mergeConfigs();
 
-      const params = {
+      const params: {
+        source: URL;
+        customColl: string;
+        config: string;
+        basePageUrl: string;
+        baseUrlSourcePrefix: string;
+        embed: string;
+        noWebWorker?: "1";
+        noCache?: "1";
+        hideOffscreen?: "1";
+        loading?: "eager";
+        swName?: string;
+        ruffle?: "1";
+      } = {
         source,
         customColl: this.coll,
         config,
@@ -258,7 +258,6 @@ class Embed extends LitElement {
         params.loading = "eager";
       }
 
-      // eslint-disable-next-line no-undef
       if (this.swName !== __SW_NAME__) {
         params.swName = this.swName;
       }
@@ -267,7 +266,10 @@ class Embed extends LitElement {
         params.ruffle = "1";
       }
 
-      this.paramString = new URLSearchParams(params).toString();
+      this.paramString = new URLSearchParams(
+        // Converting to unknown here so that we can ignore the URL -> string conversion necessary for the types to work out
+        params as unknown as Record<string, string>,
+      ).toString();
 
       this.hashString = new URLSearchParams({
         url: this.url,
@@ -317,7 +319,8 @@ class Embed extends LitElement {
          allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts\
          allow-same-origin allow-forms"
                   : undefined,
-              )}"
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the typedef for the `sandbox` attribute here is incorrect, it doesn't support multiple values
+              ) as any}"
               @load="${this.onLoad}"
               src="${this.replaybase}${this.replayfile}?${this
                 .paramString}#${this.hashString}"

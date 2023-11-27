@@ -1,3 +1,5 @@
+<!-- cSpell:ignoreRegExp @\w+ -->
+
 ## CHANGES
 
 v1.8.11
@@ -72,7 +74,7 @@ v1.8.0
 
 - UI: Add 'Show All Pages' option to show non-seed pages that are previously only available via search
 - Embeds: add 'swName' option to allow customizing 'sw.js' to a different filename
-- Dependencies: Update to wabac.js 2.16.1 -- varioues loading improvements related to surt
+- Dependencies: Update to wabac.js 2.16.1 -- various loading improvements related to surt
 - Dependencies: Update to electron 25.5.1, ruffle 2023-06-14
 
 v1.7.15
@@ -149,7 +151,7 @@ v1.7.4
 v1.7.3
 
 - Fidelity: Misc fidelity improvements via latest wombat + wabac.js
-- Dependecies: wabac.js 2.13.8, wombat 3.3.11, auto-js-ipfs 1.5.1
+- Dependencies: wabac.js 2.13.8, wombat 3.3.11, auto-js-ipfs 1.5.1
 - Loading: Fix occasional loading issues with multiple embeds loading on the same page
 
 v1.7.2
@@ -292,7 +294,7 @@ v1.5.2
 
 v1.5.1
 
-- Library usage: Simplfy download options in editable mode, add warc/1.0 download opt (for archiveweb.page)
+- Library usage: Simplify download options in editable mode, add warc/1.0 download opt (for archiveweb.page)
 - Library usage: Allow custom service worker init path on app init (or none)
 - Library usage: Ensure page title reflects current app
 - UI: Refresh UI after half second while waiting for service worker to load, instead of every 5.
@@ -338,7 +340,7 @@ v1.4.4
 
 v1.4.3
 
-- Loading: Various fixes to index loading for compessed WACZ index
+- Loading: Various fixes to index loading for compressed WACZ index
 - Fidelity: Fix edge-case POST-to-get conversion - binary, empty and text/plain POST payloads now handled same way here (via wabac.js/warcio.js) as in other tools (pywb, cdxj-indexer)
 - Customization: Support for automated redirect to live page on not found (via embed options)
 - UI: Updated page not found message

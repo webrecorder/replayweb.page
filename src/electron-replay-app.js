@@ -26,7 +26,9 @@ import log from "electron-log";
 import mime from "mime-types";
 import url from "url";
 
+// @ts-expect-error - TS2322 - Type 'typeof Headers' is not assignable to type '{ new (init?: HeadersInit | undefined): Headers; prototype: Headers; }'.
 global.Headers = Headers;
+// @ts-expect-error - TS2322 - Type '(url: RequestInfo, init?: RequestInit | undefined) => Promise<Response>' is not assignable to type '(input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>'.
 global.fetch = fetch;
 
 const STATIC_PREFIX = "http://localhost:5471/";
@@ -39,27 +41,43 @@ const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
 // ============================================================================
 class ElectronReplayApp {
+  /**
+   * @type {string}
+   */
+  pluginPath = "";
+
+  appPath = app.getAppPath();
+
+  projPath = path.join(this.appPath, "../");
+
+  staticContentPath = "./";
+
+  profileName = "";
+
+  proxyColl = null;
+
+  proxyTS = null;
+
+  /**
+   * @type {BrowserWindow | null}
+   */
+  mainWindow = null;
+
+  /**
+   * @type {string | null}
+   */
+  openNextFile = null;
+
+  screenSize = { width: 1024, height: 768 };
+
+  /**
+   * @type {string | null}
+   */
+  origUA = null;
+
   constructor({ staticPath = "./", profileName = "" } = {}) {
-    this.pluginPath = "";
-
-    this.appPath = app.getAppPath();
-
-    this.projPath = path.join(this.appPath, "../");
-
     this.staticContentPath = staticPath;
-
     this.profileName = profileName;
-
-    this.proxyColl = null;
-    this.proxyTS = null;
-
-    this.mainWindow = null;
-
-    this.openNextFile = null;
-
-    this.screenSize = { width: 1024, height: 768 };
-
-    this.origUA = null;
   }
 
   get mainWindowWebPreferences() {
@@ -132,7 +150,7 @@ class ElectronReplayApp {
       });
     });
 
-    app.on("activate", function () {
+    app.on("activate", () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (BrowserWindow.getAllWindows().length === 0) {
@@ -153,6 +171,7 @@ class ElectronReplayApp {
 
   checkUpdates() {
     autoUpdater.logger = log;
+    // @ts-expect-error - TS2339 - Property 'transports' does not exist on type 'Logger'.
     autoUpdater.logger.transports.file.level = "info";
     autoUpdater.checkForUpdatesAndNotify();
   }
@@ -332,6 +351,15 @@ class ElectronReplayApp {
     callback({ statusCode, headers, data });
   }
 
+  /**
+   *
+   * @param {string} url
+   * @param {(props: {
+   *    statusCode: number;
+   *    headers: Record<string, string>;
+   *    data: unknown;
+   * }) => void} callback
+   */
   notFound(url, callback) {
     console.log("not found: " + url);
     const data = this._bufferToStream(
@@ -449,6 +477,7 @@ class ElectronReplayApp {
     const theWindow = new BrowserWindow({
       width: this.screenSize.width,
       height: this.screenSize.height,
+      // @ts-expect-error - TS2345 - Argument of type '{ width: any; height: any; isMaximized: boolean; show: false; webPreferences: { plugins: boolean; preload: string; nativeWindowOpen: boolean; contextIsolation: boolean; enableRemoteModule: boolean; sandbox: boolean; nodeIntegration: boolean; }; }' is not assignable to parameter of type 'BrowserWindowConstructorOptions'.
       isMaximized: true,
       show: false,
       webPreferences: this.mainWindowWebPreferences,

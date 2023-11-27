@@ -48,15 +48,35 @@ import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.sv
 import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
 import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
 
-import { RWPEmbedReceipt } from "./embed-receipt.js";
+import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
 
 import type { Item as ItemInfo } from "./types";
 import type { Replay } from "./replay";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import "./item-info";
 
 const RWP_SCHEME = "search://";
+
+export type LoadInfo = {
+  extraConfig?: {
+    baseUrlSourcePrefix?: unknown;
+    baseUrl?: unknown;
+    headers?: unknown;
+    recording?: unknown;
+  };
+  customColl?: string | null;
+  noWebWorker?: boolean;
+  noCache?: boolean;
+  hideOffscreen?: boolean;
+  loadEager?: boolean;
+  sourceUrl?: string;
+  loadUrl?: string;
+  swError?: string;
+  newFullImport?: unknown;
+  name?: string;
+};
 
 // ===========================================================================
 class Item extends LitElement {
@@ -67,7 +87,7 @@ class Item extends LitElement {
   sourceUrl: string | null = null;
 
   @property({ type: Object, attribute: false })
-  loadInfo: any;
+  loadInfo: LoadInfo | null = null;
 
   @property({ type: Boolean })
   showSidebar: boolean | null = null;
@@ -142,9 +162,9 @@ class Item extends LitElement {
   autoUpdateInterval = 10;
 
   @property({ type: String })
-  swName: any = null;
+  swName: string | null = null;
 
-  private splitter: any = null;
+  private splitter: Split.Instance | null = null;
 
   private _replaceLoc = false;
   private _locUpdateNeeded = false;
@@ -224,7 +244,7 @@ class Item extends LitElement {
     this.updateTabData({ multiTs: json.timestamps });
   }
 
-  willUpdate(changedProperties: Map<string, any>) {
+  willUpdate(changedProperties: Map<string, Record<string, unknown>>) {
     if (changedProperties.has("tabData") && this.tabData) {
       // Format tab data from URL query params
       const tabData = {};
@@ -266,7 +286,9 @@ class Item extends LitElement {
       if (!this.itemInfo || !this.itemInfo.coll) {
         return;
       }
-      const newHash = "#" + new URLSearchParams(this.tabData as any).toString();
+      const newHash =
+        "#" +
+        new URLSearchParams(this.tabData as Record<string, string>).toString();
 
       if (!this.tabData.url) {
         this.url =
@@ -338,7 +360,7 @@ class Item extends LitElement {
           },
         };
 
-        this.splitter = Split([contents as any, replay], opts);
+        this.splitter = Split([contents, replay], opts);
       }
     } else if (this.splitter) {
       try {
@@ -850,6 +872,7 @@ class Item extends LitElement {
 
     if (!isReplay && this.tabData && this.tabData.view) {
       const detail = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
         title: (this.tabLabels as any)[this.tabData.view],
         replayTitle: false,
       };
@@ -866,7 +889,7 @@ class Item extends LitElement {
       return html` <wr-loader
         .loadInfo="${this.loadInfo}"
         embed="${this.embed || ""}"
-        swName="${this.swName}"
+        swName="${ifDefined(this.swName === null ? undefined : this.swName)}"
         .coll="${this.item}"
         sourceUrl="${this.sourceUrl || ""}"
         @coll-loaded=${this.onItemLoaded}
@@ -891,7 +914,7 @@ class Item extends LitElement {
               : isReplay
               ? "is-hidden"
               : "full-pages"}"
-            role="${(isSidebar ? "complementary" : "") as any}"
+            role="${ifDefined(isSidebar ? "complementary" : undefined)}"
             aria-label="${isSidebar ? "Browse Contents" : ""}"
           >
             ${this.renderTabHeader(isSidebar)}
@@ -961,9 +984,9 @@ class Item extends LitElement {
                 href="#story"
                 class="is-size-6"
                 aria-label="Story"
-                aria-current="${(this.tabData.view === "story"
-                  ? "location"
-                  : "") as any}"
+                aria-current="${ifDefined(
+                  this.tabData.view === "story" ? "location" : undefined,
+                )}"
               >
                 <span class="icon"
                   ><fa-icon
@@ -987,9 +1010,9 @@ class Item extends LitElement {
             href="#pages"
             class="is-size-6"
             aria-label="Pages"
-            aria-current="${(this.tabData.view === "pages"
-              ? "location"
-              : "") as any}"
+            aria-current="${ifDefined(
+              this.tabData.view === "pages" ? "location" : undefined,
+            )}"
           >
             <span class="icon"
               ><fa-icon
@@ -1012,9 +1035,9 @@ class Item extends LitElement {
             href="#resources"
             class="is-size-6"
             aria-label="URLs"
-            aria-current="${(this.tabData.view === "resources"
-              ? "location"
-              : "") as any}"
+            aria-current="${ifDefined(
+              this.tabData.view === "resources" ? "location" : undefined,
+            )}"
           >
             <span class="icon"
               ><fa-icon
@@ -1513,7 +1536,7 @@ class Item extends LitElement {
             id="story"
             .isSidebar="${isSidebar}"
             class="${isStory ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-            role="${(isSidebar ? "" : "main") as any}"
+            role="${ifDefined(isSidebar ? undefined : "main")}"
           >
           </wr-coll-story>`
         : ""}
@@ -1530,7 +1553,7 @@ class Item extends LitElement {
             class="is-paddingless ${isResources ? "" : "is-hidden"} ${isSidebar
               ? "sidebar"
               : ""}"
-            role="${(isSidebar ? "" : "main") as any}"
+            role="${ifDefined(isSidebar ? undefined : "main")}"
           >
           </wr-coll-resources>`
         : ""}
@@ -1548,7 +1571,7 @@ class Item extends LitElement {
             id="pages"
             @coll-update="${this.onItemUpdate}"
             class="${isPages ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
-            role="${(isSidebar ? "" : "main") as any}"
+            role="${ifDefined(isSidebar ? undefined : "main")}"
           >
           </wr-page-view>`
         : ""}
@@ -1738,6 +1761,7 @@ class Item extends LitElement {
 
   _stringToParams(value) {
     const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
     const data: any = {};
     data.url = "";
     data.ts = "";
@@ -1757,7 +1781,7 @@ class Item extends LitElement {
     return data;
   }
 
-  _paramsToString(value) {
+  _paramsToString(value: Record<string, unknown>) {
     const q = new URLSearchParams();
 
     for (const param of [
@@ -1768,14 +1792,14 @@ class Item extends LitElement {
       "urlSearchType",
     ]) {
       if (param in value) {
-        q.set(param, value[param]);
+        q.set(param, String(value[param]));
       }
     }
 
     return q.toString();
   }
 
-  onRefresh(event, replayOnly = false) {
+  onRefresh(event: Event | null, replayOnly = false) {
     if (event) {
       event.preventDefault();
     }

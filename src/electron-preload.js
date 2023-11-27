@@ -11,6 +11,11 @@ const dbs = {};
 
 const loader = new CollectionLoader();
 
+/**
+ *
+ * @param {string} name
+ * @returns
+ */
 async function getColl(name) {
   if (!dbs[name]) {
     dbs[name] = await loader.loadColl(name);
@@ -20,11 +25,24 @@ async function getColl(name) {
   return dbs[name];
 }
 
+/**
+ * @param {string} name
+ * @returns
+ */
 async function getDB(name) {
   const coll = await getColl(name);
   return coll.store;
 }
 
+/**
+ *
+ * @param {import("electron").IpcRendererEvent} event
+ * @param {*} request
+ * @param {*} coll
+ * @param {*} ts
+ * @param {*} channel
+ * @returns
+ */
 async function getResponse(event, request, coll, ts, channel) {
   const db = await getDB(coll);
 
