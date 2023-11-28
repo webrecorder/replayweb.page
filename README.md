@@ -52,19 +52,19 @@ It is also a Jekyll site for use with GitHub pages. Jekyll is only needed to bui
 
 The package provides various commands that can be used with yarn:
 
-- `yarn run start-dev` - to run in dev mode with Webpack dev server on port 9990. Autobuilds dev assets.
+- `yarn start-dev` - to run in dev mode with Webpack dev server on port 9990. Autobuilds dev assets.
 
-- `yarn run build` - to build production assets sw.js, ui.js
+- `yarn build` - to build production assets sw.js, ui.js
 
-- `yarn run start-prod` - to run production site on port 9990, with previously built assets
+- `yarn start-prod` - to run production site on port 9990, with previously built assets
 
-- `yarn run start-electron` - to start electron in dev mode, with previously built assets
+- `yarn start-electron` - to start electron in dev mode, with previously built assets
 
-- `yarn run dist` - to build production assets + Electron app (in dist/)
+- `yarn dist` - to build production assets + Electron app (in dist/)
 
-- `yarn run build-docs` - to build the Jekyll docs (for local use) and run Jekyll. Requires Ruby.
+- `yarn build-docs` - to build the Jekyll docs (for local use) and run Jekyll. Requires Ruby.
 
-- `yarn run start-jekyll` - to build Jekyll docs and start Jekyll static server on port 4000.
+- `yarn start-jekyll` - to build Jekyll docs and start Jekyll static server on port 4000.
 
 The static assets are placed in the root `index.html`, `sw.js` and `ui.js`, and can be used with any HTTP server.
 
