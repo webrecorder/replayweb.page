@@ -1,4 +1,4 @@
-/*eslint-env node */
+/* eslint-env node */
 
 import fetch from "node-fetch";
 import { Headers } from "node-fetch";
@@ -41,9 +41,6 @@ const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
 // ============================================================================
 class ElectronReplayApp {
-  /**
-   * @type {string}
-   */
   pluginPath = "";
 
   appPath = app.getAppPath();
@@ -54,26 +51,17 @@ class ElectronReplayApp {
 
   profileName = "";
 
-  proxyColl = null;
+  proxyColl: string | null = null;
 
-  proxyTS = null;
+  proxyTS: string | null = null;
 
-  /**
-   * @type {BrowserWindow | null}
-   */
-  mainWindow = null;
+  mainWindow: BrowserWindow | null = null;
 
-  /**
-   * @type {string | null}
-   */
-  openNextFile = null;
+  openNextFile: string | null = null;
 
   screenSize = { width: 1024, height: 768 };
 
-  /**
-   * @type {string | null}
-   */
-  origUA = null;
+  origUA: string | null = null;
 
   constructor({ staticPath = "./", profileName = "" } = {}) {
     this.staticContentPath = staticPath;

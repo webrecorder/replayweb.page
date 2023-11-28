@@ -3,6 +3,7 @@
 
 const path = require("path");
 const webpack = require("webpack");
+const { merge } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
@@ -18,6 +19,7 @@ const GDRIVE_CLIENT_ID =
 // Copyright banner text
 const BANNER_TEXT = `'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020-${new Date().getFullYear()}, Webrecorder Software. Licensed under the Affero General Public License v3.'`;
 
+/** @type {import("webpack").Configuration['optimization']} */
 const optimization = {
   minimize: true,
   minimizer: [
@@ -26,13 +28,32 @@ const optimization = {
     }),
   ],
 };
+/** @type {import("webpack").Configuration} */
+const tsConfig = {
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader",
+        include: path.resolve(__dirname, "src"),
+        options: {
+          onlyCompileBundledFiles: true,
+        },
+      },
+    ],
+  },
+};
 
 const electronMainConfig = (/*env, argv*/) => {
-  return {
+  /** @type {import('webpack').Configuration} */
+  const config = {
     target: "electron-main",
     mode: "production",
     entry: {
-      electron: "./src/electron-main.js",
+      electron: "./src/electron-main.ts",
     },
     optimization,
     output: {
@@ -56,19 +77,22 @@ const electronMainConfig = (/*env, argv*/) => {
       }),
     ],
   };
+  return merge(tsConfig, config);
 };
 
 const electronPreloadConfig = (/*env, argv*/) => {
-  return {
+  /** @type {import('webpack').Configuration} */
+  const config = {
     target: "electron-preload",
     mode: "production",
     entry: {
-      preload: "./src/electron-preload.js",
+      preload: "./src/electron-preload.ts",
     },
 
     optimization,
     plugins: [new webpack.BannerPlugin(BANNER_TEXT)],
   };
+  return merge(tsConfig, config);
 };
 
 const browserConfig = (/*env, argv*/) => {
@@ -89,7 +113,8 @@ const browserConfig = (/*env, argv*/) => {
     });
   }
 
-  return {
+  /** @type {import('webpack').Configuration} */
+  const config = {
     target: "web",
     mode: "production",
     cache: {
@@ -97,7 +122,6 @@ const browserConfig = (/*env, argv*/) => {
     },
     resolve: {
       fallback: { crypto: false },
-      extensions: [".ts", ".js"],
     },
     entry,
     optimization,
@@ -147,14 +171,6 @@ const browserConfig = (/*env, argv*/) => {
     module: {
       rules: [
         {
-          test: /\.tsx?$/,
-          loader: "ts-loader",
-          include: path.resolve(__dirname, "src"),
-          options: {
-            onlyCompileBundledFiles: true,
-          },
-        },
-        {
           test: /\.svg$/,
           use: ["svg-inline-loader"],
         },
@@ -169,6 +185,7 @@ const browserConfig = (/*env, argv*/) => {
       ],
     },
   };
+  return merge(tsConfig, config);
 };
 
 module.exports = [browserConfig, electronMainConfig, electronPreloadConfig];
