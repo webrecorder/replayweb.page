@@ -1,9 +1,11 @@
-name: Build + Lint
+name: Playwright Integration
 
-on: push
+on:
+  push:
+  pull_request:
 
 jobs:
-  lint:
+  playwright:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,10 +19,10 @@ jobs:
           cache: 'yarn'
 
       - name: Yarn Install
-        run: yarn install --frozen-lockfile --ignore-optional
+        run: yarn install --frozen-lockfile
 
-      - name: Yarn Lint
-        run: yarn run lint
+      - name: Playwright Install Browsers
+        run: yarn playwright install
 
-      - name: Yarn Build
-        run: yarn run build
+      - name: Playwright Run Tests
+        run: yarn run playwright test

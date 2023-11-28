@@ -2,6 +2,12 @@
 
 ## CHANGES
 
+v1.8.13
+- Loading: Ensure default index.html is served when not in embed mode, don't add '?serveIndex=1' for app itself
+
+v1.8.12
+- Loading: Fixes embed 'Purge Cache + Reload', ensure '?serveIndex=1' is always set on all service worker loading
+
 v1.8.11
 
 - Loading: Use default html index, avoid custom html injection (via wabac.js 2.16.12)
