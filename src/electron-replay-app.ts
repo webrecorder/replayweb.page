@@ -1,4 +1,4 @@
-/*eslint-env node */
+/* eslint-env node */
 
 import fetch from "node-fetch";
 import { Headers } from "node-fetch";
