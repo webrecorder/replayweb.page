@@ -20,6 +20,9 @@ jobs:
 
       - name: Yarn Install
         run: yarn install --frozen-lockfile
+        
+      - name: Yarn Build
+        run: yarn build
 
       - name: Playwright Install Browsers
         run: yarn playwright install
