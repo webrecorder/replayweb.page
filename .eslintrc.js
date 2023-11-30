@@ -21,6 +21,12 @@ module.exports = {
     "no-restricted-globals": [2, "event", "error"],
     "linebreak-style": ["error", "unix"],
   },
-  ignorePatterns: ["ruffle/**/*", "build/**/*", "/sw.js", "/ui.js"],
+  ignorePatterns: [
+    "ruffle/**/*",
+    "build/**/*",
+    "/sw.js",
+    "/ui.js",
+    "dist/**/*",
+  ],
   reportUnusedDisableDirectives: true,
 };
