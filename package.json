@@ -86,7 +86,8 @@
     "release": "yarn run build && electron-builder",
     "lint": "eslint ./",
     "format": "prettier --write ./",
-    "prepare": "husky install; node scripts/build-if-not-git-repo.js"
+    "prepare": "husky install; node scripts/build-if-not-git-repo.js",
+    "prepack": "echo \"HELLO FROM PREPACK\""
   },
   "build": {
     "afterSign": "build/notarize.js",
