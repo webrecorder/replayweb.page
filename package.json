@@ -86,8 +86,7 @@
     "release": "yarn run build && electron-builder",
     "lint": "eslint ./",
     "format": "prettier --write ./",
-    "prepare": "husky install",
-    "prepack": "yarn build"
+    "prepare": "husky install && yarn build"
   },
   "build": {
     "afterSign": "build/notarize.js",
