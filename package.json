@@ -86,7 +86,7 @@
     "release": "yarn run build && electron-builder",
     "lint": "eslint ./",
     "format": "prettier --write ./",
-    "prepare": "husky install"
+    "prepare": "husky install; node scripts/build-if-not-git-repo.js"
   },
   "build": {
     "afterSign": "build/notarize.js",
@@ -102,7 +102,9 @@
       "dist/*.js",
       "dist/prebuilds/${platform}-${arch}/*",
       "dist/build/*",
-      "*.js",
+      "index.js",
+      "ui.js",
+      "sw.js",
       "*.html",
       "ruffle",
       "webmanifest.json",
