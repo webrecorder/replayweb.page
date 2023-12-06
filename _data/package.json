@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "1.8.13",
+  "version": "1.8.14",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -9,7 +9,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@webrecorder/wabac": "^2.16.12",
+    "@webrecorder/wabac": "^2.16.13",
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
     "electron-updater": "^5.3.0",
@@ -28,6 +28,7 @@
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.38.1",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "electron": "^25.1.1",
@@ -41,6 +42,7 @@
     "lint-staged": "^14.0.0",
     "mini-css-extract-plugin": "^2.3.0",
     "node-sass": "^9.0.0",
+    "playwright": "^1.38.1",
     "prettier": "^3.0.1",
     "raw-loader": "^4.0.2",
     "sass-loader": "^13.3.2",
@@ -64,7 +66,9 @@
     "build-dev": "webpack --mode development",
     "build-docs": "bundle install; bundle exec jekyll build",
     "start-dev": "webpack serve --mode development",
-    "start-prod": "http-server -p 9990",
+    "start-prod": "http-server -p 9990 --cors",
+    "test-start-embed": "cd tests/embed; http-server -p 8020",
+    "test-start-sandbox": "cd tests/embed/sandbox; http-server -p 8030",
     "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
     "pack-signed": "electron-builder",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
