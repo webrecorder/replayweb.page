@@ -10,7 +10,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@shoelace-style/shoelace": "^2.8.0",
-    "@webrecorder/wabac": "^2.16.12",
+    "@webrecorder/wabac": "^2.16.13",
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
     "electron-updater": "^5.3.0",

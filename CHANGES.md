@@ -2,6 +2,12 @@
 
 ## CHANGES
 
+v1.8.14
+- Loading: fix loading revisit records that may have incorrect content-length (via wabac.js)
+- Fidelity: improved fuzzy matching rules (via wabac.js)
+- Misc: github issue templates, fix typo in CORS config docs
+- Dependencies: Update to wabac.js 2.16.13
+
 v1.8.13
 - Loading: Ensure default index.html is served when not in embed mode, don't add '?serveIndex=1' for app itself
 
