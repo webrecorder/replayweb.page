@@ -3,78 +3,63 @@ import { register } from "register-service-worker";
 
 // ===========================================================================
 export class SWManager {
+  name: string;
+  scope: string;
+  appName: string;
+  requireSubdomainIframe: boolean;
+  errorMsg: string | null = null;
+
   constructor({
     name = "sw.js",
     scope = "./",
     appName = "ReplayWeb.page",
     requireSubdomainIframe = false,
   } = {}) {
-    // @ts-expect-error - TS2339 - Property 'name' does not exist on type 'SWManager'.
     this.name = name;
-    // @ts-expect-error - TS2339 - Property 'scope' does not exist on type 'SWManager'.
-    this.scope = scope;
-    // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
-    this.appName = appName;
-    // @ts-expect-error - TS2339 - Property 'requireSubdomainIframe' does not exist on type 'SWManager'.
-    this.requireSubdomainIframe = requireSubdomainIframe;
 
-    // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-    this.errorMsg = null;
+    this.scope = scope;
+
+    this.appName = appName;
+
+    this.requireSubdomainIframe = requireSubdomainIframe;
   }
 
   setAppName(newAppName) {
-    // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
     this.appName = newAppName;
   }
 
   register() {
-    let resolve, reject;
+    const p = new Promise<void>((resolve, reject) => {
+      this.errorMsg = this.getSWErrorMsg();
 
-    const p = new Promise((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
-
-    // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-    this.errorMsg = this.getSWErrorMsg();
-
-    // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-    if (this.errorMsg) {
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-      console.error(this.errorMsg);
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-      reject(this.errorMsg);
-    }
-
-    const handleError = (error) => {
-      console.error("Error during service worker registration:", error);
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-      this.errorMsg = this.getCrossOriginIframeMsg();
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-      if (!this.errorMsg) {
-        // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-        this.errorMsg = `${
-          // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
-          this.appName
-        } could not be loaded due to the following error:\n${error.toString()}`;
+      if (this.errorMsg) {
+        console.error(this.errorMsg);
+        reject(this.errorMsg);
       }
 
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-      reject(this.errorMsg);
-    };
+      const handleError = (error: Error) => {
+        console.error("Error during service worker registration:", error);
+        this.errorMsg = this.getCrossOriginIframeMsg();
+        if (!this.errorMsg) {
+          this.errorMsg = `${
+            this.appName
+          } could not be loaded due to the following error:\n${error.toString()}`;
+        }
 
-    // @ts-expect-error - TS2339 - Property 'scope' does not exist on type 'SWManager'. | TS2339 - Property 'name' does not exist on type 'SWManager'.
-    register(this.scope + this.name, {
-      // @ts-expect-error - TS2339 - Property 'scope' does not exist on type 'SWManager'.
-      registrationOptions: { scope: this.scope },
-      registered() {
-        console.log("Service worker is registered");
-        resolve();
-      },
+        reject(this.errorMsg);
+      };
 
-      error(errMsg) {
-        handleError(errMsg);
-      },
+      register(this.scope + this.name, {
+        registrationOptions: { scope: this.scope },
+        registered() {
+          console.log("Service worker is registered");
+          resolve();
+        },
+
+        error(errMsg) {
+          handleError(errMsg);
+        },
+      });
     });
 
     return p;
@@ -97,8 +82,7 @@ export class SWManager {
     }
 
     try {
-      // @ts-expect-error - TS2531 - Object is possibly 'null'.
-      return window.top.location.href === "";
+      return window.top?.location.href === "";
     } catch (e) {
       return true;
     }
@@ -107,9 +91,7 @@ export class SWManager {
   getSWErrorMsg() {
     if (navigator.serviceWorker) {
       // must be loaded from a cross-origin (eg. subdomain)
-      // @ts-expect-error - TS2339 - Property 'requireSubdomainIframe' does not exist on type 'SWManager'.
       if (this.requireSubdomainIframe && !this.isCrossOriginIframe()) {
-        // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
         return `Sorry, due to security settings, this ${this.appName} embed only be viewed within a subdomain iframe.`;
       }
 
@@ -124,12 +106,7 @@ export class SWManager {
 
     if (!window.isSecureContext) {
       return `
-      Sorry, the ${
-        // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
-        this.appName
-      } system must be loaded from an HTTPS URL (or localhost), but was loaded from: ${
-        window.location.host
-      }.
+      Sorry, the ${this.appName} system must be loaded from an HTTPS URL (or localhost), but was loaded from: ${window.location.host}.
       Please try loading this page from an HTTPS URL`;
     }
 
@@ -138,13 +115,11 @@ export class SWManager {
       return "Sorry, Service Workers are disabled in Firefox in Private Mode. Please try loading this page in regular mode instead.";
     }
 
-    // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
     return `Sorry, ${this.appName} won't work in this browser as Service Workers are not supported in this window.
   Please try a different browser.`;
   }
 
   renderErrorReport(logo: string, override?: string) {
-    // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
     const msg = this.errorMsg || override;
 
     if (!msg) {
