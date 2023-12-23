@@ -8,7 +8,7 @@ hide:
 
 Welcome to the ReplayWeb.page official user guide and developer docs. These docs contain the following sections:
 
-- Developer Docs — Information on developing and embedding ReplayWebpage into your projects.
+- [Developer Docs](/develop/embedding) — Information on developing and embedding ReplayWebpage into your projects.
 - User Guide — Instructions and reference for using ReplayWebpage.
 
 ## What is Replayweb.page?
