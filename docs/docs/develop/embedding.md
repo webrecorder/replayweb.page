@@ -1,4 +1,4 @@
-# Embedding Archived Content with ReplayWeb.page
+# Embedding ReplayWeb.page
 
 ## Primer
 
@@ -6,7 +6,7 @@ A key goal of ReplayWeb.page is to make embedding archived web content into othe
 
 To make this possible ReplayWeb.page provides the `#!html <replay-web-page>` HTML web component to support embedding in the pages where you would like to display web archives. This component works in all modern browsers, and has several configuration options that allow for control over the initial URL or snapshot to display from the archive when the component loads. The component can load WACZ files that are created with Webrecorder tools, as well as standalone WARC files.
 
-The `#!html <replay-web-page>` web component requires a backend service worker to be loaded by your website. While the frontend and backend are both static JavaScript assets which can be loaded from a Content Delivery Network (CDN), the backend service worker JavaScript file must be served from your website. This service worker is responsible for retrieving data on demand from your web archive file. 
+The `#!html <replay-web-page>` web component requires a backend service worker to be loaded by your website. While the frontend and backend are both static JavaScript assets which can be loaded from a CDN (Content Delivery Network), the backend service worker JavaScript file must be served from your website. This service worker is responsible for retrieving data on demand from your web archive file. 
 
 !!! note "Note: Serving efficient web archives with WACZ files"
     While other web archive filetypes may require ReplayWeb.page to download them in their entirety before viewing, when using WACZ files the service worker can pull individual resources from the file as they are requested by the user. Full retrieval of the WACZ by ReplayWeb.page is *not* required as long as the server delivering the WACZ file supports HTTP range requests. This means that serving archived content from WACZ files is effectively as bandwidth efficient as any other web content!
@@ -70,7 +70,7 @@ Be sure to add width and height styles to the `#!html <replay-web-page>` tag as 
 
 ## Self Hosting
 
-Sometimes it can be desirable to self-host the user interface, service worker, and WACZ files. This is useful for preventing tracking by CDNs, or to make it easier to host the content in one place without needing to work out the details of CORS. 
+Sometimes it can be desirable to self-host the user interface, service worker, and WACZ files. This is useful for preventing tracking by CDNs, or to make it easier to host the content in one place without needing to work out the details of Cross Origin Resource Sharing (CORS). 
 
 Following the same steps above, instead of loading the JavaScript and WACZ file from external locations, [download](https://www.jsdelivr.com/package/npm/replaywebpage) the `ui.js` and `sw.js` JavaScript files and put them on the same server as the HTML that you are publishing. Link them accordingly replacing the CDN links in the guide above.
 
@@ -171,6 +171,6 @@ html, body {
 
 ### Loading Errors
 
-If you see errors such as `TypeError: failed to load` or similar errors, the issue may have to do with Cross-Origin Resource Sharing (CORS) errors.
+If you see errors related to loading archived items such as `TypeError: failed to load`, the issue may be a result of a CORS error.
 
 See [CORS Settings](/develop/cors-settings) for more info on how to configure CORS for ReplayWeb.page

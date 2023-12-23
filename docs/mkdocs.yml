@@ -46,7 +46,8 @@ theme:
 nav:
   - index.md
   - Develop:
-    - /develop/embedding
+    - develop/embedding.md
+    - develop/cors-settings.md
   # - User Guide:
 
 markdown_extensions:
