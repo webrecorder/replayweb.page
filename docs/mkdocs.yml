@@ -48,6 +48,7 @@ nav:
   - Develop:
     - develop/embedding.md
     - develop/cors-settings.md
+    - develop/locations.md
   # - User Guide:
 
 markdown_extensions:
