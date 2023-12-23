@@ -12,7 +12,6 @@ To do this, simply load [https://replayweb.page/](https://replayweb.page) and ke
 ??? Question "What's cache?"
     Cache is a temporary storage space in your browser that retains certain files. Cached data is used to quickly load an application or website (like replayweb.page!) without fetching the locally retained data from the server.
 
-
 <!-- ## ReplayWeb.page as Progress Web App
 
 ReplayWeb.page can also be installed as [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) and be available as a standalone app on desktop and mobile.
@@ -30,8 +29,6 @@ To do this, on the ReplayWeb.page site, you might have noticed a "new window ico
       </p>
   </details>
 -->
-
-
 
 ## Standalone Desktop App
 
