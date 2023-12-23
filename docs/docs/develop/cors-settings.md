@@ -33,9 +33,9 @@ When hosting with Amazon S3 or an S3-compatible service, these CORS bucket confi
 
 Amazon S3 and other services now support a JSON based bucket policy, as well as an older XML-based policy.
 
-The below examples provide access to `https://replayweb.page` to load your archive. When [embedding replayweb.page](./embedding), replace the URL with that of the server (origin) URL where the `<replay-web-page>` embed is hosted.
+The below examples provide access to `https://replayweb.page` to load your archive. When [embedding replayweb.page](./embedding), replace the URL with that of the server (origin) URL where the `#!html <replay-web-page>` embed is hosted.
 
-Both the JSON and XML options provide a method of specifying multiple origins via the JSON list or multiple `<AllowedOrigin>` tags.
+Both the JSON and XML options provide a method of specifying multiple origins via the JSON list or multiple `#!xml <AllowedOrigin>` tags.
 
 #### JSON-Based Configuration
 
@@ -87,7 +87,7 @@ Other cloud providers may have a similar settings for configuring CORS.
 
 ### Manual Setup / Nginx
 
-The recommended setup for nginx is to include the following CORS settings. Like the above, when [embedding replayweb.page](./embedding), replace the URL with that of the server (origin) URL where the `<replay-web-page>` embed is hosted.
+The recommended setup for nginx is to include the following CORS settings. Like the above, when [embedding replayweb.page](./embedding), replace the URL with that of the server (origin) URL where the `#!html <replay-web-page>` embed is hosted.
 
 ```nginx
 location / {
