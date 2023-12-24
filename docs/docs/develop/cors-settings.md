@@ -25,7 +25,7 @@ by setting `Access-Control-Allow-Headers: '*'` as part of the CORS response in a
 
 ## CORS Configurations for Common Hosting Environments
 
-The following section provides suggested CORS configurations for different hosting environments. For more examples of CORS configurations for different servers, see: [https://enable-cors.org/](https://enable-cors.org/)
+The following section provides suggested CORS configurations for different hosting environments. For more examples of CORS configurations for different servers, see: [enable-cors.org](https://enable-cors.org/).
 
 ### S3 and Compatible Configurations
 
