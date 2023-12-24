@@ -12,9 +12,9 @@ These settings apply whenever archived items are hosted on a different domain th
 
 The minimum requirement is to return: `Access-Control-Allow-Origin: https://replayweb.page` and most CORS settings include at least this option.
 
-## Differences between Chrome, Firefox, and Safari
+## Differences Between Chrome, Firefox, and Safari
 
-Unfortunately, different browsers have diverged in how they handle enforcing CORS policies.
+Unfortunately, browsers have diverged in how they handle enforcing CORS policies.
 
 Firefox and Safari sometimes send a [pre-flight OPTIONS request](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) when handling ReplayWeb.page requests, because the ReplayWeb.page uses the `Range` header.
 
@@ -25,7 +25,7 @@ by setting `Access-Control-Allow-Headers: '*'` as part of the CORS response in a
 
 ## CORS Configurations for Common Hosting Environments
 
-The following provides different ways of configuring CORS for different hosting environments. For more examples of CORS configurations for different servers, see: [https://enable-cors.org/](https://enable-cors.org/)
+The following section provides suggested CORS configurations for different hosting environments. For more examples of CORS configurations for different servers, see: [https://enable-cors.org/](https://enable-cors.org/)
 
 ### S3 and Compatible Configurations
 
