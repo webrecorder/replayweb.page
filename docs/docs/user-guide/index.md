@@ -1,6 +1,6 @@
 # User Guide
 
-Welcome to the ReplayWeb.page official user guide and developer docs.
+Welcome to the ReplayWeb.page official user guide.
 
 - To load and view your first archived item in ReplayWeb.page, check out [Loading Archived Items](loading).
 
