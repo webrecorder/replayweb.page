@@ -50,6 +50,8 @@ nav:
     - develop/cors-settings.md
     - develop/locations.md
   - User Guide:
+    - user-guide/index.md
+    - user-guide/loading.md
     - user-guide/offline-use.md
 
 markdown_extensions:

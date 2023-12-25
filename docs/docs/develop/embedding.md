@@ -117,7 +117,7 @@ ReplayWeb.page offers four different ways to embed the archived content, includi
 
 - `replayonly`: Show just the replayed page, and no additional UI or nav bar buttons. Useful for embedding a single page.
 
-- `replay-with-info`: Show the replayonly mode, but also add an archive info dropdown, which shows an archival 'receipt' with provenance and verification information (new in 1.7.0)
+- `replay-with-info`: Show the `replayonly` mode, but also add an archive info dropdown, which shows an archival 'receipt' with provenance and verification information (new in 1.7.0)
 
 ??? example "Example: Embed with `replay-with-info` enabled"
     <script src="https://cdn.jsdelivr.net/npm/replaywebpage/ui.js"></script>
@@ -131,7 +131,7 @@ The `#!html <replay-web-page>` tag is a web component that supports a number of 
 
 | Attribute    | Description      |
 |:-------------|:-----------------|
-| `source`     | Source URL for the archived item. This should be one of the [supported formats](/develop/formats) loaded from one of the [support locations](/develop/locations) and is required. |
+| `source`     | Source URL for the archived item. This should be one of the [supported formats](/user-guide#supported-formats) loaded from one of the [support locations](/develop/locations) and is required. |
 | `url`        | The starting URL to load from the archive. If omitted, will start with the page list or URL search view. |
 | `ts`         | The timestamp of the starting URL to load. If omitted, the latest available version is used. |
 | `deepLink`   | If set, ReplayWeb.page will modify the URL of the page to allow for 'deep linking' to exact pages in the embed. |
