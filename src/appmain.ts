@@ -73,7 +73,7 @@ export class ReplayWebApp extends LitElement {
   @property({ type: Object })
   swErrorMsg: TemplateResult<1> | "" | null = null;
 
-  private swName?: string;
+  protected swName?: string;
   private swmanager: SWManager | null;
   private useRuffle = false;
 
