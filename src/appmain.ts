@@ -4,6 +4,7 @@ import {
   css,
   type TemplateResult,
   type PropertyValues,
+  CSSResultGroup,
 } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -133,7 +134,7 @@ export class ReplayWebApp extends LitElement {
     return wrapCss(ReplayWebApp.appStyles);
   }
 
-  static get appStyles() {
+  static get appStyles(): CSSResultGroup {
     return css`
       #wrlogo {
         max-height: 1rem;

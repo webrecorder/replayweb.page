@@ -1,6 +1,6 @@
 "use strict";
 
-import { LitElement, html, css, unsafeCSS } from "lit";
+import { LitElement, html, css, unsafeCSS, type CSSResultGroup } from "lit";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 import { styleMap } from "lit/directives/style-map.js";
 
@@ -14,7 +14,7 @@ const replayPrefix = "./w";
 
 // ===========================================================================
 const allCss = unsafeCSS(allCssRaw);
-function wrapCss(custom) {
+function wrapCss(custom: CSSResultGroup): CSSResultGroup {
   return [allCss, custom];
 }
 

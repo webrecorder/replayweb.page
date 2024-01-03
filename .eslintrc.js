@@ -17,9 +17,26 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: "module",
   },
+  root: true,
   rules: {
     "no-restricted-globals": [2, "event", "error"],
-    "linebreak-style": ["error", "unix"],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        destructuredArrayIgnorePattern: "^_",
+      },
+    ],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        fixStyle: "inline-type-imports",
+      },
+    ],
+    "@typescript-eslint/consistent-type-exports": "error",
+    "@typescript-eslint/no-explicit-any": "warn",
   },
   ignorePatterns: [
     "ruffle/**/*",
