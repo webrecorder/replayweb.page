@@ -188,4 +188,36 @@ const browserConfig = (/*env, argv*/) => {
   return merge(tsConfig, config);
 };
 
-module.exports = [browserConfig, electronMainConfig, electronPreloadConfig];
+const libraryConfig = (/*env, argv*/) => {
+  const browserConf = browserConfig();
+  return {
+    ...browserConf,
+    plugins: [
+      new webpack.NormalModuleReplacementPlugin(/^node:*/, (resource) => {
+        switch (resource.request) {
+          case "node:stream":
+            resource.request = "stream-browserify";
+            break;
+        }
+      }),
+      new webpack.ProvidePlugin({
+        process: "process/browser",
+      }),
+      new MiniCssExtractPlugin(),
+      new webpack.DefinePlugin({
+        __SW_NAME__: JSON.stringify("sw.js"),
+        __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
+        __GDRIVE_CLIENT_ID__: JSON.stringify(GDRIVE_CLIENT_ID),
+        __VERSION__: JSON.stringify(package_json.version),
+      }),
+      new webpack.BannerPlugin(BANNER_TEXT),
+    ],
+  };
+};
+
+module.exports = [
+  browserConfig,
+  electronMainConfig,
+  electronPreloadConfig,
+  libraryConfig,
+];

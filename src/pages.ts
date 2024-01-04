@@ -20,12 +20,10 @@ import type { PageEntry } from "./pageentry";
 // ===========================================================================
 class Pages extends LitElement {
   @property({ type: Array })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  filteredPages: any[] = [];
+  filteredPages: TODOFixMe[] = [];
 
   @property({ type: Array })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  sortedPages: any[] = [];
+  sortedPages: TODOFixMe[] = [];
 
   @property({ type: String })
   query = "";
@@ -163,7 +161,9 @@ class Pages extends LitElement {
         this.sortKey = "date";
         this.sortDesc = true;
       }
-      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
+      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter<
+        typeof this.filteredPages
+      >;
       if (sorter) {
         sorter.sortKey = this.sortKey;
         sorter.sortDesc = this.sortDesc;
