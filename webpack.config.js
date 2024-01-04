@@ -98,8 +98,11 @@ const electronPreloadConfig = (/*env, argv*/) => {
 const browserConfig = (/*env, argv*/) => {
   const isDevServer = process.env.WEBPACK_SERVE;
 
+  /** @type {import('webpack').Configuration['entry']} */
   const entry = {
     ui: "./src/ui.ts",
+    index: "./src/index.ts",
+    misc: "./src/misc.ts",
   };
 
   const patterns = [{ from: "package.json", to: "_data/package.json" }];
@@ -188,52 +191,54 @@ const browserConfig = (/*env, argv*/) => {
   return merge(tsConfig, config);
 };
 
-const libraryConfig = (/*env, argv*/) => {
-  const browserConf = browserConfig();
-  /** @type {import('webpack').Configuration} */
-  return {
-    ...browserConf,
-    entry: {
-      ui: "./src/index.ts",
-    },
+// const libraryConfig = (/*env, argv*/) => {
+//   const browserConf = browserConfig();
+//   /** @type {import('webpack').Configuration} */
+//   return {
+//     ...browserConf,
+//     entry: {
+//       index: "./src/index.ts",
+//       misc: "./src/misc.ts",
+//       "electron-replay-app": "./src/electron-replay-app.js",
+//     },
 
-    output: {
-      path: path.join(__dirname, "dist"),
-      filename: "[name].js",
-      library: "replaywebpage",
-      libraryTarget: "umd",
-      globalObject: "self",
-      publicPath: "/",
-      umdNamedDefine: true,
-    },
+//     output: {
+//       path: path.join(__dirname, "dist"),
+//       filename: "[name].js",
+//       library: "replaywebpage",
+//       libraryTarget: "umd",
+//       globalObject: "self",
+//       publicPath: "/",
+//       umdNamedDefine: true,
+//     },
 
-    externals: [/^lit\/.+$/],
-    plugins: [
-      new webpack.NormalModuleReplacementPlugin(/^node:*/, (resource) => {
-        switch (resource.request) {
-          case "node:stream":
-            resource.request = "stream-browserify";
-            break;
-        }
-      }),
-      new webpack.ProvidePlugin({
-        process: "process/browser",
-      }),
-      new MiniCssExtractPlugin(),
-      new webpack.DefinePlugin({
-        __SW_NAME__: JSON.stringify("sw.js"),
-        __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
-        __GDRIVE_CLIENT_ID__: JSON.stringify(GDRIVE_CLIENT_ID),
-        __VERSION__: JSON.stringify(package_json.version),
-      }),
-      new webpack.BannerPlugin(BANNER_TEXT),
-    ],
-  };
-};
+//     externals: [/^lit\/.+$/],
+//     plugins: [
+//       new webpack.NormalModuleReplacementPlugin(/^node:*/, (resource) => {
+//         switch (resource.request) {
+//           case "node:stream":
+//             resource.request = "stream-browserify";
+//             break;
+//         }
+//       }),
+//       new webpack.ProvidePlugin({
+//         process: "process/browser",
+//       }),
+//       new MiniCssExtractPlugin(),
+//       new webpack.DefinePlugin({
+//         __SW_NAME__: JSON.stringify("sw.js"),
+//         __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
+//         __GDRIVE_CLIENT_ID__: JSON.stringify(GDRIVE_CLIENT_ID),
+//         __VERSION__: JSON.stringify(package_json.version),
+//       }),
+//       new webpack.BannerPlugin(BANNER_TEXT),
+//     ],
+//   };
+// };
 
 module.exports = [
   browserConfig,
   electronMainConfig,
   electronPreloadConfig,
-  libraryConfig,
+  // libraryConfig,
 ];

@@ -13,6 +13,7 @@
       "types": "./dist/ui.d.ts",
       "import": "./dist/ui.js"
     },
+    "./src/*": "./src/*",
     "./*": "./dist/*"
   },
   "dependencies": {
@@ -71,6 +72,7 @@
   "files": [
     "/assets",
     "/dist",
+    "/src",
     "/ruffle",
     "sw.js",
     "ui.js",
