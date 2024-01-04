@@ -8,7 +8,13 @@
   "author": "Webrecorder Software",
   "license": "AGPL-3.0-or-later",
   "types": "dist/ui.d.ts",
-  "main": "ui.js",
+  "exports": {
+    ".": {
+      "types": "./dist/ui.d.ts",
+      "import": "./dist/ui.js"
+    },
+    "./*": "./dist/*"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@shoelace-style/shoelace": "^2.8.0",

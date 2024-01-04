@@ -193,8 +193,12 @@ const libraryConfig = (/*env, argv*/) => {
   /** @type {import('webpack').Configuration} */
   return {
     ...browserConf,
+    entry: {
+      ui: "./src/index.ts",
+    },
+
     output: {
-      path: "dist",
+      path: path.join(__dirname, "dist"),
       filename: "[name].js",
       library: "replaywebpage",
       libraryTarget: "umd",
