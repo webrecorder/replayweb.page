@@ -190,8 +190,20 @@ const browserConfig = (/*env, argv*/) => {
 
 const libraryConfig = (/*env, argv*/) => {
   const browserConf = browserConfig();
+  /** @type {import('webpack').Configuration} */
   return {
     ...browserConf,
+    output: {
+      path: "dist",
+      filename: "[name].js",
+      library: "replaywebpage",
+      libraryTarget: "umd",
+      globalObject: "self",
+      publicPath: "/",
+      umdNamedDefine: true,
+    },
+
+    externals: [/^lit\/.+$/],
     plugins: [
       new webpack.NormalModuleReplacementPlugin(/^node:*/, (resource) => {
         switch (resource.request) {
