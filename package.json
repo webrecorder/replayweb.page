@@ -10,8 +10,8 @@
   "types": "dist/ui.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/ui.d.ts",
-      "import": "./dist/ui.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./src/*": "./src/*",
     "./*": "./dist/*"
@@ -112,8 +112,8 @@
       "dist/prebuilds/${platform}-${arch}/*",
       "dist/build/*",
       "index.js",
-      "ui.js",
-      "sw.js",
+      "dist/ui.js",
+      "dist/sw.js",
       "*.html",
       "ruffle",
       "webmanifest.json",
