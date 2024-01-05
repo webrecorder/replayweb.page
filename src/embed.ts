@@ -1,4 +1,10 @@
-import { LitElement, html, css, TemplateResult } from "lit";
+import {
+  LitElement,
+  html,
+  css,
+  TemplateResult,
+  type PropertyValues,
+} from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { wrapCss, rwpLogo } from "./misc";
@@ -197,7 +203,7 @@ class Embed extends LitElement {
     }
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: PropertyValues<this>) {
     if (
       changedProperties.has("url") ||
       changedProperties.has("ts") ||

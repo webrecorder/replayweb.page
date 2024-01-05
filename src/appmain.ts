@@ -1,4 +1,10 @@
-import { LitElement, html, css, type TemplateResult } from "lit";
+import {
+  LitElement,
+  html,
+  css,
+  type TemplateResult,
+  type PropertyValues,
+} from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
@@ -467,7 +473,7 @@ export class ReplayWebApp extends LitElement {
     });
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("sourceUrl")) {
       this.collTitle = null;
     }

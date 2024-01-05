@@ -1,6 +1,6 @@
 import prettyBytes from "pretty-bytes";
 
-import { LitElement, html, css, unsafeCSS } from "lit";
+import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "keyword-mark-element/lib/keyword-mark.js";
@@ -183,7 +183,7 @@ class PageEntry extends LitElement {
     `;
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("page") || changedProperties.has("query")) {
       this.updateSnippet();
       this.deleting = false;

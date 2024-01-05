@@ -1,4 +1,4 @@
-import { LitElement, html, css, unsafeCSS } from "lit";
+import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
 import { wrapCss } from "./misc";
 
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -7,32 +7,33 @@ import { marked } from "marked";
 import { getTS, getReplayLink } from "./pageutils";
 
 import Split from "split.js";
+import { ItemInfo } from "./item-info";
 
 // ===========================================================================
 class Story extends LitElement {
+  collInfo: ItemInfo | Record<string, never> | null;
+  curatedPageMap: Record<string, unknown[]>;
+  currList: number;
+  active: boolean;
+  lastST: number;
+  clickTime: number;
+  isSidebar: boolean;
+  splitDirection: boolean | "vertical" | "horizontal";
   constructor() {
     super();
 
-    // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'.
     this.collInfo = null;
 
-    // @ts-expect-error - TS2339 - Property 'curatedPageMap' does not exist on type 'Story'.
     this.curatedPageMap = {};
 
-    // @ts-expect-error - TS2339 - Property 'currList' does not exist on type 'Story'.
     this.currList = 0;
 
-    // @ts-expect-error - TS2339 - Property 'active' does not exist on type 'Story'.
     this.active = false;
 
-    // @ts-expect-error - TS2339 - Property 'lastST' does not exist on type 'Story'.
     this.lastST = 0;
-    // @ts-expect-error - TS2339 - Property 'clickTime' does not exist on type 'Story'.
     this.clickTime = 0;
 
-    // @ts-expect-error - TS2339 - Property 'isSidebar' does not exist on type 'Story'.
     this.isSidebar = false;
-    // @ts-expect-error - TS2339 - Property 'splitDirection' does not exist on type 'Story'.
     this.splitDirection = false;
   }
 
@@ -52,9 +53,7 @@ class Story extends LitElement {
   }
 
   recalcSplitter(width) {
-    // @ts-expect-error - TS2339 - Property 'splitDirection' does not exist on type 'Story'.
     this.splitDirection =
-      // @ts-expect-error - TS2339 - Property 'isSidebar' does not exist on type 'Story'.
       this.isSidebar || width < 769 ? "vertical" : "horizontal";
   }
 
@@ -70,7 +69,7 @@ class Story extends LitElement {
     this.obs.observe(this);
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("collInfo")) {
       this.doLoadCurated();
     }
@@ -86,10 +85,8 @@ class Story extends LitElement {
       this.configureSplitter();
     }
 
-    // @ts-expect-error - TS2339 - Property 'active' does not exist on type 'Story'.
     if (changedProperties.has("currList") && this.active) {
       this.sendChangeEvent({
-        // @ts-expect-error - TS2339 - Property 'currList' does not exist on type 'Story'.
         currList: this.currList,
       });
     }
@@ -118,7 +115,6 @@ class Story extends LitElement {
 
         gutterSize: 4,
 
-        // @ts-expect-error - TS2339 - Property 'splitDirection' does not exist on type 'Story'.
         direction: this.splitDirection,
       };
 
@@ -128,7 +124,6 @@ class Story extends LitElement {
   }
 
   async doLoadCurated() {
-    // @ts-expect-error - TS2339 - Property 'curatedPageMap' does not exist on type 'Story'.
     this.curatedPageMap = {};
 
     const pageMap = {};
@@ -140,9 +135,7 @@ class Story extends LitElement {
 
     // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'.
     for (const curated of this.collInfo.curatedPages) {
-      // @ts-expect-error - TS2339 - Property 'curatedPageMap' does not exist on type 'Story'.
       if (!this.curatedPageMap[curated.list]) {
-        // @ts-expect-error - TS2339 - Property 'curatedPageMap' does not exist on type 'Story'.
         this.curatedPageMap[curated.list] = [];
       }
       const page = curated;
@@ -160,7 +153,6 @@ class Story extends LitElement {
       const title = page.title || page.url;
       const desc = curated.desc;
 
-      // @ts-expect-error - TS2339 - Property 'curatedPageMap' does not exist on type 'Story'.
       this.curatedPageMap[curated.list].push({ url, ts, title, desc });
     }
 
@@ -275,23 +267,15 @@ class Story extends LitElement {
   }
 
   render() {
-    // @ts-expect-error - TS2339 - Property 'currList' does not exist on type 'Story'.
     const currListNum = this.currList;
 
     return html`
       <div
         class="is-sr-only"
         role="heading"
-        aria-level="${
-          // @ts-expect-error - TS2339 - Property 'isSidebar' does not exist on type 'Story'.
-          this.isSidebar ? "2" : "1"
-        }"
+        aria-level="${this.isSidebar ? "2" : "1"}"
       >
-        Story for
-        ${
-          // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'.
-          this.collInfo.title
-        }
+        Story for ${this.collInfo!.title}
       </div>
       <div class="columns">
         <div class="column sidebar is-one-fifth">
@@ -363,13 +347,9 @@ class Story extends LitElement {
             <h3>${list.title}</h3>
             <p>${list.desc}</p>
             <ol>
-              ${
-                // @ts-expect-error - TS2339 - Property 'curatedPageMap' does not exist on type 'Story'.
-                this.curatedPageMap[list.id]
-                  ? // @ts-expect-error - TS2339 - Property 'curatedPageMap' does not exist on type 'Story'.
-                    this.curatedPageMap[list.id].map((p) => this.renderCPage(p))
-                  : html``
-              }
+              ${this.curatedPageMap[list.id]
+                ? this.curatedPageMap[list.id].map((p) => this.renderCPage(p))
+                : html``}
             </ol>
           </div>
         </article>
@@ -417,7 +397,6 @@ class Story extends LitElement {
   onClickScroll(event) {
     event.preventDefault();
     //this.pageView = false;
-    // @ts-expect-error - TS2339 - Property 'currList' does not exist on type 'Story'.
     this.currList = Number(event.currentTarget.getAttribute("data-list"));
     this.scrollToList();
     return false;
@@ -427,12 +406,10 @@ class Story extends LitElement {
     // lists are 1 based, 0 is header, 1 is first list
     // @ts-expect-error - TS2339 - Property 'currList' does not exist on type 'Story'. | TS2339 - Property 'collInfo' does not exist on type 'Story'.
     if (this.currList > this.collInfo.lists.length) {
-      // @ts-expect-error - TS2339 - Property 'currList' does not exist on type 'Story'.
       this.currList = 0;
     }
 
     const opts = { behavior: "smooth", block: "nearest", inline: "nearest" };
-    // @ts-expect-error - TS2339 - Property 'clickTime' does not exist on type 'Story'.
     this.clickTime = new Date().getTime();
     // @ts-expect-error - TS2339 - Property 'getElementById' does not exist on type 'HTMLElement | ShadowRoot'. | TS2339 - Property 'currList' does not exist on type 'Story'.
     const curr = this.renderRoot.getElementById("list-" + this.currList);
@@ -454,7 +431,6 @@ class Story extends LitElement {
     const target = scrollable.offsetTop;
     const currST = scrollable.scrollTop;
 
-    // @ts-expect-error - TS2339 - Property 'lastST' does not exist on type 'Story'.
     if (currST > this.lastST) {
       while (
         next.nextElementSibling &&
@@ -470,22 +446,18 @@ class Story extends LitElement {
         next = next.previousElementSibling;
       }
     }
-    // @ts-expect-error - TS2339 - Property 'lastST' does not exist on type 'Story'.
     this.lastST = currST;
     if (next && next != curr) {
       if (next.id.startsWith("list-")) {
-        // @ts-expect-error - TS2339 - Property 'currList' does not exist on type 'Story'.
         this.currList = Number(next.id.slice(5));
       }
     }
 
-    // @ts-expect-error - TS2339 - Property 'clickTime' does not exist on type 'Story'.
     if (new Date().getTime() - this.clickTime < 1000) {
       return;
     }
 
     const sel = this.renderRoot.querySelector(
-      // @ts-expect-error - TS2339 - Property 'currList' does not exist on type 'Story'.
       `a[data-list="${this.currList}"]`,
     );
     if (sel) {

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 import { wrapCss, rwpLogo } from "./misc";
@@ -95,7 +95,7 @@ class Replay extends LitElement {
         : "";
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: PropertyValues<this>) {
     if (
       changedProperties.has("sourceUrl") ||
       changedProperties.has("collInfo")
