@@ -70,7 +70,7 @@ class ItemIndex extends LitElement {
     if (changedProperties.has("hideHeader")) {
       localStorage.setItem("index:hideHeader", this.hideHeader ? "1" : "0");
     }
-    if (changedProperties.has("colls") || changedProperties.has("query")) {
+    if (changedProperties.has("items") || changedProperties.has("query")) {
       this.filter();
     }
   }
