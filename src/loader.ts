@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, type PropertyValues } from "lit";
 import { wrapCss } from "./misc";
 
 import prettyBytes from "pretty-bytes";
@@ -258,7 +258,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     }
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: PropertyValues<this>) {
     if (
       (this.sourceUrl && changedProperties.has("sourceUrl")) ||
       changedProperties.has("tryFileHandle")

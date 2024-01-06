@@ -165,9 +165,7 @@ class Pages extends LitElement {
       }
       const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
       if (sorter) {
-        // @ts-expect-error - TS2339 - Property 'sortKey' does not exist on type 'Sorter'.
         sorter.sortKey = this.sortKey;
-        // @ts-expect-error - TS2339 - Property 'sortDesc' does not exist on type 'Sorter'.
         sorter.sortDesc = this.sortDesc;
       }
     }

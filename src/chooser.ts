@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, type PropertyValues } from "lit";
 import { IS_APP, wrapCss } from "./misc";
 
 import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
@@ -47,7 +47,7 @@ export class Chooser extends LitElement {
 
   fileHandle?: FileSystemFileHandle;
 
-  updated(changedProperties) {
+  updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("droppedFile") && this.droppedFile) {
       this.onDropFile();
     }

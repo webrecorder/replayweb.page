@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, type PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import { wrapCss, apiPrefix } from "./misc";
 
@@ -20,16 +20,13 @@ class ItemIndex extends LitElement {
   query = "";
 
   @property({ type: Array })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  filteredItems: any[] = [];
+  filteredItems: Item[] = [];
 
   @property({ type: Array })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  sortedItems: any[] | null = null;
+  sortedItems: Item[] = [];
 
   @property({ type: Boolean })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  hideHeader: any = null;
+  hideHeader: boolean = false;
 
   @property({ type: String })
   dateName = "Date Loaded";
@@ -66,11 +63,11 @@ class ItemIndex extends LitElement {
     this.loadItems();
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("hideHeader")) {
       localStorage.setItem("index:hideHeader", this.hideHeader ? "1" : "0");
     }
-    if (changedProperties.has("colls") || changedProperties.has("query")) {
+    if (changedProperties.has("items") || changedProperties.has("query")) {
       this.filter();
     }
   }

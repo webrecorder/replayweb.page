@@ -14,7 +14,10 @@ import type { Item as ItemType } from "./types";
 
 // ===========================================================================
 export class RWPEmbedReceipt extends LitElement {
-  @property({ type: Object }) collInfo: ItemType | null = null;
+  @property({ type: Object }) collInfo:
+    | ItemType
+    | null
+    | Record<string, never> = null;
   @property({ type: Object }) appLogo = null;
   @property({ type: String }) ts: string | null = null;
   @property({ type: String }) url: string | null = null;

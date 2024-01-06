@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import { ref, createRef, type Ref } from "lit/directives/ref.js";
 import type {
@@ -51,7 +51,7 @@ import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.sv
 import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
 
-import type { Item as ItemInfo } from "./types";
+import type { Item as ItemType } from "./types";
 import type { Replay } from "./replay";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -93,7 +93,7 @@ class Item extends LitElement {
   showSidebar: boolean | null = null;
 
   @property({ type: Object, attribute: false })
-  itemInfo: ItemInfo | Record<string, never> | null = null;
+  itemInfo: ItemType | Record<string, never> | null = null;
 
   @property({ type: String })
   item = "";
@@ -265,7 +265,7 @@ class Item extends LitElement {
     }
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: PropertyValues<this>) {
     // if (changedProperties.has("url") || changedProperties.has("ts")) {
     //   if (this.url.startsWith("rwp?")) {
     //     this.tabData = Object.fromEntries(new URLSearchParams(this.url.slice(4)).entries());
