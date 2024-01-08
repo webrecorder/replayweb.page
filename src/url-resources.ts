@@ -8,14 +8,6 @@ import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 import "keyword-mark-element/lib/keyword-mark.js";
 import { type Item as ItemType } from "./types";
 
-type URLResource = {
-  url: string;
-  mime: string;
-  status: string;
-  date: string;
-  ts: string;
-};
-
 export type URLResource = {
   id: number;
   title: string;
