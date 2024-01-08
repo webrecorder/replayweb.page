@@ -9,23 +9,6 @@
   "license": "AGPL-3.0-or-later",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./*": "./dist/*"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/*"
-      ],
-      "index": [
-        "dist/index.d.ts"
-      ]
-    }
-  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@shoelace-style/shoelace": "^2.8.0",
@@ -82,7 +65,6 @@
   "files": [
     "/assets",
     "/dist",
-    "/src",
     "/ruffle",
     "sw.js",
     "ui.js",
