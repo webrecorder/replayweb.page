@@ -91,6 +91,13 @@ code {
     font-variation-settings: "OPSZ" 35;
 }
 
+.wr-container {
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: #D1D5DB;
+    border-style: solid;
+}
+
 /* Custom badge classes, applies custom overrides to inline-code blocks */
 
 .badge-blue {

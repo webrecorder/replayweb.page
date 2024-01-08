@@ -22,3 +22,11 @@ Welcome to the ReplayWeb.page official docs. These docs contain the following se
 - On-demand, incremental loading of large archives.
 - Several options for fully-functional offline usage, including a standalone desktop app with Flash support.
 - Support for versioned embedding of archived items.
+
+### Demo!
+
+Try scrolling the archived page below!
+
+<script src="https://cdn.jsdelivr.net/npm/replaywebpage/ui.js"></script>
+
+<replay-web-page class="wr-container" style="min-height: 600px; height: 80vh;" loading="eager" replaybase="../../js/" source="https://replayweb.page/examples/netpreserve-twitter.warc" url="https://twitter.com/netpreserve"></replay-web-page>
