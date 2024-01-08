@@ -104,7 +104,7 @@ class Story extends LitElement {
   }
 
   async doLoadCurated() {
-    if (this.collInfo == null || this.collInfo.pages == null) {
+    if (this.collInfo == null) {
       return;
     }
     this.curatedPageMap = {};
