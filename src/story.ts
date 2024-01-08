@@ -7,52 +7,37 @@ import { marked } from "marked";
 import { getTS, getReplayLink } from "./pageutils";
 
 import Split from "split.js";
-import { ItemInfo } from "./item-info";
+import { type Item as ItemType } from "./types";
+import { customElement, property } from "lit/decorators.js";
 
 // ===========================================================================
+@customElement("wr-coll-story")
 class Story extends LitElement {
-  collInfo: ItemInfo | Record<string, never> | null;
-  curatedPageMap: Record<string, unknown[]>;
-  currList: number;
-  active: boolean;
-  lastST: number;
-  clickTime: number;
-  isSidebar: boolean;
-  splitDirection: boolean | "vertical" | "horizontal";
-  constructor() {
-    super();
+  @property({ type: Object })
+  collInfo: ItemType | Record<string, never> | null = null;
 
-    this.collInfo = null;
+  @property({ type: Object })
+  curatedPageMap: Record<string, unknown[]> = {};
 
-    this.curatedPageMap = {};
+  @property({ type: Number })
+  currList: number = 0;
 
-    this.currList = 0;
+  @property({ type: Boolean })
+  active: boolean = false;
 
-    this.active = false;
+  @property({ type: Boolean })
+  isSidebar: boolean = false;
 
-    this.lastST = 0;
-    this.clickTime = 0;
+  @property({ type: Boolean })
+  splitDirection: boolean | "vertical" | "horizontal" = false;
 
-    this.isSidebar = false;
-    this.splitDirection = false;
-  }
+  lastST: number = 0;
+  clickTime: number = 0;
 
-  static get properties() {
-    return {
-      collInfo: { type: Object },
+  private obs!: ResizeObserver;
+  private splitter: Split.Instance | null = null;
 
-      active: { type: Boolean },
-
-      curatedPageMap: { type: Object },
-
-      currList: { type: Number },
-
-      isSidebar: { type: Boolean },
-      splitDirection: { type: Boolean },
-    };
-  }
-
-  recalcSplitter(width) {
+  recalcSplitter(width: number) {
     this.splitDirection =
       this.isSidebar || width < 769 ? "vertical" : "horizontal";
   }
@@ -60,12 +45,10 @@ class Story extends LitElement {
   firstUpdated() {
     this.recalcSplitter(document.documentElement.clientWidth);
 
-    // @ts-expect-error - TS2339 - Property 'obs' does not exist on type 'Story'.
     this.obs = new ResizeObserver((entries /*, observer*/) => {
       this.recalcSplitter(entries[0].contentRect.width);
     });
 
-    // @ts-expect-error - TS2339 - Property 'obs' does not exist on type 'Story'.
     this.obs.observe(this);
   }
 
@@ -93,47 +76,45 @@ class Story extends LitElement {
   }
 
   configureSplitter() {
-    const sidebar = this.renderRoot.querySelector(".sidebar");
-    const content = this.renderRoot.querySelector(".main-content");
+    const sidebar = this.renderRoot.querySelector(".sidebar") as HTMLElement;
+    const content = this.renderRoot.querySelector(
+      ".main-content",
+    ) as HTMLElement;
 
-    // @ts-expect-error - TS2339 - Property 'splitter' does not exist on type 'Story'.
     if (this.splitter) {
       try {
-        // @ts-expect-error - TS2339 - Property 'splitter' does not exist on type 'Story'.
         this.splitter.destroy();
       } catch (e) {
         // ignore splitter destory err
       }
-      // @ts-expect-error - TS2339 - Property 'splitter' does not exist on type 'Story'.
       this.splitter = null;
     }
 
-    // @ts-expect-error - TS2339 - Property 'splitter' does not exist on type 'Story'.
     if (sidebar && content && !this.splitter) {
-      const opts = {
+      const opts: Split.Options = {
         sizes: [20, 80],
 
         gutterSize: 4,
 
-        direction: this.splitDirection,
+        direction: this.splitDirection as "horizontal" | "vertical",
       };
 
-      // @ts-expect-error - TS2339 - Property 'splitter' does not exist on type 'Story'. | TS2322 - Type 'Element' is not assignable to type 'string | HTMLElement'. | TS2322 - Type 'Element' is not assignable to type 'string | HTMLElement'.
       this.splitter = Split([sidebar, content], opts);
     }
   }
 
   async doLoadCurated() {
+    if (this.collInfo == null || this.collInfo.pages == null) {
+      return;
+    }
     this.curatedPageMap = {};
 
     const pageMap = {};
 
-    // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'.
     for (const page of this.collInfo.pages) {
       pageMap[page.id] = page;
     }
 
-    // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'.
     for (const curated of this.collInfo.curatedPages) {
       if (!this.curatedPageMap[curated.list]) {
         this.curatedPageMap[curated.list] = [];
@@ -289,29 +270,21 @@ class Story extends LitElement {
                     ? "is-active"
                     : ""} menu-label is-size-4"
                   @click=${this.onClickScroll}
-                  >${
-                    // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'.
-                    this.collInfo.title
-                  }</a
+                  >${this.collInfo?.title}</a
                 >
                 <ul class="menu-list">
-                  ${
-                    // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'.
-                    this.collInfo.lists.map(
-                      (list) =>
-                        html` <li>
-                          <a
-                            @click=${this.onClickScroll}
-                            href="#list-${list.id}"
-                            data-list="${list.id}"
-                            class="${currListNum === list.id
-                              ? "is-active"
-                              : ""}"
-                            >${list.title}</a
-                          >
-                        </li>`,
-                    )
-                  }
+                  ${this.collInfo?.lists.map(
+                    (list) =>
+                      html` <li>
+                        <a
+                          @click=${this.onClickScroll}
+                          href="#list-${list.id}"
+                          data-list="${list.id}"
+                          class="${currListNum === list.id ? "is-active" : ""}"
+                          >${list.title}</a
+                        >
+                      </li>`,
+                  )}
                 </ul>
               </li>
             </ul>
@@ -338,8 +311,7 @@ class Story extends LitElement {
   }
 
   renderLists() {
-    // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'.
-    return html` ${this.collInfo.lists.map(
+    return html` ${this.collInfo?.lists?.map(
       (list) => html`
         <article id="list-${list.id}">
           <div class="content">
@@ -380,11 +352,11 @@ class Story extends LitElement {
     </li>`;
   }
 
-  onReplay(event) {
+  onReplay(event: Event) {
     event.preventDefault();
     const data = {
-      url: event.currentTarget.getAttribute("data-url"),
-      ts: event.currentTarget.getAttribute("data-ts"),
+      url: (event.currentTarget as Element).getAttribute("data-url"),
+      ts: (event.currentTarget as Element).getAttribute("data-ts"),
     };
     this.sendChangeEvent(data);
     return false;
@@ -404,30 +376,35 @@ class Story extends LitElement {
 
   scrollToList() {
     // lists are 1 based, 0 is header, 1 is first list
-    // @ts-expect-error - TS2339 - Property 'currList' does not exist on type 'Story'. | TS2339 - Property 'collInfo' does not exist on type 'Story'.
-    if (this.currList > this.collInfo.lists.length) {
+    if (this.currList > (this.collInfo?.lists?.length ?? 0)) {
       this.currList = 0;
     }
 
-    const opts = { behavior: "smooth", block: "nearest", inline: "nearest" };
+    const opts: ScrollIntoViewOptions = {
+      behavior: "smooth",
+      block: "nearest",
+      inline: "nearest",
+    };
     this.clickTime = new Date().getTime();
-    // @ts-expect-error - TS2339 - Property 'getElementById' does not exist on type 'HTMLElement | ShadowRoot'. | TS2339 - Property 'currList' does not exist on type 'Story'.
-    const curr = this.renderRoot.getElementById("list-" + this.currList);
+    const curr = (this.renderRoot as ShadowRoot).getElementById(
+      "list-" + this.currList,
+    ) as HTMLElement;
     if (curr) {
       curr.scrollIntoView(opts);
     }
   }
 
-  onScroll(event) {
-    const scrollable = event.currentTarget;
-    // @ts-expect-error - TS2339 - Property 'getElementById' does not exist on type 'HTMLElement | ShadowRoot'. | TS2339 - Property 'currList' does not exist on type 'Story'.
-    const curr = this.renderRoot.getElementById("list-" + this.currList);
+  onScroll(event: Event) {
+    const scrollable = event.currentTarget as HTMLElement;
+    const curr = (this.renderRoot as ShadowRoot).getElementById(
+      "list-" + this.currList,
+    );
 
     if (!curr) {
       return;
     }
 
-    let next = curr;
+    let next: Element = curr;
     const target = scrollable.offsetTop;
     const currST = scrollable.scrollTop;
 
@@ -461,13 +438,14 @@ class Story extends LitElement {
       `a[data-list="${this.currList}"]`,
     );
     if (sel) {
-      const opts = { behavior: "smooth", block: "nearest", inline: "nearest" };
-      // @ts-expect-error - TS2345 - Argument of type '{ behavior: string; block: string; inline: string; }' is not assignable to parameter of type 'boolean | ScrollIntoViewOptions | undefined'.
+      const opts: ScrollIntoViewOptions = {
+        behavior: "smooth",
+        block: "nearest",
+        inline: "nearest",
+      };
       sel.scrollIntoView(opts);
     }
   }
 }
-
-customElements.define("wr-coll-story", Story);
 
 export { Story };
