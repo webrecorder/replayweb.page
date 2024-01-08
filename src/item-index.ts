@@ -36,7 +36,7 @@ class ItemIndex extends LitElement {
 
   @state()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  private _deleting: any = {};
+  protected _deleting: any = {};
 
   private typeFilter = "";
   private indexParams = "";
