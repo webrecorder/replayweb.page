@@ -8,7 +8,7 @@
   "author": "Webrecorder Software",
   "license": "AGPL-3.0-or-later",
   "main": "dist/index.js",
-  "types": "dist/ui.d.ts",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -20,6 +20,9 @@
     "*": {
       "*": [
         "dist/*"
+      ],
+      "index": [
+        "dist/index.d.ts"
       ]
     }
   },
