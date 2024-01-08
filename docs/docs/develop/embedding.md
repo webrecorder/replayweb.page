@@ -8,8 +8,8 @@ To make this possible ReplayWeb.page provides the `#!html <replay-web-page>` HTM
 
 The `#!html <replay-web-page>` web component requires a backend service worker to be loaded by your website. While the frontend and backend are both static JavaScript assets which can be loaded from a CDN (Content Delivery Network), the backend service worker JavaScript file must be served from your website. This service worker is responsible for retrieving data on demand from your web archive file. 
 
-!!! note "Note: Serving efficient web archives with WACZ files"
-    While other web archive filetypes may require ReplayWeb.page to download them in their entirety before viewing, when using WACZ files the service worker can pull individual resources from the file as they are requested by the user. Full retrieval of the WACZ by ReplayWeb.page is *not* required as long as the server delivering the WACZ file supports HTTP range requests. This means that serving archived content from WACZ files is effectively as bandwidth efficient as any other web content!
+!!! tip "Tip: Serving web archives efficiently with WACZ files"
+    While other web archive filetypes may require ReplayWeb.page to download them in their entirety before viewing, WACZ files allow the service worker to pull individual resources from the file as they are requested by the user. Full retrieval of the WACZ by ReplayWeb.page is *not* required as long as the server delivering the WACZ file supports HTTP range requests. This means that serving archived content from WACZ files is effectively as bandwidth efficient as any other web content!
 
 ## Example
 
@@ -159,7 +159,7 @@ Below are some possible issues that you may encounter when embedding and possibl
 
 ### Embed is too small / doesn't fill page.
 
-If the `<replay-web-page>` tag is the only element on a page, and you want it to use the full window width and height, adding the following
+If the `#!HTML <replay-web-page>` tag is the only element on a page, and you want it to use the full window width and height, adding the following
 CSS should fix the issue:
 
 ```css

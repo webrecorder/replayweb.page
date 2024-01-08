@@ -22,7 +22,7 @@ The archived item will be downloaded, either fully or on-demand (if possible) an
 
 See the [Supported Locations](../../develop/locations/) page for details on supported external sources for serving archived items.
 
-## Loading Files from Within Google Drive
+## Loading Files from Google Drive
 
 In addition to loading remote content from URLs, ReplayWeb.page also supports loading WARC and WACZ files directly from Google Drive.
 
