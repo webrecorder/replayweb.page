@@ -100,7 +100,6 @@ const browserConfig = (/*env, argv*/) => {
 
   /** @type {import('webpack').Configuration['entry']} */
   const entry = {
-    ui: "./src/ui.ts",
     index: "./src/index.ts",
     misc: "./src/misc.ts",
   };
