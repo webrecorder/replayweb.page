@@ -9,8 +9,8 @@
   "license": "AGPL-3.0-or-later",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/ui.d.ts",
+      "import": "./dist/ui.js"
     },
     "./src/*": "./src/*",
     "./*": "./dist/*"
