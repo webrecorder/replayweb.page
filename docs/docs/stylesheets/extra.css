@@ -108,3 +108,42 @@ code {
     font-family: var(--md-text-font);
     font-weight: 600;
 }
+
+
+/* Status Styling */
+
+.status-success {
+    font-family: var(--md-code-font);
+    font-weight: 500;
+    white-space: nowrap;
+    & svg {
+        color: hsl(142.1 76.2% 36.3%);
+    }
+}
+
+.status-warning {
+    font-family: var(--md-code-font);
+    font-weight: 500;
+    white-space: nowrap;
+    & svg {
+        color: hsl(32.1 94.6% 43.7%);
+    }
+}
+
+.status-danger {
+    font-family: var(--md-code-font);
+    font-weight: 500;
+    white-space: nowrap;
+    & svg {
+        color: hsl(0 72.2% 50.6%);
+    }
+}
+
+.status-waiting {
+    font-family: var(--md-code-font);
+    font-weight: 500;
+    white-space: nowrap;
+    & svg {
+        color: hsl(271.5 81.3% 55.9%);
+    }
+}
