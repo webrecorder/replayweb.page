@@ -16,6 +16,17 @@ type URLResource = {
   ts: string;
 };
 
+export type URLResource = {
+  id: number;
+  title: string;
+  url: string;
+  mime: string;
+  status: string;
+  date: string;
+  ts: string;
+  desc?: string;
+};
+
 // ===========================================================================
 /**
  * @prop {boolean | undefined} active

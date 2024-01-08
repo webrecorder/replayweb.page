@@ -42,3 +42,6 @@ export {
   URLResources,
   Embed,
 };
+
+export type { Item as ItemType } from "./types";
+export type { URLResource } from "./url-resources";

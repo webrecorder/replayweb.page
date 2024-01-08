@@ -5,6 +5,7 @@ import { wrapCss } from "./misc";
 
 import fasSortDown from "@fortawesome/fontawesome-free/svgs/solid/sort-down.svg";
 import fasSortUp from "@fortawesome/fontawesome-free/svgs/solid/sort-up.svg";
+import { customElement } from "lit/decorators.js";
 
 // ===========================================================================
 @customElement("wr-sorter")
