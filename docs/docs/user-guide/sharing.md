@@ -1,4 +1,4 @@
-# Sharing Links
+# Sharing Archived Items
 
 ReplayWeb.page links are designed to be shareable with others, as long as they have access to the archived item.
 
@@ -14,13 +14,13 @@ https://replayweb.page/?source=s3://webrecorder-builds/warcs/netpreserve-twitter
 
 ReplayWeb.page will load the web archive from `s3://webrecorder-builds/warcs/netpreserve-twitter.warc`, navigate to the correct URL `https://twitter.com/netpreserve` at snapshot `20190603053135`
 
-The following URL will load the same web archive, and show the search results for Pages that contain the word 'WARC':
+The following URL will load the same web archive, and show the search results for pages that contain the word 'WARC':
 
 ```
 https://replayweb.page/?source=s3://webrecorder-builds/warcs/netpreserve-twitter.warc#view=pages&query=WARC
 ```
 
-## Doesn't Work with Local Files
+## Can't Share Links to Local Files
 
 URLs that have a source URL component of `source=file://...` can not be shared as they refer to a local file on your machine. Loading that URL by anyone else will result in an error.
 
