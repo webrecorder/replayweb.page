@@ -29,4 +29,4 @@ Try scrolling the archived page below!
 
 <script src="https://cdn.jsdelivr.net/npm/replaywebpage/ui.js"></script>
 
-<replay-web-page class="wr-container" style="min-height: 600px; height: 80vh;" loading="eager" replaybase="../../js/" source="https://replayweb.page/examples/netpreserve-twitter.warc" url="https://twitter.com/netpreserve"></replay-web-page>
+<replay-web-page class="wr-container" style="min-height: 600px; height: 80vh;" replaybase="../../js/" source="https://replayweb.page/examples/netpreserve-twitter.warc" url="https://twitter.com/netpreserve"></replay-web-page>

@@ -46,9 +46,10 @@ theme:
 nav:
   - index.md
   - Develop:
-    - develop/embedding.md
-    - develop/cors-settings.md
-    - develop/locations.md
+    - Embedding:
+      - develop/embedding.md
+      - develop/cors-settings.md
+      - develop/locations.md
   - User Guide:
     - user-guide/index.md
     - user-guide/loading.md
