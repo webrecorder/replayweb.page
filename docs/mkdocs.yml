@@ -52,6 +52,7 @@ nav:
   - User Guide:
     - user-guide/index.md
     - user-guide/loading.md
+    - user-guide/exploring.md
     - user-guide/offline-use.md
 
 markdown_extensions:
