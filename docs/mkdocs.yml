@@ -5,7 +5,6 @@ edit_uri: edit/main/docs/
 extra_css:
     - stylesheets/extra.css
 extra_javascript:
-    - js/insertversion.js
     - js/sw.js
 theme:
   name: material

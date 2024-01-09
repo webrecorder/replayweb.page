@@ -121,9 +121,7 @@ ReplayWeb.page offers four different ways to embed the archived content, includi
 
 ??? example "Example: Embed with `replay-with-info` enabled"
     <script src="https://cdn.jsdelivr.net/npm/replaywebpage/ui.js"></script>
-
-    <replay-web-page style="height: 600px" loading="eager" embed="replay-with-info" replaybase="../../js/" source="../../assets/tweet-example.wacz"
-    url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
+    <replay-web-page style="height: 600px" loading="eager" embed="replay-with-info" replaybase="../../js/" source="../../assets/tweet-example.wacz"url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
 
 ## Embedding Options
 

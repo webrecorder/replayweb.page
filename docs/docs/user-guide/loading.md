@@ -14,6 +14,11 @@ The archived item is loaded directly in the browser and is _not_ uploaded anywhe
 
 Once loaded, the archived item will appear in the list of Loaded Archives and will be identified by its filename with a a `file://` URL as its source. This URL is not shareable as it doesn't exist outside of your computer.
 
+<figure>
+    <img alt="animated gif of replayweb.page opening an archived item" src="../../assets/replaywebpage-online.gif">
+    <figcaption>Loading an archived item into ReplayWeb.page and viewing a URL in the pages list</figcaption>
+</figure>
+
 To unload an archived item, click on the 'X'. Unloading an item does not delete the file from its original location.
 
 ## Loading Files from a URL

@@ -19,14 +19,14 @@ Welcome to the ReplayWeb.page official docs. These docs contain the following se
 - High-fidelity replay of archived items in several formats.
 - Page search and URL search.
 - Full text search support for archived items that include extracted text.
-- On-demand, incremental loading of large archives.
+- On-demand, incremental loading of large files.
 - Several options for fully-functional offline usage, including a standalone desktop app with Flash support.
-- Support for versioned embedding of archived items.
+- Support for embedding archived items directly into your website!
 
-### Demo!
+### Featured Projects
 
-Try scrolling the archived page below!
+Check out some of the great projects built with ReplayWeb.page below!
 
-<script src="https://cdn.jsdelivr.net/npm/replaywebpage/ui.js"></script>
-
-<replay-web-page class="wr-container" style="min-height: 600px; height: 80vh;" replaybase="../../js/" source="https://replayweb.page/examples/netpreserve-twitter.warc" url="https://twitter.com/netpreserve"></replay-web-page>
+- [Stanford Digital Publication Web Archives](https://sup.webrecorder.net/) — Archives of SUP Digital publications.
+- [ysdn.info](https://ysdn.info/) — Final year grad show websites from the now defunct York / Sheridan design program.
+- Have you made something cool with ReplayWeb.page that should be here?? Let us know in a [GitHub issue](https://github.com/webrecorder/replayweb.page/issues/new)!
