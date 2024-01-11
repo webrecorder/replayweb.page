@@ -76,6 +76,7 @@ export type LoadInfo = {
   swError?: string;
   newFullImport?: unknown;
   name?: string;
+  importCollId?: string;
 };
 
 // ===========================================================================
