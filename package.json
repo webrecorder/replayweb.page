@@ -65,6 +65,7 @@
   "files": [
     "/assets",
     "/dist",
+    "/src",
     "/ruffle",
     "sw.js",
     "ui.js",
