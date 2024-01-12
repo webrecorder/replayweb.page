@@ -11,7 +11,7 @@ import "./components/labeled-field";
 // ===========================================================================
 class ItemInfo extends LitElement {
   @property({ type: Object })
-  item!: Item | Record<string, never>;
+  item: Item | Record<string, never> | null = null;
 
   @property({ type: Boolean })
   detailed = false;
@@ -90,31 +90,31 @@ class ItemInfo extends LitElement {
     return html`
       <wr-labeled-field
         label="Source"
-        copy="${item.sourceUrl}"
+        copy="${item!.sourceUrl}"
         class="column is-4"
-        >${item.sourceUrl &&
-        (item.sourceUrl.startsWith("http://") ||
-          item.sourceUrl.startsWith("https://"))
-          ? html` <a href="${item.sourceUrl}">${item.sourceUrl}</a> `
-          : html` ${item.sourceUrl}`}
-        ${item.sourceUrl && item.sourceUrl.startsWith("googledrive://")
-          ? html` <i>(${item.filename})</i>`
+        >${item!.sourceUrl &&
+        (item!.sourceUrl.startsWith("http://") ||
+          item!.sourceUrl.startsWith("https://"))
+          ? html` <a href="${item!.sourceUrl}">${item!.sourceUrl}</a> `
+          : html` ${item!.sourceUrl}`}
+        ${item!.sourceUrl && item!.sourceUrl.startsWith("googledrive://")
+          ? html` <i>(${item!.filename})</i>`
           : nothing}
       </wr-labeled-field>
       ${showItemID
         ? html`<wr-labeled-field
             label="Archived Item ID"
-            .copy=${item.coll}
+            .copy=${item!.coll}
             class="column"
           >
-            ${item.coll || "No ID"}
+            ${item!.coll || "No ID"}
           </wr-labeled-field>`
         : nothing}
       <wr-labeled-field label="Date Loaded" class="column is-2">
-        ${item.ctime ? new Date(item.ctime).toLocaleString() : nothing}
+        ${item!.ctime ? new Date(item!.ctime).toLocaleString() : nothing}
       </wr-labeled-field>
       <wr-labeled-field label="Total Size" class="column is-2">
-        ${prettyBytes(Number(item.totalSize || item.size || 0))}
+        ${prettyBytes(Number(item!.totalSize || item!.size || 0))}
       </wr-labeled-field>
     `;
   }
@@ -125,8 +125,8 @@ class ItemInfo extends LitElement {
     return html` <div class="columns">
       <div class="column col-title is-4">
         <span class="subtitle has-text-weight-bold">
-          <a href="?source=${encodeURIComponent(item.sourceUrl)}"
-            >${item.name || item.title || item.filename}</a
+          <a href="?source=${encodeURIComponent(item!.sourceUrl)}"
+            >${item!.name || item!.title || item!.filename}</a
           >
         </span>
       </div>
@@ -145,26 +145,26 @@ class ItemInfo extends LitElement {
       datapackageHash,
       publicKey,
       software,
-    } = this.item.verify || {};
+    } = this.item!.verify || {};
 
     const certFingerprintUrl = certFingerprint
       ? `https://crt.sh/?q=${certFingerprint}`
       : "";
 
     return html` <div class="columns">
-      ${item.name || item.title
+      ${item!.name || item!.title
         ? html`<wr-labeled-field label="Title" class="column">
-            ${item.name || item.title}
+            ${item!.name || item!.title}
           </wr-labeled-field>`
         : nothing}
       <wr-labeled-field label="Filename" class="column">
-        ${item.filename}
+        ${item!.filename}
       </wr-labeled-field>
-      ${item.resources
+      ${item!.resources
         ? html`<wr-labeled-field label="Files" class="column">
             <ol style="padding: revert">
               ${map(
-                item.resources,
+                item!.resources,
                 (resource) =>
                   html`<li>
                     <a href="${resource.path}">${resource.name + "\n"}</a>
@@ -222,7 +222,7 @@ class ItemInfo extends LitElement {
       </wr-labeled-field>
 
       <wr-labeled-field label="Loading Mode" class="column">
-        ${item.onDemand ? "Download On-Demand" : "Fully Local"}
+        ${item!.onDemand ? "Download On-Demand" : "Fully Local"}
       </wr-labeled-field>
     </div>`;
   }
