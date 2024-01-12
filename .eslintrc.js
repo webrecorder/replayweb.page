@@ -38,12 +38,6 @@ module.exports = {
     "@typescript-eslint/consistent-type-exports": "error",
     "@typescript-eslint/no-explicit-any": "warn",
   },
-  ignorePatterns: [
-    "ruffle/**/*",
-    "build/**/*",
-    "/sw.js",
-    "/ui.js",
-    "dist/**/*",
-  ],
+  ignorePatterns: ["ruffle/**/*", "build/**/*", "dist/**/*"],
   reportUnusedDisableDirectives: true,
 };
