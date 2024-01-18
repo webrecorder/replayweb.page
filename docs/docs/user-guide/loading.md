@@ -27,7 +27,7 @@ To load an archived item stored in a remote location, enter the URL of the file 
 
 The archived item will be downloaded, either fully or on-demand (if possible) and presented when ready.
 
-See the [Supported Locations](../../develop/locations/) page for details on supported external sources for serving archived items.
+See the [Supported Locations](../develop/locations.md) page for details on supported external sources for serving archived items.
 
 ## Loading Files from Google Drive
 

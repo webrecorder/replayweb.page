@@ -129,7 +129,7 @@ The `#!html <replay-web-page>` tag is a web component that supports a number of 
 
 | Attribute    | Description      |
 |:-------------|:-----------------|
-| `source`     | Source URL for the archived item. This should be one of the [supported formats](/user-guide#supported-formats) loaded from one of the [support locations](/develop/locations) and is required. |
+| `source`     | Source URL for the archived item. This should be one of the [supported formats](../user-guide/index.md#supported-formats) loaded from one of the [support locations](locations.md) and is required. |
 | `url`        | The starting URL to load from the archive. If omitted, will start with the page list or URL search view. |
 | `ts`         | The timestamp of the starting URL to load. If omitted, the latest available version is used. |
 | `deepLink`   | If set, ReplayWeb.page will modify the URL of the page to allow for 'deep linking' to exact pages in the embed. |
@@ -171,4 +171,4 @@ html, body {
 
 If you see errors related to loading archived items such as `TypeError: failed to load`, the issue may be a result of a CORS error.
 
-See [CORS Settings](/develop/cors-settings) for more info on how to configure CORS for ReplayWeb.page
+See [CORS Settings](cors-settings.md) for more info on how to configure CORS for ReplayWeb.page

@@ -4,7 +4,7 @@ Welcome to the ReplayWeb.page official user guide.
 
 ## Getting Started
 
-1. Check out [Loading Archived Items](loading) to point ReplayWeb.page towards the file you wish to view.
+1. Check out [Loading Archived Items](loading.md) to point ReplayWeb.page towards the file you wish to view.
 2. Once your file has been loaded, [learn how to navigate the archived content]()!
 
 ## Supported Formats

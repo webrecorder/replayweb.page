@@ -8,7 +8,7 @@ The following is a list of currently supported URL schemes and details below:
 
 ## HTTP and HTTPS
 
-While `https://replayweb.page` can load archived items from any URL, the hosting server must allow access by [enabling cross origin resource sharing](/develop/cors-settings) (CORS). HTTP URLs may not be accessible from `https://replayweb.page` since it requires HTTPS.
+While `https://replayweb.page` can load archived items from any URL, the hosting server must allow access by [enabling cross origin resource sharing](cors-settings.md) (CORS). HTTP URLs may not be accessible from `https://replayweb.page` since it requires HTTPS.
 
 ## Local Files
 
