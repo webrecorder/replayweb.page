@@ -1,7 +1,7 @@
 site_name: ReplayWeb.page Docs
 repo_url: https://github.com/webrecorder/replayweb.page
 repo_name: ReplayWeb.page
-edit_uri: edit/main/docs/
+edit_uri: edit/main/docs/docs/
 extra_css:
     - stylesheets/extra.css
 extra_javascript:
@@ -20,6 +20,7 @@ theme:
     - content.code.copy
     - content.action.edit
     - content.tooltips
+    - search.suggest
   palette:
     scheme: webrecorder
   logo: assets/brand/logo.svg
@@ -94,3 +95,4 @@ copyright: "Creative Commons Attribution 4.0 International (CC BY 4.0)"
 
 plugins:
   - macros
+  - search
