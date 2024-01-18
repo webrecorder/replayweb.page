@@ -22,7 +22,7 @@ https://replayweb.page/?source=s3://webrecorder-builds/warcs/netpreserve-twitter
 
 ## Can't Share Links to Local Files
 
-URLs that have a source URL component of `source=file://...` can not be shared as they refer to a local file on your machine. Loading that URL by anyone else will result in an error.
+URLs that have a source URL component of `source=file://...` can not be shared as they refer to a local file on your machine. Anyone else attempting to load that URL will get an error.
 
 ## Sharing Archived Items with Google Drive
 
