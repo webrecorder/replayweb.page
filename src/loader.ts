@@ -5,7 +5,7 @@ import prettyBytes from "pretty-bytes";
 
 import { parseURLSchemeHostPath } from "./pageutils";
 import { property } from "lit/decorators.js";
-import { LoadInfo } from "./item";
+import type { LoadInfo } from "./item";
 
 // ===========================================================================
 class Loader extends LitElement {
@@ -124,7 +124,7 @@ class Loader extends LitElement {
 
     // custom protocol handlers here...
     try {
-      const { scheme, host, path } = parseURLSchemeHostPath(sourceUrl);
+      const { scheme, host, path } = parseURLSchemeHostPath(sourceUrl!);
 
       switch (scheme) {
         case "googledrive":

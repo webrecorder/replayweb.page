@@ -232,7 +232,7 @@ class PageEntry extends LitElement {
                   href="${getReplayLink(
                     "pages",
                     this.page!.url,
-                    this.page!.timestamp,
+                    this.page!.timestamp!,
                   )}"
                 >
                   <p class="is-size-6 has-text-weight-bold has-text-link text">

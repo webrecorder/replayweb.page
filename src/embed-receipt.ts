@@ -191,7 +191,7 @@ export class RWPEmbedReceipt extends LitElement {
       ? `https://crt.sh/?q=${certFingerprint}`
       : "";
 
-    const dateStr = tsToDate(this.ts).toLocaleString();
+    const dateStr = tsToDate(this.ts!).toLocaleString();
 
     return html`
       <div class="dropdown mb-4 ${this.active ? "is-active" : ""}">

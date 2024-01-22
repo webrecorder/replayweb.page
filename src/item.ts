@@ -381,8 +381,8 @@ class Item extends LitElement {
     let item = this.loadInfo && this.loadInfo.customColl; // @todo(2023-11-06) update customColl -> customItem
 
     if (!item) {
-      const res = await sourceToId(this.sourceUrl);
-      item = res.coll;
+      const res = await sourceToId(this.sourceUrl!);
+      item = res.item;
     }
 
     this.item = item;
@@ -393,11 +393,15 @@ class Item extends LitElement {
     const resp = await fetch(itemApiPrefix + "?all=1");
 
     if (resp.status != 200) {
+      console.error(await resp.text());
+      debugger;
       this.itemInfo = null;
       return;
     }
 
     const json = await resp.json();
+
+    debugger;
 
     this.itemInfo = {
       apiPrefix: itemApiPrefix,
