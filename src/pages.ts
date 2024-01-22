@@ -87,9 +87,8 @@ class Pages extends LitElement {
   @property({ type: Boolean })
   editing: boolean = false;
 
-  @property({ type: Object })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  toDeletePages: any = null;
+  @property({ type: Array })
+  toDeletePages: Set<number> | number[] | null = null;
 
   @property({ type: Object })
   toDeletePage: URLResource | null = null;
@@ -850,7 +849,12 @@ class Pages extends LitElement {
         : html`
             <p>
               Are you sure you want to delete the
-              <b>${this.toDeletePages.size}</b> selected pages?
+              <b
+                >${Array.isArray(this.toDeletePages)
+                  ? new Set(this.toDeletePage).size
+                  : this.toDeletePages.size}</b
+              >
+              selected pages?
             </p>
           `}
       <p>This operation can not be undone.</p>
