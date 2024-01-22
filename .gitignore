@@ -11,6 +11,8 @@ coverage/
 _data/
 _site/
 dist/
+ui.js
+sw.js
 plugins-*/
 .jekyll-cache
 

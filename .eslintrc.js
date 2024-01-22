@@ -34,7 +34,14 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "warn",
   },
   reportUnusedDisableDirectives: true,
-  ignorePatterns: ["__generated__", "__mocks__", "dist", "ruffle"],
+  ignorePatterns: [
+    "__generated__",
+    "__mocks__",
+    "dist",
+    "ruffle",
+    "ui.js",
+    "sw.js",
+  ],
   overrides: [
     {
       extends: ["plugin:@typescript-eslint/disable-type-checked"],
