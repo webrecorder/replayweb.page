@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-env node */
 
 // Runs a webpack build when not installed in a git repository (i.e. when installed from GitHub in node_modules)
