@@ -1,21 +1,16 @@
-/* eslint-env node */
-/** @type { import("eslint").Linter.Config } */
+/** @type {import('eslint').Linter.Config} */
 module.exports = {
+  parser: "@typescript-eslint/parser",
   env: {
     browser: true,
-    es6: true,
+    commonjs: true,
+    es2017: true,
   },
-  extends: [
-    "eslint:recommended",
-    "plugin:lit/recommended",
-    "prettier",
-    "plugin:@typescript-eslint/recommended",
-  ],
+  extends: ["plugin:wc/recommended", "plugin:lit/recommended", "prettier"],
   plugins: ["@typescript-eslint", "lit"],
-  parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: "module",
+    project: ["./tsconfig.eslint.json"],
+    tsconfigRootDir: __dirname,
   },
   root: true,
   rules: {
@@ -35,9 +30,18 @@ module.exports = {
         fixStyle: "inline-type-imports",
       },
     ],
-    "@typescript-eslint/consistent-type-exports": "error",
+    // "@typescript-eslint/consistent-type-exports": "error",
     "@typescript-eslint/no-explicit-any": "warn",
   },
-  ignorePatterns: ["ruffle/**/*", "build/**/*", "dist/**/*"],
   reportUnusedDisableDirectives: true,
+  ignorePatterns: ["__generated__", "__mocks__", "dist", "ruffle"],
+  overrides: [
+    {
+      extends: ["plugin:@typescript-eslint/disable-type-checked"],
+      files: ["webpack.*.js"],
+      rules: {
+        "@typescript-eslint/no-var-requires": "off",
+      },
+    },
+  ],
 };
