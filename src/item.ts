@@ -51,7 +51,7 @@ import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.sv
 import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
 
-import type { Item as ItemType } from "./types";
+import type { ItemType, URLResource } from "./types";
 import type { Replay } from "./replay";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -94,7 +94,7 @@ class Item extends LitElement {
   showSidebar: boolean | null = null;
 
   @property({ type: Object, attribute: false })
-  itemInfo: ItemType | Record<string, never> | null = null;
+  itemInfo: ItemType | null = null;
 
   @property({ type: String })
   item = "";
@@ -873,8 +873,7 @@ class Item extends LitElement {
 
     if (!isReplay && this.tabData && this.tabData.view) {
       const detail = {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-        title: (this.tabLabels as any)[this.tabData.view],
+        title: this.tabLabels[this.tabData.view],
         replayTitle: false,
       };
       this.dispatchEvent(
@@ -1762,8 +1761,7 @@ class Item extends LitElement {
 
   _stringToParams(value) {
     const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-    const data: any = {};
+    const data: Partial<URLResource> = {};
     data.url = "";
     data.ts = "";
 

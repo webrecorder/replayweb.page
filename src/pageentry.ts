@@ -8,6 +8,7 @@ import "keyword-mark-element/lib/keyword-mark.js";
 import { getReplayLink } from "./pageutils";
 
 import { wrapCss } from "./misc";
+import type { URLResource } from "./types";
 
 // ===========================================================================
 class PageEntry extends LitElement {
@@ -18,8 +19,7 @@ class PageEntry extends LitElement {
   textSnippet: string | null = "";
 
   @property({ type: Object })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  page: any = null;
+  page: URLResource | null = null;
 
   @property({ type: String })
   replayPrefix = "";
@@ -191,8 +191,8 @@ class PageEntry extends LitElement {
   }
 
   render() {
-    const p = this.page;
-    const date = this.page.date;
+    const p = this.page!;
+    const date = this.page!.date;
 
     const hasSize = typeof p.size === "number";
 
@@ -231,8 +231,8 @@ class PageEntry extends LitElement {
                   @click="${this.onReplay}"
                   href="${getReplayLink(
                     "pages",
-                    this.page.url,
-                    this.page.timestamp,
+                    this.page!.url,
+                    this.page!.timestamp,
                   )}"
                 >
                   <p class="is-size-6 has-text-weight-bold has-text-link text">
@@ -289,19 +289,23 @@ class PageEntry extends LitElement {
     return html`<img
       class="thumbnail"
       @error=${() => (this.thumbnailValid = false)}
-      src=${`${this.replayPrefix}/${this.page.timestamp}id_/urn:thumbnail:${this.page.url}`}
+      src=${`${this.replayPrefix}/${this.page!.timestamp}id_/urn:thumbnail:${
+        this.page!.url
+      }`}
       loading="lazy"
     />`;
   }
 
   private renderFavicon() {
-    if (!this.iconValid || !this.page.favIconUrl) {
+    if (!this.iconValid || !this.page!.favIconUrl) {
       return;
     }
     return html`<img
       class="favicon"
       @error=${() => (this.iconValid = false)}
-      src=${`${this.replayPrefix}/${this.page.timestamp}id_/${this.page.favIconUrl}`}
+      src=${`${this.replayPrefix}/${this.page!.timestamp}id_/${
+        this.page!.favIconUrl
+      }`}
       loading="lazy"
     />`;
   }
@@ -309,13 +313,13 @@ class PageEntry extends LitElement {
   updateSnippet() {
     const oldVal = this.textSnippet;
 
-    if (!this.query || !this.page.text) {
+    if (!this.query || !this.page!.text) {
       this.textSnippet = null;
       this.requestUpdate("textSnippet", oldVal);
       return;
     }
 
-    let textContent = this.page.text;
+    let textContent = this.page!.text;
     let query = this.query;
 
     let inx = textContent.indexOf(this.query);
@@ -355,8 +359,8 @@ class PageEntry extends LitElement {
     event.preventDefault();
 
     const data = {
-      url: this.page.url,
-      ts: this.page.timestamp,
+      url: this.page!.url,
+      ts: this.page!.timestamp,
     };
     this.sendChangeEvent(data, reload);
     return false;
@@ -382,7 +386,7 @@ class PageEntry extends LitElement {
   }
 
   onSendSelToggle(event) {
-    const page = this.page.id;
+    const page = this.page!.id;
     const selected = event.currentTarget.checked;
     this.dispatchEvent(
       new CustomEvent("sel-page", { detail: { page, selected } }),

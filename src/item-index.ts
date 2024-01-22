@@ -7,23 +7,23 @@ import fasArrowDown from "@fortawesome/fontawesome-free/svgs/solid/angle-double-
 
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 
-import type { Item } from "./types";
+import type { ItemType } from "./types";
 
 import "./item-info";
 
 // ===========================================================================
 class ItemIndex extends LitElement {
   @property({ type: Array })
-  items: Item[] = [];
+  items: ItemType[] = [];
 
   @property({ type: String })
   query = "";
 
   @property({ type: Array })
-  filteredItems: Item[] = [];
+  filteredItems: ItemType[] = [];
 
   @property({ type: Array })
-  sortedItems: Item[] = [];
+  sortedItems: ItemType[] = [];
 
   @property({ type: Boolean })
   hideHeader: boolean = false;
@@ -99,7 +99,7 @@ class ItemIndex extends LitElement {
         throw new Error("Invalid API Response, Retry");
       }
       const json = await resp.json();
-      this.items = json.colls.map((item: Item) => {
+      this.items = json.colls.map((item: ItemType) => {
         item.title = item.title || item.filename;
         return item;
       });
@@ -343,7 +343,7 @@ class ItemIndex extends LitElement {
     `;
   }
 
-  renderItemInfo(item: Item) {
+  renderItemInfo(item: ItemType) {
     return html`<wr-item-info .item=${item}></wr-item-info>`;
   }
 

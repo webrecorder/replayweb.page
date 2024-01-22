@@ -7,7 +7,7 @@ import { marked } from "marked";
 import { getTS, getReplayLink } from "./pageutils";
 
 import Split from "split.js";
-import { type Item as ItemType } from "./types";
+import { type ItemType } from "./types";
 import { customElement, property } from "lit/decorators.js";
 
 // ===========================================================================

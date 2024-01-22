@@ -2,16 +2,15 @@ import { LitElement, html, css, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 import { wrapCss, rwpLogo } from "./misc";
-import type { Item } from "./types";
+import type { ItemType } from "./types";
 
 // ===========================================================================
 class Replay extends LitElement {
   @property({ type: Object })
-  collInfo: Item | Record<string, never> | null = null;
+  collInfo: ItemType | Record<string, never> | null = null;
 
   @property({ type: String })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  sourceUrl: any = null;
+  sourceUrl: string | null = null;
 
   // external url set from parent
   @property({ type: String })
@@ -34,15 +33,13 @@ class Replay extends LitElement {
   title = "";
 
   @property({ type: String })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  iframeUrl: any = null;
+  iframeUrl: string | null = null;
 
   @property({ type: Boolean })
   showAuth = false;
 
   @property({ type: Object })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  authFileHandle: any = null;
+  authFileHandle: FileSystemHandle | null = null;
 
   private reauthWait: null | Promise<void> = null;
 
@@ -65,8 +62,8 @@ class Replay extends LitElement {
         this.authFileHandle = event.data.fileHandle;
         try {
           if (
-            (await this.authFileHandle.requestPermission({ mode: "read" })) ===
-            "granted"
+            (await this.authFileHandle!.requestPermission({ mode: "read" }))
+              .state === "granted"
           ) {
             this.showAuth = false;
             this.reauthWait = null;
@@ -164,8 +161,7 @@ class Replay extends LitElement {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  setDisablePointer(disable: any) {
+  setDisablePointer(disable: boolean) {
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe) {
@@ -173,8 +169,7 @@ class Replay extends LitElement {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  onReplayMessage(event: any) {
+  onReplayMessage(event: MessageEvent) {
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe && event.source === iframe.contentWindow) {
@@ -216,8 +211,8 @@ class Replay extends LitElement {
         });
       } else {
         if (
-          (await this.authFileHandle.requestPermission({ mode: "read" })) !==
-          "granted"
+          (await this.authFileHandle.requestPermission({ mode: "read" }))
+            .state !== "granted"
         ) {
           this.reauthWait = null;
           return;
@@ -242,8 +237,7 @@ class Replay extends LitElement {
         !iframe.contentDocument ||
         !iframe.contentWindow ||
         (iframe.contentDocument.readyState === "complete" &&
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-          !(iframe.contentWindow as Window & { _WBWombat: any })._WBWombat)
+          !(iframe.contentWindow as Window & { _WBWombat: unknown })._WBWombat)
       ) {
         this.clearLoading(iframe && iframe.contentWindow);
       }
@@ -405,7 +399,7 @@ class Replay extends LitElement {
                                 </button>
                               `
                             : html` <wr-gdrive
-                                .sourceUrl="${this.sourceUrl}"
+                                .sourceUrl="${this.sourceUrl!}"
                                 state="trymanual"
                                 .reauth="${true}"
                                 @load-ready="${this.onReAuthed}"

@@ -1,3 +1,5 @@
+import type { URLResource } from "./types";
+
 // ===========================================================================
 async function digestMessage(message, hashtype) {
   const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
@@ -46,7 +48,7 @@ function getDateFromTS(ts: number) {
 }
 
 // ===========================================================================
-function getPageDateTS(page) {
+function getPageDateTS(page: URLResource) {
   let date: Date | null = null;
   try {
     date = new Date(page.ts || page.date);
@@ -60,7 +62,7 @@ function getPageDateTS(page) {
 }
 
 // ===========================================================================
-function getTS(iso) {
+function getTS(iso: string) {
   return iso.replace(/[-:T]/g, "").slice(0, 14);
 }
 

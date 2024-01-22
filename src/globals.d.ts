@@ -16,6 +16,12 @@ interface Window {
   }) => Promise<[FileSystemFileHandle]>;
 }
 
+interface FileSystemHandle {
+  requestPermission: (options?: {
+    mode?: "read" | "readwrite";
+  }) => Promise<PermissionStatus>;
+}
+
 interface Window {
   gapi: TODOFixMe;
 }

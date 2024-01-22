@@ -10,7 +10,7 @@ import { LitElement, html, css, nothing } from "lit";
 import { tsToDate } from "./pageutils";
 import prettyBytes from "pretty-bytes";
 import { property } from "lit/decorators.js";
-import type { Item as ItemType } from "./types";
+import type { ItemType } from "./types";
 
 // ===========================================================================
 export class RWPEmbedReceipt extends LitElement {

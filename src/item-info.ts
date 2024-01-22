@@ -4,14 +4,14 @@ import { wrapCss } from "./misc";
 import { map } from "lit/directives/map.js";
 import prettyBytes from "pretty-bytes";
 
-import type { Item } from "./types";
+import type { ItemType } from "./types";
 
 import "./components/labeled-field";
 
 // ===========================================================================
 class ItemInfo extends LitElement {
   @property({ type: Object })
-  item: Item | Record<string, never> | null = null;
+  item: ItemType | Record<string, never> | null = null;
 
   @property({ type: Boolean })
   detailed = false;

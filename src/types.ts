@@ -1,6 +1,21 @@
-import type { URLResource } from "./url-resources";
+export type URLResource = {
+  id: number;
+  title: string;
+  url: string;
+  mime: string;
+  status: string;
+  date: Date;
+  ts: string;
+  desc?: string;
+  timestamp?: string;
+  size: number;
+  favIconUrl: string;
+  text?: string;
+};
 
-export type Item = {
+export type Page = URLResource;
+
+export type ItemType = {
   filename: string;
   sourceUrl: string;
   replayPrefix: string;
