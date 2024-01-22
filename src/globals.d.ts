@@ -16,6 +16,7 @@ interface Window {
   }) => Promise<[FileSystemFileHandle]>;
 }
 
+// This is only supported in Blink (see https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle/requestPermission#browser_compatibility), so Typescript leaves it out of their definitions (https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1393#issuecomment-1483735315)
 interface FileSystemHandle {
   requestPermission: (options?: {
     mode?: "read" | "readwrite";
