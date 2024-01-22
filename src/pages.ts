@@ -2,6 +2,7 @@
 
 import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
 import ndjson from "fetch-ndjson";
 
@@ -211,6 +212,9 @@ class Pages extends LitElement {
     // normalize the date
     for (const page of this.filteredPages) {
       const { timestamp, date } = getPageDateTS(page);
+      if (date == null) {
+        throw new Error("Page date is null");
+      }
       page.timestamp = timestamp;
       page.date = date;
     }
@@ -242,11 +246,12 @@ class Pages extends LitElement {
     this.flex = flex;
     this.textPages = pages;
 
-    this.hasExtraPages =
+    this.hasExtraPages = Boolean(
       this.textPages &&
-      this.collInfo &&
-      this.collInfo.pages &&
-      this.textPages.length > this.collInfo.pages.length;
+        this.collInfo &&
+        this.collInfo.pages &&
+        this.textPages.length > this.collInfo.pages.length,
+    );
 
     return Promise.all(
       pages.map((page, index) => {
@@ -602,7 +607,7 @@ class Pages extends LitElement {
                   <input
                     id="titleEdit"
                     class="input"
-                    value="${this.collInfo.title}"
+                    value="${ifDefined(this.collInfo!.title)}"
                     @blur="${this.onUpdateTitle}"
                   />
                 </form>
