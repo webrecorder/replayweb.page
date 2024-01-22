@@ -183,7 +183,6 @@ class Item extends LitElement {
     pages: "Pages",
     story: "Story",
     resources: "URLs",
-    info: "Archive Info",
   };
 
   constructor() {
@@ -394,7 +393,7 @@ class Item extends LitElement {
     const resp = await fetch(itemApiPrefix + "?all=1");
 
     if (resp.status != 200) {
-      this.itemInfo = {};
+      this.itemInfo = null;
       return;
     }
 
