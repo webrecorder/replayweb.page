@@ -130,7 +130,7 @@ const browserConfig = (/*env, argv*/) => {
     optimization,
 
     output: {
-      path: __dirname,
+      path: path.join(__dirname),
       filename: "[name].js",
       libraryTarget: "self",
       globalObject: "self",

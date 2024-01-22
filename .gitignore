@@ -11,9 +11,9 @@ coverage/
 _data/
 _site/
 dist/
-ui.js
-sw.js
 plugins-*/
+sw.js
+ui.js
 .jekyll-cache
 
 ipfs-core.min.js
