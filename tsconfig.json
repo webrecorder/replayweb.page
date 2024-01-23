@@ -8,6 +8,7 @@
     "strict": true,
     "declaration": true,
     "declarationMap": true,
+    "declarationDir": "./dist/types",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
