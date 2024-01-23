@@ -70,8 +70,8 @@ export class ReplayWebApp extends LitElement {
   @property({ type: Boolean })
   skipRuffle = false;
 
-  @property({ noAccessor: true })
-  swErrorMsg: TemplateResult<1> | "" | null = null;
+  @property({ type: String })
+  swErrorMsg: TemplateResult<1> | string | null = null;
 
   protected swName?: string;
   private swmanager: SWManager | null;
