@@ -1,6 +1,7 @@
 /*eslint-env node */
 
 import { CollectionLoader } from "@webrecorder/wabac/src/loaders";
+import { type IpcRendererEvent } from "electron";
 
 const { ipcRenderer, contextBridge } = require("electron");
 
@@ -25,7 +26,7 @@ async function getDB(name: string) {
 }
 
 async function getResponse(
-  event: Electron.IpcRendererEvent,
+  event: IpcRendererEvent,
   request: Request,
   coll: string,
   ts: string,
