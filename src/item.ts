@@ -94,7 +94,7 @@ class Item extends LitElement {
   showSidebar: boolean | null = null;
 
   @property({ type: Object, attribute: false })
-  itemInfo: ItemType | null = null;
+  itemInfo: ItemType | Record<string, never> | null = null;
 
   @property({ type: String })
   item = "";
@@ -393,9 +393,7 @@ class Item extends LitElement {
     const resp = await fetch(itemApiPrefix + "?all=1");
 
     if (resp.status != 200) {
-      console.error(await resp.text());
-      debugger;
-      this.itemInfo = null;
+      this.itemInfo = {};
       return;
     }
 

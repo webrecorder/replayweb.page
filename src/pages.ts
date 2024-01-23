@@ -95,7 +95,7 @@ class Pages extends LitElement {
   toDeletePage: URLResource | null = null;
 
   @property({ type: Object })
-  collInfo: ItemType | null = null;
+  collInfo: ItemType | Record<string, never> | null = null;
 
   @property({ type: Boolean })
   allSelected = false;
