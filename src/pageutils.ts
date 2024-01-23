@@ -12,7 +12,7 @@ async function digestMessage(message: string, hashtype: AlgorithmIdentifier) {
 }
 
 // ===========================================================================
-function tsToDate(ts: string) {
+function tsToDate(ts: string | null | undefined) {
   if (!ts) {
     return "";
   }
@@ -39,7 +39,7 @@ function tsToDate(ts: string) {
 }
 
 // ===========================================================================
-function getDateFromTS(ts: number) {
+function getDateFromTS(ts: string | number) {
   let date: Date | null = null;
   date = new Date(ts);
   const timestamp =
