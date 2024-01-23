@@ -21,7 +21,7 @@ const BANNER_TEXT = `'[name].js is part of ReplayWeb.page (https://replayweb.pag
 
 /** @type {import("webpack").Configuration['optimization']} */
 const optimization = {
-  // minimize: true,
+  minimize: true,
   minimizer: [
     new TerserPlugin({
       extractComments: false,
@@ -119,8 +119,7 @@ const browserConfig = (/*env, argv*/) => {
   /** @type {import('webpack').Configuration} */
   const config = {
     target: "web",
-    mode: "development",
-    devtool: "inline-source-map",
+    mode: "production",
     cache: {
       type: isDevServer ? "memory" : "filesystem",
     },
@@ -128,7 +127,7 @@ const browserConfig = (/*env, argv*/) => {
       fallback: { crypto: false },
     },
     entry,
-    // optimization,
+    optimization,
 
     output: {
       path: path.join(__dirname),
@@ -139,13 +138,10 @@ const browserConfig = (/*env, argv*/) => {
     },
 
     devServer: {
+      compress: true,
       port: 9990,
       open: false,
       static: path.join(__dirname),
-      client: {
-        overlay: true,
-        progress: true,
-      },
       //publicPath: "/"
     },
 
