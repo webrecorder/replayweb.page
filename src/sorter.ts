@@ -122,8 +122,8 @@ class Sorter<T = unknown> extends LitElement {
   render() {
     return html`
     <div class="select is-small">
-      <select id="sort-select" @change=${(e) =>
-        (this.sortKey = e.currentTarget.value)}>
+      <select id="sort-select" @change=${(e: Event) =>
+        (this.sortKey = (e.currentTarget as HTMLSelectElement).value)}>
 
       ${this.sortKeys?.map(
         (sort) => html`

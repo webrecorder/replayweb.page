@@ -23,6 +23,22 @@ interface FileSystemHandle {
   }) => Promise<PermissionStatus>;
 }
 
+type GAPIResponse =
+  | { error: string; access_token: never }
+  | { error: never; access_token: string };
 interface Window {
-  gapi: TODOFixMe;
+  gapi: {
+    load: (method: string, callback: (response: GAPIResponse) => void) => void;
+    auth2: {
+      authorize: (
+        config: {
+          client_id: string;
+          scope: string;
+          response_type: string;
+          prompt: unknown;
+        },
+        callback: (response: GAPIResponse) => void,
+      ) => void;
+    };
+  };
 }

@@ -355,7 +355,7 @@ class PageEntry extends LitElement {
     this.requestUpdate("textSnippet", oldVal);
   }
 
-  onReplay(event, reload = false) {
+  onReplay(event: Event, reload = false) {
     event.preventDefault();
 
     const data = {
@@ -366,11 +366,11 @@ class PageEntry extends LitElement {
     return false;
   }
 
-  onReload(event) {
+  onReload(event: Event) {
     return this.onReplay(event, true);
   }
 
-  sendChangeEvent(data, reload) {
+  sendChangeEvent(data, reload: boolean) {
     this.dispatchEvent(
       new CustomEvent("coll-tab-nav", {
         bubbles: true,

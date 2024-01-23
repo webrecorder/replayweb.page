@@ -2,7 +2,7 @@ import {
   LitElement,
   html,
   css,
-  TemplateResult,
+  type TemplateResult,
   type PropertyValues,
 } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -53,7 +53,6 @@ class Embed extends LitElement {
   @property({ type: String }) newWindowBase = "";
 
   @property({ type: String }) errorMessage:
-    | ""
     | TemplateResult<1>
     | string
     | undefined;
@@ -163,7 +162,7 @@ class Embed extends LitElement {
     }
 
     // if no storage manager or estimate, don't cache
-    if (!navigator.storage || !navigator.storage.estimate) {
+    if (!navigator.storage?.estimate) {
       this.noCache = true;
     }
   }

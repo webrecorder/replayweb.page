@@ -233,13 +233,12 @@ class Replay extends LitElement {
     this._loadPoll = window.setInterval(() => {
       const iframe = this.renderRoot.querySelector("iframe");
       if (
-        !iframe ||
-        !iframe.contentDocument ||
+        !iframe?.contentDocument ||
         !iframe.contentWindow ||
         (iframe.contentDocument.readyState === "complete" &&
           !(iframe.contentWindow as Window & { _WBWombat: unknown })._WBWombat)
       ) {
-        this.clearLoading(iframe && iframe.contentWindow);
+        this.clearLoading(iframe?.contentWindow);
       }
     }, 5000);
   }

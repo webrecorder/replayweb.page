@@ -22,7 +22,7 @@ const IS_APP =
   // @ts-expect-error - TS2339 - Property 'IS_APP' does not exist on type 'Window & typeof globalThis'.
   window.IS_APP ||
   // @ts-expect-error - TS2551 - Property 'electron' does not exist on type 'Window & typeof globalThis'. Did you mean 'Electron'? | TS2551 - Property 'electron' does not exist on type 'Window & typeof globalThis'. Did you mean 'Electron'?
-  (window.electron && window.electron.IS_APP) ||
+  window.electron?.IS_APP ||
   window.matchMedia("(display-mode: standalone)").matches;
 
 const VERSION = __VERSION__;

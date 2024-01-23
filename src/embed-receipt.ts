@@ -183,7 +183,7 @@ export class RWPEmbedReceipt extends LitElement {
       datapackageHash,
       publicKey,
       software,
-    } = this.collInfo?.verify || {};
+    } = this.collInfo?.verify ?? {};
 
     const sourceUrl = this.collInfo?.sourceUrl;
 

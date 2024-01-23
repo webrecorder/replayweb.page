@@ -20,19 +20,19 @@ class Story extends LitElement {
   curatedPageMap: Record<string, unknown[]> = {};
 
   @property({ type: Number })
-  currList: number = 0;
+  currList = 0;
 
   @property({ type: Boolean })
-  active: boolean = false;
+  active = false;
 
   @property({ type: Boolean })
-  isSidebar: boolean = false;
+  isSidebar = false;
 
   @property({ type: Boolean })
   splitDirection: boolean | "vertical" | "horizontal" = false;
 
-  lastST: number = 0;
-  clickTime: number = 0;
+  lastST = 0;
+  clickTime = 0;
 
   private obs!: ResizeObserver;
   private splitter: Split.Instance | null = null;
@@ -76,10 +76,8 @@ class Story extends LitElement {
   }
 
   configureSplitter() {
-    const sidebar = this.renderRoot.querySelector(".sidebar") as HTMLElement;
-    const content = this.renderRoot.querySelector(
-      ".main-content",
-    ) as HTMLElement;
+    const sidebar = this.renderRoot.querySelector<HTMLElement>(".sidebar");
+    const content = this.renderRoot.querySelector<HTMLElement>(".main-content");
 
     if (this.splitter) {
       try {
@@ -388,7 +386,7 @@ class Story extends LitElement {
     this.clickTime = new Date().getTime();
     const curr = (this.renderRoot as ShadowRoot).getElementById(
       "list-" + this.currList,
-    ) as HTMLElement;
+    );
     if (curr) {
       curr.scrollIntoView(opts);
     }

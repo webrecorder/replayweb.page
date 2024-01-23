@@ -53,7 +53,7 @@ class Pages extends LitElement {
   hasExtraPages = false;
 
   @property({ type: Number })
-  currList: number = 0;
+  currList = 0;
 
   @property({ type: Boolean })
   active = false;
@@ -86,7 +86,7 @@ class Pages extends LitElement {
   ts = "";
 
   @property({ type: Boolean })
-  editing: boolean = false;
+  editing = false;
 
   @property({ type: Array })
   toDeletePages: Set<number> | number[] | null = null;
@@ -155,9 +155,8 @@ class Pages extends LitElement {
         this.sortKey = "date";
         this.sortDesc = true;
       }
-      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter<
-        typeof this.filteredPages
-      >;
+      const sorter =
+        this.renderRoot.querySelector<Sorter<URLResource>>("wr-sorter");
       if (sorter) {
         sorter.sortKey = this.sortKey;
         sorter.sortDesc = this.sortDesc;
@@ -198,7 +197,9 @@ class Pages extends LitElement {
     this.loading = true;
     if (this.flex && this.query && this.textPages) {
       const results = await this.flex.searchAsync(this.query, 25);
-      this.filteredPages = results.map((inx: Id) => this.textPages![inx]);
+      this.filteredPages = results.map(
+        (inx: Id) => this.textPages![inx as number],
+      );
     } else if (this.showAllPages && this.hasExtraPages) {
       this.filteredPages = [...this.textPages!];
     } else {
@@ -248,8 +249,7 @@ class Pages extends LitElement {
 
     this.hasExtraPages = Boolean(
       this.textPages &&
-        this.collInfo &&
-        this.collInfo.pages &&
+        this.collInfo?.pages &&
         this.textPages.length > this.collInfo.pages.length,
     );
 
@@ -633,8 +633,10 @@ class Pages extends LitElement {
             ? html` <span class="check-select">
                 <label class="checkbox">
                   <input
-                    @change=${(e) =>
-                      (this.showAllPages = e.currentTarget.checked)}
+                    @change=${(e: Event) =>
+                      (this.showAllPages = (
+                        e.currentTarget as HTMLInputElement
+                      ).checked)}
                     type="checkbox"
                     .checked="${this.showAllPages}"
                   />
@@ -849,7 +851,7 @@ class Pages extends LitElement {
         ? html` <p>
             Are you sure you want to delete the page
             <b>${this.toDeletePage.title}</b>? (Size:
-            <b>${prettyBytes(this.toDeletePage.size!)}</b>)
+            <b>${prettyBytes(this.toDeletePage.size)}</b>)
           </p>`
         : html`
             <p>
@@ -934,10 +936,8 @@ class Pages extends LitElement {
     if (!this.editable) {
       return;
     }
-    const input = this.renderRoot.querySelector(
-      "#titleEdit",
-    ) as HTMLInputElement;
-    if (!input || !input.value.trim()) {
+    const input = this.renderRoot.querySelector<HTMLInputElement>("#titleEdit");
+    if (!input?.value.trim()) {
       return;
     }
 
@@ -1051,9 +1051,9 @@ class Pages extends LitElement {
     const pageMap = {};
 
     for (const id of this.toDeletePages!) {
-      const p = this.renderRoot.querySelector(
+      const p = this.renderRoot.querySelector<PageEntry>(
         `wr-page-entry[pid="${id}"]`,
-      ) as PageEntry;
+      );
       if (p) {
         p.deleting = true;
         pageMap[id] = p;
@@ -1112,7 +1112,7 @@ class Pages extends LitElement {
   }
 
   getNoResultsMessage() {
-    if (!this.collInfo || !this.collInfo.pages.length) {
+    if (!this.collInfo?.pages.length) {
       return html`<span class="fix-text-wrapping"
         >No Pages are defined in this archive. The archive may be empty.
         <a href="#view=resources">Try browsing by URL</a>.</span
@@ -1142,7 +1142,7 @@ class Pages extends LitElement {
     const diff =
       element.scrollHeight - element.scrollTop - element.clientHeight;
     if (diff < 40) {
-      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
+      const sorter = this.renderRoot.querySelector<Sorter>("wr-sorter");
       if (sorter) {
         sorter.getMore();
       }
