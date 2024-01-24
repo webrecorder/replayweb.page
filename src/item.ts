@@ -1513,9 +1513,7 @@ class Item extends LitElement {
     ></wr-item-info>`;
   }
 
-  protected renderExtraToolbar(/*isDropdown = false*/):
-    | TemplateResult<1>
-    | string {
+  protected renderExtraToolbar(/*isDropdown = false*/): "" | TemplateResult<1> {
     return "";
   }
 

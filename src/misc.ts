@@ -4,7 +4,6 @@ import { LitElement, html, css, unsafeCSS, type CSSResultGroup } from "lit";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 import { styleMap } from "lit/directives/style-map.js";
 
-// @ts-expect-error - TS2307 - Cannot find module '../assets/main.scss' or its corresponding type declarations.
 import allCssRaw from "../assets/main.scss";
 
 import rwpLogo from "../assets/logo.svg";
