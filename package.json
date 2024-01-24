@@ -9,11 +9,14 @@
   "license": "AGPL-3.0-or-later",
   "main": "ui.js",
   "types": "dist/types/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "misc": [
-        "dist/types/misc"
-      ]
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./ui.js"
+    },
+    "./dist/misc": {
+      "types": "./dist/types/misc.d.ts",
+      "default": "./dist/misc.js"
     }
   },
   "dependencies": {
