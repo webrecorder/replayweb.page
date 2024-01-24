@@ -1,4 +1,10 @@
-import { LitElement, html, css, type PropertyValues } from "lit";
+import {
+  LitElement,
+  html,
+  css,
+  type PropertyValues,
+  type TemplateResult,
+} from "lit";
 import { property } from "lit/decorators.js";
 import { ref, createRef, type Ref } from "lit/directives/ref.js";
 import type {
@@ -1507,7 +1513,9 @@ class Item extends LitElement {
     ></wr-item-info>`;
   }
 
-  renderExtraToolbar(/*isDropdown = false*/) {
+  protected renderExtraToolbar(/*isDropdown = false*/):
+    | TemplateResult<1>
+    | string {
     return "";
   }
 
