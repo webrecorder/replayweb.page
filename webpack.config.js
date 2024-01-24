@@ -101,7 +101,6 @@ const browserConfig = (/*env, argv*/) => {
   /** @type {import('webpack').Configuration['entry']} */
   const entry = {
     ui: "./src/index.ts",
-    misc: { import: "./src/misc.ts", filename: "dist/[name].js" },
   };
 
   const patterns = [{ from: "package.json", to: "_data/package.json" }];
