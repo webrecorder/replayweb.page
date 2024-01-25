@@ -27,7 +27,6 @@
     "pretty-bytes": "^5.6.0",
     "process": "^0.11.10",
     "register-service-worker": "^1.7.2",
-    "sass-embedded": "^1.69.7",
     "split.js": "^1.6.4",
     "stream-browserify": "^3.0.0"
   },
@@ -52,6 +51,7 @@
     "playwright": "^1.38.1",
     "prettier": "^3.0.1",
     "raw-loader": "^4.0.2",
+    "sass-embedded": "^1.70.0",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.2.1",
     "svg-inline-loader": "^0.8.2",
