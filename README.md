@@ -48,8 +48,6 @@ ReplayWeb.page is built as a Node package can be installed using yarn:
 
 `yarn install`
 
-It is also a Jekyll site for use with GitHub pages. Jekyll is only needed to build the docs.
-
 The package provides various commands that can be used with yarn:
 
 - `yarn run start-dev` - to run in dev mode with Webpack dev server on port 9990. Autobuilds dev assets.
@@ -61,10 +59,6 @@ The package provides various commands that can be used with yarn:
 - `yarn run start-electron` - to start electron in dev mode, with previously built assets
 
 - `yarn run dist` - to build production assets + Electron app (in dist/)
-
-- `yarn run build-docs` - to build the Jekyll docs (for local use) and run Jekyll. Requires Ruby.
-
-- `yarn run start-jekyll` - to build Jekyll docs and start Jekyll static server on port 4000.
 
 
 The static assets are placed in the root `index.html`, `sw.js` and `ui.js`, and can be used with any HTTP server.
@@ -87,8 +81,3 @@ If you would like to use it under a different license or have a question, please
 Contributions are definitely welcome!
 
 As this is still a new project and rapidly evolving, please open an issue first before submitting a pull request.
-
-
-
-
-
