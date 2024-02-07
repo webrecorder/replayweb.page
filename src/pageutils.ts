@@ -1,5 +1,7 @@
+import type { URLResource } from "./types";
+
 // ===========================================================================
-async function digestMessage(message, hashtype) {
+async function digestMessage(message: string, hashtype: AlgorithmIdentifier) {
   const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
   const hashBuffer = await crypto.subtle.digest(hashtype, msgUint8); // hash the message
   const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
@@ -10,7 +12,7 @@ async function digestMessage(message, hashtype) {
 }
 
 // ===========================================================================
-function tsToDate(ts) {
+function tsToDate(ts: string | null | undefined) {
   if (!ts) {
     return "";
   }
@@ -37,7 +39,7 @@ function tsToDate(ts) {
 }
 
 // ===========================================================================
-function getDateFromTS(ts: number) {
+function getDateFromTS(ts: string | number) {
   let date: Date | null = null;
   date = new Date(ts);
   const timestamp =
@@ -46,7 +48,7 @@ function getDateFromTS(ts: number) {
 }
 
 // ===========================================================================
-function getPageDateTS(page) {
+function getPageDateTS(page: URLResource) {
   let date: Date | null = null;
   try {
     date = new Date(page.ts || page.date);
@@ -60,12 +62,12 @@ function getPageDateTS(page) {
 }
 
 // ===========================================================================
-function getTS(iso) {
+function getTS(iso: string) {
   return iso.replace(/[-:T]/g, "").slice(0, 14);
 }
 
 // ===========================================================================
-function getReplayLink(view, url, ts) {
+function getReplayLink(view: string, url: string, ts: string) {
   const params = new URLSearchParams();
   params.set("view", view);
   params.set("url", url);
@@ -74,7 +76,7 @@ function getReplayLink(view, url, ts) {
 }
 
 // ===========================================================================
-async function sourceToId(url) {
+async function sourceToId(url: string) {
   try {
     new URL(url);
   } catch (e) {
@@ -83,14 +85,14 @@ async function sourceToId(url) {
   }
 
   const digest = await digestMessage(url, "SHA-256");
-  const coll = "id-" + digest.slice(0, 12);
-  return { url, coll };
+  const item = "id-" + digest.slice(0, 12);
+  return { url, item };
 }
 
 // ===========================================================================
 // simple parse of scheme, host, rest of path
 // not using URL due to different browser behavior
-function parseURLSchemeHostPath(url) {
+function parseURLSchemeHostPath(url: string) {
   let inx = url.indexOf("://");
   let hostInx = 0;
   let scheme = "";

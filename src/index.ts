@@ -17,9 +17,21 @@ import "./shoelace";
 export {
   ReplayWebApp,
   Chooser,
-  ItemIndex as CollIndex, // @todo(2023-11-06) complete rename
-  ItemInfo as CollInfo, // @todo(2023-11-06) complete rename
-  Item as Coll, // @todo(2023-11-06) complete rename
+  ItemIndex,
+  ItemInfo,
+  Item,
+  /**
+   * @deprecated use {@linkcode ItemIndex}
+   */
+  ItemIndex as CollIndex,
+  /**
+   * @deprecated use {@linkcode ItemInfo}
+   */
+  ItemInfo as CollInfo,
+  /**
+   * @deprecated use {@linkcode Item}
+   */
+  Item as Coll,
   Story,
   GDrive,
   Loader,
@@ -30,3 +42,5 @@ export {
   URLResources,
   Embed,
 };
+
+export type { ItemType, URLResource } from "./types";

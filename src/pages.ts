@@ -1,7 +1,8 @@
 "use strict";
 
-import { LitElement, html, css, unsafeCSS } from "lit";
+import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
 import ndjson from "fetch-ndjson";
 
@@ -16,31 +17,28 @@ import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
 
 import type { Sorter } from "./sorter";
 import type { PageEntry } from "./pageentry";
+import type { Id, Index } from "flexsearch";
+import type { ItemType, URLResource } from "./types";
 
 // ===========================================================================
 class Pages extends LitElement {
   @property({ type: Array })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  filteredPages: any[] = [];
+  filteredPages: URLResource[] = [];
 
   @property({ type: Array })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  sortedPages: any[] = [];
+  sortedPages: URLResource[] = [];
 
   @property({ type: String })
   query = "";
 
-  @property()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  flex: any = null;
+  @property({ attribute: false })
+  flex: Index | null = null;
+
+  @property({ attribute: false })
+  textPages: URLResource[] | null = null;
 
   @property()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  textPages: any = null;
-
-  @property()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  newQuery: any = null;
+  newQuery: string | null = null;
 
   @property({ type: Boolean })
   loading = false;
@@ -55,7 +53,7 @@ class Pages extends LitElement {
   hasExtraPages = false;
 
   @property({ type: Number })
-  currList: number = 0;
+  currList = 0;
 
   @property({ type: Boolean })
   active = false;
@@ -67,7 +65,7 @@ class Pages extends LitElement {
   changeNeeded = false;
 
   @property({ attribute: false })
-  selectedPages = new Set();
+  selectedPages = new Set<number>();
 
   @property({ type: Boolean })
   menuActive = false;
@@ -88,20 +86,16 @@ class Pages extends LitElement {
   ts = "";
 
   @property({ type: Boolean })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  editing: any = false;
+  editing = false;
+
+  @property({ type: Array })
+  toDeletePages: Set<number> | number[] | null = null;
 
   @property({ type: Object })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  toDeletePages: any = null;
+  toDeletePage: URLResource | null = null;
 
   @property({ type: Object })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  toDeletePage: any = null;
-
-  @property({ type: Object })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  collInfo: any;
+  collInfo: ItemType | Record<string, never> | null = null;
 
   @property({ type: Boolean })
   allSelected = false;
@@ -109,8 +103,7 @@ class Pages extends LitElement {
   @property({ type: String })
   defaultKey = "";
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  private _ival: any;
+  private _ival: number | undefined;
 
   static get sortKeys() {
     return [
@@ -137,8 +130,7 @@ class Pages extends LitElement {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  async updated(changedProperties: Map<string, any>) {
+  async updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("collInfo")) {
       this.updateTextSearch();
     } else if (changedProperties.has("query")) {
@@ -163,7 +155,8 @@ class Pages extends LitElement {
         this.sortKey = "date";
         this.sortDesc = true;
       }
-      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
+      const sorter =
+        this.renderRoot.querySelector<Sorter<URLResource>>("wr-sorter");
       if (sorter) {
         sorter.sortKey = this.sortKey;
         sorter.sortDesc = this.sortDesc;
@@ -174,21 +167,19 @@ class Pages extends LitElement {
       //if (await this.updateComplete) {
       const selected = this.renderRoot.querySelector(".current");
       if (selected) {
-        const opts = {
+        const opts: ScrollIntoViewOptions = {
           behavior: "smooth",
           block: "nearest",
           inline: "nearest",
         };
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-        setTimeout(() => selected.scrollIntoView(opts as any), 100);
+        setTimeout(() => selected.scrollIntoView(opts), 100);
       }
       //}
     }
   }
 
   onChangeQuery(event: Event) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-    this.newQuery = (event.currentTarget as any).value;
+    this.newQuery = (event.currentTarget as HTMLInputElement).value;
     //this.loading = true;
     if (this._ival) {
       window.clearTimeout(this._ival);
@@ -206,11 +197,13 @@ class Pages extends LitElement {
     this.loading = true;
     if (this.flex && this.query && this.textPages) {
       const results = await this.flex.searchAsync(this.query, 25);
-      this.filteredPages = results.map((inx: number) => this.textPages[inx]);
+      this.filteredPages = results.map(
+        (inx: Id) => this.textPages![inx as number],
+      );
     } else if (this.showAllPages && this.hasExtraPages) {
-      this.filteredPages = [...this.textPages];
+      this.filteredPages = [...this.textPages!];
     } else {
-      this.filteredPages = [...this.collInfo.pages];
+      this.filteredPages = [...this.collInfo!.pages];
     }
 
     if (this.currList !== 0) {
@@ -220,6 +213,9 @@ class Pages extends LitElement {
     // normalize the date
     for (const page of this.filteredPages) {
       const { timestamp, date } = getPageDateTS(page);
+      if (date == null) {
+        throw new Error("Page date is null");
+      }
       page.timestamp = timestamp;
       page.date = date;
     }
@@ -232,7 +228,7 @@ class Pages extends LitElement {
 
   async filterCurated() {
     const resp = await fetch(
-      `${this.collInfo.apiPrefix}/curated/${this.currList}`,
+      `${this.collInfo!.apiPrefix}/curated/${this.currList}`,
     );
     const json = await resp.json();
 
@@ -251,11 +247,11 @@ class Pages extends LitElement {
     this.flex = flex;
     this.textPages = pages;
 
-    this.hasExtraPages =
+    this.hasExtraPages = Boolean(
       this.textPages &&
-      this.collInfo &&
-      this.collInfo.pages &&
-      this.textPages.length > this.collInfo.pages.length;
+        this.collInfo?.pages &&
+        this.textPages.length > this.collInfo.pages.length,
+    );
 
     return Promise.all(
       pages.map((page, index) => {
@@ -280,9 +276,9 @@ class Pages extends LitElement {
     let count = 0;
 
     try {
-      const cache = await caches.open("cache:" + this.collInfo.coll);
+      const cache = await caches.open("cache:" + this.collInfo!.coll);
 
-      const indexUrl = `${this.collInfo.apiPrefix}/textIndex`;
+      const indexUrl = `${this.collInfo!.apiPrefix}/textIndex`;
 
       let resp = await cache.match(indexUrl);
 
@@ -293,8 +289,7 @@ class Pages extends LitElement {
         }
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-      const lines: any[] = [];
+      const lines: unknown[] = [];
 
       for await (const line of ndjson(resp.body!.getReader())) {
         if (!line.url) {
@@ -310,7 +305,7 @@ class Pages extends LitElement {
       console.warn(e);
     } finally {
       if (count === 0) {
-        await this.addPages(this.collInfo.pages);
+        await this.addPages(this.collInfo!.pages);
       }
 
       this.updatingSearch = false;
@@ -577,7 +572,7 @@ class Pages extends LitElement {
         role="heading"
         aria-level="${this.isSidebar ? "2" : "1"}"
       >
-        Pages in ${this.collInfo.title}
+        Pages in ${this.collInfo!.title}
       </div>
       <div class="search-bar notification is-marginless">
         ${this.isSidebar
@@ -612,7 +607,7 @@ class Pages extends LitElement {
                   <input
                     id="titleEdit"
                     class="input"
-                    value="${this.collInfo.title}"
+                    value="${ifDefined(this.collInfo!.title)}"
                     @blur="${this.onUpdateTitle}"
                   />
                 </form>
@@ -621,14 +616,14 @@ class Pages extends LitElement {
                   class="index-bar-title"
                   @dblclick="${() => (this.editing = true)}"
                 >
-                  ${this.collInfo.name || this.collInfo.title}
+                  ${this.collInfo!.name || this.collInfo!.title}
                 </div>
-                ${this.collInfo.description
+                ${this.collInfo!.description
                   ? html`<div
                       class="index-bar-description"
                       @dblclick="${() => (this.editing = true)}"
                     >
-                      ${this.collInfo.description}
+                      ${this.collInfo!.description}
                     </div>`
                   : html``}`}
           ${this.editable
@@ -638,8 +633,10 @@ class Pages extends LitElement {
             ? html` <span class="check-select">
                 <label class="checkbox">
                   <input
-                    @change=${(e) =>
-                      (this.showAllPages = e.currentTarget.checked)}
+                    @change=${(e: Event) =>
+                      (this.showAllPages = (
+                        e.currentTarget as HTMLInputElement
+                      ).checked)}
                     type="checkbox"
                     .checked="${this.showAllPages}"
                   />
@@ -659,7 +656,7 @@ class Pages extends LitElement {
                 ${this.renderDownloadMenu()}
               </div>`
             : ""}
-          ${this.collInfo.lists.length
+          ${this.collInfo!.lists.length
             ? html`
                 <p id="filter-label" class="menu-label">Filter By List:</p>
                 <div class="index-bar-menu menu">
@@ -673,7 +670,7 @@ class Pages extends LitElement {
                         ><i>All Pages</i></a
                       >
                     </li>
-                    ${this.collInfo.lists.map(
+                    ${this.collInfo!.lists.map(
                       (list) =>
                         html` <li>
                           <a
@@ -859,7 +856,12 @@ class Pages extends LitElement {
         : html`
             <p>
               Are you sure you want to delete the
-              <b>${this.toDeletePages.size}</b> selected pages?
+              <b
+                >${Array.isArray(this.toDeletePages)
+                  ? new Set(this.toDeletePage).size
+                  : this.toDeletePages.size}</b
+              >
+              selected pages?
             </p>
           `}
       <p>This operation can not be undone.</p>
@@ -914,7 +916,7 @@ class Pages extends LitElement {
                   pid="${p.id}"
                   @sel-page="${this.onSelectToggle}"
                   @delete-page="${this.onDeleteConfirm}"
-                  replayPrefix="${this.collInfo.replayPrefix}"
+                  replayPrefix="${this.collInfo!.replayPrefix}"
                   query="${this.query}"
                   class="${this.isSidebar ? "sidebar" : ""}"
                 >
@@ -934,10 +936,8 @@ class Pages extends LitElement {
     if (!this.editable) {
       return;
     }
-    const input = this.renderRoot.querySelector(
-      "#titleEdit",
-    ) as HTMLInputElement;
-    if (!input || !input.value.trim()) {
+    const input = this.renderRoot.querySelector<HTMLInputElement>("#titleEdit");
+    if (!input?.value.trim()) {
       return;
     }
 
@@ -945,15 +945,16 @@ class Pages extends LitElement {
 
     const body = JSON.stringify({ title });
 
-    fetch(`${this.collInfo.apiPrefix}/metadata`, { method: "POST", body }).then(
-      (res) => {
-        if (res.status === 200) {
-          this.dispatchEvent(
-            new CustomEvent("coll-update", { detail: { title } }),
-          );
-        }
-      },
-    );
+    fetch(`${this.collInfo!.apiPrefix}/metadata`, {
+      method: "POST",
+      body,
+    }).then((res) => {
+      if (res.status === 200) {
+        this.dispatchEvent(
+          new CustomEvent("coll-update", { detail: { title } }),
+        );
+      }
+    });
   }
 
   onMenu(event) {
@@ -1025,22 +1026,23 @@ class Pages extends LitElement {
       selected ? Array.from(this.selectedPages.keys()).join(",") : "all",
     );
     params.set("format", format);
-    if (this.collInfo.filename) {
-      params.set("filename", this.collInfo.filename);
+    if (this.collInfo!.filename) {
+      params.set("filename", this.collInfo!.filename);
     }
 
-    window.location.href = `${this.collInfo.apiPrefix}/dl?` + params.toString();
+    window.location.href =
+      `${this.collInfo!.apiPrefix}/dl?` + params.toString();
   }
 
-  onDeleteConfirm(event) {
-    const page = event.currentTarget.page;
+  onDeleteConfirm(event: Event) {
+    const page = (event.currentTarget as PageEntry).page;
     // if page is one of the selected, delete entire selection
-    if (this.selectedPages.has(page.id)) {
+    if (this.selectedPages.has(page!.id)) {
       this.toDeletePages = this.selectedPages;
       this.toDeletePage = null;
     } else {
       // else, delete just the page
-      this.toDeletePages = [page.id];
+      this.toDeletePages = [page!.id];
       this.toDeletePage = page;
     }
   }
@@ -1048,18 +1050,18 @@ class Pages extends LitElement {
   async onDeletePages() {
     const pageMap = {};
 
-    for (const id of this.toDeletePages) {
-      const p = this.renderRoot.querySelector(
+    for (const id of this.toDeletePages!) {
+      const p = this.renderRoot.querySelector<PageEntry>(
         `wr-page-entry[pid="${id}"]`,
-      ) as PageEntry;
+      );
       if (p) {
         p.deleting = true;
         pageMap[id] = p;
       }
     }
 
-    for (const id of this.toDeletePages) {
-      const resp = await fetch(`${this.collInfo.apiPrefix}/page/${id}`, {
+    for (const id of this.toDeletePages!) {
+      const resp = await fetch(`${this.collInfo!.apiPrefix}/page/${id}`, {
         method: "DELETE",
       });
       const json = await resp.json();
@@ -1075,12 +1077,12 @@ class Pages extends LitElement {
         continue;
       }
 
-      const inx = this.collInfo.pages.indexOf(page);
+      const inx = this.collInfo!.pages.indexOf(page);
       if (inx < 0) {
         continue;
       }
 
-      this.collInfo.pages.splice(inx, 1);
+      this.collInfo!.pages.splice(inx, 1);
     }
 
     this.toDeletePages = null;
@@ -1110,7 +1112,7 @@ class Pages extends LitElement {
   }
 
   getNoResultsMessage() {
-    if (!this.collInfo || !this.collInfo.pages.length) {
+    if (!this.collInfo?.pages.length) {
       return html`<span class="fix-text-wrapping"
         >No Pages are defined in this archive. The archive may be empty.
         <a href="#view=resources">Try browsing by URL</a>.</span
@@ -1140,7 +1142,7 @@ class Pages extends LitElement {
     const diff =
       element.scrollHeight - element.scrollTop - element.clientHeight;
     if (diff < 40) {
-      const sorter = this.renderRoot.querySelector("wr-sorter") as Sorter;
+      const sorter = this.renderRoot.querySelector<Sorter>("wr-sorter");
       if (sorter) {
         sorter.getMore();
       }

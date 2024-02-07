@@ -1,44 +1,37 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 import { wrapCss } from "./misc";
 
 import fasSortDown from "@fortawesome/fontawesome-free/svgs/solid/sort-down.svg";
 import fasSortUp from "@fortawesome/fontawesome-free/svgs/solid/sort-up.svg";
 
 // ===========================================================================
+@customElement("wr-sorter")
 class Sorter<T = unknown> extends LitElement {
-  sortedData: T[];
-  data: T[];
-  pageResults: number;
-  numResults: number;
+  @property({ attribute: false })
+  sortedData: T[] = [];
 
-  sortKey: string | null;
-  sortDesc: boolean | null;
-  sortKeys: { key: string; name: string }[] = [];
-  constructor() {
-    super();
-    this.sortedData = [];
-    this.data = [];
+  @property({ attribute: false })
+  data: T[] = [];
 
-    this.pageResults = 0;
-    this.numResults = 0;
+  @property({ type: String })
+  id!: string;
 
-    this.sortKey = null;
-    this.sortDesc = null;
-  }
+  @property({ type: Number })
+  pageResults = 0;
 
-  static get properties() {
-    return {
-      id: { type: String },
+  @property({ attribute: false })
+  numResults = 0;
 
-      pageResults: { type: Number },
+  @property({ type: String })
+  sortKey: string | null = null;
 
-      data: { type: Array },
-      sortedData: { type: Array },
+  @property({ type: Boolean })
+  sortDesc: boolean | null = null;
 
-      sortKey: { type: String },
-      sortDesc: { type: Boolean },
-    };
-  }
+  @property({ attribute: false })
+  sortKeys?: { key: string; name: string }[];
 
   firstUpdated() {
     if (this.id) {
@@ -75,7 +68,7 @@ class Sorter<T = unknown> extends LitElement {
     this.sortedData = [...this.data];
     this.numResults = this.pageResults;
 
-    if ((this.sortKey == null || this.sortKey) === "") {
+    if (this.sortKey === "") {
       if (this.sortDesc) {
         this.sortedData.reverse();
       }
@@ -129,10 +122,10 @@ class Sorter<T = unknown> extends LitElement {
   render() {
     return html`
     <div class="select is-small">
-      <select id="sort-select" @change=${(e) =>
-        (this.sortKey = e.currentTarget.value)}>
+      <select id="sort-select" @change=${(e: Event) =>
+        (this.sortKey = (e.currentTarget as HTMLSelectElement).value)}>
 
-      ${this.sortKeys.map(
+      ${this.sortKeys?.map(
         (sort) => html`
           <option value="${sort.key}" ?selected="${sort.key === this.sortKey}">
             Sort By: ${sort.name}
@@ -153,7 +146,5 @@ class Sorter<T = unknown> extends LitElement {
     </button>`;
   }
 }
-
-customElements.define("wr-sorter", Sorter);
 
 export { Sorter };

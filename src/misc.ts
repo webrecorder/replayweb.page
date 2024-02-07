@@ -1,10 +1,9 @@
 "use strict";
 
-import { LitElement, html, css, unsafeCSS } from "lit";
+import { LitElement, html, css, unsafeCSS, type CSSResultGroup } from "lit";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 import { styleMap } from "lit/directives/style-map.js";
 
-// @ts-expect-error - TS2307 - Cannot find module '../assets/main.scss' or its corresponding type declarations.
 import allCssRaw from "../assets/main.scss";
 
 import rwpLogo from "../assets/logo.svg";
@@ -14,7 +13,7 @@ const replayPrefix = "./w";
 
 // ===========================================================================
 const allCss = unsafeCSS(allCssRaw);
-function wrapCss(custom) {
+function wrapCss(custom: CSSResultGroup): CSSResultGroup {
   return [allCss, custom];
 }
 
@@ -22,7 +21,7 @@ const IS_APP =
   // @ts-expect-error - TS2339 - Property 'IS_APP' does not exist on type 'Window & typeof globalThis'.
   window.IS_APP ||
   // @ts-expect-error - TS2551 - Property 'electron' does not exist on type 'Window & typeof globalThis'. Did you mean 'Electron'? | TS2551 - Property 'electron' does not exist on type 'Window & typeof globalThis'. Did you mean 'Electron'?
-  (window.electron && window.electron.IS_APP) ||
+  window.electron?.IS_APP ||
   window.matchMedia("(display-mode: standalone)").matches;
 
 const VERSION = __VERSION__;

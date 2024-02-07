@@ -7,26 +7,26 @@ import fasArrowDown from "@fortawesome/fontawesome-free/svgs/solid/angle-double-
 
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 
-import type { Item } from "./types";
+import type { ItemType } from "./types";
 
 import "./item-info";
 
 // ===========================================================================
 class ItemIndex extends LitElement {
   @property({ type: Array })
-  items: Item[] = [];
+  items: ItemType[] = [];
 
   @property({ type: String })
   query = "";
 
   @property({ type: Array })
-  filteredItems: Item[] = [];
+  filteredItems: ItemType[] = [];
 
   @property({ type: Array })
-  sortedItems: Item[] = [];
+  sortedItems: ItemType[] = [];
 
   @property({ type: Boolean })
-  hideHeader: boolean = false;
+  hideHeader = false;
 
   @property({ type: String })
   dateName = "Date Loaded";
@@ -36,10 +36,14 @@ class ItemIndex extends LitElement {
 
   @state()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  private _deleting: any = {};
+  protected _deleting: any = {};
 
-  private typeFilter = "";
-  private indexParams = "";
+  private get typeFilter() {
+    return "";
+  }
+  private get indexParams() {
+    return "";
+  }
 
   constructor() {
     super();
@@ -84,7 +88,7 @@ class ItemIndex extends LitElement {
       if (
         item.sourceUrl.indexOf(this.query) >= 0 ||
         item.filename.indexOf(this.query) >= 0 ||
-        (item.loadUrl && item.loadUrl.indexOf(this.query) >= 0) ||
+        Boolean(item.loadUrl && item.loadUrl.indexOf(this.query) >= 0) ||
         (item.title && item.title.indexOf(this.query) >= 0)
       ) {
         this.filteredItems.push(item);
@@ -99,8 +103,8 @@ class ItemIndex extends LitElement {
         throw new Error("Invalid API Response, Retry");
       }
       const json = await resp.json();
-      this.items = json.colls.map((item: Item) => {
-        item.title = item.title || item.filename;
+      this.items = json.colls.map((item: ItemType) => {
+        item.title = item.title ?? item.filename;
         return item;
       });
 
@@ -285,7 +289,10 @@ class ItemIndex extends LitElement {
                     <input
                       type="text"
                       class="input is-small"
-                      @input="${(e) => (this.query = e.currentTarget.value)}"
+                      @input="${(e: Event) =>
+                        (this.query = (
+                          e.currentTarget as HTMLInputElement
+                        ).value)}"
                       .value="${this.query}"
                       placeholder="Search by Archive Title or Source"
                     />
@@ -299,15 +306,19 @@ class ItemIndex extends LitElement {
                     ?sortDesc="${true}"
                     .sortKeys="${this.sortKeys}"
                     .data="${this.filteredItems}"
-                    @sort-changed="${(e) =>
-                      (this.sortedItems = e.detail.sortedData)}"
+                    @sort-changed="${(
+                      e: CustomEvent<{
+                        sortKey: string | null;
+                        sortDesc: boolean | null;
+                        sortedData: ItemType[];
+                      }>,
+                    ) => (this.sortedItems = e.detail.sortedData)}"
                   >
                   </wr-sorter>
                 </div>
 
                 <div class="coll-list">
-                  ${this.sortedItems &&
-                  this.sortedItems.map(
+                  ${this.sortedItems?.map(
                     (item, i) => html`
                       <div class="coll-block panel-block">
                         ${this.renderItemInfo(item)}
@@ -343,7 +354,7 @@ class ItemIndex extends LitElement {
     `;
   }
 
-  renderItemInfo(item: Item) {
+  renderItemInfo(item: ItemType) {
     return html`<wr-item-info .item=${item}></wr-item-info>`;
   }
 

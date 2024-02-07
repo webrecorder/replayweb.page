@@ -6,6 +6,9 @@
     "moduleResolution": "node",
     "allowJs": true,
     "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "./dist/types",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
@@ -34,5 +37,5 @@
     ],
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.js"]
+  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.d.ts"]
 }

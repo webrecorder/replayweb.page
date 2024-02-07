@@ -1,4 +1,10 @@
-import { LitElement, html, css, type PropertyValues } from "lit";
+import {
+  LitElement,
+  html,
+  css,
+  type PropertyValues,
+  type TemplateResult,
+} from "lit";
 import { property } from "lit/decorators.js";
 import { ref, createRef, type Ref } from "lit/directives/ref.js";
 import type {
@@ -51,7 +57,7 @@ import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.sv
 import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
 
-import type { Item as ItemType } from "./types";
+import type { ItemType, URLResource } from "./types";
 import type { Replay } from "./replay";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -76,6 +82,7 @@ export type LoadInfo = {
   swError?: string;
   newFullImport?: unknown;
   name?: string;
+  importCollId?: string;
 };
 
 // ===========================================================================
@@ -175,14 +182,13 @@ class Item extends LitElement {
 
   private observer?: IntersectionObserver;
 
-  private archiveInfoDialog: Ref<SlDialog> = createRef();
+  private readonly archiveInfoDialog: Ref<SlDialog> = createRef();
 
   private readonly tabNames = ["pages", "story", "resources", "info"];
   private readonly tabLabels = {
     pages: "Pages",
     story: "Story",
     resources: "URLs",
-    info: "Archive Info",
   };
 
   constructor() {
@@ -214,9 +220,7 @@ class Item extends LitElement {
       while (
         this.editable &&
         this.autoUpdateInterval &&
-        (!this.itemInfo ||
-          !this.itemInfo.pages ||
-          this.itemInfo.pages.length < 100)
+        (!this.itemInfo?.pages || this.itemInfo.pages.length < 100)
       ) {
         await new Promise((resolve) =>
           setTimeout(resolve, this.autoUpdateInterval * 1000),
@@ -283,7 +287,7 @@ class Item extends LitElement {
       }
     }
     if (changedProperties.has("tabData")) {
-      if (!this.itemInfo || !this.itemInfo.coll) {
+      if (!this.itemInfo?.coll) {
         return;
       }
       const newHash =
@@ -308,9 +312,8 @@ class Item extends LitElement {
         } else {
           window.location.hash = this._locationHash;
           if (!this.showSidebar) {
-            const replay = this.renderRoot.querySelector(
-              "wr-coll-replay",
-            ) as Replay;
+            const replay =
+              this.renderRoot.querySelector<Replay>("wr-coll-replay");
             if (replay) {
               replay.focus();
             }
@@ -338,10 +341,8 @@ class Item extends LitElement {
 
   configureSplitter() {
     if (this.tabData.url && this.showSidebar) {
-      const contents = this.renderRoot.querySelector(
-        "#contents",
-      ) as HTMLElement;
-      const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
+      const contents = this.renderRoot.querySelector<HTMLElement>("#contents");
+      const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
 
       if (contents && replay && !this.splitter) {
         const opts = {
@@ -378,11 +379,11 @@ class Item extends LitElement {
       return;
     }
 
-    let item = this.loadInfo && this.loadInfo.customColl; // @todo(2023-11-06) update customColl -> customItem
+    let item = this.loadInfo?.customColl; // @todo(2023-11-06) update customColl -> customItem
 
     if (!item) {
-      const res = await sourceToId(this.sourceUrl);
-      item = res.coll;
+      const res = await sourceToId(this.sourceUrl!);
+      item = res.item;
     }
 
     this.item = item;
@@ -406,11 +407,7 @@ class Item extends LitElement {
       ...json,
     };
 
-    if (
-      this.loadInfo &&
-      this.loadInfo.extraConfig &&
-      this.loadInfo.extraConfig.headers
-    ) {
+    if (this.loadInfo?.extraConfig?.headers) {
       const headers = this.loadInfo.extraConfig.headers;
       await fetch(`${itemApiPrefix}/updateAuth`, {
         method: "POST",
@@ -870,10 +867,9 @@ class Item extends LitElement {
     const isReplay = !!this.tabData.url;
     const isSidebar = isReplay && this.showSidebar;
 
-    if (!isReplay && this.tabData && this.tabData.view) {
+    if (!isReplay && this.tabData?.view) {
       const detail = {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-        title: (this.tabLabels as any)[this.tabData.view],
+        title: this.tabLabels[this.tabData.view],
         replayTitle: false,
       };
       this.dispatchEvent(
@@ -932,7 +928,7 @@ class Item extends LitElement {
                   ts="${this.tabData.ts || ""}"
                   @coll-tab-nav="${this.onItemTabNav}"
                   id="replay"
-                  @replay-loading="${(e) =>
+                  @replay-loading="${(e: CustomEvent<{ loading: boolean }>) =>
                     (this.isLoading = e.detail.loading)}"
                   @replay-favicons="${this.onFavIcons}"
                 >
@@ -1488,14 +1484,14 @@ class Item extends LitElement {
   }
 
   dragStart() {
-    const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
+    const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
     if (replay) {
       replay.setDisablePointer(true);
     }
   }
 
   dragEnd() {
-    const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
+    const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
     if (replay) {
       replay.setDisablePointer(false);
     }
@@ -1517,7 +1513,7 @@ class Item extends LitElement {
     ></wr-item-info>`;
   }
 
-  renderExtraToolbar(/*isDropdown = false*/) {
+  protected renderExtraToolbar(/*isDropdown = false*/): "" | TemplateResult<1> {
     return "";
   }
 
@@ -1582,9 +1578,7 @@ class Item extends LitElement {
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
     event.preventDefault();
-    (
-      this.renderRoot.querySelector("#skip-replay-target") as HTMLElement
-    ).focus();
+    this.renderRoot.querySelector<HTMLElement>("#skip-replay-target")?.focus();
   }
 
   onKeyDown(event) {
@@ -1702,7 +1696,7 @@ class Item extends LitElement {
 
   onSubmit(event) {
     event.preventDefault();
-    const input = this.renderRoot.querySelector("input") as HTMLInputElement;
+    const input = this.renderRoot.querySelector<HTMLInputElement>("input")!;
     if (input.value) {
       this.navigateTo(input.value);
     } else {
@@ -1719,12 +1713,12 @@ class Item extends LitElement {
 
   onTimestampDropdownBtnBlur(event: MouseEvent) {
     const btn = event.currentTarget as HTMLButtonElement;
-    const dropdown = btn.closest("sl-dropdown") as SlDropdown;
+    const dropdown = btn.closest<SlDropdown>("sl-dropdown");
     const relatedTarget = event.relatedTarget as HTMLElement;
-    if (relatedTarget && dropdown.contains(relatedTarget)) {
+    if (relatedTarget && dropdown?.contains(relatedTarget)) {
       return;
     }
-    if (dropdown.open) {
+    if (dropdown?.open) {
       dropdown.hide();
     }
   }
@@ -1741,9 +1735,7 @@ class Item extends LitElement {
       data = { url: value };
 
       if (value === this.tabData.url) {
-        const replay = this.renderRoot.querySelector(
-          "wr-coll-replay",
-        ) as Replay;
+        const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
         if (replay) {
           replay.refresh();
         }
@@ -1761,8 +1753,7 @@ class Item extends LitElement {
 
   _stringToParams(value) {
     const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-    const data: any = {};
+    const data: Partial<URLResource> = {};
     data.url = "";
     data.ts = "";
 
@@ -1807,7 +1798,7 @@ class Item extends LitElement {
     this.menuActive = false;
 
     if (this.tabData.url) {
-      const replay = this.renderRoot.querySelector("wr-coll-replay") as Replay;
+      const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
       if (replay) {
         replay.refresh();
       }

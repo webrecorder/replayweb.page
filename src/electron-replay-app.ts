@@ -250,7 +250,14 @@ class ElectronReplayApp {
     return rv;
   }
 
-  async doIntercept(request, callback) {
+  async doIntercept(
+    request,
+    callback: (response: {
+      statusCode: number;
+      headers: Record<string, string>;
+      data: fs.ReadStream;
+    }) => void,
+  ) {
     console.log(`${request.method} ${request.url} from ${request.referrer}`);
 
     // if local server
@@ -303,7 +310,7 @@ class ElectronReplayApp {
     }
 
     // possible 'live leak' attempt, return archived version, if any
-    if (request.referrer && request.referrer.startsWith(REPLAY_PREFIX)) {
+    if (request.referrer?.startsWith(REPLAY_PREFIX)) {
       return await this.resolveArchiveResponse(request, callback);
     }
 
@@ -483,7 +490,6 @@ class ElectronReplayApp {
   }
 
   getOpenUrl(argv) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     argv = require("minimist")(argv.slice(process.defaultApp ? 2 : 1));
 
     const filename =

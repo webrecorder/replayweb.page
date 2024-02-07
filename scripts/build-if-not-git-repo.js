@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-env node */
 
 // Runs a webpack build when not installed in a git repository (i.e. when installed from GitHub in node_modules)
@@ -26,7 +25,7 @@ const git = (args) => cp.spawnSync("git", args, { stdio: "inherit" });
 // Ensure that we're inside a Git repository
 // If git command is not found, status is null and we should return
 // That's why status value needs to be checked explicitly
-if (git(["rev-parse"]).status !== 0) {
+if (git(["rev-parse"]).status !== 0 || process.argv.includes("--force")) {
   l(`git command not found, running build`);
   const compiler = webpack(config.map((c) => c()));
 

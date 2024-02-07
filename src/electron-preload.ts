@@ -1,8 +1,8 @@
 /*eslint-env node */
 
 import { CollectionLoader } from "@webrecorder/wabac/src/loaders";
+import { type IpcRendererEvent } from "electron";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ipcRenderer, contextBridge } = require("electron");
 
 contextBridge.exposeInMainWorld("electron", { IS_APP: true });
@@ -11,12 +11,7 @@ const dbs = {};
 
 const loader = new CollectionLoader();
 
-/**
- *
- * @param {string} name
- * @returns
- */
-async function getColl(name) {
+async function getColl(name: string) {
   if (!dbs[name]) {
     dbs[name] = await loader.loadColl(name);
     await dbs[name].initing;
@@ -25,25 +20,18 @@ async function getColl(name) {
   return dbs[name];
 }
 
-/**
- * @param {string} name
- * @returns
- */
-async function getDB(name) {
+async function getDB(name: string) {
   const coll = await getColl(name);
   return coll.store;
 }
 
-/**
- *
- * @param {import("electron").IpcRendererEvent} event
- * @param {*} request
- * @param {*} coll
- * @param {*} ts
- * @param {*} channel
- * @returns
- */
-async function getResponse(event, request, coll, ts, channel) {
+async function getResponse(
+  event: IpcRendererEvent,
+  request: Request,
+  coll: string,
+  ts: string,
+  channel: string,
+): Promise<void> {
   const db = await getDB(coll);
 
   const req = { request, url: request.url, timestamp: ts };

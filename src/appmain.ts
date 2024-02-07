@@ -2,6 +2,7 @@ import {
   LitElement,
   html,
   css,
+  type CSSResultGroup,
   type TemplateResult,
   type PropertyValues,
 } from "lit";
@@ -22,7 +23,7 @@ import { SWManager } from "./swmanager";
 import "./item";
 import "./item-index";
 import "./chooser";
-import { LoadInfo } from "./item";
+import { type LoadInfo } from "./item";
 
 // ===========================================================================
 @customElement("replay-app-main")
@@ -69,10 +70,10 @@ export class ReplayWebApp extends LitElement {
   @property({ type: Boolean })
   skipRuffle = false;
 
-  @property({ type: Object })
-  swErrorMsg: TemplateResult<1> | "" | null = null;
+  @property({ type: String })
+  swErrorMsg: TemplateResult<1> | string | null = null;
 
-  private swName?: string;
+  protected swName?: string;
   private swmanager: SWManager | null;
   private useRuffle = false;
 
@@ -112,7 +113,7 @@ export class ReplayWebApp extends LitElement {
     });
   }
 
-  private maybeStartFileDrop = (dragEvent: DragEvent) => {
+  private readonly maybeStartFileDrop = (dragEvent: DragEvent) => {
     if (this.sourceUrl) {
       // A source is already loaded. Don't allow dropping a file.
       return;
@@ -133,7 +134,7 @@ export class ReplayWebApp extends LitElement {
     return wrapCss(ReplayWebApp.appStyles);
   }
 
-  static get appStyles() {
+  static get appStyles(): CSSResultGroup {
     return css`
       #wrlogo {
         max-height: 1rem;
@@ -237,7 +238,7 @@ export class ReplayWebApp extends LitElement {
   }
 
   get mainLogo() {
-    return rwpLogo;
+    return rwpLogo as string;
   }
 
   renderNavBrand() {
@@ -499,7 +500,7 @@ export class ReplayWebApp extends LitElement {
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
     event.preventDefault();
-    (this.renderRoot.querySelector("#skip-main-target") as HTMLElement).focus();
+    this.renderRoot.querySelector<HTMLElement>("#skip-main-target")?.focus();
   }
 
   onNavMenu(event) {
@@ -516,9 +517,7 @@ export class ReplayWebApp extends LitElement {
         (event) => {
           event.preventDefault();
           this.navMenuShown = false;
-          (
-            this.renderRoot.querySelector("#menu-button") as HTMLElement
-          ).focus();
+          this.renderRoot.querySelector<HTMLElement>("#menu-button")?.focus();
         },
         { once: true },
       );
@@ -528,9 +527,7 @@ export class ReplayWebApp extends LitElement {
           if (event.key == "Escape") {
             event.preventDefault();
             this.navMenuShown = false;
-            (
-              this.renderRoot.querySelector("#menu-button") as HTMLElement
-            ).focus();
+            this.renderRoot.querySelector<HTMLElement>("#menu-button")?.focus();
           }
         },
         { once: true },

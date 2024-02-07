@@ -6,15 +6,8 @@ import { getReplayLink } from "./pageutils";
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 
 import "keyword-mark-element/lib/keyword-mark.js";
-import { type Item as ItemType } from "./types";
-
-type URLResource = {
-  url: string;
-  mime: string;
-  status: string;
-  date: string;
-  ts: string;
-};
+import { type ItemType } from "./types";
+import { type URLResource } from "./types";
 
 // ===========================================================================
 /**

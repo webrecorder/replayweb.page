@@ -1,4 +1,21 @@
-export interface Item {
+export type URLResource = {
+  id: number;
+  title: string;
+  url: string;
+  mime: string;
+  status: string;
+  date: Date;
+  ts: string;
+  desc?: string;
+  timestamp?: string;
+  size: number;
+  favIconUrl: string;
+  text?: string;
+};
+
+export type Page = URLResource;
+
+export type ItemType = {
   filename: string;
   sourceUrl: string;
   replayPrefix: string;
@@ -26,11 +43,10 @@ export interface Item {
     software?: string;
   };
   onDemand?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  pages?: any[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
-  lists?: any[];
+  pages: URLResource[];
+  curatedPages: (URLResource & { list: string })[];
+  lists: URLResource[];
   ctime?: string;
   totalSize?: unknown;
   size?: number | string;
-}
+};

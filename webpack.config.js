@@ -98,8 +98,9 @@ const electronPreloadConfig = (/*env, argv*/) => {
 const browserConfig = (/*env, argv*/) => {
   const isDevServer = process.env.WEBPACK_SERVE;
 
+  /** @type {import('webpack').Configuration['entry']} */
   const entry = {
-    ui: "./src/ui.ts",
+    ui: "./src/index.ts",
   };
 
   const patterns = [{ from: "package.json", to: "_data/package.json" }];

@@ -4,7 +4,9 @@ export function assertNonNullish<T>(
 ): asserts item is NonNullable<T> {
   if (item == null) {
     throw new Error(
-      `Variable \`${itemName}\` was expected to be defined, but found value ${item} instead`,
+      `Variable \`${itemName}\` was expected to be defined, but found value ${
+        item as Exclude<null | undefined, T>
+      } (${typeof item}) instead`,
     );
   }
 }

@@ -5,7 +5,7 @@ import prettyBytes from "pretty-bytes";
 
 import { parseURLSchemeHostPath } from "./pageutils";
 import { property } from "lit/decorators.js";
-import { LoadInfo } from "./item";
+import type { LoadInfo } from "./item";
 
 // ===========================================================================
 class Loader extends LitElement {
@@ -27,7 +27,8 @@ class Loader extends LitElement {
   @property({ type: String }) swName?: string;
 
   pingInterval: number | NodeJS.Timer = 0;
-  fileHandle: FileSystemHandle | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- requestPermission() type mismatch
+  fileHandle: any = null;
   noWebWorker = false;
   worker?: Worker | null;
 
@@ -54,57 +55,71 @@ class Loader extends LitElement {
       this.worker = navigator.serviceWorker as unknown as Worker;
     }
 
-    this.worker.addEventListener("message", (event) => {
-      switch (event.data.msg_type) {
-        case "collProgress":
-          if (event.data.name === this.coll) {
-            this.percent = event.data.percent;
-            if (event.data.error) {
-              this.error = event.data.error;
-              this.state = "errored";
-              this.errorAllowRetry = true;
-              this.fileHandle = event.data.fileHandle;
-              if (this.error === "missing_local_file") {
-                this.tryFileHandle = false;
-              } else if (
-                this.error === "permission_needed" &&
-                event.data.fileHandle
-              ) {
-                this.state = "permission_needed";
-                break;
+    this.worker.addEventListener(
+      "message",
+      (
+        event: MessageEvent<{
+          msg_type: string;
+          name: string;
+          percent: number;
+          error?: string;
+          fileHandle: FileSystemHandle | null;
+          currentSize?: number;
+          totalSize?: number;
+          extraMsg?: string;
+        }>,
+      ) => {
+        switch (event.data.msg_type) {
+          case "collProgress":
+            if (event.data.name === this.coll) {
+              this.percent = event.data.percent;
+              if (event.data.error) {
+                this.error = event.data.error;
+                this.state = "errored";
+                this.errorAllowRetry = true;
+                this.fileHandle = event.data.fileHandle;
+                if (this.error === "missing_local_file") {
+                  this.tryFileHandle = false;
+                } else if (
+                  this.error === "permission_needed" &&
+                  event.data.fileHandle
+                ) {
+                  this.state = "permission_needed";
+                  break;
+                }
               }
-            }
-            if (event.data.currentSize && event.data.totalSize) {
-              this.currentSize = event.data.currentSize;
-              this.totalSize = event.data.totalSize;
-            }
-            this.extraMsg = event.data.extraMsg;
-          }
-          break;
-
-        case "collAdded":
-          if (event.data.name === this.coll) {
-            if (!this.total) {
-              this.total = 100;
-            }
-            this.progress = this.total;
-            this.percent = 100;
-            this.dispatchEvent(
-              new CustomEvent("coll-loaded", { detail: event.data }),
-            );
-
-            if (!this.noWebWorker) {
-              this.worker?.terminate();
-            } else {
-              if (this.pingInterval) {
-                clearInterval(this.pingInterval);
+              if (event.data.currentSize && event.data.totalSize) {
+                this.currentSize = event.data.currentSize;
+                this.totalSize = event.data.totalSize;
               }
+              this.extraMsg = event.data.extraMsg;
             }
-            this.worker = null;
-          }
-          break;
-      }
-    });
+            break;
+
+          case "collAdded":
+            if (event.data.name === this.coll) {
+              if (!this.total) {
+                this.total = 100;
+              }
+              this.progress = this.total;
+              this.percent = 100;
+              this.dispatchEvent(
+                new CustomEvent("coll-loaded", { detail: event.data }),
+              );
+
+              if (!this.noWebWorker) {
+                this.worker?.terminate();
+              } else {
+                if (this.pingInterval) {
+                  clearInterval(this.pingInterval);
+                }
+              }
+              this.worker = null;
+            }
+            break;
+        }
+      },
+    );
   }
 
   async doLoad() {
@@ -115,7 +130,7 @@ class Loader extends LitElement {
 
     // const noSWError = getSWErrorMsg();
 
-    if (this.loadInfo && this.loadInfo.swError) {
+    if (this.loadInfo?.swError) {
       this.state = "errored";
       this.error = this.loadInfo.swError;
       this.errorAllowRetry = false;
@@ -124,7 +139,7 @@ class Loader extends LitElement {
 
     // custom protocol handlers here...
     try {
-      const { scheme, host, path } = parseURLSchemeHostPath(sourceUrl);
+      const { scheme, host, path } = parseURLSchemeHostPath(sourceUrl!);
 
       switch (scheme) {
         case "googledrive":
@@ -179,11 +194,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
         extraConfig = this.loadInfo.extraConfig;
       }
       // todo: too special case?
-      if (
-        sourceUrl!.startsWith("proxy:") &&
-        extraConfig &&
-        extraConfig.recording
-      ) {
+      if (sourceUrl!.startsWith("proxy:") && extraConfig?.recording) {
         // @ts-expect-error - TS2322 - Type '"recordingproxy"' is not assignable to type 'undefined'.
         type = "recordingproxy";
       }
@@ -229,7 +240,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     return this._gdWait;
   }
 
-  async onLoadReady(event) {
+  onLoadReady(event: CustomEvent) {
     if (this._gdResolve) {
       //const digest = await digestMessage(url, 'SHA-256');
       //this.coll = "id-" + digest.slice(0, 12);
@@ -250,7 +261,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       return;
     }
 
-    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    if (navigator.serviceWorker?.controller) {
       navigator.serviceWorker.controller.postMessage(msg);
       if (this.pingInterval) {
         clearInterval(this.pingInterval);
@@ -260,7 +271,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
   updated(changedProperties: PropertyValues<this>) {
     if (
-      (this.sourceUrl && changedProperties.has("sourceUrl")) ||
+      Boolean(this.sourceUrl && changedProperties.has("sourceUrl")) ||
       changedProperties.has("tryFileHandle")
     ) {
       this.doLoad();
@@ -410,8 +421,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   }
 
   async onAskPermission() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await (this.fileHandle as any)?.requestPermission({
+    const result = await this.fileHandle?.requestPermission({
       mode: "read",
     });
     if (result === "granted") {
