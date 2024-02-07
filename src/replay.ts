@@ -39,7 +39,8 @@ class Replay extends LitElement {
   showAuth = false;
 
   @property({ type: Object })
-  authFileHandle: FileSystemHandle | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- requestPermission() type mismatch
+  authFileHandle: any = null;
 
   private reauthWait: null | Promise<void> = null;
 
@@ -62,8 +63,8 @@ class Replay extends LitElement {
         this.authFileHandle = event.data.fileHandle;
         try {
           if (
-            (await this.authFileHandle!.requestPermission({ mode: "read" }))
-              .state === "granted"
+            (await this.authFileHandle.requestPermission({ mode: "read" })) ===
+            "granted"
           ) {
             this.showAuth = false;
             this.reauthWait = null;
@@ -211,8 +212,8 @@ class Replay extends LitElement {
         });
       } else {
         if (
-          (await this.authFileHandle.requestPermission({ mode: "read" }))
-            .state !== "granted"
+          (await this.authFileHandle.requestPermission({ mode: "read" })) !==
+          "granted"
         ) {
           this.reauthWait = null;
           return;

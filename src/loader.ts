@@ -27,7 +27,8 @@ class Loader extends LitElement {
   @property({ type: String }) swName?: string;
 
   pingInterval: number | NodeJS.Timer = 0;
-  fileHandle: FileSystemHandle | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- requestPermission() type mismatch
+  fileHandle: any = null;
   noWebWorker = false;
   worker?: Worker | null;
 
@@ -423,7 +424,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     const result = await this.fileHandle?.requestPermission({
       mode: "read",
     });
-    if (result?.state === "granted") {
+    if (result === "granted") {
       this.doLoad();
     }
   }
