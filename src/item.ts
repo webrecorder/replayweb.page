@@ -597,6 +597,7 @@ class Item extends LitElement {
         display: flex;
         flex-direction: row;
         margin-bottom: 0px;
+        overflow: unset;
       }
 
       .main.tabs ul {
@@ -605,7 +606,7 @@ class Item extends LitElement {
 
       .main.tabs li {
         line-height: 1.5;
-        padding: 8px 0 6px 0;
+        padding: 6px 0 4px 0;
       }
 
       @media screen and (max-width: 319px) {
