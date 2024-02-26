@@ -32,8 +32,8 @@
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "electron": "^29.0.1",
-    "electron-builder": "^23.0.3",
-    "electron-notarize": "^1.1.1",
+    "electron-builder": "^24.12.0",
+    "electron-notarize": "^1.2.2",
     "eslint": "^8.23.1",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-lit": "^1.9.1",
@@ -118,6 +118,7 @@
           "arch": "universal"
         }
       ],
+      "notarize": false,
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
