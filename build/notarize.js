@@ -22,6 +22,8 @@ exports.default = async function notarizing(context) {
   const appName = context.packager.appInfo.productFilename;
 
   return await notarize({
+    tool: 'notarytool',
+    teamId: process.env.APPLE_TEAM_ID,
     appBundleId: 'net.webrecorder.replayweb.page',
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLE_ID,
