@@ -64,6 +64,8 @@ class ItemIndex extends LitElement {
   }
 
   firstUpdated() {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.loadItems();
   }
 
@@ -112,6 +114,8 @@ class ItemIndex extends LitElement {
       this.sortedItems = [];
     } catch (e) {
       // likely no sw registered yet, or waiting for new sw to register, retry again
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/promise-function-async
       setTimeout(() => this.loadItems(), 500);
     }
   }
@@ -120,6 +124,8 @@ class ItemIndex extends LitElement {
     event.preventDefault();
     event.stopPropagation();
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!this.sortedItems) {
       return;
     }
@@ -128,6 +134,8 @@ class ItemIndex extends LitElement {
 
     const item = this.sortedItems[index];
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!item || this._deleting[item.sourceUrl]) {
       return;
     }
@@ -318,7 +326,9 @@ class ItemIndex extends LitElement {
                 </div>
 
                 <div class="coll-list">
-                  ${this.sortedItems?.map(
+                  ${// TODO: Fix this the next time the file is edited.
+                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                  this.sortedItems?.map(
                     (item, i) => html`
                       <div class="coll-block panel-block">
                         ${this.renderItemInfo(item)}
@@ -344,9 +354,13 @@ class ItemIndex extends LitElement {
               `
             : html`
                 <div class="panel-block extra-padding">
-                  ${this.sortedItems === null
-                    ? html`<i>Loading Archives...</i>`
-                    : this.renderEmpty()}
+                  ${
+                    // TODO: Fix this the next time the file is edited.
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                    this.sortedItems === null
+                      ? html`<i>Loading Archives...</i>`
+                      : this.renderEmpty()
+                  }
                 </div>
               `}
         </div>

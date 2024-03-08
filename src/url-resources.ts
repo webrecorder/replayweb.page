@@ -117,6 +117,8 @@ class URLResources extends LitElement {
   }
 
   _timedUpdate() {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.newQuery !== null) {
       this.query = this.newQuery;
       this.newQuery = null;
@@ -129,6 +131,8 @@ class URLResources extends LitElement {
       changedProperties.has("urlSearchType") ||
       changedProperties.has("currMime")
     ) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.doLoadResources();
       const data = {
         query: this.query,
@@ -188,6 +192,8 @@ class URLResources extends LitElement {
       `${this.collInfo!.apiPrefix}/urls?${params.toString()}`,
     );
     const data = await resp.json();
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     this.results = isMore ? this.results.concat(data.urls) : data.urls;
     // can be more than count if multiple mimes
     this.tryMore = data.urls.length >= count;
@@ -229,6 +235,8 @@ class URLResources extends LitElement {
     const diff =
       element.scrollHeight - element.scrollTop - element.clientHeight;
     if (this.tryMore && diff < 40) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.doLoadResources(true);
     }
   }

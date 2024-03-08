@@ -146,6 +146,8 @@ class ElectronReplayApp {
       }
     });
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     app.whenReady().then(() => this.onAppReady());
 
     // Quit when all windows are closed.
@@ -161,6 +163,8 @@ class ElectronReplayApp {
     autoUpdater.logger = log;
     // @ts-expect-error - TS2339 - Property 'transports' does not exist on type 'Logger'.
     autoUpdater.logger.transports.file.level = "info";
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     autoUpdater.checkForUpdatesAndNotify();
   }
 
@@ -173,12 +177,16 @@ class ElectronReplayApp {
       contents.setWindowOpenHandler(({ url }) => {
         // load docs in native browser for now
         if (url === STATIC_PREFIX + "docs") {
+          // TODO: Fix this the next time the file is edited.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           shell.openExternal("https://replayweb.page/docs/");
           return { action: "deny" };
         }
 
         // load external URLs in native browser
         if (!url.startsWith(STATIC_PREFIX)) {
+          // TODO: Fix this the next time the file is edited.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           shell.openExternal(url);
           return { action: "deny" };
         }
@@ -189,10 +197,14 @@ class ElectronReplayApp {
 
     const sesh = session.defaultSession;
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     sesh.protocol.interceptStreamProtocol("http", (request, callback) =>
       this.doIntercept(request, callback),
     );
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     protocol.registerStreamProtocol(FILE_PROTO, (request, callback) =>
       this.doHandleFile(request, callback),
     );
@@ -211,9 +223,13 @@ class ElectronReplayApp {
       return;
     }
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const filename = url.fileURLToPath(request.url.replace(FILE_PROTO, "file"));
 
     const headers = { "Content-Type": "application/octet-stream" };
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const reqHeaders = new Headers(request.headers);
 
     if (filename) {
@@ -283,6 +299,8 @@ class ElectronReplayApp {
           filename = "docs/index.html";
         }
 
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         let ext = path.extname(filename);
         if (!ext) {
           ext = ".html";
@@ -292,6 +310,8 @@ class ElectronReplayApp {
         const mimeType = mime.contentType(ext);
 
         if (mimeType) {
+          // TODO: Fix this the next time the file is edited.
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           const fullPath = path.join(this.staticContentPath, filename);
 
           console.log("fullPath: " + fullPath);
@@ -333,6 +353,8 @@ class ElectronReplayApp {
     let response;
 
     try {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       response = await fetch(url, { method, headers, body });
     } catch (e) {
       console.warn("fetch failed for: " + url);
@@ -342,6 +364,8 @@ class ElectronReplayApp {
     const data = method === "HEAD" ? null : response.body;
     const statusCode = response.status;
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     headers = Object.fromEntries(response.headers.entries());
     callback({ statusCode, headers, data });
   }
@@ -379,6 +403,8 @@ class ElectronReplayApp {
         console.log("got response for: " + url);
       }
 
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       headers = new Headers(headers);
       const date = new Date();
 
@@ -399,11 +425,15 @@ class ElectronReplayApp {
         useBaseRules: true,
       });
 
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       request.headers = new Headers(request.headers);
 
       try {
         response = await rewriter.rewrite(response, request);
 
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         headers = Object.fromEntries(response.headers.entries());
 
         let data = await response.getBuffer();
@@ -481,6 +511,8 @@ class ElectronReplayApp {
       theWindow.maximize();
     });
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     theWindow.loadURL(STATIC_PREFIX + this.mainWindowUrl + sourceString);
     if (process.env.NODE_ENV === "development") {
       theWindow.webContents.openDevTools();
@@ -513,10 +545,14 @@ class ElectronReplayApp {
       const openTS = argv.ts || argv.timestamp;
 
       if (openUrl) {
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         urlParams.set("url", openUrl);
       }
 
       if (openTS) {
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         urlParams.set("ts", openTS);
       }
 

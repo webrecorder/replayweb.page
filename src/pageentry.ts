@@ -218,8 +218,20 @@ class PageEntry extends LitElement {
             `
           : ""}
         <div class="column col-date is-2">
-          <div>${date ? date.toLocaleDateString() : ""}</div>
-          <div>${date ? date.toLocaleTimeString() : ""}</div>
+          <div>
+            ${
+              // TODO: Fix this the next time the file is edited.
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              date ? date.toLocaleDateString() : ""
+            }
+          </div>
+          <div>
+            ${
+              // TODO: Fix this the next time the file is edited.
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              date ? date.toLocaleTimeString() : ""
+            }
+          </div>
         </div>
         <div class="column">
           <div class="media">
@@ -246,7 +258,11 @@ class PageEntry extends LitElement {
                     >${this.thumbnailValid ? this.renderFavicon() : ""}
                   </p>
                   <p class="has-text-grey-dark text is-inline-date">
-                    ${date ? date.toLocaleString() : ""}
+                    ${
+                      // TODO: Fix this the next time the file is edited.
+                      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                      date ? date.toLocaleString() : ""
+                    }
                   </p>
                 </a>
                 ${this.textSnippet

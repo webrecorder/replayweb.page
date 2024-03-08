@@ -319,16 +319,20 @@ export class RWPEmbedReceipt extends LitElement {
                   class="has-text-black"
                   target="_blank"
                   href="https://github.com/webrecorder/replayweb.page"
-                  >${this.appLogo
-                    ? html`
-                        <fa-icon
-                          class="menu-logo mr-1"
-                          size="1.0rem"
-                          aria-hidden="true"
-                          .svg=${this.appLogo}
-                        ></fa-icon>
-                      `
-                    : nothing}
+                  >${
+                    // TODO: Fix this the next time the file is edited.
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                    this.appLogo
+                      ? html`
+                          <fa-icon
+                            class="menu-logo mr-1"
+                            size="1.0rem"
+                            aria-hidden="true"
+                            .svg=${this.appLogo}
+                          ></fa-icon>
+                        `
+                      : nothing
+                  }
                   Powered by ReplayWeb.page
                 </a>
               </span>

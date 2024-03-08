@@ -646,6 +646,8 @@ export class ReplayWebApp extends LitElement {
 
   onStartLoad(event) {
     // just redirect right away?
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     this.pageParams.set("source", event.detail.sourceUrl);
 
     const url = new URL(window.location.href);
@@ -678,6 +680,8 @@ export class ReplayWebApp extends LitElement {
     //this.initRoute();
 
     if (event.detail.sourceUrl !== this.sourceUrl) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.pageParams.set("source", event.detail.sourceUrl);
       window.location.search = this.pageParams.toString();
     }

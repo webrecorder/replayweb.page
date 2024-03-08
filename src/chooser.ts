@@ -21,6 +21,8 @@ export class Chooser extends LitElement {
   droppedFile: FileWithPath | null = null;
 
   @property({ type: Boolean })
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   hasNativeFS = !!window.showOpenFilePicker && !IS_APP;
 
   @property({ type: Object })
@@ -60,6 +62,8 @@ export class Chooser extends LitElement {
       .flat(2);
 
     const fileHasAllowedExtension = allowedFileExtensions.some(
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       (extension) => this.droppedFile?.name.endsWith(extension),
     );
 
@@ -77,6 +81,8 @@ export class Chooser extends LitElement {
     if (event.currentTarget.files.length === 0) {
       return;
     }
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     this.setFile(event.currentTarget.files[0]);
   }
 

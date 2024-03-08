@@ -43,6 +43,8 @@ function getDateFromTS(ts: string | number) {
   let date: Date | null = null;
   date = new Date(ts);
   const timestamp =
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     date && date instanceof Date ? getTS(date.toISOString()) : "";
   return timestamp;
 }
