@@ -249,10 +249,12 @@ class Pages extends LitElement {
     this.filteredPages = curated;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'data' implicitly has an 'any' type.
   sendChangeEvent(data) {
     this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'pages' implicitly has an 'any' type.
   // TODO: Fix this the next time the file is edited.
   // eslint-disable-next-line @typescript-eslint/promise-function-async
   addPages(pages) {
@@ -268,6 +270,7 @@ class Pages extends LitElement {
     );
 
     return Promise.all(
+      // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'page' implicitly has an 'any' type. | TS7006 - Parameter 'index' implicitly has an 'any' type.
       // TODO: Fix this the next time the file is edited.
       // eslint-disable-next-line @typescript-eslint/promise-function-async
       pages.map((page, index) => {
@@ -573,11 +576,13 @@ class Pages extends LitElement {
     `;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSelectList(event) {
     event.preventDefault();
     this.currList = Number(event.currentTarget.getAttribute("data-list"));
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSelectListDrop(event) {
     event.preventDefault();
     this.currList = Number(event.currentTarget.value);
@@ -744,6 +749,7 @@ class Pages extends LitElement {
             role="button"
             href="#"
             @click="${
+              // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'e' implicitly has an 'any' type.
               // TODO: Fix this the next time the file is edited.
               // eslint-disable-next-line @typescript-eslint/promise-function-async
               (e) => this.onDownload(e, "wacz")
@@ -758,6 +764,7 @@ class Pages extends LitElement {
             role="button"
             href="#"
             @click="${
+              // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'e' implicitly has an 'any' type.
               // TODO: Fix this the next time the file is edited.
               // eslint-disable-next-line @typescript-eslint/promise-function-async
               (e) => this.onDownload(e, "warc")
@@ -772,6 +779,7 @@ class Pages extends LitElement {
             role="button"
             href="#"
             @click="${
+              // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'e' implicitly has an 'any' type.
               // TODO: Fix this the next time the file is edited.
               // eslint-disable-next-line @typescript-eslint/promise-function-async
               (e) => this.onDownload(e, "warc1.0")
@@ -910,6 +918,7 @@ class Pages extends LitElement {
     </wr-modal>`;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'page' implicitly has an 'any' type.
   isCurrPage(page) {
     if (this.isSidebar) {
       if (page.url === this.url) {
@@ -964,6 +973,7 @@ class Pages extends LitElement {
     `;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onUpdateTitle(event) {
     event.preventDefault();
 
@@ -995,6 +1005,7 @@ class Pages extends LitElement {
     });
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onMenu(event) {
     event.stopPropagation();
     this.menuActive = !this.menuActive;
@@ -1010,6 +1021,7 @@ class Pages extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSort(event) {
     event.preventDefault();
 
@@ -1022,12 +1034,14 @@ class Pages extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSortChanged(event) {
     this.sortedPages = event.detail.sortedData;
     this.sortKey = event.detail.sortKey;
     this.sortDesc = event.detail.sortDesc;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSelectToggle(event) {
     const { page, selected } = event.detail;
     if (selected) {
@@ -1043,6 +1057,7 @@ class Pages extends LitElement {
     this.requestUpdate();
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSelectAll(event) {
     this.allSelected = event.currentTarget.checked;
     if (!this.allSelected) {
@@ -1057,6 +1072,7 @@ class Pages extends LitElement {
     this.requestUpdate();
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type. | TS7006 - Parameter 'format' implicitly has an 'any' type.
   async onDownload(event, format) {
     event.preventDefault();
 
@@ -1100,6 +1116,7 @@ class Pages extends LitElement {
       );
       if (p) {
         p.deleting = true;
+        // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'number' can't be used to index type '{}'.
         pageMap[id] = p;
       }
     }
@@ -1115,6 +1132,7 @@ class Pages extends LitElement {
         continue;
       }
 
+      // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'number' can't be used to index type '{}'.
       const page = pageMap[id];
 
       if (!page) {
@@ -1185,6 +1203,7 @@ class Pages extends LitElement {
     return "No Pages Found";
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onScroll(event) {
     const element = event.currentTarget;
     const diff =

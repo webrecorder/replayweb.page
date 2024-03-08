@@ -16,6 +16,7 @@ import {
 import path from "path";
 import fs from "fs";
 
+// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7016 - Could not find a declaration file for module '@webrecorder/wabac/src/rewrite'. 'node_modules/@webrecorder/wabac/src/rewrite/index.js' implicitly has an 'any' type.
 import { ArchiveResponse, Rewriter } from "@webrecorder/wabac/src/rewrite";
 
 import { PassThrough, Readable } from "stream";
@@ -23,6 +24,7 @@ import { PassThrough, Readable } from "stream";
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
 
+// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7016 - Could not find a declaration file for module 'mime-types'. 'node_modules/mime-types/index.js' implicitly has an 'any' type.
 import mime from "mime-types";
 import url from "url";
 
@@ -214,6 +216,7 @@ class ElectronReplayApp {
     this.mainWindow = this.createMainWindow(process.argv);
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'request' implicitly has an 'any' type. | TS7006 - Parameter 'callback' implicitly has an 'any' type.
   async doHandleFile(request, callback) {
     //const parsedUrl = new URL(request.url);
     //const filename = parsedUrl.searchParams.get("filename");
@@ -259,6 +262,7 @@ class ElectronReplayApp {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'data' implicitly has an 'any' type.
   _bufferToStream(data) {
     const rv = new PassThrough();
     rv.push(data);
@@ -267,6 +271,7 @@ class ElectronReplayApp {
   }
 
   async doIntercept(
+    // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'request' implicitly has an 'any' type.
     request,
     callback: (response: {
       statusCode: number;
@@ -337,6 +342,7 @@ class ElectronReplayApp {
     await this.proxyLive(request, callback);
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'request' implicitly has an 'any' type. | TS7006 - Parameter 'callback' implicitly has an 'any' type.
   async proxyLive(request, callback) {
     let headers = request.headers;
     const { method, url, uploadData } = request;
@@ -364,8 +370,6 @@ class ElectronReplayApp {
     const data = method === "HEAD" ? null : response.body;
     const statusCode = response.status;
 
-    // TODO: Fix this the next time the file is edited.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     headers = Object.fromEntries(response.headers.entries());
     callback({ statusCode, headers, data });
   }
@@ -379,6 +383,7 @@ class ElectronReplayApp {
    *    data: unknown;
    * }) => void} callback
    */
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'url' implicitly has an 'any' type. | TS7006 - Parameter 'callback' implicitly has an 'any' type.
   notFound(url, callback) {
     console.log("not found: " + url);
     const data = this._bufferToStream(
@@ -391,6 +396,7 @@ class ElectronReplayApp {
     });
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'request' implicitly has an 'any' type. | TS7006 - Parameter 'callback' implicitly has an 'any' type.
   async resolveArchiveResponse(request, callback) {
     const channel = `req:${new Date().getTime()}:${request.url}`;
 
@@ -469,6 +475,7 @@ class ElectronReplayApp {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'reqHeaders' implicitly has an 'any' type. | TS7006 - Parameter 'headers' implicitly has an 'any' type. | TS7006 - Parameter 'size' implicitly has an 'any' type.
   parseRange(reqHeaders, headers, size) {
     let statusCode = 200;
     const range = reqHeaders.get("range");
@@ -495,6 +502,7 @@ class ElectronReplayApp {
     return { statusCode, start, end };
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'argv' implicitly has an 'any' type.
   createMainWindow(argv) {
     const sourceString = this.getOpenUrl(argv);
 
@@ -521,6 +529,7 @@ class ElectronReplayApp {
     return theWindow;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'argv' implicitly has an 'any' type.
   getOpenUrl(argv) {
     argv = require("minimist")(argv.slice(process.defaultApp ? 2 : 1));
 
@@ -565,6 +574,7 @@ class ElectronReplayApp {
   }
 }
 
+// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'body' implicitly has an 'any' type. | TS7006 - Parameter 'session' implicitly has an 'any' type.
 async function* readBody(body, session) {
   for (const chunk of body) {
     if (chunk.bytes) {

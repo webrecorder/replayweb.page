@@ -357,6 +357,7 @@ export class RWPEmbedReceipt extends LitElement {
     `;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onEmbedDrop(event) {
     event.stopPropagation();
     this.active = !this.active;

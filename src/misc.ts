@@ -29,6 +29,7 @@ const VERSION = __VERSION__;
 // ===========================================================================
 // Buttons are expected to respond to both enter/return and spacebar.
 // If using `<a>` with `role='button'`, assign this handler to keyup.
+// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
 function clickOnSpacebarPress(event) {
   if (event.key == " ") {
     event.preventDefault();

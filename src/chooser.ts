@@ -77,6 +77,7 @@ export class Chooser extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onChooseFile(event) {
     if (event.currentTarget.files.length === 0) {
       return;
@@ -167,6 +168,7 @@ export class Chooser extends LitElement {
     return false;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onInput(event) {
     this.fileDisplayName = event.currentTarget.value;
 
@@ -255,7 +257,10 @@ export class Chooser extends LitElement {
               ${!this.hasNativeFS
                 ? html` <input
                     class="file-input"
-                    @click="${(e) => (e.currentTarget.value = null)}"
+                    @click="${
+                      // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'e' implicitly has an 'any' type.
+                      (e) => (e.currentTarget.value = null)
+                    }"
                     @change=${this.onChooseFile}
                     type="file"
                     id="fileupload"

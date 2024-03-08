@@ -202,10 +202,12 @@ class URLResources extends LitElement {
     this.loading = false;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onChangeTypeSearch(event) {
     this.currMime = event.currentTarget.value;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onChangeQuery(event) {
     this.newQuery = event.currentTarget.value;
     if (this._ival) {
@@ -214,6 +216,7 @@ class URLResources extends LitElement {
     this._ival = window.setTimeout(() => this._timedUpdate(), 250);
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onClickUrlType(event) {
     this.urlSearchType = event.currentTarget.value;
   }
@@ -230,6 +233,7 @@ class URLResources extends LitElement {
     this.filteredResults = filteredResults;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onScroll(event) {
     const element = event.currentTarget;
     const diff =
@@ -566,6 +570,7 @@ class URLResources extends LitElement {
     `;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSort(event) {
     event.preventDefault();
 
@@ -578,12 +583,14 @@ class URLResources extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSortChanged(event) {
     this.sortedResults = event.detail.sortedData;
     this.sortKey = event.detail.sortKey;
     this.sortDesc = event.detail.sortDesc;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onReplay(event) {
     event.preventDefault();
     const data = {

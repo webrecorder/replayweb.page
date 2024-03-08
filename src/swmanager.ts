@@ -22,6 +22,7 @@ export class SWManager {
     this.errorMsg = null;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'newAppName' implicitly has an 'any' type.
   setAppName(newAppName) {
     // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
     this.appName = newAppName;
@@ -30,6 +31,7 @@ export class SWManager {
   // TODO: Fix this the next time the file is edited.
   // eslint-disable-next-line @typescript-eslint/promise-function-async
   register() {
+    // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7034 - Variable 'resolve' implicitly has type 'any' in some locations where its type cannot be determined. | TS7034 - Variable 'reject' implicitly has type 'any' in some locations where its type cannot be determined.
     let resolve, reject;
 
     const p = new Promise((res, rej) => {
@@ -48,6 +50,7 @@ export class SWManager {
       reject(this.errorMsg);
     }
 
+    // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'error' implicitly has an 'any' type.
     const handleError = (error) => {
       console.error("Error during service worker registration:", error);
       // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
@@ -73,6 +76,7 @@ export class SWManager {
       registrationOptions: { scope: this.scope },
       registered() {
         console.log("Service worker is registered");
+        // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7005 - Variable 'resolve' implicitly has an 'any' type.
         resolve();
       },
 

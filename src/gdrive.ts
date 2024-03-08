@@ -97,6 +97,7 @@ class GDrive extends LitElement {
 
   onLoad() {
     this.scriptLoaded = true;
+    // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'response' implicitly has an 'any' type.
     this.gauth("none", (response) => {
       if (response.error) {
         if (this.state !== "implicitonly") {
@@ -111,6 +112,7 @@ class GDrive extends LitElement {
   }
 
   onClickAuth() {
+    // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'response' implicitly has an 'any' type.
     this.gauth("select_account", (response) => {
       if (!response.error) {
         // TODO: Fix this the next time the file is edited.
@@ -120,6 +122,7 @@ class GDrive extends LitElement {
     });
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'response' implicitly has an 'any' type.
   async authed(response) {
     const sourceUrl = this.sourceUrl;
     const fileId = sourceUrl.slice("googledrive://".length);
@@ -200,6 +203,7 @@ class GDrive extends LitElement {
     return script;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'prompt' implicitly has an 'any' type. | TS7006 - Parameter 'callback' implicitly has an 'any' type.
   gauth(prompt, callback) {
     self.gapi.load("auth2", () => {
       self.gapi.auth2.authorize(

@@ -199,7 +199,6 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       }
       // todo: too special case?
       if (sourceUrl!.startsWith("proxy:") && extraConfig?.recording) {
-        // @ts-expect-error - TS2322 - Type '"recordingproxy"' is not assignable to type 'undefined'.
         type = "recordingproxy";
       }
     }

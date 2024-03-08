@@ -240,6 +240,7 @@ class ItemInfo extends LitElement {
     return false;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'reload' implicitly has an 'any' type.
   onPurge(reload) {
     const detail = { reload };
     this.dispatchEvent(new CustomEvent("item-purge", { detail }));

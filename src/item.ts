@@ -257,8 +257,10 @@ class Item extends LitElement {
       Object.entries(this.tabData).forEach(([key, value]) => {
         if (!value) return;
         if (key === "multiTs" && typeof value === "string") {
+          // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type '"multiTs"' can't be used to index type '{}'.
           tabData[key] = value.split(",");
         } else {
+          // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
           tabData[key] = value;
         }
       });
@@ -450,6 +452,7 @@ class Item extends LitElement {
     this.onHashChange();
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onItemLoaded(event) {
     // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -468,6 +471,7 @@ class Item extends LitElement {
     );
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onItemUpdate(event) {
     if (!this.editable) {
       return;
@@ -525,6 +529,7 @@ class Item extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onTabClick(event) {
     event.preventDefault();
     const hash = event.currentTarget.getAttribute("href");
@@ -533,6 +538,7 @@ class Item extends LitElement {
     return false;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onItemTabNav(event) {
     if (event.detail.reload) {
       this.onRefresh(null, true);
@@ -559,6 +565,7 @@ class Item extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'data' implicitly has an 'any' type.
   updateTabData(data, replaceLoc = false /*, merge = false*/) {
     this.tabData = { ...this.tabData, ...data };
     if (this.tabData.url) {
@@ -964,6 +971,7 @@ class Item extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'isSidebar' implicitly has an 'any' type.
   renderTabHeader(isSidebar) {
     // if (this.tabData.view === "replay") {
     //   return "";
@@ -1539,6 +1547,7 @@ class Item extends LitElement {
     return "";
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'isSidebar' implicitly has an 'any' type.
   renderItemTabs(isSidebar) {
     const isStory = this.hasStory && this.tabData.view === "story";
     const isPages = this.tabData.view === "pages";
@@ -1606,6 +1615,7 @@ class Item extends LitElement {
     `;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   skipMenu(event) {
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
@@ -1613,6 +1623,7 @@ class Item extends LitElement {
     this.renderRoot.querySelector<HTMLElement>("#skip-replay-target")?.focus();
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onKeyDown(event) {
     if (event.key === "Esc" || event.key === "Escape") {
       event.preventDefault();
@@ -1620,6 +1631,7 @@ class Item extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onMenu(event) {
     event.stopPropagation();
     this.menuActive = !this.menuActive;
@@ -1635,6 +1647,7 @@ class Item extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onFullscreenToggle(event) {
     event.preventDefault();
     this.menuActive = false;
@@ -1649,18 +1662,21 @@ class Item extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onGoBack(event) {
     event.preventDefault();
     this.menuActive = false;
     window.history.back();
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onGoForward(event) {
     event.preventDefault();
     this.menuActive = false;
     window.history.forward();
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onShowPages(event) {
     event.preventDefault();
     // show sidebar for tablet or wider, or hide sidebar
@@ -1673,16 +1689,19 @@ class Item extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onFullPageView(event) {
     event.preventDefault();
     this.updateTabData({ url: "", ts: "" });
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onHideSidebar(event) {
     event.preventDefault();
     this.showSidebar = false;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   async onFavIcons(event) {
     if (this.embed && window.parent !== window) {
       window.parent.postMessage({ type: "favicons", ...event.detail }, "*");
@@ -1705,6 +1724,7 @@ class Item extends LitElement {
     this.favIconUrl = "";
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onPurgeCache(event) {
     event.preventDefault();
 
@@ -1738,6 +1758,7 @@ class Item extends LitElement {
     window.location.reload();
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSubmit(event) {
     event.preventDefault();
     const input = this.renderRoot.querySelector<HTMLInputElement>("input")!;
@@ -1749,6 +1770,7 @@ class Item extends LitElement {
     return false;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onLostFocus(event) {
     if (!event.currentTarget.value) {
       event.currentTarget.value = this.url;
@@ -1776,6 +1798,7 @@ class Item extends LitElement {
     this.updateTabData({ ts: item.value });
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'value' implicitly has an 'any' type.
   navigateTo(value) {
     let data;
 
@@ -1799,6 +1822,7 @@ class Item extends LitElement {
     this.updateTabData(data);
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'value' implicitly has an 'any' type.
   _stringToParams(value) {
     // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -1815,6 +1839,7 @@ class Item extends LitElement {
       "urlSearchType",
     ]) {
       if (q.has(param)) {
+        // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Partial<URLResource>'.
         data[param] = q.get(param);
       }
     }

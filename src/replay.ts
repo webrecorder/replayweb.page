@@ -55,6 +55,7 @@ class Replay extends LitElement {
     );
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   async handleAuthMessage(event) {
     if (
       event.data.type === "authneeded" &&
@@ -202,6 +203,7 @@ class Replay extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onReAuthed(event) {
     this.reauthWait = (async () => {
       if (!this.authFileHandle) {
@@ -246,6 +248,7 @@ class Replay extends LitElement {
     }, 5000);
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'iframeWin' implicitly has an 'any' type.
   clearLoading(iframeWin) {
     this.dispatchEvent(
       new CustomEvent("replay-loading", { detail: { loading: false } }),
