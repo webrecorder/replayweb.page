@@ -57,7 +57,7 @@ import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.sv
 import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
 
-import type { ItemType, URLResource } from "./types";
+import type { FavIconEventDetail, ItemType, URLResource } from "./types";
 import type { Replay } from "./replay";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -1701,15 +1701,12 @@ class Item extends LitElement {
     this.showSidebar = false;
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  async onFavIcons(event) {
+  async onFavIcons(event: CustomEvent<FavIconEventDetail>) {
     if (this.embed && window.parent !== window) {
       window.parent.postMessage({ type: "favicons", ...event.detail }, "*");
     }
 
     for (const icon of event.detail.icons) {
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const resp = await fetch(icon.href);
       if (resp.status === 200) {
         const ct = resp.headers.get("Content-Type");

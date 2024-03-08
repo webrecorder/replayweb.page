@@ -25,6 +25,7 @@ import "./item";
 import "./item-index";
 import "./chooser";
 import { type LoadInfo } from "./item";
+import type { FavIconEventDetail } from "./types";
 
 // ===========================================================================
 @customElement("replay-app-main")
@@ -481,8 +482,7 @@ export class ReplayWebApp extends LitElement {
     }
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onFavIcons(event) {
+  onFavIcons(event: CustomEvent<FavIconEventDetail>) {
     updateFaviconLinks(event.detail);
   }
 

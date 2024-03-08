@@ -10,6 +10,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { wrapCss, rwpLogo, updateFaviconLinks } from "./misc";
 import { SWManager } from "./swmanager";
 import { property } from "lit/decorators.js";
+import type { FavIconEventDetail } from "./types";
+
+type IframeMessage = MessageEvent<
+  | {
+      type: "urlchange";
+      view?: string;
+      title?: string;
+    }
+  | ({
+      type: "favicons";
+    } & FavIconEventDetail)
+>;
 
 const scriptSrc =
   document.currentScript && (document.currentScript as HTMLScriptElement).src;
@@ -114,8 +126,7 @@ class Embed extends LitElement {
     }
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  handleMessage(event) {
+  handleMessage(event: IframeMessage) {
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe && event.source === iframe.contentWindow) {
@@ -135,7 +146,7 @@ class Embed extends LitElement {
     }
   }
 
-  handleUrlChangeMessage(data) {
+  handleUrlChangeMessage(data: { view?: string; title?: string }) {
     if (!data.view) {
       return;
     }
@@ -160,7 +171,9 @@ class Embed extends LitElement {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.doRegister();
 
-    window.addEventListener("message", (event) => this.handleMessage(event));
+    window.addEventListener("message", (event: IframeMessage) =>
+      this.handleMessage(event),
+    );
 
     if (this.deepLink) {
       this.updateFromHash();

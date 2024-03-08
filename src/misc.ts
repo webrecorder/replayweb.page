@@ -7,6 +7,7 @@ import { styleMap } from "lit/directives/style-map.js";
 import allCssRaw from "../assets/main.scss";
 
 import rwpLogo from "../assets/logo.svg";
+import type { FavIconEventDetail } from "./types";
 
 const apiPrefix = "./w/api";
 const replayPrefix = "./w";
@@ -40,7 +41,7 @@ function clickOnSpacebarPress(event) {
 // Update favicon links from an array of {rel, href} objects
 // remove all existing icon links
 // used by both embed and main app
-export function updateFaviconLinks(data) {
+export function updateFaviconLinks(data: FavIconEventDetail) {
   const head = document.querySelector("head")!;
   const oldLinks = document.querySelectorAll("link[rel*='icon']");
 
