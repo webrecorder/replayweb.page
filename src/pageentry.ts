@@ -386,6 +386,7 @@ class PageEntry extends LitElement {
     return this.onReplay(event, true);
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'data' implicitly has an 'any' type.
   sendChangeEvent(data, reload: boolean) {
     this.dispatchEvent(
       new CustomEvent("coll-tab-nav", {
@@ -401,6 +402,7 @@ class PageEntry extends LitElement {
     this.dispatchEvent(new CustomEvent("delete-page", { detail: { page } }));
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onSendSelToggle(event) {
     const page = this.page!.id;
     const selected = event.currentTarget.checked;

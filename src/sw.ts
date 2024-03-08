@@ -1,7 +1,9 @@
 import INDEX_HTML from "../index.html";
 
+// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7016 - Could not find a declaration file for module '@webrecorder/wabac/src/swmain'. 'node_modules/@webrecorder/wabac/src/swmain.js' implicitly has an 'any' type.
 import { SWReplay } from "@webrecorder/wabac/src/swmain";
 
+// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7016 - Could not find a declaration file for module '@webrecorder/wabac/src/loaders'. 'node_modules/@webrecorder/wabac/src/loaders.js' implicitly has an 'any' type.
 import { WorkerLoader } from "@webrecorder/wabac/src/loaders";
 
 type Self = Window &

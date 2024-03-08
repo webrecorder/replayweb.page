@@ -2,6 +2,7 @@ import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
 import { wrapCss } from "./misc";
 
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7016 - Could not find a declaration file for module 'marked'. 'node_modules/marked/lib/marked.cjs' implicitly has an 'any' type.
 import { marked } from "marked";
 
 import { getTS, getReplayLink } from "./pageutils";
@@ -114,6 +115,7 @@ class Story extends LitElement {
     const pageMap = {};
 
     for (const page of this.collInfo.pages) {
+      // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'number' can't be used to index type '{}'.
       pageMap[page.id] = page;
     }
 
@@ -339,6 +341,7 @@ class Story extends LitElement {
     )}`;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'p' implicitly has an 'any' type.
   renderCPage(p) {
     // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -378,10 +381,12 @@ class Story extends LitElement {
     return false;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'data' implicitly has an 'any' type.
   sendChangeEvent(data) {
     this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onClickScroll(event) {
     event.preventDefault();
     //this.pageView = false;
