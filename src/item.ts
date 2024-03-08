@@ -320,7 +320,10 @@ class Item extends LitElement {
           }
         }
         if (this.embed && window.parent !== window) {
-          window.parent.postMessage(this.tabData, "*");
+          window.parent.postMessage(
+            { type: "urlchange", ...this.tabData },
+            "*",
+          );
         }
       }
       this._locUpdateNeeded = false;
@@ -1649,6 +1652,10 @@ class Item extends LitElement {
   }
 
   async onFavIcons(event) {
+    if (this.embed && window.parent !== window) {
+      window.parent.postMessage({ type: "favicons", ...event.detail }, "*");
+    }
+
     for (const icon of event.detail.icons) {
       const resp = await fetch(icon.href);
       if (resp.status === 200) {

@@ -7,7 +7,7 @@ import {
 } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { wrapCss, rwpLogo } from "./misc";
+import { wrapCss, rwpLogo, updateFaviconLinks } from "./misc";
 import { SWManager } from "./swmanager";
 import { property } from "lit/decorators.js";
 
@@ -44,6 +44,7 @@ class Embed extends LitElement {
   @property({ type: String }) hashString: string | undefined;
 
   @property({ type: Boolean }) deepLink = false;
+  @property({ type: Boolean }) updateFavicons = false;
   @property({ type: Boolean }) sandbox = false;
   @property({ type: Boolean }) noSandbox: boolean | null = null;
   @property({ type: Boolean }) noWebWorker = false;
@@ -111,23 +112,35 @@ class Embed extends LitElement {
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe && event.source === iframe.contentWindow) {
-      if (!event.data.view) {
-        return;
-      }
+      switch (event.data.type) {
+        case "urlchange":
+          if (this.deepLink) {
+            this.handleUrlChangeMessage(event.data);
+          }
+          break;
 
-      if (event.data.title) {
-        this.title = event.data.title;
+        case "favicons":
+          if (this.updateFavicons) {
+            updateFaviconLinks(event.data);
+          }
+          break;
       }
-
-      if (!this.deepLink) {
-        return;
-      }
-
-      const currHash = new URLSearchParams(event.data);
-      const url = new URL(window.location.href);
-      url.hash = "#" + currHash.toString();
-      window.history.replaceState({}, "", url);
     }
+  }
+
+  handleUrlChangeMessage(data) {
+    if (!data.view) {
+      return;
+    }
+
+    if (data.title) {
+      this.title = data.title;
+    }
+
+    const currHash = new URLSearchParams(data);
+    const url = new URL(window.location.href);
+    url.hash = "#" + currHash.toString();
+    window.history.replaceState({}, "", url);
   }
 
   firstUpdated() {

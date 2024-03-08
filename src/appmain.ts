@@ -14,6 +14,7 @@ import {
   IS_APP,
   VERSION,
   clickOnSpacebarPress,
+  updateFaviconLinks,
 } from "./misc";
 
 import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.svg";
@@ -481,19 +482,7 @@ export class ReplayWebApp extends LitElement {
   }
 
   onFavIcons(event) {
-    const head = document.querySelector("head")!;
-    const oldLinks = document.querySelectorAll("link[rel*='icon']");
-
-    for (const link of oldLinks) {
-      head.removeChild(link);
-    }
-
-    for (const icon of event.detail.icons) {
-      const link = document.createElement("link");
-      link.rel = icon.rel;
-      link.href = icon.href;
-      head.appendChild(link);
-    }
+    updateFaviconLinks(event.detail);
   }
 
   skipMenu(event) {

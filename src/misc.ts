@@ -36,6 +36,25 @@ function clickOnSpacebarPress(event) {
   }
 }
 
+// Update favicon links from an array of {rel, href} objects
+// remove all existing icon links
+// used by both embed and main app
+export function updateFaviconLinks(data) {
+  const head = document.querySelector("head")!;
+  const oldLinks = document.querySelectorAll("link[rel*='icon']");
+
+  for (const link of oldLinks) {
+    head.removeChild(link);
+  }
+
+  for (const icon of data.icons) {
+    const link = document.createElement("link");
+    link.rel = icon.rel;
+    link.href = icon.href;
+    head.appendChild(link);
+  }
+}
+
 // ===========================================================================
 class FaIcon extends LitElement {
   constructor() {
