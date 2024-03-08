@@ -47,6 +47,8 @@ class Loader extends LitElement {
     if (!this.noWebWorker) {
       this.worker = new Worker(this.swName!);
     } else {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!navigator.serviceWorker) {
         return;
       }
@@ -144,6 +146,8 @@ class Loader extends LitElement {
       switch (scheme) {
         case "googledrive":
           this.state = "googledrive";
+          // TODO: Fix this the next time the file is edited.
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           source = (await this.googledriveInit()) ?? null;
           break;
 
@@ -235,16 +239,22 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     }
   }
 
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   googledriveInit() {
     this._gdWait = new Promise((resolve) => (this._gdResolve = resolve));
     return this._gdWait;
   }
 
   onLoadReady(event: CustomEvent) {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this._gdResolve) {
       //const digest = await digestMessage(url, 'SHA-256');
       //this.coll = "id-" + digest.slice(0, 12);
 
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this._gdResolve(event.detail);
     }
   }
@@ -261,6 +271,8 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       return;
     }
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.serviceWorker?.controller) {
       navigator.serviceWorker.controller.postMessage(msg);
       if (this.pingInterval) {
@@ -274,6 +286,8 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       Boolean(this.sourceUrl && changedProperties.has("sourceUrl")) ||
       changedProperties.has("tryFileHandle")
     ) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.doLoad();
     }
   }
@@ -425,6 +439,8 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       mode: "read",
     });
     if (result === "granted") {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.doLoad();
     }
   }

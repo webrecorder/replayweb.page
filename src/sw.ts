@@ -10,6 +10,8 @@ type Self = Window &
     sw: SWReplay;
   };
 
+// TODO: Fix this the next time the file is edited.
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if ((self as Self).registration) {
   const staticData = new Map();
 

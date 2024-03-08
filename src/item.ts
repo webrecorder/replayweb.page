@@ -249,6 +249,8 @@ class Item extends LitElement {
   }
 
   willUpdate(changedProperties: Map<string, Record<string, unknown>>) {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (changedProperties.has("tabData") && this.tabData) {
       // Format tab data from URL query params
       const tabData = {};
@@ -264,6 +266,8 @@ class Item extends LitElement {
 
       const prevTabData = changedProperties.get("tabData");
       if (this.tabData.url && this.tabData.url !== prevTabData?.url) {
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.getMultiTimestamps();
       }
     }
@@ -279,6 +283,8 @@ class Item extends LitElement {
     // }
 
     if (changedProperties.has("sourceUrl")) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.doUpdateInfo();
     }
     if (changedProperties.has("editable")) {
@@ -424,6 +430,8 @@ class Item extends LitElement {
     }
 
     this.hasStory = Boolean(
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       this.itemInfo!.desc || this.itemInfo!.lists?.length,
     );
 
@@ -440,6 +448,8 @@ class Item extends LitElement {
   }
 
   onItemLoaded(event) {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.doUpdateInfo();
     this.loadInfo = null;
     if (event.detail.sourceUrl) {
@@ -478,7 +488,9 @@ class Item extends LitElement {
     ) {
       const view = this.hasStory
         ? "story"
-        : this.editable || this.itemInfo.pages?.length
+        : // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        this.editable || this.itemInfo.pages?.length
         ? "pages"
         : "resources";
 
@@ -530,11 +542,15 @@ class Item extends LitElement {
     ) {
       this.updateTabData(
         event.detail.data,
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         event.detail.replaceLoc /*, false */,
       );
     } else if (this.showSidebar && this.tabData.url) {
       this.updateTabData(
         event.detail.data,
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         event.detail.replaceLoc /*, true */,
       );
     }
@@ -868,6 +884,8 @@ class Item extends LitElement {
     const isReplay = !!this.tabData.url;
     const isSidebar = isReplay && this.showSidebar;
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!isReplay && this.tabData?.view) {
       const detail = {
         title: this.tabLabels[this.tabData.view],
@@ -1532,7 +1550,11 @@ class Item extends LitElement {
             @coll-tab-nav="${this.onItemTabNav}"
             id="story"
             .isSidebar="${isSidebar}"
-            class="${isStory ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
+            class="${
+              // TODO: Fix this the next time the file is edited.
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              isStory ? "" : "is-hidden"
+            } ${isSidebar ? "sidebar" : ""}"
             role="${ifDefined(isSidebar ? undefined : "main")}"
           >
           </wr-coll-story>`
@@ -1547,9 +1569,11 @@ class Item extends LitElement {
             @coll-tab-nav="${this.onItemTabNav}"
             id="resources"
             .isSidebar="${isSidebar}"
-            class="is-paddingless ${isResources ? "" : "is-hidden"} ${isSidebar
-              ? "sidebar"
-              : ""}"
+            class="is-paddingless ${
+              // TODO: Fix this the next time the file is edited.
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              isResources ? "" : "is-hidden"
+            } ${isSidebar ? "sidebar" : ""}"
             role="${ifDefined(isSidebar ? undefined : "main")}"
           >
           </wr-coll-resources>`
@@ -1567,7 +1591,11 @@ class Item extends LitElement {
             @coll-tab-nav="${this.onItemTabNav}"
             id="pages"
             @coll-update="${this.onItemUpdate}"
-            class="${isPages ? "" : "is-hidden"} ${isSidebar ? "sidebar" : ""}"
+            class="${
+              // TODO: Fix this the next time the file is edited.
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              isPages ? "" : "is-hidden"
+            } ${isSidebar ? "sidebar" : ""}"
             role="${ifDefined(isSidebar ? undefined : "main")}"
           >
           </wr-page-view>`
@@ -1608,8 +1636,12 @@ class Item extends LitElement {
     event.preventDefault();
     this.menuActive = false;
     if (!this.isFullscreen) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.requestFullscreen();
     } else {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       document.exitFullscreen();
     }
   }
@@ -1650,6 +1682,8 @@ class Item extends LitElement {
 
   async onFavIcons(event) {
     for (const icon of event.detail.icons) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const resp = await fetch(icon.href);
       if (resp.status === 200) {
         const ct = resp.headers.get("Content-Type");
@@ -1672,6 +1706,8 @@ class Item extends LitElement {
         ? event.detail.reload
         : true;
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises, @typescript-eslint/no-unsafe-argument
     this.deleteFully(reload);
   }
 
@@ -1716,10 +1752,14 @@ class Item extends LitElement {
     const btn = event.currentTarget as HTMLButtonElement;
     const dropdown = btn.closest<SlDropdown>("sl-dropdown");
     const relatedTarget = event.relatedTarget as HTMLElement;
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (relatedTarget && dropdown?.contains(relatedTarget)) {
       return;
     }
     if (dropdown?.open) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       dropdown.hide();
     }
   }
@@ -1753,6 +1793,8 @@ class Item extends LitElement {
   }
 
   _stringToParams(value) {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
     const data: Partial<URLResource> = {};
     data.url = "";
@@ -1812,9 +1854,13 @@ class Item extends LitElement {
     this.dispatchEvent(new CustomEvent("about-show"));
   }
   onShowInfoDialog() {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.archiveInfoDialog.value?.show();
   }
   onHideInfoDialog() {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.archiveInfoDialog.value?.hide();
   }
 }

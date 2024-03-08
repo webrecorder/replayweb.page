@@ -17,11 +17,15 @@ async function getColl(name: string) {
     await dbs[name].initing;
   }
 
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return dbs[name];
 }
 
 async function getDB(name: string) {
   const coll = await getColl(name);
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return coll.store;
 }
 
@@ -43,6 +47,8 @@ async function getResponse(
     return;
   }
 
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const headers = Object.fromEntries(result.headers.entries());
 
   const buffer = await result.getBuffer();

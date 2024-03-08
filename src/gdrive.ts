@@ -31,6 +31,8 @@ class GDrive extends LitElement {
     if (changedProperties.has("sourceUrl")) {
       this.error = false;
       this.state = "trypublic";
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.tryPublicAccess().then((result) => {
         if (!result) {
           this.state = "tryauto";
@@ -67,6 +69,8 @@ class GDrive extends LitElement {
       try {
         const abort = new AbortController();
         const signal = abort.signal;
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         resp = await fetch(publicUrl, { signal });
         abort.abort();
         if (resp.status != 200) {
@@ -99,6 +103,8 @@ class GDrive extends LitElement {
           this.state = "trymanual";
         }
       } else {
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.authed(response);
       }
     });
@@ -107,6 +113,8 @@ class GDrive extends LitElement {
   onClickAuth() {
     this.gauth("select_account", (response) => {
       if (!response.error) {
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.authed(response);
       }
     });
@@ -201,6 +209,8 @@ class GDrive extends LitElement {
           response_type: "token",
           prompt,
         },
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         callback,
       );
     });
