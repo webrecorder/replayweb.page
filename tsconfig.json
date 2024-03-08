@@ -9,33 +9,27 @@
     "declaration": true,
     "declarationMap": true,
     "declarationDir": "./dist/types",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "sourceMap": true,
     "inlineSources": true,
-    "paths": {
-      "flexsearch": ["./node_modules/@types/flexsearch"]
-    },
+    "skipLibCheck": true,
     "plugins": [
       {
         "name": "ts-lit-plugin",
         "strict": true,
         "rules": {
-          // This seems to produce a bunch of false positives, so we've turned it off for now.
-          // Relevant issues:
-          // https://github.com/runem/lit-analyzer/issues/293
-          // https://github.com/runem/lit-analyzer/issues/302
-          // https://github.com/runem/lit-analyzer/issues/266
-          "no-missing-import": "off",
-
-          // ts-lit-plugin also doesn't seem to understand string interpolations in CSS, so this is also turned off.
-          "no-invalid-css": "off"
-        }
+          "no-missing-import": "off"
+        },
+        "maxNodeModuleImportDepth": -1
       }
     ],
-    "skipLibCheck": true
+    "incremental": true,
+    "paths": {
+      "flexsearch": ["./node_modules/@types/flexsearch"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.d.ts"]
 }
