@@ -54,6 +54,8 @@ class Story extends LitElement {
 
   updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("collInfo")) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.doLoadCurated();
     }
 
@@ -88,6 +90,8 @@ class Story extends LitElement {
       this.splitter = null;
     }
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (sidebar && content && !this.splitter) {
       const opts: Split.Options = {
         sizes: [20, 80],
@@ -114,6 +118,8 @@ class Story extends LitElement {
     }
 
     for (const curated of this.collInfo.curatedPages) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!this.curatedPageMap[curated.list]) {
         this.curatedPageMap[curated.list] = [];
       }
@@ -299,6 +305,8 @@ class Story extends LitElement {
 
             ${
               // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'. | TS2339 - Property 'collInfo' does not exist on type 'Story'.
+              // TODO: Fix this the next time the file is edited.
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
               this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ""
             }
           </section>
@@ -317,9 +325,13 @@ class Story extends LitElement {
             <h3>${list.title}</h3>
             <p>${list.desc}</p>
             <ol>
-              ${this.curatedPageMap[list.id]
-                ? this.curatedPageMap[list.id].map((p) => this.renderCPage(p))
-                : html``}
+              ${
+                // TODO: Fix this the next time the file is edited.
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                this.curatedPageMap[list.id]
+                  ? this.curatedPageMap[list.id].map((p) => this.renderCPage(p))
+                  : html``
+              }
             </ol>
           </div>
         </article>
@@ -328,6 +340,8 @@ class Story extends LitElement {
   }
 
   renderCPage(p) {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const date = new Date(p.ts);
 
     const ts = getTS(date.toISOString());
@@ -338,7 +352,11 @@ class Story extends LitElement {
           @click="${this.onReplay}"
           data-url="${p.url}"
           data-ts="${ts}"
-          href="${getReplayLink("story", p.url, ts)}"
+          href="${
+            // TODO: Fix this the next time the file is edited.
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            getReplayLink("story", p.url, ts)
+          }"
         >
           <p class="is-size-6 has-text-weight-bold has-text-link">${p.title}</p>
           <p class="has-text-dark">${p.url}</p>
@@ -422,6 +440,8 @@ class Story extends LitElement {
       }
     }
     this.lastST = currST;
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (next && next != curr) {
       if (next.id.startsWith("list-")) {
         this.currList = Number(next.id.slice(5));

@@ -234,6 +234,8 @@ class ItemInfo extends LitElement {
   onCopy(event: Event, text: string | undefined) {
     event.preventDefault();
     event.stopPropagation();
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (text) navigator.clipboard.writeText(text);
     return false;
   }

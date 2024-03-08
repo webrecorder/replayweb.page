@@ -123,6 +123,8 @@ class FaIcon extends LitElement {
       <g>
         ${
           // @ts-expect-error - TS2339 - Property 'svg' does not exist on type 'FaIcon'.
+          // TODO: Fix this the next time the file is edited.
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           unsafeSVG(this.svg)
         }
       </g>

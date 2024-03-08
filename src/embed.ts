@@ -104,6 +104,8 @@ class Embed extends LitElement {
       await this.swmanager.register();
       this.inited = true;
     } catch (e) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.errorMessage = this.swmanager.renderErrorReport(this.logo);
     }
   }
@@ -149,6 +151,8 @@ class Embed extends LitElement {
         "The noSandbox flag is deprecated. ReplayWeb.page does not add a sandbox by default. To enable sandboxing, use 'sandbox' flag instead. This may result in PDFs not loading and pages opening in new windows, but may be more secure in some situations",
       );
     }
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.doRegister();
 
     window.addEventListener("message", (event) => this.handleMessage(event));
@@ -169,12 +173,16 @@ class Embed extends LitElement {
     if (
       // @ts-expect-error - TS2339 - Property 'GestureEvent' does not exist on type 'Window & typeof globalThis'.
       window.GestureEvent !== undefined &&
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       window.SharedWorker === undefined
     ) {
       this.noWebWorker = true;
     }
 
     // if no storage manager or estimate, don't cache
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!navigator.storage?.estimate) {
       this.noCache = true;
     }
@@ -202,6 +210,8 @@ class Embed extends LitElement {
   }
 
   mergeConfigs() {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!this.customConfig) {
       return this.config;
     }
@@ -230,6 +240,8 @@ class Embed extends LitElement {
         this.source = this.src;
       }
 
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const source = new URL(this.source, document.baseURI);
 
       const config = this.mergeConfigs();
@@ -366,6 +378,8 @@ class Embed extends LitElement {
       this.reloadCount <= 2
     ) {
       this.reloadCount++;
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       setTimeout(() => win.location.reload(), 100);
       return;
     }
@@ -388,6 +402,8 @@ async function main() {
   customElements.define("replay-web-page", Embed);
 }
 
+// TODO: Fix this the next time the file is edited.
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 main();
 
 export { Embed };

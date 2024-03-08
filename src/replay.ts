@@ -48,6 +48,8 @@ class Replay extends LitElement {
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     navigator.serviceWorker.addEventListener("message", (event) =>
       this.handleAuthMessage(event),
     );

@@ -126,23 +126,35 @@ class Pages extends LitElement {
     if (this.newQuery !== null) {
       this.query = this.newQuery;
       this.newQuery = null;
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.filter();
     }
   }
 
   async updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("collInfo")) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.updateTextSearch();
     } else if (changedProperties.has("query")) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.filter();
     } else if (changedProperties.has("currList")) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.filter();
     } else if (changedProperties.has("showAllPages")) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.filter();
     }
 
     if (changedProperties.has("active") && this.active) {
       if (this.changeNeeded) {
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.filter();
       }
     }
@@ -241,6 +253,8 @@ class Pages extends LitElement {
     this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
   }
 
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   addPages(pages) {
     const flex = new FlexIndex();
 
@@ -254,6 +268,8 @@ class Pages extends LitElement {
     );
 
     return Promise.all(
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/promise-function-async
       pages.map((page, index) => {
         let text = page.url;
         if (page.title) {
@@ -262,6 +278,8 @@ class Pages extends LitElement {
         if (page.text) {
           text += " " + page.text;
         }
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         return flex.addAsync(index, text);
       }),
     );
@@ -285,6 +303,8 @@ class Pages extends LitElement {
       if (!resp || !Number(resp.headers.get("Content-Length"))) {
         resp = await fetch(indexUrl);
         if (resp.status === 200 && Number(resp.headers.get("Content-Length"))) {
+          // TODO: Fix this the next time the file is edited.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           cache.put(indexUrl, resp.clone());
         }
       }
@@ -723,7 +743,11 @@ class Pages extends LitElement {
           <a
             role="button"
             href="#"
-            @click="${(e) => this.onDownload(e, "wacz")}"
+            @click="${
+              // TODO: Fix this the next time the file is edited.
+              // eslint-disable-next-line @typescript-eslint/promise-function-async
+              (e) => this.onDownload(e, "wacz")
+            }"
             @keyup="${clickOnSpacebarPress}"
             class="dropdown-item"
           >
@@ -733,7 +757,11 @@ class Pages extends LitElement {
           <a
             role="button"
             href="#"
-            @click="${(e) => this.onDownload(e, "warc")}"
+            @click="${
+              // TODO: Fix this the next time the file is edited.
+              // eslint-disable-next-line @typescript-eslint/promise-function-async
+              (e) => this.onDownload(e, "warc")
+            }"
             @keyup="${clickOnSpacebarPress}"
             class="dropdown-item"
           >
@@ -743,7 +771,11 @@ class Pages extends LitElement {
           <a
             role="button"
             href="#"
-            @click="${(e) => this.onDownload(e, "warc1.0")}"
+            @click="${
+              // TODO: Fix this the next time the file is edited.
+              // eslint-disable-next-line @typescript-eslint/promise-function-async
+              (e) => this.onDownload(e, "warc1.0")
+            }"
             @keyup="${clickOnSpacebarPress}"
             class="dropdown-item"
           >
@@ -883,8 +915,12 @@ class Pages extends LitElement {
       if (page.url === this.url) {
         let ts = page.timestamp;
         if (!ts && page.date) {
+          // TODO: Fix this the next time the file is edited.
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           ts = getTS(page.date);
         } else if (typeof page.ts === "string") {
+          // TODO: Fix this the next time the file is edited.
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           ts = getTS(page.ts);
         }
         return ts === this.ts;
@@ -945,6 +981,8 @@ class Pages extends LitElement {
 
     const body = JSON.stringify({ title });
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetch(`${this.collInfo!.apiPrefix}/metadata`, {
       method: "POST",
       body,
@@ -993,8 +1031,12 @@ class Pages extends LitElement {
   onSelectToggle(event) {
     const { page, selected } = event.detail;
     if (selected) {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.selectedPages.add(page);
     } else {
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.selectedPages.delete(page);
     }
     this.allSelected = this.selectedPages.size === this.sortedPages.length;
@@ -1025,6 +1067,8 @@ class Pages extends LitElement {
       "pages",
       selected ? Array.from(this.selectedPages.keys()).join(",") : "all",
     );
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     params.set("format", format);
     if (this.collInfo!.filename) {
       params.set("filename", this.collInfo!.filename);
@@ -1077,6 +1121,8 @@ class Pages extends LitElement {
         continue;
       }
 
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const inx = this.collInfo!.pages.indexOf(page);
       if (inx < 0) {
         continue;
@@ -1088,6 +1134,8 @@ class Pages extends LitElement {
     this.toDeletePages = null;
     this.toDeletePage = null;
 
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.updateTextSearch();
     this.requestUpdate();
   }

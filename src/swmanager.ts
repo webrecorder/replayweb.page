@@ -27,6 +27,8 @@ export class SWManager {
     this.appName = newAppName;
   }
 
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   register() {
     let resolve, reject;
 
@@ -64,6 +66,8 @@ export class SWManager {
     };
 
     // @ts-expect-error - TS2339 - Property 'scope' does not exist on type 'SWManager'. | TS2339 - Property 'name' does not exist on type 'SWManager'.
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     register(this.scope + this.name, {
       // @ts-expect-error - TS2339 - Property 'scope' does not exist on type 'SWManager'.
       registrationOptions: { scope: this.scope },
@@ -105,6 +109,8 @@ export class SWManager {
   }
 
   getSWErrorMsg() {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.serviceWorker) {
       // must be loaded from a cross-origin (eg. subdomain)
       // @ts-expect-error - TS2339 - Property 'requireSubdomainIframe' does not exist on type 'SWManager'.
