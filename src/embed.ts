@@ -11,12 +11,12 @@ import { wrapCss, rwpLogo, updateFaviconLinks } from "./misc";
 import { SWManager } from "./swmanager";
 import { property } from "lit/decorators.js";
 import type { FavIconEventDetail } from "./types";
-import type { TabData } from "./item";
+import type { EmbedReplayData } from "./item";
 
 type IframeMessage = MessageEvent<
   | ({
       type: "urlchange";
-    } & TabData)
+    } & EmbedReplayData)
   | ({
       type: "favicons";
     } & FavIconEventDetail)
@@ -145,21 +145,33 @@ class Embed extends LitElement {
     }
   }
 
-  handleUrlChangeMessage(data: TabData) {
-    if (!data.view) {
-      return;
+  handleUrlChangeMessage(data: EmbedReplayData) {
+    const { url, ts, view, query, title } = data;
+
+    if (title) {
+      this.title = title;
     }
 
-    if (data.title) {
-      this.title = data.title;
+    const params: Record<string, string> = {};
+
+    if (url) {
+      params.url = url;
+    }
+    if (ts) {
+      params.ts = ts;
+    }
+    if (query) {
+      params.query = query;
+    }
+    if (view && !url) {
+      params.view = view;
     }
 
-    const currHash = new URLSearchParams(
-      Object.entries(data).map(([k, v]) => [k, v.toString()]),
-    );
-    const url = new URL(window.location.href);
-    url.hash = "#" + currHash.toString();
-    window.history.replaceState({}, "", url);
+    const currHash = new URLSearchParams(params);
+
+    const fullUrl = new URL(window.location.href);
+    fullUrl.hash = "#" + currHash.toString();
+    window.history.replaceState({}, "", fullUrl);
   }
 
   firstUpdated() {
@@ -320,12 +332,17 @@ class Embed extends LitElement {
         params as unknown as Record<string, string>,
       ).toString();
 
-      this.hashString = new URLSearchParams({
+      const hashParams: Record<string, string> = {
         url: this.url,
         ts: this.ts,
         query: this.query,
-        view: this.view,
-      }).toString();
+      };
+
+      if (!this.url) {
+        hashParams.view = this.view;
+      }
+
+      this.hashString = new URLSearchParams(hashParams).toString();
     }
   }
 

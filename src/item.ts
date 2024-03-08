@@ -85,14 +85,17 @@ export type LoadInfo = {
   importCollId?: string;
 };
 
-export type TabData = {
+export type EmbedReplayData = {
   view?: "story" | "pages" | "resources";
   url?: string;
   ts?: string;
   title?: string;
+  query?: string;
+};
+
+export type TabData = EmbedReplayData & {
   multiTs?: string[];
   currList?: number;
-  query?: string;
   urlSearchType?: string;
   currMime?: string;
 };
@@ -331,8 +334,9 @@ class Item extends LitElement {
           }
         }
         if (this.embed && window.parent !== window) {
+          const { url, ts, view, query, title }: EmbedReplayData = this.tabData;
           window.parent.postMessage(
-            { type: "urlchange", ...this.tabData },
+            { type: "urlchange", url, ts, view, query, title },
             "*",
           );
         }
