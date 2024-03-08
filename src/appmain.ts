@@ -480,6 +480,7 @@ export class ReplayWebApp extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onFavIcons(event) {
     const head = document.querySelector("head")!;
     const oldLinks = document.querySelectorAll("link[rel*='icon']");
@@ -496,6 +497,7 @@ export class ReplayWebApp extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   skipMenu(event) {
     // This is a workaround, since this app's routing doesn't permit normal
     // following of in-page anchors.
@@ -503,6 +505,7 @@ export class ReplayWebApp extends LitElement {
     this.renderRoot.querySelector<HTMLElement>("#skip-main-target")?.focus();
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onNavMenu(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -644,6 +647,7 @@ export class ReplayWebApp extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onStartLoad(event) {
     // just redirect right away?
     // TODO: Fix this the next time the file is edited.
@@ -665,6 +669,7 @@ export class ReplayWebApp extends LitElement {
     this.loadInfo = event.detail;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onCollLoaded(event) {
     this.loadInfo = null;
     if (event.detail.collInfo) {
@@ -687,6 +692,7 @@ export class ReplayWebApp extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onTitle(event) {
     if (event.detail.title) {
       this.pageTitle = event.detail.title;

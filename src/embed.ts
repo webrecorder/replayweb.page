@@ -24,7 +24,9 @@ class Embed extends LitElement {
   @property({ type: String }) ts = "";
   @property({ type: String }) query = "";
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7008 - Member 'source' implicitly has an 'any' type.
   @property({ type: String }) source;
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7008 - Member 'src' implicitly has an 'any' type.
   @property({ type: String }) src;
 
   @property({ type: String }) view = "replay";
@@ -57,6 +59,7 @@ class Embed extends LitElement {
     | string
     | undefined;
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7008 - Member 'requireSubdomainIframe' implicitly has an 'any' type.
   @property({ type: Boolean }) requireSubdomainIframe;
 
   @property({ type: String }) loading = "";
@@ -73,6 +76,7 @@ class Embed extends LitElement {
   isCrossOrigin: boolean | undefined;
   swmanager: SWManager | undefined;
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'replayfile' implicitly has an 'any' type.
   static setDefaultReplayFile(replayfile) {
     defaultReplayFile = replayfile;
   }
@@ -109,6 +113,7 @@ class Embed extends LitElement {
     }
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   handleMessage(event) {
     const iframe = this.renderRoot.querySelector("iframe");
 
@@ -353,6 +358,7 @@ class Embed extends LitElement {
     `;
   }
 
+  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onLoad(event) {
     if (this.isCrossOrigin) {
       return;

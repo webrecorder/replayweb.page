@@ -74,10 +74,12 @@ class Sorter<T = unknown> extends LitElement {
       }
     } else {
       this.sortedData.sort((first, second) => {
+        // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'unknown'. | TS7053 - Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'unknown'.
         if (first[this.sortKey!] === second[this.sortKey!]) {
           return 0;
         }
 
+        // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'unknown'. | TS7053 - Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'unknown'.
         return this.sortDesc == first[this.sortKey!] < second[this.sortKey!]
           ? 1
           : -1;
