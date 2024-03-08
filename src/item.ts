@@ -85,6 +85,18 @@ export type LoadInfo = {
   importCollId?: string;
 };
 
+export type TabData = {
+  view?: "story" | "pages" | "resources";
+  url?: string;
+  ts?: string;
+  title?: string;
+  multiTs?: string[];
+  currList?: number;
+  query?: string;
+  urlSearchType?: string;
+  currMime?: string;
+};
+
 // ===========================================================================
 class Item extends LitElement {
   @property({ type: Boolean })
@@ -112,16 +124,7 @@ class Item extends LitElement {
   isLoading = false;
 
   @property({ type: Object, attribute: false })
-  tabData: {
-    view?: "story" | "pages" | "resources";
-    url?: string;
-    ts?: string;
-    multiTs?: string[];
-    currList?: number;
-    query?: string;
-    urlSearchType?: string;
-    currMime?: string;
-  } = {};
+  tabData: TabData = {};
 
   @property({ type: String })
   url = "";

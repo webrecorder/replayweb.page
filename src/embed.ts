@@ -11,13 +11,12 @@ import { wrapCss, rwpLogo, updateFaviconLinks } from "./misc";
 import { SWManager } from "./swmanager";
 import { property } from "lit/decorators.js";
 import type { FavIconEventDetail } from "./types";
+import type { TabData } from "./item";
 
 type IframeMessage = MessageEvent<
-  | {
+  | ({
       type: "urlchange";
-      view?: string;
-      title?: string;
-    }
+    } & TabData)
   | ({
       type: "favicons";
     } & FavIconEventDetail)
@@ -146,7 +145,7 @@ class Embed extends LitElement {
     }
   }
 
-  handleUrlChangeMessage(data: { view?: string; title?: string }) {
+  handleUrlChangeMessage(data: TabData) {
     if (!data.view) {
       return;
     }
@@ -155,7 +154,9 @@ class Embed extends LitElement {
       this.title = data.title;
     }
 
-    const currHash = new URLSearchParams(data);
+    const currHash = new URLSearchParams(
+      Object.entries(data).map(([k, v]) => [k, v.toString()]),
+    );
     const url = new URL(window.location.href);
     url.hash = "#" + currHash.toString();
     window.history.replaceState({}, "", url);
