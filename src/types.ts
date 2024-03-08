@@ -50,3 +50,10 @@ export type ItemType = {
   totalSize?: unknown;
   size?: number | string;
 };
+
+export type FavIconEventDetail = {
+  icons: {
+    rel: string;
+    href: string;
+  }[];
+};

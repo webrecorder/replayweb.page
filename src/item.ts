@@ -57,7 +57,7 @@ import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.sv
 import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
 
-import type { ItemType, URLResource } from "./types";
+import type { FavIconEventDetail, ItemType, URLResource } from "./types";
 import type { Replay } from "./replay";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -83,6 +83,21 @@ export type LoadInfo = {
   newFullImport?: unknown;
   name?: string;
   importCollId?: string;
+};
+
+export type EmbedReplayData = {
+  view?: "story" | "pages" | "resources";
+  url?: string;
+  ts?: string;
+  title?: string;
+  query?: string;
+};
+
+export type TabData = EmbedReplayData & {
+  multiTs?: string[];
+  currList?: number;
+  urlSearchType?: string;
+  currMime?: string;
 };
 
 // ===========================================================================
@@ -112,16 +127,7 @@ class Item extends LitElement {
   isLoading = false;
 
   @property({ type: Object, attribute: false })
-  tabData: {
-    view?: "story" | "pages" | "resources";
-    url?: string;
-    ts?: string;
-    multiTs?: string[];
-    currList?: number;
-    query?: string;
-    urlSearchType?: string;
-    currMime?: string;
-  } = {};
+  tabData: TabData = {};
 
   @property({ type: String })
   url = "";
@@ -328,7 +334,11 @@ class Item extends LitElement {
           }
         }
         if (this.embed && window.parent !== window) {
-          window.parent.postMessage(this.tabData, "*");
+          const { url, ts, view, query, title }: EmbedReplayData = this.tabData;
+          window.parent.postMessage(
+            { type: "urlchange", url, ts, view, query, title },
+            "*",
+          );
         }
       }
       this._locUpdateNeeded = false;
@@ -1698,11 +1708,12 @@ class Item extends LitElement {
     this.showSidebar = false;
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  async onFavIcons(event) {
+  async onFavIcons(event: CustomEvent<FavIconEventDetail>) {
+    if (this.embed && window.parent !== window) {
+      window.parent.postMessage({ type: "favicons", ...event.detail }, "*");
+    }
+
     for (const icon of event.detail.icons) {
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const resp = await fetch(icon.href);
       if (resp.status === 200) {
         const ct = resp.headers.get("Content-Type");

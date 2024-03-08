@@ -14,6 +14,7 @@ import {
   IS_APP,
   VERSION,
   clickOnSpacebarPress,
+  updateFaviconLinks,
 } from "./misc";
 
 import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.svg";
@@ -24,6 +25,7 @@ import "./item";
 import "./item-index";
 import "./chooser";
 import { type LoadInfo } from "./item";
+import type { FavIconEventDetail } from "./types";
 
 // ===========================================================================
 @customElement("replay-app-main")
@@ -480,21 +482,8 @@ export class ReplayWebApp extends LitElement {
     }
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onFavIcons(event) {
-    const head = document.querySelector("head")!;
-    const oldLinks = document.querySelectorAll("link[rel*='icon']");
-
-    for (const link of oldLinks) {
-      head.removeChild(link);
-    }
-
-    for (const icon of event.detail.icons) {
-      const link = document.createElement("link");
-      link.rel = icon.rel;
-      link.href = icon.href;
-      head.appendChild(link);
-    }
+  onFavIcons(event: CustomEvent<FavIconEventDetail>) {
+    updateFaviconLinks(event.detail);
   }
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.

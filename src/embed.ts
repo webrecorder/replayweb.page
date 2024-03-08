@@ -7,9 +7,20 @@ import {
 } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { wrapCss, rwpLogo } from "./misc";
+import { wrapCss, rwpLogo, updateFaviconLinks } from "./misc";
 import { SWManager } from "./swmanager";
 import { property } from "lit/decorators.js";
+import type { FavIconEventDetail } from "./types";
+import type { EmbedReplayData } from "./item";
+
+type IframeMessage = MessageEvent<
+  | ({
+      type: "urlchange";
+    } & EmbedReplayData)
+  | ({
+      type: "favicons";
+    } & FavIconEventDetail)
+>;
 
 const scriptSrc =
   document.currentScript && (document.currentScript as HTMLScriptElement).src;
@@ -46,6 +57,7 @@ class Embed extends LitElement {
   @property({ type: String }) hashString: string | undefined;
 
   @property({ type: Boolean }) deepLink = false;
+  @property({ type: Boolean }) updateFavicons = false;
   @property({ type: Boolean }) sandbox = false;
   @property({ type: Boolean }) noSandbox: boolean | null = null;
   @property({ type: Boolean }) noWebWorker = false;
@@ -113,30 +125,53 @@ class Embed extends LitElement {
     }
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  handleMessage(event) {
+  handleMessage(event: IframeMessage) {
     const iframe = this.renderRoot.querySelector("iframe");
 
     if (iframe && event.source === iframe.contentWindow) {
-      if (!event.data.view) {
-        return;
-      }
+      switch (event.data.type) {
+        case "urlchange":
+          if (this.deepLink) {
+            this.handleUrlChangeMessage(event.data);
+          }
+          break;
 
-      if (event.data.title) {
-        this.title = event.data.title;
+        case "favicons":
+          if (this.updateFavicons) {
+            updateFaviconLinks(event.data);
+          }
+          break;
       }
-
-      if (!this.deepLink) {
-        return;
-      }
-
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      const currHash = new URLSearchParams(event.data);
-      const url = new URL(window.location.href);
-      url.hash = "#" + currHash.toString();
-      window.history.replaceState({}, "", url);
     }
+  }
+
+  handleUrlChangeMessage(data: EmbedReplayData) {
+    const { url, ts, view, query, title } = data;
+
+    if (title) {
+      this.title = title;
+    }
+
+    const params: Record<string, string> = {};
+
+    if (url) {
+      params.url = url;
+    }
+    if (ts) {
+      params.ts = ts;
+    }
+    if (query) {
+      params.query = query;
+    }
+    if (view && !url) {
+      params.view = view;
+    }
+
+    const currHash = new URLSearchParams(params);
+
+    const fullUrl = new URL(window.location.href);
+    fullUrl.hash = "#" + currHash.toString();
+    window.history.replaceState({}, "", fullUrl);
   }
 
   firstUpdated() {
@@ -149,7 +184,9 @@ class Embed extends LitElement {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.doRegister();
 
-    window.addEventListener("message", (event) => this.handleMessage(event));
+    window.addEventListener("message", (event: IframeMessage) =>
+      this.handleMessage(event),
+    );
 
     if (this.deepLink) {
       this.updateFromHash();
@@ -295,12 +332,17 @@ class Embed extends LitElement {
         params as unknown as Record<string, string>,
       ).toString();
 
-      this.hashString = new URLSearchParams({
+      const hashParams: Record<string, string> = {
         url: this.url,
         ts: this.ts,
         query: this.query,
-        view: this.view,
-      }).toString();
+      };
+
+      if (!this.url) {
+        hashParams.view = this.view;
+      }
+
+      this.hashString = new URLSearchParams(hashParams).toString();
     }
   }
 
