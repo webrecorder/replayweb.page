@@ -309,6 +309,7 @@ class Story extends LitElement {
               ? unsafeHTML(
                   DOMPurify.sanitize(
                     marked(this.collInfo.desc, { async: false }) as string,
+                    { USE_PROFILES: { html: true } },
                   ),
                 )
               : ""}
