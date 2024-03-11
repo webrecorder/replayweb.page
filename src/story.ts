@@ -2,8 +2,8 @@ import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
 import { wrapCss } from "./misc";
 
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7016 - Could not find a declaration file for module 'marked'. 'node_modules/marked/lib/marked.cjs' implicitly has an 'any' type.
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 import { getTS, getReplayLink } from "./pageutils";
 
@@ -305,12 +305,13 @@ class Story extends LitElement {
               }
             </h2>
 
-            ${
-              // @ts-expect-error - TS2339 - Property 'collInfo' does not exist on type 'Story'. | TS2339 - Property 'collInfo' does not exist on type 'Story'.
-              // TODO: Fix this the next time the file is edited.
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-              this.collInfo.desc ? unsafeHTML(marked(this.collInfo.desc)) : ""
-            }
+            ${this.collInfo?.desc
+              ? unsafeHTML(
+                  DOMPurify.sanitize(
+                    marked(this.collInfo.desc, { async: false }) as string,
+                  ),
+                )
+              : ""}
           </section>
           ${this.renderLists()}
         </div>
