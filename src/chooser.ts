@@ -29,12 +29,11 @@ export class Chooser extends LitElement {
   showOpenFilePickerOptions = {
     types: [
       {
-        description: "WARC, WACZ, HAR and WBN Files",
+        description: "WARC, WACZ, and HAR Files",
         accept: {
           "application/warc": [".warc", ".gz"],
           "application/har": [".har"],
           "application/wacz": [".wacz"],
-          "application/wbn": [".wbn"],
           "application/json": [".json"],
         },
       },
@@ -286,13 +285,13 @@ export class Chooser extends LitElement {
                   type="text"
                   name="filename"
                   id="filename"
-                  pattern="((file|http|https|ipfs|s3)://.*.(warc|warc.gz|zip|wacz|har|wbn|json)([?#].*)?)|(googledrive://.+)|(ssb://.+)"
+                  pattern="((file|http|https|ipfs|s3)://.*.(warc|warc.gz|zip|wacz|har|json)([?#].*)?)|(googledrive://.+)|(ssb://.+)"
                   .value="${this.fileDisplayName}"
                   @input="${this.onInput}"
                   autocomplete="off"
                   placeholder="${this.newFullImport
                     ? "Click 'Choose File' to select a local archive to import"
-                    : "Enter a URL or click 'Choose File' to select a WARC, WACZ, HAR or WBN archive source"}"
+                    : "Enter a URL or click 'Choose File' to select a WARC, WACZ, or HAR file"}"
                 />
               </p>
               <div class="control">
