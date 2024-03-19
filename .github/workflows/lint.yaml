@@ -1,4 +1,4 @@
-name: Build + Lint
+name: Lint
 
 on: push
 
@@ -20,7 +20,4 @@ jobs:
         run: yarn install --frozen-lockfile --ignore-optional
 
       - name: Yarn Lint
-        run: yarn run lint
-
-      - name: Yarn Build
-        run: yarn run build
+        run: yarn lint

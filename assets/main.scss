@@ -1,5 +1,7 @@
 @charset "utf-8";
 
+@import "@shoelace-style/shoelace/dist/themes/light.css";
+
 /*$wr-green: #64e986;*/
 $wr-green: #55be6f;
 $wr-yellow:  #ffd975;
@@ -117,9 +119,7 @@ a:focus {
   font-size: $body-size;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  min-width: $body-min-width;
-  overflow-x: $body-overflow-x;
-  overflow-y: $body-overflow-y;
+  min-width: $body-min-width; // @todo(emma, 2023-11-06) investigate why this is here
   text-rendering: $body-rendering;
   text-size-adjust: 100%;
 
@@ -130,5 +130,17 @@ a:focus {
   line-height: $body-line-height;
 
   box-sizing: border-box;
+}
+
+// Make available to screen readers while hiding element visually:
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
   overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

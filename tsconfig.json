@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "module": "esnext",
+    "target": "es6",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "./dist/types",
+    "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "skipLibCheck": true,
+    "plugins": [
+      {
+        "name": "ts-lit-plugin",
+        "strict": true,
+        "rules": {
+          "no-missing-import": "off"
+        },
+        "maxNodeModuleImportDepth": -1
+      }
+    ],
+    "incremental": true,
+    "paths": {
+      "flexsearch": ["./node_modules/@types/flexsearch"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.d.ts"]
+}
