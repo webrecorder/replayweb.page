@@ -73,6 +73,10 @@ const electronMainConfig = (/*env, argv*/) => {
         patterns: [
           // { from: "node_modules/classic-level/prebuilds/", to: "prebuilds" },
           { from: "build/extra_prebuilds/", to: "prebuilds" },
+          {
+            from: path.resolve(__dirname, "src/assets/favicons"),
+            to: path.resolve(__dirname, "dist"),
+          },
         ],
       }),
     ],
