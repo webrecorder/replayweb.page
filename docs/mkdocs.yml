@@ -23,7 +23,8 @@ theme:
     - search.suggest
   palette:
     scheme: webrecorder
-  logo: assets/brand/logo.svg
+  logo: assets/brand/replaywebpage-icon-white.svg
+  favicon: assets/brand/favicon.svg
 
   icon:
     admonition:
