@@ -28,7 +28,8 @@
     ],
     "incremental": true,
     "paths": {
-      "flexsearch": ["./node_modules/@types/flexsearch"]
+      "flexsearch": ["./node_modules/@types/flexsearch"],
+      "~assets/*": ["./src/assets/*"],
     }
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.d.ts"]

@@ -28,7 +28,8 @@
     "process": "^0.11.10",
     "register-service-worker": "^1.7.2",
     "split.js": "^1.6.4",
-    "stream-browserify": "^3.0.0"
+    "stream-browserify": "^3.0.0",
+    "tsconfig-paths-webpack-plugin": "^4.1.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.38.1",
