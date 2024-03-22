@@ -581,7 +581,7 @@ class Item extends LitElement {
         vertical-align: text-top;
       }
 
-      .back fa-icon {
+      .back sl-icon {
         width: 1.5em;
         vertical-align: bottom;
         line-height: 0.5em;
@@ -780,7 +780,6 @@ class Item extends LitElement {
       }
 
       .grey-disabled {
-        --fa-icon-fill-color: lightgrey;
         color: lightgrey;
       }
 
@@ -845,11 +844,11 @@ class Item extends LitElement {
         color: rgb(72, 118, 255);
       }
 
-      .sidebar-nav fa-icon {
-        vertical-align: bottom;
+      .sidebar-nav sl-icon {
+        vertical-align: middle;
       }
 
-      .sidebar-nav:hover fa-icon {
+      .sidebar-nav:hover sl-icon {
         color: rgb(72, 118, 255);
       }
 
