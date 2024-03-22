@@ -17,7 +17,6 @@ import "@shoelace-style/shoelace/dist/components/button/button.js";
 import "@shoelace-style/shoelace/dist/components/dialog/dialog.js";
 import {
   wrapCss,
-  rwpLogo,
   IS_APP,
   VERSION,
   clickOnSpacebarPress,
@@ -32,27 +31,7 @@ import {
   getDateFromTS,
 } from "./pageutils";
 
-import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
-
-import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
-
-import farListAlt from "@fortawesome/fontawesome-free/svgs/regular/list-alt.svg";
-import farResources from "@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg";
-import farPages from "@fortawesome/fontawesome-free/svgs/regular/file-image.svg";
-import fasInfoIcon from "@fortawesome/fontawesome-free/svgs/solid/info-circle.svg";
-import fasSync from "@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg";
-
-import fasRefresh from "@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg";
-import fasFullscreen from "@fortawesome/fontawesome-free/svgs/solid/desktop.svg";
-import fasUnfullscreen from "@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg";
-
-import fasLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
-import fasRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
-import fasMenuV from "@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg";
-
-import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.svg";
-import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
-import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
@@ -998,11 +977,7 @@ class Item extends LitElement {
                 @keyup="${clickOnSpacebarPress}"
                 class="is-marginless is-size-6 is-paddingless"
               >
-                <fa-icon
-                  title="Hide"
-                  .svg="${fasAngleLeft}"
-                  aria-hidden="true"
-                ></fa-icon>
+                <sl-icon name="chevron-left" aria-hidden="true"></sl-icon>
                 <span class="nav-hover" aria-hidden="true">Hide</span>
                 <span class="is-sr-only">Hide Sidebar</span>
               </a>
@@ -1021,13 +996,9 @@ class Item extends LitElement {
                   this.tabData.view === "story" ? "location" : undefined,
                 )}"
               >
-                <span class="icon"
-                  ><fa-icon
-                    .svg="${fasBook}"
-                    aria-hidden="true"
-                    title="Story"
-                  ></fa-icon
-                ></span>
+                <span class="icon">
+                  <sl-icon name="book" aria-hidden="true"></sl-icon>
+                </span>
                 <span
                   class="tab-label ${isSidebar ? "is-hidden" : ""}"
                   title="Story"
@@ -1047,18 +1018,10 @@ class Item extends LitElement {
               this.tabData.view === "pages" ? "location" : undefined,
             )}"
           >
-            <span class="icon"
-              ><fa-icon
-                .svg="${farPages}"
-                aria-hidden="true"
-                title="Pages"
-              ></fa-icon
-            ></span>
-            <span
-              class="tab-label ${isSidebar ? "is-hidden" : ""}"
-              title="Pages"
-              >Pages</span
-            >
+            <span class="icon">
+              <sl-icon name="file-richtext-fill" aria-hidden="true"></sl-icon>
+            </span>
+            <span class="tab-label ${isSidebar ? "is-hidden" : ""}">Pages</span>
           </a>
         </li>
 
@@ -1072,15 +1035,11 @@ class Item extends LitElement {
               this.tabData.view === "resources" ? "location" : undefined,
             )}"
           >
-            <span class="icon"
-              ><fa-icon
-                .svg="${farResources}"
-                aria-hidden="true"
-                title="URLs"
-              ></fa-icon
-            ></span>
-            <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="URLs"
-              >URLs</span
+            <span class="icon">
+              <sl-icon name="folder-fill" aria-hidden="true"></sl-icon>
+            </span>
+            <span class="tab-label ${isSidebar ? "is-hidden" : ""}"
+              >Resources</span
             >
           </a>
         </li>
@@ -1096,11 +1055,7 @@ class Item extends LitElement {
               >
                 <span class="nav-hover" aria-hidden="true">Expand</span>
                 <span class="is-sr-only">Expand Sidebar to Full View</span>
-                <fa-icon
-                  title="Expand"
-                  .svg="${fasAngleRight}"
-                  aria-hidden="true"
-                ></fa-icon>
+                <sl-icon name="chevron-right" aria-hidden="true"></sl-icon>
               </a>
             </li>`
           : ""}
@@ -1127,25 +1082,25 @@ class Item extends LitElement {
       >
       <nav class="replay-bar" aria-label="replay">
         <div class="field has-addons">
-          <a
-            href="#"
-            role="button"
-            class="button narrow is-borderless is-hidden-touch"
-            id="fullscreen"
-            @click="${this.onFullscreenToggle}"
-            @keyup="${clickOnSpacebarPress}"
-            title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}"
-            aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}"
-          >
-            <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
-                class="has-text-grey"
-                aria-hidden="true"
-                .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"
-              ></fa-icon>
-            </span>
-          </a>
+          ${this.browsable
+            ? html` <a
+                href="#"
+                role="button"
+                class="button narrow is-borderless is-hidden-mobile ${!isReplay
+                  ? "grey-disabled"
+                  : ""}"
+                @click="${this.onShowPages}"
+                @keyup="${clickOnSpacebarPress}"
+                ?disabled="${!isReplay}"
+                title="Browse Contents"
+                aria-label="Browse Contents"
+                aria-controls="contents"
+              >
+                <span class="icon is-small">
+                  <sl-icon name="layout-sidebar" aria-hidden="true"></sl-icon>
+                </span>
+              </a>`
+            : ""}
           <a
             href="#"
             role="button"
@@ -1156,12 +1111,7 @@ class Item extends LitElement {
             aria-label="Back"
           >
             <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
-                class="has-text-grey"
-                aria-hidden="true"
-                .svg="${fasLeft}"
-              ></fa-icon>
+              <sl-icon name="arrow-left" aria-hidden="true"></sl-icon>
             </span>
           </a>
           <a
@@ -1174,12 +1124,7 @@ class Item extends LitElement {
             aria-label="Forward"
           >
             <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
-                class="has-text-grey"
-                aria-hidden="true"
-                .svg="${fasRight}"
-              ></fa-icon>
+              <sl-icon name="arrow-right" aria-hidden="true"></sl-icon>
             </span>
           </a>
           <a
@@ -1197,40 +1142,15 @@ class Item extends LitElement {
             <span class="icon is-small">
               ${!this.isLoading
                 ? html`
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
+                    <sl-icon
+                      name="arrow-clockwise"
                       aria-hidden="true"
-                      .svg="${fasRefresh}"
-                    ></fa-icon>
+                    ></sl-icon>
                   `
                 : ""}
             </span>
           </a>
-          ${this.browsable
-            ? html` <a
-                href="#"
-                role="button"
-                class="button narrow is-borderless is-hidden-mobile ${!isReplay
-                  ? "grey-disabled"
-                  : ""}"
-                @click="${this.onShowPages}"
-                @keyup="${clickOnSpacebarPress}"
-                ?disabled="${!isReplay}"
-                title="Browse Contents"
-                aria-label="Browse Contents"
-                aria-controls="contents"
-              >
-                <span class="icon is-small">
-                  <fa-icon
-                    size="1.0em"
-                    class="has-text-grey"
-                    aria-hidden="true"
-                    .svg="${farListAlt}"
-                  ></fa-icon>
-                </span>
-              </a>`
-            : ""}
+
           ${this.renderExtraToolbar()}
           <form @submit="${this.onSubmit}">
             <div
@@ -1253,7 +1173,25 @@ class Item extends LitElement {
                 : html``}
             </div>
           </form>
-
+          <a
+            href="#"
+            role="button"
+            class="button narrow is-borderless is-hidden-touch"
+            id="fullscreen"
+            @click="${this.onFullscreenToggle}"
+            @keyup="${clickOnSpacebarPress}"
+            title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}"
+            aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}"
+          >
+            <span class="icon is-small">
+              <sl-icon
+                name="${this.isFullscreen
+                  ? "fullscreen-exit"
+                  : "arrows-fullscreen"}"
+                aria-hidden="true"
+              ></sl-icon>
+            </span>
+          </a>
           <div
             class="dropdown is-right ${this.menuActive ? "is-active" : ""}"
             @click="${() => (this.menuActive = false)}"
@@ -1268,12 +1206,10 @@ class Item extends LitElement {
                 aria-label="more replay controls"
               >
                 <span class="icon is-small">
-                  <fa-icon
-                    size="1.0em"
-                    class="has-text-grey"
+                  <sl-icon
+                    name="three-dots-vertical"
                     aria-hidden="true"
-                    .svg="${fasMenuV}"
-                  ></fa-icon>
+                  ></sl-icon>
                 </span>
               </button>
             </div>
@@ -1287,14 +1223,12 @@ class Item extends LitElement {
                   @keyup="${clickOnSpacebarPress}"
                 >
                   <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
+                    <sl-icon
+                      name="${this.isFullscreen
+                        ? "arrows-fullscreen"
+                        : "fulscreen-exit"}"
                       aria-hidden="true"
-                      .svg="${this.isFullscreen
-                        ? fasUnfullscreen
-                        : fasFullscreen}"
-                    ></fa-icon>
+                    ></sl-icon>
                   </span>
                   <span>Full Screen</span>
                 </a>
@@ -1306,12 +1240,7 @@ class Item extends LitElement {
                   @keyup="${clickOnSpacebarPress}"
                 >
                   <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
-                      aria-hidden="true"
-                      .svg="${fasLeft}"
-                    ></fa-icon>
+                    <sl-icon name="layout-sidebar" aria-hidden="true"></sl-icon>
                   </span>
                   <span>Back</span>
                 </a>
@@ -1323,12 +1252,7 @@ class Item extends LitElement {
                   @keyup="${clickOnSpacebarPress}"
                 >
                   <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
-                      aria-hidden="true"
-                      .svg="${fasRight}"
-                    ></fa-icon>
+                    <sl-icon name="arrow-right" aria-hidden="true"></sl-icon>
                   </span>
                   <span>Forward</span>
                 </a>
@@ -1340,12 +1264,10 @@ class Item extends LitElement {
                   @keyup="${clickOnSpacebarPress}"
                 >
                   <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
+                    <sl-icon
+                      name="arrow-clockwise"
                       aria-hidden="true"
-                      .svg="${fasRefresh}"
-                    ></fa-icon>
+                    ></sl-icon>
                   </span>
                   <span>Reload</span>
                 </a>
@@ -1360,12 +1282,7 @@ class Item extends LitElement {
                       @keyup="${clickOnSpacebarPress}"
                     >
                       <span class="icon is-small">
-                        <fa-icon
-                          size="1.0em"
-                          class="has-text-grey"
-                          aria-hidden="true"
-                          .svg="${farListAlt}"
-                        ></fa-icon>
+                        <sl-icon name="card-list" aria-hidden="true"></sl-icon>
                       </span>
                       <span>Browse Contents</span>
                     </a>`
@@ -1381,12 +1298,10 @@ class Item extends LitElement {
                         @keyup="${clickOnSpacebarPress}"
                       >
                         <span class="icon is-small">
-                          <fa-icon
-                            size="1.0em"
-                            class="has-text-grey"
+                          <sl-icon
+                            name="arrow-repeat"
                             aria-hidden="true"
-                            .svg="${fasSync}"
-                          ></fa-icon>
+                          ></sl-icon>
                         </span>
                         <span>Purge Cache + Full Reload</span>
                       </a>`
@@ -1401,12 +1316,7 @@ class Item extends LitElement {
                         @keyup="${clickOnSpacebarPress}"
                       >
                         <span class="icon is-small">
-                          <fa-icon
-                            size="1.0em"
-                            class="has-text-grey"
-                            aria-hidden="true"
-                            .svg="${fasDownload}"
-                          ></fa-icon>
+                          <sl-icon name="download" aria-hidden="true"></sl-icon>
                         </span>
                         <span>Download Archive</span>
                       </a>`
@@ -1424,13 +1334,13 @@ class Item extends LitElement {
                   @click="${this.onShowInfoDialog}"
                 >
                   <span class="icon is-small">
-                    <fa-icon
+                    <sl-icon
                       class="has-text-grey"
+                      name="info-circle-fill"
                       aria-hidden="true"
-                      .svg="${fasInfoIcon}"
-                    ></fa-icon>
+                    ></sl-icon>
                   </span>
-                  <span>Archive Info</span>
+                  <span>Archived Item Info</span>
                 </a>
                 <hr class="dropdown-divider" />
                 <a
@@ -1439,12 +1349,13 @@ class Item extends LitElement {
                   class="dropdown-item"
                   @click="${this.onAbout}"
                 >
-                  <fa-icon
-                    class="menu-logo"
-                    size="1.0rem"
+                  <sl-icon
+                    class="has-text-grey"
+                    style="font-size: 1rem;"
+                    library="app"
                     aria-hidden="true"
-                    .svg=${this.appLogo}
-                  ></fa-icon>
+                    name="replaywebpage"
+                  ></sl-icon>
                   <span>&nbsp;About ${this.appName}</span>
                   <span class="menu-version">(${this.appVersion})</span>
                 </a>
@@ -1485,7 +1396,7 @@ class Item extends LitElement {
                 <div>${currDateStr}</div>
                 <div class="timestamp-count-badge">
                   <div class="timestamp-count">${timestampStrs.length}</div>
-                  <fa-icon .svg="${fasCaretDown}" aria-hidden="true"></fa-icon>
+                  <sl-icon name="caret-down-fill" aria-hidden="true"></sl-icon>
                 </div>
               </button>
               <sl-menu @sl-select=${this.onSelectTimestamp}>

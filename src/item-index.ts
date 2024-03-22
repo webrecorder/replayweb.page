@@ -2,11 +2,6 @@ import { LitElement, html, css, type PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import { wrapCss, apiPrefix } from "./misc";
 
-import fasArrowUp from "@fortawesome/fontawesome-free/svgs/solid/angle-double-up.svg";
-import fasArrowDown from "@fortawesome/fontawesome-free/svgs/solid/angle-double-down.svg";
-
-import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
-
 import type { ItemType } from "./types";
 
 import "./item-info";
@@ -185,10 +180,6 @@ class ItemIndex extends LitElement {
         margin-bottom: 2em;
       }
 
-      fa-icon {
-        vertical-align: middle;
-      }
-
       .panel-color {
         background-color: rgb(210, 249, 214);
       }
@@ -275,17 +266,20 @@ class ItemIndex extends LitElement {
       <section class="section no-top-padding">
         <div class="sort-header is-small">
           ${hasHeader
-            ? html`
-        <button @click=${() =>
-          (this.hideHeader =
-            !this.hideHeader)} class="collapse button is-small">
-          <span class="icon"><fa-icon .svg=${
-            this.hideHeader ? fasArrowDown : fasArrowUp
-          }></span>
-          <span>${
-            this.hideHeader ? "Show " : "Hide"
-          } <span class="is-sr-only">Header</span></span>
-        </button>`
+            ? html` <button
+                @click=${() => (this.hideHeader = !this.hideHeader)}
+                class="collapse button is-small"
+              >
+                <span class="icon">
+                  <sl-icon
+                    name=${this.hideHeader ? "arrow-down" : "arrow-up"}
+                  ></sl-icon>
+                </span>
+                <span
+                  >${this.hideHeader ? "Show " : "Hide"}
+                  <span class="is-sr-only">Header</span></span
+                >
+              </button>`
             : ""}
         </div>
         <div class="panel">
@@ -306,7 +300,7 @@ class ItemIndex extends LitElement {
                       placeholder="Search by Archive Title or Source"
                     />
                     <span class="icon is-left is-small">
-                      <fa-icon .svg="${fasSearch}"></fa-icon>
+                      <sl-icon name="search"></sl-icon>
                     </span>
                   </div>
                   <wr-sorter

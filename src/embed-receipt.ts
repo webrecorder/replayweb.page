@@ -1,9 +1,3 @@
-import btGlobe from "../assets/globe.svg";
-import btAngleDoubleDown from "../assets/chevron-double-down.svg";
-import btAngleDoubleUp from "../assets/chevron-double-up.svg";
-import fabGithub from "@fortawesome/fontawesome-free/svgs/brands/github.svg";
-import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
-
 import { clickOnSpacebarPress } from "./misc";
 
 import { LitElement, html, css, nothing } from "lit";
@@ -12,13 +6,15 @@ import prettyBytes from "pretty-bytes";
 import { property } from "lit/decorators.js";
 import type { ItemType } from "./types";
 
+import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
+
 // ===========================================================================
 export class RWPEmbedReceipt extends LitElement {
   @property({ type: Object }) collInfo:
     | ItemType
     | null
     | Record<string, never> = null;
-  @property({ type: Object }) appLogo = null;
   @property({ type: String }) ts: string | null = null;
   @property({ type: String }) url: string | null = null;
 
@@ -160,16 +156,10 @@ export class RWPEmbedReceipt extends LitElement {
         font-family: monospace;
       }
 
-      .embed-globe {
-        margin: 0.25rem;
-        padding: 7px;
-        background-color: #0366d6;
-        border-radius: 9999px;
-        color: white;
-        border-width: 1px;
-        border-color: #d1d5da;
-        border-style: solid;
-        line-height: 0.5em;
+      .embed-logo {
+        height: 1.5rem;
+        width: 1.5rem;
+        margin: 0.5rem;
       }
     `;
   }
@@ -202,21 +192,12 @@ export class RWPEmbedReceipt extends LitElement {
             aria-controls="embed-dropdown"
             @click="${this.onEmbedDrop}"
           >
-            <fa-icon
-              class="menu-logo mr-2 embed-globe"
-              size="1rem"
-              aria-hidden="true"
-              .svg=${btGlobe}
-            ></fa-icon>
+            <img class="embed-logo" src="${rwpLogo}" />
             <span class="embed-info-buttontext">
               This embed is part of a web archive. Click here to learn more.
             </span>
             <span class="icon is-small mr-4 ml-2">
-              <fa-icon
-                title="Toggle"
-                .svg="${this.active ? btAngleDoubleUp : btAngleDoubleDown}"
-                aria-hidden="true"
-              ></fa-icon>
+              <sl-icon name="chevron-double-down" aria-hidden="true"></sl-icon>
             </span>
           </button>
         </div>
@@ -250,11 +231,7 @@ export class RWPEmbedReceipt extends LitElement {
                     @keyup="${clickOnSpacebarPress}"
                   >
                     <span class="icon is-small">
-                      <fa-icon
-                        size="1.0em"
-                        aria-hidden="true"
-                        .svg="${fasDownload}"
-                      ></fa-icon>
+                      <sl-icon name="download" aria-hidden="true"></sl-icon>
                     </span>
                     <span>Download Archive</span>
                   </a>
@@ -319,21 +296,13 @@ export class RWPEmbedReceipt extends LitElement {
                   class="has-text-black"
                   target="_blank"
                   href="https://github.com/webrecorder/replayweb.page"
-                  >${
-                    // TODO: Fix this the next time the file is edited.
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    this.appLogo
-                      ? html`
-                          <fa-icon
-                            class="menu-logo mr-1"
-                            size="1.0rem"
-                            aria-hidden="true"
-                            .svg=${this.appLogo}
-                          ></fa-icon>
-                        `
-                      : nothing
-                  }
-                  Powered by ReplayWeb.page
+                >
+                  <img
+                    src="${brandLockupColor}"
+                    alt="ReplayWebpage logo"
+                    class="mr-1"
+                    style="height: 1.5rem;"
+                  />
                 </a>
               </span>
               <span>
@@ -341,13 +310,14 @@ export class RWPEmbedReceipt extends LitElement {
                   class="has-text-black"
                   target="_blank"
                   href="https://github.com/webrecorder/replayweb.page"
-                  >Source Code
-                  <fa-icon
-                    class="menu-logo ml-1"
-                    size="1.0rem"
+                >
+                  Source Code
+                  <sl-icon
+                    class="menu-logo mr-1"
+                    style="font-size: 1rem;"
+                    name="github"
                     aria-hidden="true"
-                    .svg=${fabGithub}
-                  ></fa-icon>
+                  ></sl-icon>
                 </a>
               </span>
             </p>

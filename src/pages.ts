@@ -11,10 +11,6 @@ import prettyBytes from "pretty-bytes";
 
 import { getTS, getPageDateTS } from "./pageutils";
 
-import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
-import fasAngleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-down.svg";
-import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
-
 import type { Sorter } from "./sorter";
 import type { PageEntry } from "./pageentry";
 import type { Id, Index } from "flexsearch";
@@ -614,9 +610,9 @@ class Pages extends LitElement {
               type="text"
               placeholder="Search by Page URL, Title or Text"
             />
-            <span class="icon is-left"
-              ><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon
-            ></span>
+            <span class="icon is-left">
+              <sl-icon name="search" aria-hidden="true"></sl-icon>
+            </span>
           </div>
         </div>
       </div>
@@ -652,7 +648,7 @@ class Pages extends LitElement {
                     </div>`
                   : html``}`}
           ${this.editable
-            ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`
+            ? html` <sl-icon class="editIcon" name="pencil-square"></sl-icon> `
             : html``}
           ${this.hasExtraPages
             ? html` <span class="check-select">
@@ -739,7 +735,7 @@ class Pages extends LitElement {
         >
           <span>Download</span>
           <span class="icon is-small">
-            <fa-icon .svg="${fasAngleDown}" aria-hidden="true"></fa-icon>
+            <sl-icon name="chevron-down" aria-hidden="true"></sl-icon>
           </span>
         </button>
       </div>

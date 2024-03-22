@@ -1,7 +1,6 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
 import { IS_APP, wrapCss } from "./misc";
 
-import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
 import { customElement, property } from "lit/decorators.js";
 
 export interface FileWithPath extends File {
@@ -268,11 +267,7 @@ export class Chooser extends LitElement {
                 : ""}
               <span class="file-cta" @click="${this.onChooseNativeFile}">
                 <span class="file-icon">
-                  <fa-icon
-                    size="0.9em"
-                    .svg=${fasUpload}
-                    aria-hidden="true"
-                  ></fa-icon>
+                  <sl-icon name="upload" aria-hidden="true"></sl-icon>
                 </span>
                 <span class="file-label is-hidden-touch"> Choose File... </span>
               </span>

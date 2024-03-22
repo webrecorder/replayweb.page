@@ -3,8 +3,6 @@ import { wrapCss, clickOnSpacebarPress } from "./misc";
 
 import { getReplayLink } from "./pageutils";
 
-import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
-
 import "keyword-mark-element/lib/keyword-mark.js";
 import { type ItemType } from "./types";
 import { type URLResource } from "./types";
@@ -390,9 +388,9 @@ class URLResources extends LitElement {
                   .value="${this.query}"
                   placeholder="Enter URL to Search"
                 />
-                <span class="icon is-left"
-                  ><fa-icon .svg="${fasSearch}"></fa-icon
-                ></span>
+                <span class="icon is-left">
+                  <sl-icon name="search" aria-hidden="true"></sl-icon>
+                </span>
               </div>
             </div>
           </div>

@@ -1,8 +1,9 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
-import { wrapCss, rwpLogo } from "./misc";
+import { wrapCss } from "./misc";
 import type { ItemType } from "./types";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 // ===========================================================================
 class Replay extends LitElement {
@@ -325,6 +326,7 @@ class Replay extends LitElement {
 
       #wrlogo {
         vertical-align: middle;
+        height: 1.5rem;
       }
 
       .intro-panel .panel-block {
@@ -377,12 +379,11 @@ class Replay extends LitElement {
                     <div class="iframe-main modal-bg">
                       <div class="panel intro-panel">
                         <p class="panel-heading">
-                          <fa-icon
+                          <img
                             id="wrlogo"
-                            size="1.5rem"
-                            .svg=${rwpLogo}
+                            src="${rwpLogo}"
                             aria-hidden="true"
-                          ></fa-icon>
+                          />
                           Authorization Needed
                         </p>
                         <div class="panel-block">
