@@ -1,8 +1,6 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
 import { wrapCss } from "./misc";
 
-import fabGoogleDrive from "@fortawesome/fontawesome-free/svgs/brands/google-drive.svg";
-
 // ===========================================================================
 class GDrive extends LitElement {
   state: string;
@@ -185,9 +183,9 @@ class GDrive extends LitElement {
             class="button is-warning is-rounded"
             @click="${this.onClickAuth}"
           >
-            <span class="icon"
-              ><fa-icon .svg="${fabGoogleDrive}"></fa-icon
-            ></span>
+            <span class="icon">
+              <sl-icon name="google"></sl-icon>
+            </span>
             <span>Authorize Google Drive</span>
           </button>
         `}`;

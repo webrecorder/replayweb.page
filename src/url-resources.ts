@@ -3,8 +3,6 @@ import { wrapCss, clickOnSpacebarPress } from "./misc";
 
 import { getReplayLink } from "./pageutils";
 
-import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
-
 import "keyword-mark-element/lib/keyword-mark.js";
 import { type ItemType } from "./types";
 import { type URLResource } from "./types";
@@ -63,7 +61,7 @@ class URLResources extends LitElement {
       },
       {
         key: "mime",
-        name: "Mime Type",
+        name: "Media Type",
       },
       {
         key: "status",
@@ -390,9 +388,9 @@ class URLResources extends LitElement {
                   .value="${this.query}"
                   placeholder="Enter URL to Search"
                 />
-                <span class="icon is-left"
-                  ><fa-icon .svg="${fasSearch}"></fa-icon
-                ></span>
+                <span class="icon is-left">
+                  <sl-icon name="search" aria-hidden="true"></sl-icon>
+                </span>
               </div>
             </div>
           </div>
@@ -504,7 +502,7 @@ class URLResources extends LitElement {
                     ? "desc"
                     : "asc"
                   : ""}"
-                >Mime Type</a
+                >Media Type</a
               >
             </th>
             <th scope="col" class="column col-status is-1 is-hidden-mobile">
@@ -552,7 +550,7 @@ class URLResources extends LitElement {
                       ${new Date(result.date).toLocaleString()}
                     </td>
                     <td class="column col-mime is-3">
-                      <p class="minihead is-hidden-tablet">Mime Type</p>
+                      <p class="minihead is-hidden-tablet">Media Type</p>
                       ${result.mime}
                     </td>
                     <td class="column col-status is-1">

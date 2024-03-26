@@ -10,16 +10,14 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
-  rwpLogo,
   IS_APP,
   VERSION,
   clickOnSpacebarPress,
   updateFaviconLinks,
 } from "./misc";
+import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
-import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.svg";
-import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
-import fasArrowRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
 import { SWManager } from "./swmanager";
 import "./item";
 import "./item-index";
@@ -142,6 +140,7 @@ export class ReplayWebApp extends LitElement {
         max-height: 1rem;
       }
       .navbar {
+        padding-top: 0.5rem;
         height: 1.5rem;
       }
       .navbar-brand {
@@ -177,7 +176,7 @@ export class ReplayWebApp extends LitElement {
         padding: 0 0.5em;
       }
 
-      div.navbar-menu fa-icon {
+      div.navbar-menu sl-icon {
         vertical-align: sub;
       }
       .tagline {
@@ -225,10 +224,6 @@ export class ReplayWebApp extends LitElement {
           padding-left: 0px;
           margin-left: 6px;
         }
-
-        a.navbar-item.logo-text:hover {
-          background-color: initial;
-        }
       }
 
       @media screen and (max-width: 840px) {
@@ -243,17 +238,6 @@ export class ReplayWebApp extends LitElement {
     return rwpLogo as string;
   }
 
-  renderNavBrand() {
-    return html` <span
-      id="home"
-      class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
-    >
-      <span class="has-text-primary">replay</span>
-      <span class="has-text-link">web.page</span>
-      <span class="is-sr-only">Home</span>
-    </span>`;
-  }
-
   renderNavBar() {
     return html` <a
         href="#skip-main-target"
@@ -261,7 +245,7 @@ export class ReplayWebApp extends LitElement {
         class="skip-link"
         >Skip main navigation</a
       >
-      <nav class="navbar has-background-info" aria-label="main">
+      <nav class="navbar" aria-label="main">
         <div class="navbar-brand">
           ${!this.embed
             ? html`
@@ -270,13 +254,12 @@ export class ReplayWebApp extends LitElement {
                   class="navbar-item wr-logo-item"
                   aria-labelledby="home"
                 >
-                  <fa-icon
-                    id="wrlogo"
-                    size="1.0rem"
-                    .svg=${this.mainLogo}
-                    aria-hidden="true"
-                  ></fa-icon>
-                  ${this.renderNavBrand()}
+                  <img
+                    style="height: 1.25rem;"
+                    id="home"
+                    src="${brandLockupColor}"
+                    alt="ReplayWebpage logo"
+                  />
                 </a>
                 ${this.collTitle
                   ? html`
@@ -296,12 +279,7 @@ export class ReplayWebApp extends LitElement {
               `
             : html`
                 <span class="navbar-item wr-logo-item">
-                  <fa-icon
-                    id="wrlogo"
-                    size="1.0rem"
-                    .svg=${this.mainLogo}
-                    aria-hidden="true"
-                  ></fa-icon>
+                  <img src="${rwpLogo}" aria-hidden="true" />
                 </span>
               `}
           <a
@@ -335,12 +313,8 @@ export class ReplayWebApp extends LitElement {
                         @click="${() => window.history.back()}"
                         @keyup="${clickOnSpacebarPress}"
                       >
-                        <fa-icon
-                          size="1.0rem"
-                          .svg="${fasArrowLeft}"
-                          aria-hidden="true"
-                        ></fa-icon
-                        ><span class="menu-only is-size-7">&nbsp;Go Back</span>
+                        <sl-icon name="arrow-left"></sl-icon>
+                        <span class="menu-only is-size-7">&nbsp;Go Back</span>
                       </a>
                       <a
                         role="button"
@@ -350,12 +324,8 @@ export class ReplayWebApp extends LitElement {
                         @click="${() => window.history.forward()}"
                         @keyup="${clickOnSpacebarPress}"
                       >
-                        <fa-icon
-                          size="1.0rem"
-                          .svg="${fasArrowRight}"
-                          aria-hidden="true"
-                        ></fa-icon
-                        ><span class="menu-only is-size-7"
+                        <sl-icon name="arrow-right"></sl-icon>
+                        <span class="menu-only is-size-7"
                           >&nbsp;Go Forward</span
                         >
                       </a>
@@ -373,8 +343,8 @@ export class ReplayWebApp extends LitElement {
 
   renderNavEnd() {
     return html` <a href="/docs" target="_blank" class="navbar-item is-size-6">
-        <fa-icon .svg="${fasHelp}" aria-hidden="true"></fa-icon
-        ><span>&nbsp;User Docs</span>
+        <sl-icon name="question-circle-fill" aria-hidden="true"></sl-icon>
+        <span>&nbsp;Documentation</span>
       </a>
       <!--
     -- NB: the About modal is currently inaccessible to people using keyboards or screen readers.
@@ -387,7 +357,9 @@ export class ReplayWebApp extends LitElement {
           this.showAbout = true;
         }}"
         class="navbar-item is-size-6"
-        >About
+      >
+        <sl-icon name="info-circle-fill" aria-hidden="true"></sl-icon>
+        <span>&nbsp;About</span>
       </a>`;
   }
 
@@ -731,7 +703,7 @@ export class ReplayWebApp extends LitElement {
                 <div class="content">
                   <div style="display: flex">
                     <div class="has-text-centered" style="width: 220px">
-                      <wr-anim-logo class="logo" size="48px"></wr-anim-logo>
+                      <img style="max-height: 4rem;" src="${rwpLogo}"/>
                       <div style="font-size: smaller; margin-bottom: 1em">${
                         IS_APP ? "App" : ""
                       } v${VERSION}</div>
@@ -741,18 +713,15 @@ export class ReplayWebApp extends LitElement {
                       IS_APP
                         ? html`
                             <p>
-                              ReplayWeb.page App is a standalone app for Mac,
-                              Windows and Linux that loads web archive files
+                              ReplayWeb.page is a standalone app for Mac,
+                              Windows, and Linux that loads archived items
                               provided by the user and renders them for replay.
                             </p>
                           `
                         : html` <p>
-                            <a href="https://replayweb.page" target="_blank"
-                              >ReplayWeb.page</a
-                            >
-                            is a browser-based viewer that loads web archive
-                            files provided by the user and renders them for
-                            replay in the browser.
+                            ReplayWeb.page is a browser-based viewer that loads
+                            archived items provided by the user and renders them
+                            for replay in the browser.
                           </p>`
                     }
                   </div>
@@ -763,7 +732,7 @@ export class ReplayWebApp extends LitElement {
 
                   <p>See the <a target="_blank" href="./docs">User Docs</a> or the GitHub README for more info on how it works.</p>
 
-                  <p>ReplayWeb.page is part of the <a href="https://webrecorder.net/" target="_blank">Webrecorder Project</a>.</p>
+                  <p>ReplayWeb.page is developed by <a href="https://webrecorder.net/" target="_blank">Webrecorder</a>.</p>
 
                   <h3>Privacy</h3>
                   <p><b>No data is uploaded anywhere and no information is collected.</b></p>

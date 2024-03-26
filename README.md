@@ -1,6 +1,8 @@
-<p align="center"><img src="/assets/logo.svg" width="128" height="128"></p>
- 
-# ReplayWeb.page
+<h1>
+    <div align="center">
+        <img alt="ReplayWebpage" src="assets/replaywebpage-lockup-color-dynamic.svg" width="90%">
+    </div>
+</h1>
 
 ## Serverless Web Archive Replay
 

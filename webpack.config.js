@@ -8,6 +8,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const package_json = require("./package.json");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
 // helper proxy URL, run locally for app
 const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
@@ -32,6 +33,7 @@ const optimization = {
 const tsConfig = {
   resolve: {
     extensions: [".ts", ".js"],
+    plugins: [new TsconfigPathsPlugin()],
   },
   module: {
     rules: [
@@ -46,6 +48,12 @@ const tsConfig = {
     ],
   },
 };
+
+const shoelaceAssetsSrcPath = path.resolve(
+  __dirname,
+  "node_modules/@shoelace-style/shoelace/dist/assets",
+);
+const shoelaceAssetsPublicPath = "shoelace/assets";
 
 const electronMainConfig = (/*env, argv*/) => {
   /** @type {import('webpack').Configuration} */
@@ -71,8 +79,22 @@ const electronMainConfig = (/*env, argv*/) => {
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
         patterns: [
+          // Copy Shoelace assets to dist/shoelace
+          {
+            from: shoelaceAssetsSrcPath,
+            to: path.resolve(__dirname, "dist", shoelaceAssetsPublicPath),
+          },
+          // Copy custom icon library
+          {
+            from: path.resolve(__dirname, "src/assets/icons"),
+            to: path.resolve(__dirname, "dist", "assets/icons"),
+          },
           // { from: "node_modules/classic-level/prebuilds/", to: "prebuilds" },
           { from: "build/extra_prebuilds/", to: "prebuilds" },
+          {
+            from: path.resolve(__dirname, "src/assets/favicons"),
+            to: path.resolve(__dirname, "dist"),
+          },
         ],
       }),
     ],
@@ -172,16 +194,17 @@ const browserConfig = (/*env, argv*/) => {
     module: {
       rules: [
         {
-          test: /\.svg$/,
-          use: ["svg-inline-loader"],
-        },
-        {
           test: /main.scss$/,
           use: ["css-loader", "sass-loader"],
         },
         {
           test: /wombat.js|wombatWorkers.js|index.html$/i,
           use: ["raw-loader"],
+        },
+        {
+          test: /\.(woff(2)?|ttf|svg|webp)(\?v=\d+\.\d+\.\d+)?$/,
+          include: path.resolve(__dirname, "src"),
+          type: "asset/resource",
         },
       ],
     },
