@@ -1395,7 +1395,11 @@ class Item extends LitElement {
                 <div>${currDateStr}</div>
                 <div class="timestamp-count-badge">
                   <div class="timestamp-count">${timestampStrs.length}</div>
-                  <sl-icon name="caret-down-fill" aria-hidden="true"></sl-icon>
+                  <sl-icon
+                    name="small-caret-down-fill"
+                    library="app"
+                    aria-hidden="true"
+                  ></sl-icon>
                 </div>
               </button>
               <sl-menu @sl-select=${this.onSelectTimestamp}>
