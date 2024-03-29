@@ -3,18 +3,10 @@
   "short_name": "ReplayWeb.page",
   "description": "A tool to explore and replay interactive archived web pages directly in the browser",
   "icons": [
-    {
-      "src": "build/icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/logo.svg",
-      "sizes": "252x252",
-      "type": "image/svg"
-    }
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" }
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#27a0ff"
+  "theme_color": "#ffffff"
 }
