@@ -290,10 +290,7 @@ export class Chooser extends LitElement {
                 />
               </p>
               <div class="control">
-                <button
-                  type="submit"
-                  class="button is-hidden-mobile is-primary"
-                >
+                <button type="submit" class="button is-primary">
                   ${this.newFullImport ? "Import" : "Load"}
                 </button>
               </div>
