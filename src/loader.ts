@@ -6,6 +6,7 @@ import prettyBytes from "pretty-bytes";
 import { parseURLSchemeHostPath } from "./pageutils";
 import { property } from "lit/decorators.js";
 import type { LoadInfo } from "./item";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 // ===========================================================================
 class Loader extends LitElement {
@@ -341,8 +342,8 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   render() {
     return html`
       <section class="container">
-        <div class="has-text-centered is-flex">
-          <wr-anim-logo class="logo" size="96px"></wr-anim-logo>
+        <div class="is-justify-content-center is-flex">
+          <img src="${rwpLogo}" style="height: 5rem; margin-bottom: 1rem;" />
         </div>
         ${!this.embed
           ? html` <div class="level">
