@@ -27,7 +27,7 @@ class ItemIndex extends LitElement {
   dateName = "Date Loaded";
 
   @property({ type: String })
-  headerName = "Loaded Archives";
+  headerName = "Archived Items";
 
   @state()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO fixme
@@ -297,7 +297,7 @@ class ItemIndex extends LitElement {
                           e.currentTarget as HTMLInputElement
                         ).value)}"
                       .value="${this.query}"
-                      placeholder="Search by Archive Title or Source"
+                      placeholder="Search by Archived Item Title or Source"
                     />
                     <span class="icon is-left is-small">
                       <sl-icon name="search"></sl-icon>
@@ -353,7 +353,7 @@ class ItemIndex extends LitElement {
                     // TODO: Fix this the next time the file is edited.
                     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                     this.sortedItems === null
-                      ? html`<i>Loading Archives...</i>`
+                      ? html`<i>Loading Archived items...</i>`
                       : this.renderEmpty()
                   }
                 </div>
@@ -369,8 +369,7 @@ class ItemIndex extends LitElement {
 
   renderEmpty() {
     return html`<i
-      >No Archives so far! Archives loaded in the section above will appear
-      here.</i
+      >No Archived items loaded! Choose a file in the section above.</i
     >`;
   }
 }
