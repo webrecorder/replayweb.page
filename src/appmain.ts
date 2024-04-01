@@ -136,9 +136,6 @@ export class ReplayWebApp extends LitElement {
 
   static get appStyles(): CSSResultGroup {
     return css`
-      #wrlogo {
-        max-height: 1rem;
-      }
       .navbar {
         padding-top: 0.5rem;
         height: 1.5rem;
