@@ -233,7 +233,7 @@ export class RWPEmbedReceipt extends LitElement {
                     <span class="icon is-small">
                       <sl-icon name="download" aria-hidden="true"></sl-icon>
                     </span>
-                    <span>Download Archive</span>
+                    <span>Download Archived Item</span>
                   </a>
                   <hr class="dropdown-divider mt-4" />
                 `
