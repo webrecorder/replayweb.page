@@ -904,7 +904,7 @@ class Item extends LitElement {
     } else if (this.itemInfo) {
       return html`
         ${this.renderLocationBar()} ${this.renderVerifyInfo()}
-        <sl-dialog label="Archive Info" ${ref(this.archiveInfoDialog)}>
+        <sl-dialog label="Archived Item Info" ${ref(this.archiveInfoDialog)}>
           ${this.renderItemInfo()}
           <sl-button
             slot="footer"
@@ -1448,7 +1448,7 @@ class Item extends LitElement {
     if (!this.itemInfo)
       return html`<sl-alert open variant="warning">
         <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
-        <strong>Archive info is not available</strong><br />
+        <strong>Info is not available</strong><br />
         Please reload and try again.
       </sl-alert>`;
     return html`<wr-item-info
