@@ -147,9 +147,6 @@ class Item extends LitElement {
   @property({ type: String })
   appVersion = VERSION;
 
-  @property({ type: String })
-  appLogo = rwpLogo;
-
   @property({ type: Number })
   autoUpdateInterval = 10;
 
@@ -1429,7 +1426,6 @@ class Item extends LitElement {
       .collInfo=${this.itemInfo || {}}
       url=${this.url}
       ts=${this.ts}
-      .appLogo=${this.appLogo}
     >
     </rwp-embed-receipt>`;
   }

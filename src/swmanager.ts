@@ -1,5 +1,6 @@
 import { html } from "lit";
 import { register } from "register-service-worker";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 // ===========================================================================
 export class SWManager {
@@ -153,7 +154,7 @@ export class SWManager {
   Please try a different browser.`;
   }
 
-  renderErrorReport(logo: string, override?: string) {
+  renderErrorReport(override?: string) {
     // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
     const msg = this.errorMsg || override;
 
@@ -164,13 +165,11 @@ export class SWManager {
     return html`
       <section class="is-fullwidth">
         <div class="has-text-centered">
-          <fa-icon
-            style="margin: 1em;flex-grow: 1;"
-            id="wrlogo"
-            size="2.5rem"
-            .svg=${logo}
+          <img
+            src="${rwpLogo}"
+            style="margin: 1em; flex-grow: 1; height: 4rem;"
             aria-hidden="true"
-          ></fa-icon>
+          />
         </div>
         <div style="white-space: pre-wrap; text-align: center">${msg}</div>
       </section>

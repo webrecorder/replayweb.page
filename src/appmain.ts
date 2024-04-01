@@ -234,10 +234,6 @@ export class ReplayWebApp extends LitElement {
     `;
   }
 
-  get mainLogo() {
-    return rwpLogo as string;
-  }
-
   renderNavBar() {
     return html` <a
         href="#skip-main-target"
@@ -370,7 +366,6 @@ export class ReplayWebApp extends LitElement {
       embed="${ifDefined(this.embed === null ? undefined : this.embed)}"
       appName="${this.appName}"
       swName="${ifDefined(this.swName)}"
-      .appLogo="${this.mainLogo}"
       @replay-favicons=${this.onFavIcons}
       @update-title=${this.onTitle}
       @coll-loaded=${this.onCollLoaded}
@@ -440,7 +435,7 @@ export class ReplayWebApp extends LitElement {
     this.swmanager.register().catch(
       () =>
         // @ts-expect-error - TS2554 - Expected 2 arguments, but got 1.
-        (this.swErrorMsg = this.swmanager?.renderErrorReport(this.mainLogo)),
+        (this.swErrorMsg = this.swmanager?.renderErrorReport()),
     );
 
     window.addEventListener("popstate", () => {
