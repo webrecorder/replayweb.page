@@ -1100,7 +1100,7 @@ class Item extends LitElement {
           <a
             href="#"
             role="button"
-            class="button narrow is-borderless is-hidden-mobile"
+            class="button narrow is-borderless"
             @click="${this.onGoBack}"
             @keyup="${clickOnSpacebarPress}"
             title="Back"
@@ -1113,7 +1113,7 @@ class Item extends LitElement {
           <a
             href="#"
             role="button"
-            class="button narrow is-borderless is-hidden-mobile"
+            class="button narrow is-borderless"
             @click="${this.onGoForward}"
             @keyup="${clickOnSpacebarPress}"
             title="Forward"
@@ -1128,12 +1128,12 @@ class Item extends LitElement {
             role="button"
             class="button narrow is-borderless ${this.isLoading
               ? "is-loading"
-              : "is-hidden-mobile"}"
+              : ""}"
             id="refresh"
             @click="${this.onRefresh}"
             @keyup="${clickOnSpacebarPress}"
-            title="Reload"
-            aria-label="Reload"
+            title="Reload Page"
+            aria-label="Reload Page"
           >
             <span class="icon is-small">
               ${!this.isLoading
@@ -1221,51 +1221,12 @@ class Item extends LitElement {
                   <span class="icon is-small">
                     <sl-icon
                       name="${this.isFullscreen
-                        ? "arrows-fullscreen"
-                        : "fulscreen-exit"}"
+                        ? "fullscreen-exit"
+                        : "arrows-fullscreen"}"
                       aria-hidden="true"
                     ></sl-icon>
                   </span>
                   <span>Full Screen</span>
-                </a>
-                <a
-                  href="#"
-                  role="button"
-                  class="dropdown-item is-hidden-tablet"
-                  @click="${this.onGoBack}"
-                  @keyup="${clickOnSpacebarPress}"
-                >
-                  <span class="icon is-small">
-                    <sl-icon name="layout-sidebar" aria-hidden="true"></sl-icon>
-                  </span>
-                  <span>Back</span>
-                </a>
-                <a
-                  href="#"
-                  role="button"
-                  class="dropdown-item is-hidden-tablet"
-                  @click="${this.onGoForward}"
-                  @keyup="${clickOnSpacebarPress}"
-                >
-                  <span class="icon is-small">
-                    <sl-icon name="arrow-right" aria-hidden="true"></sl-icon>
-                  </span>
-                  <span>Forward</span>
-                </a>
-                <a
-                  href="#"
-                  role="button"
-                  class="dropdown-item is-hidden-tablet"
-                  @click="${this.onRefresh}"
-                  @keyup="${clickOnSpacebarPress}"
-                >
-                  <span class="icon is-small">
-                    <sl-icon
-                      name="arrow-clockwise"
-                      aria-hidden="true"
-                    ></sl-icon>
-                  </span>
-                  <span>Reload</span>
                 </a>
                 ${this.browsable
                   ? html` <a
