@@ -1319,7 +1319,7 @@ class Item extends LitElement {
                   : html``}
                 ${dateStr
                   ? html` <hr class="dropdown-divider is-hidden-desktop" />
-                      <div class="dropdown-item info is-hidden-desktop">
+                      <div class="dropdown-item info is-hidden-tablet">
                         <span class="menu-head">Capture Date</span>${dateStr}
                       </div>`
                   : ""}
