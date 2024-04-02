@@ -31,8 +31,6 @@ import {
   getDateFromTS,
 } from "./pageutils";
 
-import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
-
 import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
 
