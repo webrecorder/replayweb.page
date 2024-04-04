@@ -273,7 +273,9 @@ class ItemIndex extends LitElement {
                 <span class="icon">
                   <sl-icon
                     library="fa"
-                    name=${this.hideHeader ? "fas-arrow-down" : "fas-arrow-up"}
+                    name=${this.hideHeader
+                      ? "fas-angles-down"
+                      : "fas-angles-up"}
                   ></sl-icon>
                 </span>
                 <span
