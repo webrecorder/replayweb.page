@@ -147,7 +147,10 @@ class Sorter<T = unknown> extends LitElement {
         >
         <span class="icon">
           <sl-icon
-            name="${this.sortDesc ? "sort-up" : "sort-down"}"
+            library="fa"
+            name="${this.sortDesc
+              ? "fas-arrow-up-wide-short"
+              : "fas-arrow-down-wide-short"}"
             aria-hidden="true"
           ></sl-icon>
         </span>

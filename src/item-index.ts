@@ -272,7 +272,8 @@ class ItemIndex extends LitElement {
               >
                 <span class="icon">
                   <sl-icon
-                    name=${this.hideHeader ? "arrow-down" : "arrow-up"}
+                    library="fa"
+                    name=${this.hideHeader ? "fas-arrow-down" : "fas-arrow-up"}
                   ></sl-icon>
                 </span>
                 <span
@@ -300,7 +301,10 @@ class ItemIndex extends LitElement {
                       placeholder="Search by Archived Item Title or Source"
                     />
                     <span class="icon is-left is-small">
-                      <sl-icon name="search"></sl-icon>
+                      <sl-icon
+                        library="fa"
+                        name="fas-magnifying-glass"
+                      ></sl-icon>
                     </span>
                   </div>
                   <wr-sorter

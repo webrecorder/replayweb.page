@@ -306,7 +306,7 @@ export class ReplayWebApp extends LitElement {
                         @click="${() => window.history.back()}"
                         @keyup="${clickOnSpacebarPress}"
                       >
-                        <sl-icon name="arrow-left"></sl-icon>
+                        <sl-icon library="fa" name="arrow-left"></sl-icon>
                         <span class="menu-only is-size-7">&nbsp;Go Back</span>
                       </a>
                       <a
@@ -317,7 +317,7 @@ export class ReplayWebApp extends LitElement {
                         @click="${() => window.history.forward()}"
                         @keyup="${clickOnSpacebarPress}"
                       >
-                        <sl-icon name="arrow-right"></sl-icon>
+                        <sl-icon library="fa" name="arrow-right"></sl-icon>
                         <span class="menu-only is-size-7"
                           >&nbsp;Go Forward</span
                         >
@@ -336,7 +336,11 @@ export class ReplayWebApp extends LitElement {
 
   renderNavEnd() {
     return html` <a href="/docs" target="_blank" class="navbar-item is-size-6">
-        <sl-icon name="question-circle-fill" aria-hidden="true"></sl-icon>
+        <sl-icon
+          library="fa"
+          name="fas-circle-question"
+          aria-hidden="true"
+        ></sl-icon>
         <span>&nbsp;Documentation</span>
       </a>
       <!--
@@ -351,7 +355,11 @@ export class ReplayWebApp extends LitElement {
         }}"
         class="navbar-item is-size-6"
       >
-        <sl-icon name="info-circle-fill" aria-hidden="true"></sl-icon>
+        <sl-icon
+          library="fa"
+          name="fas-circle-info"
+          aria-hidden="true"
+        ></sl-icon>
         <span>&nbsp;About</span>
       </a>`;
   }

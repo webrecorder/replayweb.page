@@ -611,7 +611,11 @@ class Pages extends LitElement {
               placeholder="Search by Page URL, Title, or Text"
             />
             <span class="icon is-left">
-              <sl-icon name="search" aria-hidden="true"></sl-icon>
+              <sl-icon
+                library="fa"
+                name="fas-magnifying-glass"
+                aria-hidden="true"
+              ></sl-icon>
             </span>
           </div>
         </div>
@@ -648,7 +652,13 @@ class Pages extends LitElement {
                     </div>`
                   : html``}`}
           ${this.editable
-            ? html` <sl-icon class="editIcon" name="pencil-square"></sl-icon> `
+            ? html`
+                <sl-icon
+                  library="fa"
+                  class="editIcon"
+                  name="fas-pen-to-square"
+                ></sl-icon>
+              `
             : html``}
           ${this.hasExtraPages
             ? html` <span class="check-select">
@@ -735,7 +745,11 @@ class Pages extends LitElement {
         >
           <span>Download</span>
           <span class="icon is-small">
-            <sl-icon name="chevron-down" aria-hidden="true"></sl-icon>
+            <sl-icon
+              library="fa"
+              name="fas-chevron-down"
+              aria-hidden="true"
+            ></sl-icon>
           </span>
         </button>
       </div>

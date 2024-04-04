@@ -267,7 +267,11 @@ export class Chooser extends LitElement {
                 : ""}
               <span class="file-cta" @click="${this.onChooseNativeFile}">
                 <span class="file-icon">
-                  <sl-icon name="upload" aria-hidden="true"></sl-icon>
+                  <sl-icon
+                    library="fa"
+                    name="fas-upload"
+                    aria-hidden="true"
+                  ></sl-icon>
                 </span>
                 <span class="file-label is-hidden-touch"> Choose File... </span>
               </span>

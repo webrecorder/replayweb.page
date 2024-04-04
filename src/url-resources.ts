@@ -389,7 +389,11 @@ class URLResources extends LitElement {
                   placeholder="Enter URL to Search"
                 />
                 <span class="icon is-left">
-                  <sl-icon name="search" aria-hidden="true"></sl-icon>
+                  <sl-icon
+                    library="fa"
+                    name="fas-magnifying-glass"
+                    aria-hidden="true"
+                  ></sl-icon>
                 </span>
               </div>
             </div>

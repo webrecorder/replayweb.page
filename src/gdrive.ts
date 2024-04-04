@@ -184,7 +184,7 @@ class GDrive extends LitElement {
             @click="${this.onClickAuth}"
           >
             <span class="icon">
-              <sl-icon name="google"></sl-icon>
+              <sl-icon library="fa" name="fab-google-drive"></sl-icon>
             </span>
             <span>Authorize Google Drive</span>
           </button>

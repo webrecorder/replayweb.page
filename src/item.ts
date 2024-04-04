@@ -971,7 +971,11 @@ class Item extends LitElement {
                 @keyup="${clickOnSpacebarPress}"
                 class="is-marginless is-size-6 is-paddingless"
               >
-                <sl-icon name="chevron-left" aria-hidden="true"></sl-icon>
+                <sl-icon
+                  library="fa"
+                  name="fas-chevron-left"
+                  aria-hidden="true"
+                ></sl-icon>
                 <span class="nav-hover" aria-hidden="true">Hide</span>
                 <span class="is-sr-only">Hide Sidebar</span>
               </a>
@@ -991,7 +995,11 @@ class Item extends LitElement {
                 )}"
               >
                 <span class="icon">
-                  <sl-icon name="book" aria-hidden="true"></sl-icon>
+                  <sl-icon
+                    library="fa"
+                    name="fas-book"
+                    aria-hidden="true"
+                  ></sl-icon>
                 </span>
                 <span
                   class="tab-label ${isSidebar ? "is-hidden" : ""}"
@@ -1013,7 +1021,11 @@ class Item extends LitElement {
             )}"
           >
             <span class="icon">
-              <sl-icon name="file-richtext-fill" aria-hidden="true"></sl-icon>
+              <sl-icon
+                library="fa"
+                name="fas-file-invoice"
+                aria-hidden="true"
+              ></sl-icon>
             </span>
             <span class="tab-label ${isSidebar ? "is-hidden" : ""}">Pages</span>
           </a>
@@ -1030,7 +1042,11 @@ class Item extends LitElement {
             )}"
           >
             <span class="icon">
-              <sl-icon name="folder-fill" aria-hidden="true"></sl-icon>
+              <sl-icon
+                library="fa"
+                name="fas-folder"
+                aria-hidden="true"
+              ></sl-icon>
             </span>
             <span class="tab-label ${isSidebar ? "is-hidden" : ""}"
               >Resources</span
@@ -1049,7 +1065,11 @@ class Item extends LitElement {
               >
                 <span class="nav-hover" aria-hidden="true">Expand</span>
                 <span class="is-sr-only">Expand Sidebar to Full View</span>
-                <sl-icon name="chevron-right" aria-hidden="true"></sl-icon>
+                <sl-icon
+                  library="fa"
+                  name="fas-chevron-right"
+                  aria-hidden="true"
+                ></sl-icon>
               </a>
             </li>`
           : ""}
@@ -1091,7 +1111,11 @@ class Item extends LitElement {
                 aria-controls="contents"
               >
                 <span class="icon is-small">
-                  <sl-icon name="layout-sidebar" aria-hidden="true"></sl-icon>
+                  <sl-icon
+                    library="fa"
+                    name="far-rectangle-list"
+                    aria-hidden="true"
+                  ></sl-icon>
                 </span>
               </a>`
             : ""}
@@ -1105,7 +1129,11 @@ class Item extends LitElement {
             aria-label="Back"
           >
             <span class="icon is-small">
-              <sl-icon name="arrow-left" aria-hidden="true"></sl-icon>
+              <sl-icon
+                library="fa"
+                name="fas-arrow-left"
+                aria-hidden="true"
+              ></sl-icon>
             </span>
           </a>
           <a
@@ -1118,7 +1146,11 @@ class Item extends LitElement {
             aria-label="Forward"
           >
             <span class="icon is-small">
-              <sl-icon name="arrow-right" aria-hidden="true"></sl-icon>
+              <sl-icon
+                library="fa"
+                name="fas-arrow-right"
+                aria-hidden="true"
+              ></sl-icon>
             </span>
           </a>
           <a
@@ -1137,7 +1169,8 @@ class Item extends LitElement {
               ${!this.isLoading
                 ? html`
                     <sl-icon
-                      name="arrow-clockwise"
+                      library="fa"
+                      name="fas-rotate-right"
                       aria-hidden="true"
                     ></sl-icon>
                   `
@@ -1179,9 +1212,8 @@ class Item extends LitElement {
           >
             <span class="icon is-small">
               <sl-icon
-                name="${this.isFullscreen
-                  ? "fullscreen-exit"
-                  : "arrows-fullscreen"}"
+                library="fa"
+                name="${this.isFullscreen ? "fas-compress" : "fas-maximize"}"
                 aria-hidden="true"
               ></sl-icon>
             </span>
@@ -1201,7 +1233,8 @@ class Item extends LitElement {
               >
                 <span class="icon is-small">
                   <sl-icon
-                    name="three-dots-vertical"
+                    library="fa"
+                    name="fas-ellipsis-vertical"
                     aria-hidden="true"
                   ></sl-icon>
                 </span>
@@ -1218,9 +1251,10 @@ class Item extends LitElement {
                 >
                   <span class="icon is-small">
                     <sl-icon
+                      library="fa"
                       name="${this.isFullscreen
-                        ? "fullscreen-exit"
-                        : "arrows-fullscreen"}"
+                        ? "fas-compress"
+                        : "fas-maximize"}"
                       aria-hidden="true"
                     ></sl-icon>
                   </span>
@@ -1237,7 +1271,11 @@ class Item extends LitElement {
                       @keyup="${clickOnSpacebarPress}"
                     >
                       <span class="icon is-small">
-                        <sl-icon name="card-list" aria-hidden="true"></sl-icon>
+                        <sl-icon
+                          library="fa"
+                          name="far-rectangle-list"
+                          aria-hidden="true"
+                        ></sl-icon>
                       </span>
                       <span>Browse Contents</span>
                     </a>`
@@ -1254,7 +1292,8 @@ class Item extends LitElement {
                       >
                         <span class="icon is-small">
                           <sl-icon
-                            name="arrow-repeat"
+                            library="fa"
+                            name="fas-arrows-rotate"
                             aria-hidden="true"
                           ></sl-icon>
                         </span>
@@ -1271,7 +1310,11 @@ class Item extends LitElement {
                         @keyup="${clickOnSpacebarPress}"
                       >
                         <span class="icon is-small">
-                          <sl-icon name="download" aria-hidden="true"></sl-icon>
+                          <sl-icon
+                            library="fa"
+                            name="fas-download"
+                            aria-hidden="true"
+                          ></sl-icon>
                         </span>
                         <span>Download Archived Item</span>
                       </a>`
@@ -1291,7 +1334,8 @@ class Item extends LitElement {
                   <span class="icon is-small">
                     <sl-icon
                       class="has-text-grey"
-                      name="info-circle-fill"
+                      library="fa"
+                      name="fas-circle-info"
                       aria-hidden="true"
                     ></sl-icon>
                   </span>
