@@ -48,7 +48,9 @@ class LabeledField extends LitElement {
       <div class="col-content">
         <slot></slot>
         ${this.copy
-          ? html` <sl-copy-button .value=${this.copy || ""}></sl-copy-button>`
+          ? html`<sl-copy-button .value=${this.copy || ""}>
+              <sl-icon slot="copy-icon" library="fa" name="far-clone"></sl-icon>
+            </sl-copy-button>`
           : nothing}
       </div>`;
   }
