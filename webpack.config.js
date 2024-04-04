@@ -103,16 +103,23 @@ const browserConfig = (/*env, argv*/) => {
     ui: "./src/index.ts",
   };
 
-  const patterns = [{ from: "package.json", to: "_data/package.json" }];
+  //const patterns = [{ from: "package.json", to: "_data/package.json" }];
+  let patterns = [];
 
   if (isDevServer) {
     entry["sw"] = "@webrecorder/wabac/src/sw.js";
   } else {
-    patterns.push({
+    patterns = [{
       from: "node_modules/@webrecorder/wabac/dist/sw.js",
-      to: "sw.js",
-    });
-  }
+      to: "site/sw.js",
+    }, {
+      from: "build/icon.png",
+      to: "site/favicon.png",
+    }, {
+      from: "assets/logo.svg",
+      to: "site/logo.svg"
+    }];
+}
 
   /** @type {import('webpack').Configuration} */
   const config = {
@@ -128,7 +135,7 @@ const browserConfig = (/*env, argv*/) => {
     optimization,
 
     output: {
-      path: path.join(__dirname),
+      path: path.join(__dirname, "dist"),
       filename: "[name].js",
       libraryTarget: "self",
       globalObject: "self",

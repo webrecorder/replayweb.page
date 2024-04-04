@@ -73,8 +73,8 @@
     "index.html"
   ],
   "scripts": {
-    "build": "webpack --mode production",
-    "build-dev": "webpack --mode development",
+    "build": "webpack --mode production && cp dist/ui.js site/ui.js",
+    "build-dev": "webpack --mode development && cp dist/ui.js site/ui.js",
     "build-docs": "bundle install; bundle exec jekyll build",
     "start-dev": "webpack serve --mode development",
     "start-prod": "http-server -p 9990 --cors",

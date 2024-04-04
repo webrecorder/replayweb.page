@@ -8,8 +8,7 @@ coverage/
 **/local-examples/
 **/.DS_Store
 **/.sass-cache/
-_data/
-_site/
+_genhtml/
 dist/
 plugins-*/
 sw.js

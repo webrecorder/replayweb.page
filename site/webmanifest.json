@@ -4,7 +4,7 @@
   "description": "A tool to explore and replay interactive archived web pages directly in the browser",
   "icons": [
     {
-      "src": "build/icon.png",
+      "src": "favicon.png",
       "sizes": "512x512",
       "type": "image/png"
     },
