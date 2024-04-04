@@ -1,0 +1,36 @@
+name: site-publish
+on:
+  push:
+    branches:
+      - main
+    #paths:
+    #  - 'site/**'
+
+permissions:
+  contents: write
+
+jobs:
+  deploy_site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: Yarn Install
+        run: yarn install --frozen-lockfile
+
+      - name: Yarn Build
+        run: yarn build
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - run: pip install mkdocs-macros-plugin
+      - run: pip install mkdocs-material
+      - run: mkdocs gh-deploy --force
