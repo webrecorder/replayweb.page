@@ -32,4 +32,4 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install mkdocs-macros-plugin mkdocs-redirects mkdocs-material
-      - run: mkdocs gh-deploy --force
+      - run: cd mkdocs && mkdocs gh-deploy --force
