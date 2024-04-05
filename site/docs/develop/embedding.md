@@ -18,7 +18,7 @@ The `#!html <replay-web-page>` web component requires a backend service worker t
 To embed a WACZ stored at `https://replayweb.page/docs/assets/tweet-example.wacz`, add the following `#!html <script>` tag to your HTML page to load the user interface from the jsDelivr CDN, and use the `#!html <replay-web-page>` component to point to the WACZ:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version }}/ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version() }}/ui.js"></script>
 
 <replay-web-page source="https://replayweb.page/docs/assets/tweet-example.wacz"
 url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
@@ -33,7 +33,7 @@ ReplayWeb.page's backend is a [service worker](https://developer.mozilla.org/en-
 To do this, create a `/replay` subdirectory and in it, a new JavaScript file (`/replay/sw.js`) and copy the following to the file:
 
 ```javascript
-importScripts("https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version }}/sw.js");
+importScripts("https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version() }}/sw.js");
 ```
 
 If the HTML above was added to `https://example.com/path/my-web-archive-embed.html`
@@ -49,10 +49,10 @@ Be sure to add width and height styles to the `#!html <replay-web-page>` tag as 
 
 ??? Tip "Best Practice: Controlling ReplayWeb.page versions"
 
-    The above example uses the version number "{{ rwp_version }}" in paths to load a specific version of ReplayWeb.page from a CDN. These URLs point to a specific version of ReplayWeb.page software released on NPM, meaning that your replay viewer should stay stable, even if ReplayWeb.page is updated.
+    The above example uses the version number "{{ rwp_version() }}" in paths to load a specific version of ReplayWeb.page from a CDN. These URLs point to a specific version of ReplayWeb.page software released on NPM, meaning that your replay viewer should stay stable, even if ReplayWeb.page is updated.
     
-    - `https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version }}/ui.js`
-    - `https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version }}/sw.js`
+    - `https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version() }}/ui.js`
+    - `https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version() }}/sw.js`
 
     Although ReplayWeb.page strives to remain backwards compatible, this addresses any potential issue of older embeds breaking when the replay system is updated.
 

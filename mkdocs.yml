@@ -94,8 +94,6 @@ extra:
       link: https://digipres.club/@webrecorder
     - icon: bootstrap/youtube
       link: https://www.youtube.com/@webrecorder
-  # Use with {{ rwp_version }}
-  rwp_version: 1.8.14
 copyright: "Creative Commons Attribution 4.0 International (CC BY 4.0)"
 
 plugins:
