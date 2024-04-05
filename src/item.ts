@@ -989,53 +989,57 @@ class Item extends LitElement {
       aria-label="tabs"
     >
       <ul>
-        ${isSidebar
-          ? html` <li class="sidebar-nav left">
-              <a
-                role="button"
-                href="#"
-                @click="${this.onHideSidebar}"
-                @keyup="${clickOnSpacebarPress}"
-                class="is-marginless is-size-6 is-paddingless"
-              >
-                <fa-icon
-                  title="Hide"
-                  .svg="${fasAngleLeft}"
-                  aria-hidden="true"
-                ></fa-icon>
-                <span class="nav-hover" aria-hidden="true">Hide</span>
-                <span class="is-sr-only">Hide Sidebar</span>
-              </a>
-            </li>`
-          : ""}
-        ${this.hasStory
-          ? html` <li
-              class="${this.tabData.view === "story" ? "is-active" : ""}"
-            >
-              <a
-                @click="${this.onTabClick}"
-                href="#story"
-                class="is-size-6"
-                aria-label="Story"
-                aria-current="${ifDefined(
-                  this.tabData.view === "story" ? "location" : undefined,
-                )}"
-              >
-                <span class="icon"
-                  ><fa-icon
-                    .svg="${fasBook}"
-                    aria-hidden="true"
-                    title="Story"
-                  ></fa-icon
-                ></span>
-                <span
-                  class="tab-label ${isSidebar ? "is-hidden" : ""}"
-                  title="Story"
-                  >Story</span
+        ${
+          isSidebar
+            ? html` <li class="sidebar-nav left">
+                <a
+                  role="button"
+                  href="#"
+                  @click="${this.onHideSidebar}"
+                  @keyup="${clickOnSpacebarPress}"
+                  class="is-marginless is-size-6 is-paddingless"
                 >
-              </a>
-            </li>`
-          : ""}
+                  <fa-icon
+                    title="Hide"
+                    .svg="${fasAngleLeft}"
+                    aria-hidden="true"
+                  ></fa-icon>
+                  <span class="nav-hover" aria-hidden="true">Hide</span>
+                  <span class="is-sr-only">Hide Sidebar</span>
+                </a>
+              </li>`
+            : ""
+        }
+        ${
+          this.hasStory
+            ? html` <li
+                class="${this.tabData.view === "story" ? "is-active" : ""}"
+              >
+                <a
+                  @click="${this.onTabClick}"
+                  href="#story"
+                  class="is-size-6"
+                  aria-label="Story"
+                  aria-current="${ifDefined(
+                    this.tabData.view === "story" ? "location" : undefined,
+                  )}"
+                >
+                  <span class="icon"
+                    ><fa-icon
+                      .svg="${fasBook}"
+                      aria-hidden="true"
+                      title="Story"
+                    ></fa-icon
+                  ></span>
+                  <span
+                    class="tab-label ${isSidebar ? "is-hidden" : ""}"
+                    title="Story"
+                    >Story</span
+                  >
+                </a>
+              </li>`
+            : ""
+        }
 
         <li class="${this.tabData.view === "pages" ? "is-active" : ""}">
           <a
@@ -1055,7 +1059,7 @@ class Item extends LitElement {
               ></fa-icon
             ></span>
             <span
-              class="tab-label ${isSidebar ? "is-hidden" : ""}"
+              class="tab-label"
               title="Pages"
               >Pages</span
             >
@@ -1076,34 +1080,36 @@ class Item extends LitElement {
               ><fa-icon
                 .svg="${farResources}"
                 aria-hidden="true"
-                title="URLs"
+                title="Resources"
               ></fa-icon
             ></span>
-            <span class="tab-label ${isSidebar ? "is-hidden" : ""}" title="URLs"
-              >URLs</span
+            <span class="tab-label title="Resources"
+              >Resources</span
             >
           </a>
         </li>
 
-        ${isSidebar
-          ? html` <li class="sidebar-nav right">
-              <a
-                role="button"
-                href="#"
-                @click="${this.onFullPageView}"
-                @keyup="${clickOnSpacebarPress}"
-                class="is-marginless is-size-6 is-paddingless"
-              >
-                <span class="nav-hover" aria-hidden="true">Expand</span>
-                <span class="is-sr-only">Expand Sidebar to Full View</span>
-                <fa-icon
-                  title="Expand"
-                  .svg="${fasAngleRight}"
-                  aria-hidden="true"
-                ></fa-icon>
-              </a>
-            </li>`
-          : ""}
+        ${
+          isSidebar
+            ? html` <li class="sidebar-nav right">
+                <a
+                  role="button"
+                  href="#"
+                  @click="${this.onFullPageView}"
+                  @keyup="${clickOnSpacebarPress}"
+                  class="is-marginless is-size-6 is-paddingless"
+                >
+                  <span class="nav-hover" aria-hidden="true">Expand</span>
+                  <span class="is-sr-only">Expand Sidebar to Full View</span>
+                  <fa-icon
+                    title="Expand"
+                    .svg="${fasAngleRight}"
+                    aria-hidden="true"
+                  ></fa-icon>
+                </a>
+              </li>`
+            : ""
+        }
       </ul>
     </nav>`;
   }
