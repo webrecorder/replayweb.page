@@ -51,10 +51,9 @@ theme:
 
 nav:
   - docs/index.md
-  - Develop:
-    - Embedding:
-      - docs/develop/embedding.md
-      - docs/develop/cors-settings.md
+  - Embedding:
+    - docs/embedding/index.md
+    - docs/embedding/cors-settings.md
   - User Guide:
     - docs/user-guide/index.md
     - docs/user-guide/loading.md
@@ -101,8 +100,7 @@ plugins:
   - search
   - redirects:
       redirect_maps:
-        'docs/embedding.md': 'docs/develop/embedding.md'
-        'docs/cors-settings.md': 'docs/develop/cors-settings.md'
+        'docs/cors-settings.md': 'docs/embedding/cors-settings.md'
         'docs/usage.md': 'docs/user-guide/index.md'
         'docs/loading_online.md': docs/user-guide/loading.md
         'docs/loading_offline.md': docs/user-guide/offline-use.md

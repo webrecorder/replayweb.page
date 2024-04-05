@@ -8,7 +8,7 @@ hide:
 
 Welcome to the ReplayWeb.page official docs. These docs contain the following sections:
 
-- [Developer Docs](develop/embedding.md) — Information on developing and embedding ReplayWebpage into your projects.
+- [Embedding Guide](embedding/index.md) — Information on embedding ReplayWebpage into your projects.
 - [User Guide](user-guide/index.md) — Instructions and reference for using ReplayWebpage to view archived web content.
 
 ## What is ReplayWeb.page?
