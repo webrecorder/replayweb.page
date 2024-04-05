@@ -106,5 +106,5 @@ plugins:
         'docs/loading_offline.md': docs/user-guide/offline-use.md
         'docs/exploring.md': 'docs/user-guide/exploring.md'
         'docs/sharing.md': 'docs/user-guide/sharing.md'
-        'docs/locations.md': 'docs/user-guide/locations/'
+        'docs/locations.md': 'docs/user-guide/locations.md'
         'docs/formats.md': 'docs/user-guide/index.md#supported-formats'
