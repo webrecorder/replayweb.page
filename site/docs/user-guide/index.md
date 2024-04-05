@@ -20,9 +20,9 @@ ReplayWeb.Page supports the following file formats listed as "Supported". Format
 
 | Format  | Extensions          | Status         |
 |:--------|:--------------------|:---------------|
-| WACZ    | `.wacz`             |  <span class="status-success">:bootstrap-check-circle: Supported</span>     |
-| WARC    | `.warc`, `.warc.gz` |  <span class="status-success">:bootstrap-check-circle: Supported</span>     |
-| HAR     | `.har`              |  <span class="status-success">:bootstrap-check-circle: Supported</span>     |
-| WBN     | `.wbn`              |  <span class="status-danger">:bootstrap-x-octagon: Not Supported</span>     |
-| ARC     | `.arc`              |  <span class="status-danger">:bootstrap-x-octagon: Not Supported</span>     |
-| CDX     | `.cdx`, `.cdxj`     |  <span class="status-success">:bootstrap-check-circle: Supported</span>     |
+| WACZ    | `.wacz`             |  <span class="status-success">:bootstrap-check-circle-fill: Supported</span>     |
+| WARC    | `.warc`, `.warc.gz` |  <span class="status-success">:bootstrap-check-circle-fill: Supported</span>     |
+| HAR     | `.har`              |  <span class="status-success">:bootstrap-check-circle-fill: Supported</span>     |
+| WBN     | `.wbn`              |  <span class="status-danger">:bootstrap-x-octagon-fill: Not Supported</span>     |
+| ARC     | `.arc`              |  <span class="status-danger">:bootstrap-x-octagon-fill: Not Supported</span>     |
+| CDX     | `.cdx`, `.cdxj`     |  <span class="status-success">:bootstrap-check-circle-fill: Supported</span>     |
