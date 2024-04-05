@@ -8,6 +8,7 @@ coverage/
 **/local-examples/
 **/.DS_Store
 **/.sass-cache/
+**/__pycache__/
 _genhtml/
 dist/
 plugins-*/

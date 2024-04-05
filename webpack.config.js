@@ -104,22 +104,23 @@ const browserConfig = (/*env, argv*/) => {
   };
 
   //const patterns = [{ from: "package.json", to: "_data/package.json" }];
-  let patterns = [];
+  let patterns = [{
+    from: "build/icon.png",
+    to: "site/favicon.png",
+  }, {
+    from: "assets/logo.svg",
+    to: "site/logo.svg"
+  }];
 
   if (isDevServer) {
     entry["sw"] = "@webrecorder/wabac/src/sw.js";
   } else {
-    patterns = [{
+    patterns.push({
       from: "node_modules/@webrecorder/wabac/dist/sw.js",
       to: "site/sw.js",
-    }, {
-      from: "build/icon.png",
-      to: "site/favicon.png",
-    }, {
-      from: "assets/logo.svg",
-      to: "site/logo.svg"
-    }];
-}
+    });
+  }
+
 
   /** @type {import('webpack').Configuration} */
   const config = {
@@ -146,7 +147,7 @@ const browserConfig = (/*env, argv*/) => {
       compress: true,
       port: 9990,
       open: false,
-      static: path.join(__dirname),
+      static: path.join(__dirname, "site"),
       //publicPath: "/"
     },
 
