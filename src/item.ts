@@ -1127,86 +1127,6 @@ class Item extends LitElement {
       >
       <nav class="replay-bar" aria-label="replay">
         <div class="field has-addons">
-          <a
-            href="#"
-            role="button"
-            class="button narrow is-borderless is-hidden-touch"
-            id="fullscreen"
-            @click="${this.onFullscreenToggle}"
-            @keyup="${clickOnSpacebarPress}"
-            title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}"
-            aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}"
-          >
-            <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
-                class="has-text-grey"
-                aria-hidden="true"
-                .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"
-              ></fa-icon>
-            </span>
-          </a>
-          <a
-            href="#"
-            role="button"
-            class="button narrow is-borderless is-hidden-mobile"
-            @click="${this.onGoBack}"
-            @keyup="${clickOnSpacebarPress}"
-            title="Back"
-            aria-label="Back"
-          >
-            <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
-                class="has-text-grey"
-                aria-hidden="true"
-                .svg="${fasLeft}"
-              ></fa-icon>
-            </span>
-          </a>
-          <a
-            href="#"
-            role="button"
-            class="button narrow is-borderless is-hidden-mobile"
-            @click="${this.onGoForward}"
-            @keyup="${clickOnSpacebarPress}"
-            title="Forward"
-            aria-label="Forward"
-          >
-            <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
-                class="has-text-grey"
-                aria-hidden="true"
-                .svg="${fasRight}"
-              ></fa-icon>
-            </span>
-          </a>
-          <a
-            href="#"
-            role="button"
-            class="button narrow is-borderless ${this.isLoading
-              ? "is-loading"
-              : "is-hidden-mobile"}"
-            id="refresh"
-            @click="${this.onRefresh}"
-            @keyup="${clickOnSpacebarPress}"
-            title="Reload"
-            aria-label="Reload"
-          >
-            <span class="icon is-small">
-              ${!this.isLoading
-                ? html`
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
-                      aria-hidden="true"
-                      .svg="${fasRefresh}"
-                    ></fa-icon>
-                  `
-                : ""}
-            </span>
-          </a>
           ${this.browsable
             ? html` <a
                 href="#"
@@ -1231,6 +1151,67 @@ class Item extends LitElement {
                 </span>
               </a>`
             : ""}
+          <a
+            href="#"
+            role="button"
+            class="button narrow is-borderless"
+            @click="${this.onGoBack}"
+            @keyup="${clickOnSpacebarPress}"
+            title="Back"
+            aria-label="Back"
+          >
+            <span class="icon is-small">
+              <fa-icon
+                size="1.0em"
+                class="has-text-grey"
+                aria-hidden="true"
+                .svg="${fasLeft}"
+              ></fa-icon>
+            </span>
+          </a>
+          <a
+            href="#"
+            role="button"
+            class="button narrow is-borderless"
+            @click="${this.onGoForward}"
+            @keyup="${clickOnSpacebarPress}"
+            title="Forward"
+            aria-label="Forward"
+          >
+            <span class="icon is-small">
+              <fa-icon
+                size="1.0em"
+                class="has-text-grey"
+                aria-hidden="true"
+                .svg="${fasRight}"
+              ></fa-icon>
+            </span>
+          </a>
+          <a
+            href="#"
+            role="button"
+            class="button narrow is-borderless ${this.isLoading
+              ? "is-loading"
+              : ""}"
+            id="refresh"
+            @click="${this.onRefresh}"
+            @keyup="${clickOnSpacebarPress}"
+            title="Reload"
+            aria-label="Reload"
+          >
+            <span class="icon is-small">
+              ${!this.isLoading
+                ? html`
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasRefresh}"
+                    ></fa-icon>
+                  `
+                : ""}
+            </span>
+          </a>
           ${this.renderExtraToolbar()}
           <form @submit="${this.onSubmit}">
             <div
@@ -1258,6 +1239,27 @@ class Item extends LitElement {
             class="dropdown is-right ${this.menuActive ? "is-active" : ""}"
             @click="${() => (this.menuActive = false)}"
           >
+            <a
+              href="#"
+              role="button"
+              class="button narrow is-borderless is-hidden-touch"
+              id="fullscreen"
+              @click="${this.onFullscreenToggle}"
+              @keyup="${clickOnSpacebarPress}"
+              title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}"
+              aria-label="${this.isFullscreen
+                ? "Exit Fullscreen"
+                : "Fullscreen"}"
+            >
+              <span class="icon is-small">
+                <fa-icon
+                  size="1.0em"
+                  class="has-text-grey"
+                  aria-hidden="true"
+                  .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"
+                ></fa-icon>
+              </span>
+            </a>
             <div class="dropdown-trigger">
               <button
                 class="button is-borderless"
@@ -1297,57 +1299,6 @@ class Item extends LitElement {
                     ></fa-icon>
                   </span>
                   <span>Full Screen</span>
-                </a>
-                <a
-                  href="#"
-                  role="button"
-                  class="dropdown-item is-hidden-tablet"
-                  @click="${this.onGoBack}"
-                  @keyup="${clickOnSpacebarPress}"
-                >
-                  <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
-                      aria-hidden="true"
-                      .svg="${fasLeft}"
-                    ></fa-icon>
-                  </span>
-                  <span>Back</span>
-                </a>
-                <a
-                  href="#"
-                  role="button"
-                  class="dropdown-item is-hidden-tablet"
-                  @click="${this.onGoForward}"
-                  @keyup="${clickOnSpacebarPress}"
-                >
-                  <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
-                      aria-hidden="true"
-                      .svg="${fasRight}"
-                    ></fa-icon>
-                  </span>
-                  <span>Forward</span>
-                </a>
-                <a
-                  href="#"
-                  role="button"
-                  class="dropdown-item is-hidden-tablet"
-                  @click="${this.onRefresh}"
-                  @keyup="${clickOnSpacebarPress}"
-                >
-                  <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
-                      aria-hidden="true"
-                      .svg="${fasRefresh}"
-                    ></fa-icon>
-                  </span>
-                  <span>Reload</span>
                 </a>
                 ${this.browsable
                   ? html` <a
