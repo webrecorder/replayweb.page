@@ -1,6 +1,6 @@
 # Supported Location URLs
 
-ReplayWeb.Page uses URLs to uniquely identify web archives.
+ReplayWeb.page uses URLs to uniquely identify web archives.
 
 In addition HTTP/S, the system supports loading from additional cloud providers and via peer-to-peer decentralized services. The goal is to support loading web archives from any source a web browser can connect to.
 

@@ -16,7 +16,7 @@ While ReplayWeb.page aims to support a variety of formats for archived web conte
 
     For users comfortable with the command line, we recommend converting WARC files to WACZ files by using the `wacz` python library, see [py-wacz on GitHub](https://github.com/webrecorder/py-wacz) for more information.
 
-ReplayWeb.Page supports the following file formats listed as "Supported". Format type is determined based on the file's extension.
+ReplayWeb.page supports the following file formats listed as "Supported". Format type is determined based on the file's extension.
 
 | Format  | Extensions          | Status         |
 |:--------|:--------------------|:---------------|
