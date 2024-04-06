@@ -1,6 +1,7 @@
-import btGlobe from "../assets/globe.svg";
-import btAngleDoubleDown from "../assets/chevron-double-down.svg";
-import btAngleDoubleUp from "../assets/chevron-double-up.svg";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
+import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
+import btAngleDoubleDown from "~assets/icons/chevron-double-down.svg";
+import btAngleDoubleUp from "~assets/icons/chevron-double-up.svg";
 import fabGithub from "@fortawesome/fontawesome-free/svgs/brands/github.svg";
 import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
 
@@ -160,16 +161,9 @@ export class RWPEmbedReceipt extends LitElement {
         font-family: monospace;
       }
 
-      .embed-globe {
-        margin: 0.25rem;
-        padding: 7px;
-        background-color: #0366d6;
-        border-radius: 9999px;
-        color: white;
-        border-width: 1px;
-        border-color: #d1d5da;
-        border-style: solid;
-        line-height: 0.5em;
+      .embed-logo {
+        margin: 0.5rem;
+        line-height: 0.5rem;
       }
     `;
   }
@@ -203,10 +197,10 @@ export class RWPEmbedReceipt extends LitElement {
             @click="${this.onEmbedDrop}"
           >
             <fa-icon
-              class="menu-logo mr-2 embed-globe"
-              size="1rem"
+              class="menu-logo mr-2 embed-logo"
+              size="1.5rem"
               aria-hidden="true"
-              .svg=${btGlobe}
+              .svg=${rwpLogo}
             ></fa-icon>
             <span class="embed-info-buttontext">
               This embed is part of a web archive. Click here to learn more.
