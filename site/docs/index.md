@@ -25,8 +25,7 @@ Welcome to the ReplayWeb.page documentation! These docs contain the following se
 
 ### Archives, Repositories, and Other Projects Using ReplayWeb.page
 
-ReplayWeb.page allows web archives samlessly integrate into existing web sites, be it repositories, collections,
-or other archiving services.
+ReplayWeb.page allows web archives seamlessly integrate into existing web sites, be it repositories, collections, or other archiving services.
 
 Below are a few of the integrations we know of that use ReplayWeb.page:
 
