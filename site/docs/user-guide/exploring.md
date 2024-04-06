@@ -24,6 +24,8 @@ The resources view displays all the content within a loaded archived item, liste
 
 This view is available for all archives that only store raw data.
 
+[See an example of searching for image resources.](https://replayweb.page/?source=examples/netpreserve-twitter.warc#view=resources&currMime=image%2F&urlSearchType=prefix)
+
 #### Searching For Resources
 
 Page resources can only be searched by URL. Searches can be performed by exact URL, by URL prefix, or by searching for any string contained in the URL.
