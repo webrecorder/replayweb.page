@@ -19,7 +19,6 @@ export class RWPEmbedReceipt extends LitElement {
     | ItemType
     | null
     | Record<string, never> = null;
-  @property({ type: Object }) appLogo = null;
   @property({ type: String }) ts: string | null = null;
   @property({ type: String }) url: string | null = null;
 
@@ -304,32 +303,24 @@ export class RWPEmbedReceipt extends LitElement {
                 : nothing}
             </div>
             ${sourceUrl ? html`` : ""}
-            <p
-              class="is-size-7 is-flex is-justify-content-space-between"
+            <div
+              class="is-size-7 is-flex is-justify-content-space-between is-align-items-center"
               style="margin-top: 40px"
             >
-              <span>
+              <div>
                 <a
-                  class="has-text-black"
                   target="_blank"
                   href="https://github.com/webrecorder/replayweb.page"
-                  >${
-                    // TODO: Fix this the next time the file is edited.
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    this.appLogo
-                      ? html`
-                          <fa-icon
-                            class="menu-logo mr-1"
-                            size="1.0rem"
-                            aria-hidden="true"
-                            .svg=${this.appLogo}
-                          ></fa-icon>
-                        `
-                      : nothing
-                  }
-                  Powered by ReplayWeb.page
+                >
+                  <img
+                    style="height: 1.5rem;"
+                    src="data:image/svg+xml,${encodeURIComponent(
+                      brandLockupColor as string,
+                    )}"
+                    alt="ReplayWeb.page Logo"
+                  />
                 </a>
-              </span>
+              </div>
               <span>
                 <a
                   class="has-text-black"
@@ -344,7 +335,7 @@ export class RWPEmbedReceipt extends LitElement {
                   ></fa-icon>
                 </a>
               </span>
-            </p>
+            </div>
           </div>
         </div>
       </div>
