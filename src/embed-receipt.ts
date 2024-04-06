@@ -196,7 +196,7 @@ export class RWPEmbedReceipt extends LitElement {
             @click="${this.onEmbedDrop}"
           >
             <fa-icon
-              class="menu-logo mr-2 embed-logo"
+              class="embed-logo"
               size="1.5rem"
               aria-hidden="true"
               .svg=${rwpLogo}
