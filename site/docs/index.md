@@ -23,7 +23,7 @@ Welcome to the ReplayWeb.page documentation! These docs contain the following se
 - Several options for fully-functional offline usage, including a standalone desktop app with Flash support.
 - Support for embedding archived items directly into your website!
 
-### Archives, Repositories And Other Projects Using ReplayWeb.page
+### Archives, Repositories, and Other Projects Using ReplayWeb.page
 
 ReplayWeb.page allows web archives samlessly integrate into existing web sites, be it repositories, collections,
 or other archiving services.
