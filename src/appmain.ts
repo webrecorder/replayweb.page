@@ -17,6 +17,8 @@ import {
   updateFaviconLinks,
 } from "./misc";
 
+import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
+
 import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.svg";
 import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
 import fasArrowRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
@@ -244,14 +246,19 @@ export class ReplayWebApp extends LitElement {
   }
 
   renderNavBrand() {
-    return html` <span
-      id="home"
-      class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
-    >
-      <span class="has-text-primary">replay</span>
-      <span class="has-text-link">web.page</span>
-      <span class="is-sr-only">Home</span>
-    </span>`;
+    return html` <img
+        style="height: 1.25rem;"
+        src="data:image/svg+xml,${encodeURIComponent(
+          brandLockupColor as string,
+        )}"
+        alt="ReplayWeb.page"
+      />
+      <span
+        id="home"
+        class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
+      >
+        <span class="is-sr-only">Home</span>
+      </span>`;
   }
 
   renderNavBar() {
@@ -261,7 +268,7 @@ export class ReplayWebApp extends LitElement {
         class="skip-link"
         >Skip main navigation</a
       >
-      <nav class="navbar has-background-info" aria-label="main">
+      <nav class="navbar" aria-label="main">
         <div class="navbar-brand">
           ${!this.embed
             ? html`
@@ -270,12 +277,6 @@ export class ReplayWebApp extends LitElement {
                   class="navbar-item wr-logo-item"
                   aria-labelledby="home"
                 >
-                  <fa-icon
-                    id="wrlogo"
-                    size="1.0rem"
-                    .svg=${this.mainLogo}
-                    aria-hidden="true"
-                  ></fa-icon>
                   ${this.renderNavBrand()}
                 </a>
                 ${this.collTitle
