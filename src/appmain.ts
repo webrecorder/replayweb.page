@@ -398,7 +398,6 @@ export class ReplayWebApp extends LitElement {
       embed="${ifDefined(this.embed === null ? undefined : this.embed)}"
       appName="${this.appName}"
       swName="${ifDefined(this.swName)}"
-      .appLogo="${this.mainLogo}"
       @replay-favicons=${this.onFavIcons}
       @update-title=${this.onTitle}
       @coll-loaded=${this.onCollLoaded}
