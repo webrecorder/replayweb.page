@@ -24,6 +24,7 @@ import {
   apiPrefix,
   replayPrefix,
 } from "./misc";
+import rwpIcon from "~assets/icons/replaywebpage.svg";
 
 import {
   sourceToId,
@@ -1440,10 +1441,10 @@ class Item extends LitElement {
                   @click="${this.onAbout}"
                 >
                   <fa-icon
-                    class="menu-logo"
+                    class="has-text-grey"
                     size="1.0rem"
                     aria-hidden="true"
-                    .svg=${this.appLogo}
+                    .svg=${rwpIcon}
                   ></fa-icon>
                   <span>&nbsp;About ${this.appName}</span>
                   <span class="menu-version">(${this.appVersion})</span>
