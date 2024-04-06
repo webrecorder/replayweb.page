@@ -34,9 +34,7 @@ Below are a few of the integrations we know of that use ReplayWeb.page:
 - [GhostArchive](https://ghostarchive.org/) - Free Web Archiving Service
 - [The Feminist Institute](https://www.thefeministinstitute.org/digital-archive/archived-websites) — Websites archived to document and celebrate feminist contributions to culture.
 - [CineFiles](https://cinefiles.bampfa.berkeley.edu/?f%5Bdoctype_s%5D%5B%5D=web+archive) — Film-related web archive ephemera collected by the UC Berkeley Art Museum and Pacific Film Archive.
-- [Stanford Digital Publication Web Archives](https://sup.webrecorder.net/) — Archives of SUP Digital publications.
+- [Stanford Digital Publication Web Archives](https://archive.supdigital.org/) — Archives of Stanford University Press Digital Publications.
 - [ysdn.info](https://ysdn.info/) — Final year grad show websites from the now defunct York / Sheridan design program.
-- Have you made something cool with ReplayWeb.page that should be here?? Let us know in a [GitHub issue](https://github.com/webrecorder/replayweb.page/issues/new)!
-
 
 If you know of any additional sites that you'd like us to include here, let us know by writing to _info_ [at] _webrecorder.net_
