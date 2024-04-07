@@ -1,0 +1,110 @@
+site_name: ReplayWeb.page Docs
+docs_dir: ../site/
+watch:
+  - ../site/
+site_dir: _genhtml/
+repo_url: https://github.com/webrecorder/replayweb.page
+repo_name: ReplayWeb.page
+edit_uri: edit/main/site/docs/
+extra_css:
+    - docs/stylesheets/extra.css
+extra_javascript:
+    - docs/js/sw.js
+theme:
+  name: material
+  custom_dir: ../site/docs/overrides
+  features:
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.instant
+    - navigation.tracking
+    - navigation.indexes
+    - navigation.footer
+    - content.code.copy
+    - content.action.edit
+    - content.tooltips
+    - search.suggest
+  palette:
+    scheme: webrecorder
+  logo: docs/assets/brand/replaywebpage-icon-white.svg
+  favicon: docs/assets/brand/favicon.svg
+
+  icon:
+    admonition:
+      note: bootstrap/pencil-fill
+      abstract: bootstrap/file-earmark-text-fill
+      info: bootstrap/info-circle-fill
+      tip: bootstrap/exclamation-circle-fill
+      success: bootstrap/check-circle-fill
+      question: bootstrap/question-circle-fill
+      warning: bootstrap/exclamation-triangle-fill
+      failure: bootstrap/x-octagon-fill
+      danger: bootstrap/exclamation-diamond-fill
+      bug: bootstrap/bug-fill
+      example: bootstrap/mortarboard-fill
+      quote: bootstrap/quote
+
+    repo: bootstrap/github
+    edit: bootstrap/pencil
+    view: bootstrap/eye
+
+nav:
+  - docs/index.md
+  - Embedding:
+    - docs/embedding/index.md
+    - docs/embedding/cors-settings.md
+  - User Guide:
+    - docs/user-guide/index.md
+    - docs/user-guide/loading.md
+    - docs/user-guide/locations.md
+    - docs/user-guide/exploring.md
+    - docs/user-guide/sharing.md
+    - docs/user-guide/offline-use.md
+
+markdown_extensions:
+  - toc: 
+      toc_depth: 3
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      options:
+        custom_icons:
+          - ../site/docs/overrides/.icons
+  - admonition
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.keys
+  - def_list
+  - attr_list
+
+extra:
+  generator: false
+  social:
+    - icon: bootstrap/globe
+      link: https://webrecorder.net
+    - icon: bootstrap/chat-left-text-fill
+      link: https://forum.webrecorder.net/
+    - icon: bootstrap/mastodon
+      link: https://digipres.club/@webrecorder
+    - icon: bootstrap/youtube
+      link: https://www.youtube.com/@webrecorder
+copyright: "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+
+plugins:
+  - macros
+  - search
+  - redirects:
+      redirect_maps:
+        'docs/cors-settings.md': 'docs/embedding/cors-settings.md'
+        'docs/usage.md': 'docs/user-guide/index.md'
+        'docs/loading_online.md': docs/user-guide/loading.md
+        'docs/loading_offline.md': docs/user-guide/offline-use.md
+        'docs/exploring.md': 'docs/user-guide/exploring.md'
+        'docs/sharing.md': 'docs/user-guide/sharing.md'
+        'docs/locations.md': 'docs/user-guide/locations.md'
+        'docs/formats.md': 'docs/user-guide/index.md#supported-formats'

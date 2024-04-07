@@ -8,12 +8,13 @@ coverage/
 **/local-examples/
 **/.DS_Store
 **/.sass-cache/
-_data/
-_site/
+**/__pycache__/
+_genhtml/
 dist/
 plugins-*/
-sw.js
-ui.js
+site/sw.js
+site/ui.js
+site/assets/
 .jekyll-cache
 
 ipfs-core.min.js

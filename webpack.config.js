@@ -103,16 +103,24 @@ const browserConfig = (/*env, argv*/) => {
     ui: "./src/index.ts",
   };
 
-  const patterns = [{ from: "package.json", to: "_data/package.json" }];
+  //const patterns = [{ from: "package.json", to: "_data/package.json" }];
+  let patterns = [{
+    from: "build/icon.png",
+    to: "site/assets/favicon.png",
+  }, {
+    from: "assets/logo.svg",
+    to: "site/assets/logo.svg"
+  }];
 
   if (isDevServer) {
     entry["sw"] = "@webrecorder/wabac/src/sw.js";
   } else {
     patterns.push({
       from: "node_modules/@webrecorder/wabac/dist/sw.js",
-      to: "sw.js",
+      to: "site/sw.js",
     });
   }
+
 
   /** @type {import('webpack').Configuration} */
   const config = {
@@ -129,7 +137,7 @@ const browserConfig = (/*env, argv*/) => {
 
     output: {
       path: path.join(__dirname),
-      filename: "[name].js",
+      filename: "dist/[name].js",
       libraryTarget: "self",
       globalObject: "self",
       publicPath: "/",
@@ -139,7 +147,7 @@ const browserConfig = (/*env, argv*/) => {
       compress: true,
       port: 9990,
       open: false,
-      static: path.join(__dirname),
+      static: path.join(__dirname, "site"),
       //publicPath: "/"
     },
 
