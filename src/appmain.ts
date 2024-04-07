@@ -10,7 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
-  rwpLogo,
   IS_APP,
   VERSION,
   clickOnSpacebarPress,
@@ -18,6 +17,7 @@ import {
 } from "./misc";
 
 import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.svg";
 import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
@@ -731,7 +731,13 @@ export class ReplayWebApp extends LitElement {
                 <div class="content">
                   <div style="display: flex">
                     <div class="has-text-centered" style="width: 220px">
-                      <wr-anim-logo class="logo" size="48px"></wr-anim-logo>
+                      <img
+                        style="height: 3rem;"
+                        src="data:image/svg+xml,${encodeURIComponent(
+                          rwpLogo as string,
+                        )}"
+                        alt="ReplayWeb.page Logo"
+                      />
                       <div style="font-size: smaller; margin-bottom: 1em">${
                         IS_APP ? "App" : ""
                       } v${VERSION}</div>
