@@ -1,6 +1,7 @@
 *.har
 *.warc
 *.warc.gz
+!site/examples/*.warc
 **/node_modules
 yarn-error.log
 coverage/
