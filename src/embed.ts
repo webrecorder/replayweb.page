@@ -7,11 +7,12 @@ import {
 } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { wrapCss, rwpLogo, updateFaviconLinks } from "./misc";
+import { wrapCss, updateFaviconLinks } from "./misc";
 import { SWManager } from "./swmanager";
 import { property } from "lit/decorators.js";
 import type { FavIconEventDetail } from "./types";
 import type { EmbedReplayData } from "./item";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 type IframeMessage = MessageEvent<
   | ({
