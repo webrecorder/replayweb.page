@@ -9,7 +9,7 @@ hide:
 Welcome to the ReplayWeb.page documentation! These docs contain the following sections:
 
 - [User Guide](user-guide/index.md) — Introduction and reference for using ReplayWeb.page to view archived web content.
-- [Embedding Docs](develop/embedding.md) — Information on integrating and embedding ReplayWeb.page as a web archive viewer into existing web sites.
+- [Embedding Docs](embedding/index.md) — Information on integrating and embedding ReplayWeb.page as a web archive viewer into existing web sites.
 
 ## What is ReplayWeb.page?
 [ReplayWeb.page](https://replayweb.page) is an open-source, browser-based viewer that loads and renders static web archive files. It functions as a serverless (client side) replay tool that _doesn't_ require a server to coordinate what archived content should be retrieved from a large central repository. It allows web archives to be hosted on any regular web server and viewed in any modern browser.
