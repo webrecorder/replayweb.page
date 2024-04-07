@@ -12,7 +12,6 @@ import { SWManager } from "./swmanager";
 import { property } from "lit/decorators.js";
 import type { FavIconEventDetail } from "./types";
 import type { EmbedReplayData } from "./item";
-import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 type IframeMessage = MessageEvent<
   | ({
@@ -84,7 +83,6 @@ class Embed extends LitElement {
   appName = "ReplayWeb.page";
   customConfig = null;
   reloadCount = 0;
-  logo = rwpLogo;
 
   isCrossOrigin: boolean | undefined;
   swmanager: SWManager | undefined;
@@ -122,7 +120,7 @@ class Embed extends LitElement {
     } catch (e) {
       // TODO: Fix this the next time the file is edited.
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this.errorMessage = this.swmanager.renderErrorReport(this.logo);
+      this.errorMessage = this.swmanager.renderErrorReport();
     }
   }
 
