@@ -8,7 +8,7 @@ coverage/
 **/.DS_Store
 **/.sass-cache/
 **/__pycache__/
-_genhtml/
+mkdocs/_genhtml/
 dist/
 plugins-*/
 site/sw.js
