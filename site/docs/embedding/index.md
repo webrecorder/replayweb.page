@@ -1,19 +1,19 @@
 # Embedding ReplayWeb.page
 
-## Primer
+## Introduction
 
 A key goal of ReplayWeb.page is to make embedding archived web content into other sites as easy as embedding other media like images and PDFs.
 
-To make this possible ReplayWeb.page provides the `#!html <replay-web-page>` HTML web component to support embedding in the pages where you would like to display web archives. This component works in all modern browsers, and has several configuration options that allow for control over the initial URL or snapshot to display from the archive when the component loads. The component can load WACZ files that are created with Webrecorder tools, as well as standalone WARC files.
+To make this possible ReplayWeb.page provides the `#!html <replay-web-page>` HTML [web component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to support embedding in the pages where you would like to display web archives. This component works in all modern browsers, and has several configuration options that allow for control over the initial URL or snapshot to display from the archive when the component loads. The component can load WACZ files, WARC files and [other formats](../user-guide/index.md#supported-formats).
 
-The `#!html <replay-web-page>` web component requires a backend service worker to be loaded by your website. While the frontend and backend are both static JavaScript assets which can be loaded from a CDN (Content Delivery Network), the backend service worker JavaScript file must be served from your website. This service worker is responsible for retrieving data on demand from your web archive file. 
+The `#!html <replay-web-page>` web component consists of a "backend" service worker, which emulates a web server, and a "frontend" UI, though in reality both are scripts running in the browser - there is no web server!
 
 !!! tip "Tip: Serving web archives efficiently with WACZ files"
     While other web archive filetypes may require ReplayWeb.page to download them in their entirety before viewing, WACZ files allow the service worker to pull individual resources from the file as they are requested by the user. Full retrieval of the WACZ by ReplayWeb.page is *not* required as long as the server delivering the WACZ file supports HTTP range requests. This means that serving archived content from WACZ files is effectively as bandwidth efficient as any other web content!
 
 ## Example
 
-### Loading the Frontend
+### Loading the ReplayWeb.page UI (Frontend)
 
 To embed a WACZ stored at `https://replayweb.page/docs/assets/tweet-example.wacz`, add the following `#!html <script>` tag to your HTML page to load the user interface from the jsDelivr CDN, and use the `#!html <replay-web-page>` component to point to the WACZ:
 
@@ -26,9 +26,10 @@ url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215
 
 In this example, the `source` attribute is pointing to the location of the WACZ file (in this case published on AWS S3) and the `url` attribute is used to indicate what URL to display from the archived item after the component loads.
 
-### Loading the Backend
+### Loading the Service Worker (Backend)
 
-ReplayWeb.page's backend is a [service worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) which intercepts requests for URLs and looks for them in your loaded archived item. Service workers are just JavaScript files, but it is necessary to add a service worker path from where the web archive will be served. This allows the service worker to catch requests only from the scope of the current page.
+ReplayWeb.page's backend is a [service worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) which intercepts requests for URLs and looks for them in your loaded archived item. Service workers are just JavaScript files and can be loaded from the CDN (Content Delivery Network), it is necessary to add a service worker path from where the web archive will be served to a local path. We use `/replay` in these examples, but it can be anything.
+Since the service worker takes over the rendering of this path, it should be a path that is otherwise non-existent (serves a 404) from the actual web server.
 
 To do this, create a `/replay` subdirectory and in it, a new JavaScript file (`/replay/sw.js`) and copy the following to the file:
 
@@ -38,6 +39,9 @@ importScripts("https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version() }}/sw
 
 If the HTML above was added to `https://example.com/path/my-web-archive-embed.html`
 then the `sw.js` should be added such that it is at: `https://example.com/path/replay/sw.js`.
+
+This has the affect imports the actual server worker from the CDN, serving it on your site `https://example.com/replay/sw.js` and
+allowing it to render web archives on the `/replay/` path.
 
 That's it! Loading `https://example.com/path/my-web-archive-embed.html` should now load the web archive.
 

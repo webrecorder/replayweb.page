@@ -414,7 +414,11 @@ export class ReplayWebApp extends LitElement {
               Explore and Replay Interactive Archived Webpages Directly in your
               Browser.
               <i
-                ><a target="_blank" href="./docs/examples">(See Examples)</a></i
+                ><a
+                  target="_blank"
+                  href="./docs/#archives-repositories-and-other-projects-using-replaywebpage"
+                  >(See Examples)</a
+                ></i
               >
             </p>
           `

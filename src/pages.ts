@@ -612,7 +612,7 @@ class Pages extends LitElement {
               @input="${this.onChangeQuery}"
               .value="${this.query}"
               type="text"
-              placeholder="Search by Page URL, Title or Text"
+              placeholder="Search by Page URL, Title, or Text"
             />
             <span class="icon is-left"
               ><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon
