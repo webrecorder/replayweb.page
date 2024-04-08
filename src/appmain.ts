@@ -247,11 +247,12 @@ export class ReplayWebApp extends LitElement {
 
   renderNavBrand() {
     return html` <img
-        style="height: 1.25rem;"
+        style="height: 1.25rem; user-drag: none; user-select: none; -moz-user-select: none;"
         src="data:image/svg+xml,${encodeURIComponent(
           brandLockupColor as string,
         )}"
         alt="ReplayWeb.page"
+        draggable="false"
       />
       <span
         id="home"
