@@ -75,10 +75,6 @@ const electronMainConfig = (/*env, argv*/) => {
         patterns: [
           // { from: "node_modules/classic-level/prebuilds/", to: "prebuilds" },
           { from: "build/extra_prebuilds/", to: "prebuilds" },
-          {
-            from: path.resolve(__dirname, "src/assets/favicons"),
-            to: path.resolve(__dirname, "dist/favicons"),
-          },
         ],
       }),
     ],
@@ -140,7 +136,7 @@ const browserConfig = (/*env, argv*/) => {
 
     output: {
       path: path.join(__dirname),
-      filename: "dist/[name].js",
+      filename: "site/[name].js",
       libraryTarget: "self",
       globalObject: "self",
       publicPath: "/",

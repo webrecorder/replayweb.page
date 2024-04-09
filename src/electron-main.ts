@@ -5,7 +5,7 @@ import path from "path";
 
 // ============================================================================
 const replayApp = new ElectronReplayApp({
-  staticPath: path.join(__dirname, "../"),
+  staticPath: path.join(__dirname, "../site"),
   profileName: "replaywebpage",
 });
 
