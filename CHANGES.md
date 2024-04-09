@@ -1,5 +1,9 @@
 ## CHANGES
 
+v1.8.17
+- Dependencies: update to wabac.js 2.17.3, wombat 3.7.3
+- Fidelity: Fix resolving relative URL by avoiding not-http/https URL as base URL, fixes #300 (via wombat 3.7.3)
+
 v1.8.16
 - Dependencies: update to wabac.js 2.17.2, electron 29.2.0
 - Fidelity: More accurate rewriting of 'import(' statement (via wabac.js 2.17.2)
