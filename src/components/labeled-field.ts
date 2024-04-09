@@ -2,6 +2,9 @@ import { LitElement, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { wrapCss } from "./../misc";
+import faClone from "@fortawesome/fontawesome-free/svgs/regular/clone.svg";
+import faCheck from "@fortawesome/fontawesome-free/svgs/solid/check.svg";
+
 import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
 
 @customElement("wr-labeled-field")
@@ -48,7 +51,18 @@ class LabeledField extends LitElement {
       <div class="col-content">
         <slot></slot>
         ${this.copy
-          ? html` <sl-copy-button .value=${this.copy || ""}></sl-copy-button>`
+          ? html` <sl-copy-button .value=${this.copy || ""}>
+              <fa-icon
+                slot="copy-icon"
+                .svg=${faClone}
+                aria-hidden="true"
+              ></fa-icon>
+              <fa-icon
+                slot="success-icon"
+                .svg=${faCheck}
+                aria-hidden="true"
+              ></fa-icon>
+            </sl-copy-button>`
           : nothing}
       </div>`;
   }
