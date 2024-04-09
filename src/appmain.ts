@@ -152,7 +152,7 @@ export class ReplayWebApp extends LitElement {
         align-items: center;
       }
       .wr-logo-item {
-        padding: 0 8px 0 0;
+        padding: 0 0.5rem 0 0;
 
         -webkit-user-drag: none;
         -khtml-user-drag: none;
@@ -253,17 +253,12 @@ export class ReplayWebApp extends LitElement {
 
   renderNavBrand() {
     return html` <fa-icon
-        .svg="${brandLockupColor}"
-        size=""
-        width="9.5rem"
-        height="1.25rem"
-      ></fa-icon>
-      <span
-        id="home"
-        class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
-      >
-        <span class="is-sr-only">Home</span>
-      </span>`;
+      .svg="${brandLockupColor}"
+      size=""
+      width="9.5rem"
+      height="1.25rem"
+      aria-hidden="true"
+    ></fa-icon>`;
   }
 
   renderNavBar() {
@@ -280,7 +275,7 @@ export class ReplayWebApp extends LitElement {
                 <a
                   href="${this.homeUrl}"
                   class="navbar-item wr-logo-item"
-                  aria-labelledby="home"
+                  aria-label="ReplayWeb.page Home"
                 >
                   ${this.renderNavBrand()}
                 </a>
