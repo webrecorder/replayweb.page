@@ -12,8 +12,8 @@ import { registerIconLibrary } from "@shoelace-style/shoelace/dist/utilities/ico
 
 import systemLibrary from "@shoelace-style/shoelace/dist/components/icon/library.system";
 
-// disable system library to prevent loading of unused data: URLs, as we're not using
-// <sl-icon>
+// disable system library to prevent loading of unused data: URLs
+// allow only "x-lg" as it is needed for sl-dialog
 registerIconLibrary("system", {
   resolver: (name) => {
     if (name === "x-lg") {
