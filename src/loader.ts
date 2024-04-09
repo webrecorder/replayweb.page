@@ -336,11 +336,13 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     return html`
       <section class="container">
         <div class="is-justify-content-center is-flex">
-          <img
-            style="height: 5rem; margin-bottom: 1rem;"
-            src="data:image/svg+xml,${encodeURIComponent(rwpLogo as string)}"
-            alt="ReplayWeb.page Logo"
-          />
+          <fa-icon
+            size="5rem"
+            style="margin-bottom: 1rem;"
+            .svg=${rwpLogo}
+            aria-label="ReplayWeb.page Logo"
+            role="img"
+          ></fa-icon>
         </div>
         ${!this.embed
           ? html` <div class="level">

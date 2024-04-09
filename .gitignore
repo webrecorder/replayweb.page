@@ -14,7 +14,7 @@ dist/
 plugins-*/
 site/sw.js
 site/ui.js
-site/assets/
+site/favicons/
 .jekyll-cache
 
 ipfs-core.min.js

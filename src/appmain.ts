@@ -152,7 +152,13 @@ export class ReplayWebApp extends LitElement {
         align-items: center;
       }
       .wr-logo-item {
-        padding: 0 8px 0 0;
+        padding: 0 0.5rem 0 0;
+
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        user-drag: none;
       }
       .no-wrap {
         white-space: nowrap;
@@ -246,20 +252,13 @@ export class ReplayWebApp extends LitElement {
   }
 
   renderNavBrand() {
-    return html` <img
-        style="height: 1.25rem; user-drag: none; user-select: none; -moz-user-select: none;"
-        src="data:image/svg+xml,${encodeURIComponent(
-          brandLockupColor as string,
-        )}"
-        alt="ReplayWeb.page"
-        draggable="false"
-      />
-      <span
-        id="home"
-        class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
-      >
-        <span class="is-sr-only">Home</span>
-      </span>`;
+    return html` <fa-icon
+      .svg="${brandLockupColor}"
+      size=""
+      width="9.5rem"
+      height="1.25rem"
+      aria-hidden="true"
+    ></fa-icon>`;
   }
 
   renderNavBar() {
@@ -276,7 +275,7 @@ export class ReplayWebApp extends LitElement {
                 <a
                   href="${this.homeUrl}"
                   class="navbar-item wr-logo-item"
-                  aria-labelledby="home"
+                  aria-label="ReplayWeb.page Home"
                 >
                   ${this.renderNavBrand()}
                 </a>
@@ -736,13 +735,12 @@ export class ReplayWebApp extends LitElement {
                 <div class="content">
                   <div style="display: flex">
                     <div class="has-text-centered" style="width: 220px">
-                      <img
-                        style="height: 3rem;"
-                        src="data:image/svg+xml,${encodeURIComponent(
-                          rwpLogo as string,
-                        )}"
-                        alt="ReplayWeb.page Logo"
-                      />
+                      <fa-icon
+                        size="3rem"
+                        .svg=${rwpLogo}
+                        aria-label="ReplayWeb.page Logo"
+                        role="img"
+                      ></fa-icon>
                       <div style="font-size: smaller; margin-bottom: 1em">${
                         IS_APP ? "App" : ""
                       } v${VERSION}</div>

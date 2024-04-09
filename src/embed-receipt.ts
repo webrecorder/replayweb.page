@@ -310,15 +310,17 @@ export class RWPEmbedReceipt extends LitElement {
               <div>
                 <a
                   target="_blank"
-                  href="https://github.com/webrecorder/replayweb.page"
+                  href="https://replayweb.page"
+                  aria-label="ReplayWeb.page Home"
                 >
-                  <img
-                    style="height: 1.5rem;"
-                    src="data:image/svg+xml,${encodeURIComponent(
-                      brandLockupColor as string,
-                    )}"
-                    alt="ReplayWeb.page Logo"
-                  />
+                  <fa-icon
+                    size=""
+                    height="1.5rem"
+                    width="12rem"
+                    .svg=${brandLockupColor}
+                    aria-label=""
+                    aria-hidden="true"
+                  ></fa-icon>
                 </a>
               </div>
               <span>
@@ -326,6 +328,7 @@ export class RWPEmbedReceipt extends LitElement {
                   class="has-text-black"
                   target="_blank"
                   href="https://github.com/webrecorder/replayweb.page"
+                  aria-label="ReplayWeb.page source code"
                   >Source Code
                   <fa-icon
                     class="menu-logo ml-1"

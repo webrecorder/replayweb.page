@@ -77,7 +77,7 @@ const electronMainConfig = (/*env, argv*/) => {
           { from: "build/extra_prebuilds/", to: "prebuilds" },
           {
             from: path.resolve(__dirname, "src/assets/favicons"),
-            to: path.resolve(__dirname, "dist"),
+            to: path.resolve(__dirname, "dist/favicons"),
           },
         ],
       }),
