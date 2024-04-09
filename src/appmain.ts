@@ -10,12 +10,14 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
-  rwpLogo,
   IS_APP,
   VERSION,
   clickOnSpacebarPress,
   updateFaviconLinks,
 } from "./misc";
+
+import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 import fasHelp from "@fortawesome/fontawesome-free/svgs/solid/question-circle.svg";
 import fasArrowLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
@@ -244,14 +246,20 @@ export class ReplayWebApp extends LitElement {
   }
 
   renderNavBrand() {
-    return html` <span
-      id="home"
-      class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
-    >
-      <span class="has-text-primary">replay</span>
-      <span class="has-text-link">web.page</span>
-      <span class="is-sr-only">Home</span>
-    </span>`;
+    return html` <img
+        style="height: 1.25rem; user-drag: none; user-select: none; -moz-user-select: none;"
+        src="data:image/svg+xml,${encodeURIComponent(
+          brandLockupColor as string,
+        )}"
+        alt="ReplayWeb.page"
+        draggable="false"
+      />
+      <span
+        id="home"
+        class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
+      >
+        <span class="is-sr-only">Home</span>
+      </span>`;
   }
 
   renderNavBar() {
@@ -261,7 +269,7 @@ export class ReplayWebApp extends LitElement {
         class="skip-link"
         >Skip main navigation</a
       >
-      <nav class="navbar has-background-info" aria-label="main">
+      <nav class="navbar" aria-label="main">
         <div class="navbar-brand">
           ${!this.embed
             ? html`
@@ -270,12 +278,6 @@ export class ReplayWebApp extends LitElement {
                   class="navbar-item wr-logo-item"
                   aria-labelledby="home"
                 >
-                  <fa-icon
-                    id="wrlogo"
-                    size="1.0rem"
-                    .svg=${this.mainLogo}
-                    aria-hidden="true"
-                  ></fa-icon>
                   ${this.renderNavBrand()}
                 </a>
                 ${this.collTitle
@@ -398,7 +400,6 @@ export class ReplayWebApp extends LitElement {
       embed="${ifDefined(this.embed === null ? undefined : this.embed)}"
       appName="${this.appName}"
       swName="${ifDefined(this.swName)}"
-      .appLogo="${this.mainLogo}"
       @replay-favicons=${this.onFavIcons}
       @update-title=${this.onTitle}
       @coll-loaded=${this.onCollLoaded}
@@ -472,7 +473,7 @@ export class ReplayWebApp extends LitElement {
     this.swmanager.register().catch(
       () =>
         // @ts-expect-error - TS2554 - Expected 2 arguments, but got 1.
-        (this.swErrorMsg = this.swmanager?.renderErrorReport(this.mainLogo)),
+        (this.swErrorMsg = this.swmanager?.renderErrorReport()),
     );
 
     window.addEventListener("popstate", () => {
@@ -735,7 +736,13 @@ export class ReplayWebApp extends LitElement {
                 <div class="content">
                   <div style="display: flex">
                     <div class="has-text-centered" style="width: 220px">
-                      <wr-anim-logo class="logo" size="48px"></wr-anim-logo>
+                      <img
+                        style="height: 3rem;"
+                        src="data:image/svg+xml,${encodeURIComponent(
+                          rwpLogo as string,
+                        )}"
+                        alt="ReplayWeb.page Logo"
+                      />
                       <div style="font-size: smaller; margin-bottom: 1em">${
                         IS_APP ? "App" : ""
                       } v${VERSION}</div>

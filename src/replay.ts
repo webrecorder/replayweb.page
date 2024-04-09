@@ -1,7 +1,8 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
-import { wrapCss, rwpLogo } from "./misc";
+import { wrapCss } from "./misc";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 import type { ItemType } from "./types";
 
 // ===========================================================================

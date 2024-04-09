@@ -6,7 +6,6 @@ import { styleMap } from "lit/directives/style-map.js";
 
 import allCssRaw from "../assets/main.scss";
 
-import rwpLogo from "../assets/logo.svg";
 import type { FavIconEventDetail } from "./types";
 
 const apiPrefix = "./w/api";
@@ -135,63 +134,6 @@ class FaIcon extends LitElement {
 }
 
 // ===========================================================================
-class AnimLogo extends FaIcon {
-  constructor() {
-    super();
-    // @ts-expect-error - TS2339 - Property 'svg' does not exist on type 'AnimLogo'.
-    this.svg = rwpLogo;
-  }
-
-  static get styles() {
-    return css`
-      #wrlogo #stop5687 {
-        animation: animLeft 7s linear infinite;
-      }
-
-      #wrlogo #stop5689 {
-        animation: animRight 7s linear infinite;
-      }
-
-      @keyframes animLeft {
-        0% {
-          stop-color: #4876ff;
-        }
-        25% {
-          stop-color: #1b0921;
-        }
-        50% {
-          stop-color: #4876ff;
-        }
-        75% {
-          stop-color: #04cdff;
-        }
-        100% {
-          stop-color: #4876ff;
-        }
-      }
-
-      @keyframes animRight {
-        0% {
-          stop-color: #04cdff;
-        }
-        25% {
-          stop-color: #4876ff;
-        }
-        50% {
-          stop-color: #1b0921;
-        }
-        75% {
-          stop-color: #4876ff;
-        }
-        100% {
-          stop-color: #04cdff;
-        }
-      }
-    `;
-  }
-}
-
-// ===========================================================================
 class WrModal extends LitElement {
   constructor() {
     super();
@@ -263,7 +205,6 @@ class WrModal extends LitElement {
 }
 
 customElements.define("fa-icon", FaIcon);
-customElements.define("wr-anim-logo", AnimLogo);
 
 customElements.define("wr-modal", WrModal);
 
@@ -272,9 +213,7 @@ export {
   IS_APP,
   VERSION,
   clickOnSpacebarPress,
-  rwpLogo,
   FaIcon,
-  AnimLogo,
   WrModal,
   LitElement,
   html,

@@ -7,7 +7,7 @@ import {
 } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { wrapCss, rwpLogo, updateFaviconLinks } from "./misc";
+import { wrapCss, updateFaviconLinks } from "./misc";
 import { SWManager } from "./swmanager";
 import { property } from "lit/decorators.js";
 import type { FavIconEventDetail } from "./types";
@@ -83,7 +83,6 @@ class Embed extends LitElement {
   appName = "ReplayWeb.page";
   customConfig = null;
   reloadCount = 0;
-  logo = rwpLogo;
 
   isCrossOrigin: boolean | undefined;
   swmanager: SWManager | undefined;
@@ -121,7 +120,7 @@ class Embed extends LitElement {
     } catch (e) {
       // TODO: Fix this the next time the file is edited.
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this.errorMessage = this.swmanager.renderErrorReport(this.logo);
+      this.errorMessage = this.swmanager.renderErrorReport();
     }
   }
 

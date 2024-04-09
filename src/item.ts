@@ -17,13 +17,13 @@ import "@shoelace-style/shoelace/dist/components/button/button.js";
 import "@shoelace-style/shoelace/dist/components/dialog/dialog.js";
 import {
   wrapCss,
-  rwpLogo,
   IS_APP,
   VERSION,
   clickOnSpacebarPress,
   apiPrefix,
   replayPrefix,
 } from "./misc";
+import rwpIcon from "~assets/icons/replaywebpage.svg";
 
 import {
   sourceToId,
@@ -167,9 +167,6 @@ class Item extends LitElement {
 
   @property({ type: String })
   appVersion = VERSION;
-
-  @property({ type: String })
-  appLogo = rwpLogo;
 
   @property({ type: Number })
   autoUpdateInterval = 10;
@@ -1385,10 +1382,10 @@ class Item extends LitElement {
                   @click="${this.onAbout}"
                 >
                   <fa-icon
-                    class="menu-logo"
+                    class="has-text-grey"
                     size="1.0rem"
                     aria-hidden="true"
-                    .svg=${this.appLogo}
+                    .svg=${rwpIcon}
                   ></fa-icon>
                   <span>&nbsp;About ${this.appName}</span>
                   <span class="menu-version">(${this.appVersion})</span>
@@ -1460,7 +1457,6 @@ class Item extends LitElement {
       .collInfo=${this.itemInfo || {}}
       url=${this.url}
       ts=${this.ts}
-      .appLogo=${this.appLogo}
     >
     </rwp-embed-receipt>`;
   }

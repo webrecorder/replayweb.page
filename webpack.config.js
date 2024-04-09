@@ -8,6 +8,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const package_json = require("./package.json");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
 // helper proxy URL, run locally for app
 const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
@@ -32,6 +33,7 @@ const optimization = {
 const tsConfig = {
   resolve: {
     extensions: [".ts", ".js"],
+    plugins: [new TsconfigPathsPlugin()],
   },
   module: {
     rules: [
@@ -73,6 +75,10 @@ const electronMainConfig = (/*env, argv*/) => {
         patterns: [
           // { from: "node_modules/classic-level/prebuilds/", to: "prebuilds" },
           { from: "build/extra_prebuilds/", to: "prebuilds" },
+          {
+            from: path.resolve(__dirname, "src/assets/favicons"),
+            to: path.resolve(__dirname, "dist"),
+          },
         ],
       }),
     ],
@@ -105,11 +111,8 @@ const browserConfig = (/*env, argv*/) => {
 
   //const patterns = [{ from: "package.json", to: "_data/package.json" }];
   let patterns = [{
-    from: "build/icon.png",
-    to: "site/assets/favicon.png",
-  }, {
-    from: "assets/logo.svg",
-    to: "site/assets/logo.svg"
+    from: "src/assets/favicons",
+    to: "site/favicons",
   }];
 
   if (isDevServer) {

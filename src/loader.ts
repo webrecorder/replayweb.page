@@ -1,5 +1,6 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
 import { wrapCss } from "./misc";
+import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 import prettyBytes from "pretty-bytes";
 
@@ -298,13 +299,6 @@ You can select a file to upload from the main page by clicking the 'Choose File.
         display: flex;
       }
 
-      .logo {
-        width: 96px;
-        height: 96px;
-        margin: 1em;
-        flex-grow: 1;
-      }
-
       .progress-div {
         position: relative;
         width: 400px !important;
@@ -341,8 +335,12 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   render() {
     return html`
       <section class="container">
-        <div class="has-text-centered is-flex">
-          <wr-anim-logo class="logo" size="96px"></wr-anim-logo>
+        <div class="is-justify-content-center is-flex">
+          <img
+            style="height: 5rem; margin-bottom: 1rem;"
+            src="data:image/svg+xml,${encodeURIComponent(rwpLogo as string)}"
+            alt="ReplayWeb.page Logo"
+          />
         </div>
         ${!this.embed
           ? html` <div class="level">
