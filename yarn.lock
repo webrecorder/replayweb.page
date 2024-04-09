@@ -905,15 +905,15 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-2.0.1.tgz#34bdc31727a1889198855913db2f270ace6d7bf8"
   integrity sha512-0G7tNyS+yW8TdgHwZKlDWYXFA6OJQnoLCQvYKkQP0Q2X205PSQ6RNUj0M+1OB/9gRQaUZ/ccYfaxd0nhaWKfjw==
 
-"@webrecorder/wabac@^2.17.1":
-  version "2.17.1"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.17.1.tgz#b39515ee7edf8ae8038ec12fc1a5dc006a5871a0"
-  integrity sha512-XKEtNmxeYPZMVbrkSRob3F7oc8lOW6C+E3IWetwxzJd2EBM4GQsqqBXj/quKfXvdcJ08dIpwB1P9eb6vJWW1UA==
+"@webrecorder/wabac@^2.17.3":
+  version "2.17.3"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.17.3.tgz#7e059aeef3eea68958793552dd1f96db9a19ce1e"
+  integrity sha512-D5CEMTP/+obOD6dh6ZIDNhY905AekzT12RMTrgL7Rq4RTB3mR6d1FKXDWh1MftPIvowlAGBBTu2C3KpFby+KZQ==
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.4"
     "@peculiar/asn1-schema" "^2.3.3"
     "@peculiar/x509" "^1.9.2"
-    "@webrecorder/wombat" "^3.7.2"
+    "@webrecorder/wombat" "^3.7.3"
     acorn "^8.10.0"
     auto-js-ipfs "^2.1.1"
     base64-js "^1.5.1"
@@ -934,10 +934,10 @@
     stream-browserify "^3.0.0"
     warcio "^2.2.1"
 
-"@webrecorder/wombat@^3.7.2":
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.7.2.tgz#f4c6c24d458e216db1ff8b5ad90db30c697bebbd"
-  integrity sha512-LV7C+hup7MAKjJXotRXPpQIhmNMISdBGb45zQ28oMYUFgYsKU5LmgGW51NTccdqjaqd6yBmvw2Z5kQbeoWc1BA==
+"@webrecorder/wombat@^3.7.3":
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.7.3.tgz#21e83b5947664873219021163ded9bb698f333f4"
+  integrity sha512-+zkXDxo1Xr8D9OwURk247fWZiJeix8xB+3rRoYX7fD3yyw6+hwCYSD3pp95ZTfD73ailXjr1WKy+Xz/1CFq3Iw==
   dependencies:
     warcio "^2.2.0"
 
@@ -2019,10 +2019,10 @@ electron-updater@^5.3.0:
     semver "^7.3.5"
     typed-emitter "^2.1.0"
 
-electron@^29.0.1:
-  version "29.0.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-29.0.1.tgz#936c0623a1bbf272dea423305f074de6ac016967"
-  integrity sha512-hsQr9clm8NCAMv4uhHlXThHn52UAgrHgyz3ubBAxZIPuUcpKVDtg4HPmx4hbmHIbYICI5OyLN3Ztp7rS+Dn4Lw==
+electron@^29.2.0:
+  version "29.2.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-29.2.0.tgz#98e9d45dcebda124fb0bd1ff20fc509ec692101c"
+  integrity sha512-ALKrCN52RG4g9prx4DriXSPnY5WoiyRUCNp7zEVQuoiNOpHTNqMMpRidQAHzntV4hajF1LMWHVoBkwqIs1jHhg==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^20.9.0"
