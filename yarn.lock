@@ -782,15 +782,15 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-2.0.1.tgz#34bdc31727a1889198855913db2f270ace6d7bf8"
   integrity sha512-0G7tNyS+yW8TdgHwZKlDWYXFA6OJQnoLCQvYKkQP0Q2X205PSQ6RNUj0M+1OB/9gRQaUZ/ccYfaxd0nhaWKfjw==
 
-"@webrecorder/wabac@^2.17.2":
-  version "2.17.2"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.17.2.tgz#6afc2b30f0bb27118d9a851c21531298d16da2e3"
-  integrity sha512-EZVyYV089HiABdl8mG/34wjrqCVX1l9xmkMtOVU43JuYOOlZghkjq20k5hmvgTfsiMQsoKo9KYq9nBF/2bSlTA==
+"@webrecorder/wabac@^2.17.3":
+  version "2.17.3"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.17.3.tgz#7e059aeef3eea68958793552dd1f96db9a19ce1e"
+  integrity sha512-D5CEMTP/+obOD6dh6ZIDNhY905AekzT12RMTrgL7Rq4RTB3mR6d1FKXDWh1MftPIvowlAGBBTu2C3KpFby+KZQ==
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.4"
     "@peculiar/asn1-schema" "^2.3.3"
     "@peculiar/x509" "^1.9.2"
-    "@webrecorder/wombat" "^3.7.2"
+    "@webrecorder/wombat" "^3.7.3"
     acorn "^8.10.0"
     auto-js-ipfs "^2.1.1"
     base64-js "^1.5.1"
@@ -811,10 +811,10 @@
     stream-browserify "^3.0.0"
     warcio "^2.2.1"
 
-"@webrecorder/wombat@^3.7.2":
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.7.2.tgz#f4c6c24d458e216db1ff8b5ad90db30c697bebbd"
-  integrity sha512-LV7C+hup7MAKjJXotRXPpQIhmNMISdBGb45zQ28oMYUFgYsKU5LmgGW51NTccdqjaqd6yBmvw2Z5kQbeoWc1BA==
+"@webrecorder/wombat@^3.7.3":
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.7.3.tgz#21e83b5947664873219021163ded9bb698f333f4"
+  integrity sha512-+zkXDxo1Xr8D9OwURk247fWZiJeix8xB+3rRoYX7fD3yyw6+hwCYSD3pp95ZTfD73ailXjr1WKy+Xz/1CFq3Iw==
   dependencies:
     warcio "^2.2.0"
 
