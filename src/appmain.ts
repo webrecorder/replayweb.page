@@ -735,13 +735,12 @@ export class ReplayWebApp extends LitElement {
                 <div class="content">
                   <div style="display: flex">
                     <div class="has-text-centered" style="width: 220px">
-                      <img
-                        style="height: 3rem;"
-                        src="data:image/svg+xml,${encodeURIComponent(
-                          rwpLogo as string,
-                        )}"
-                        alt="ReplayWeb.page Logo"
-                      />
+                      <fa-icon
+                        size="3rem"
+                        .svg=${rwpLogo}
+                        aria-label="ReplayWeb.page Logo"
+                        role="img"
+                      ></fa-icon>
                       <div style="font-size: smaller; margin-bottom: 1em">${
                         IS_APP ? "App" : ""
                       } v${VERSION}</div>
