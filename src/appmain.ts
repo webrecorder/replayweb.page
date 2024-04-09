@@ -14,6 +14,7 @@ import {
   VERSION,
   clickOnSpacebarPress,
   updateFaviconLinks,
+  unsafeSVG,
 } from "./misc";
 
 import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
@@ -153,6 +154,12 @@ export class ReplayWebApp extends LitElement {
       }
       .wr-logo-item {
         padding: 0 8px 0 0;
+
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        user-drag: none;
       }
       .no-wrap {
         white-space: nowrap;
@@ -246,14 +253,11 @@ export class ReplayWebApp extends LitElement {
   }
 
   renderNavBrand() {
-    return html` <img
-        style="height: 1.25rem; user-drag: none; user-select: none; -moz-user-select: none;"
-        src="data:image/svg+xml,${encodeURIComponent(
-          brandLockupColor as string,
-        )}"
-        alt="ReplayWeb.page"
-        draggable="false"
-      />
+    return html` <div class="text-left">
+        <svg width="9.5rem" height="1.25rem">
+          ${unsafeSVG(brandLockupColor)}
+        </svg>
+      </div>
       <span
         id="home"
         class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
