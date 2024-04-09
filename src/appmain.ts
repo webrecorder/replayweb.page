@@ -14,7 +14,6 @@ import {
   VERSION,
   clickOnSpacebarPress,
   updateFaviconLinks,
-  unsafeSVG,
 } from "./misc";
 
 import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
@@ -253,11 +252,12 @@ export class ReplayWebApp extends LitElement {
   }
 
   renderNavBrand() {
-    return html` <div class="text-left">
-        <svg width="9.5rem" height="1.25rem">
-          ${unsafeSVG(brandLockupColor)}
-        </svg>
-      </div>
+    return html` <fa-icon
+        .svg="${brandLockupColor}"
+        size=""
+        width="9.5rem"
+        height="1.25rem"
+      ></fa-icon>
       <span
         id="home"
         class="logo-text has-text-weight-bold is-size-6 has-allcaps wide-only"
