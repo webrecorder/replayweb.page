@@ -18,8 +18,3 @@ site/assets/
 .jekyll-cache
 
 ipfs-core.min.js
-site/apple-touch-icon.png
-site/favicon.ico
-site/icon-192.png
-site/icon-512.png
-site/icon.svg

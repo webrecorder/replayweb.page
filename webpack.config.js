@@ -112,7 +112,7 @@ const browserConfig = (/*env, argv*/) => {
   //const patterns = [{ from: "package.json", to: "_data/package.json" }];
   let patterns = [{
     from: "src/assets/favicons",
-    to: "site",
+    to: "site/favicons",
   }];
 
   if (isDevServer) {
