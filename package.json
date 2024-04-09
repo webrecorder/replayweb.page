@@ -68,14 +68,14 @@
     "/assets",
     "/dist",
     "/src",
-    "/ruffle",
-    "sw.js",
-    "ui.js",
-    "index.html"
+    "site/ruffle",
+    "site/sw.js",
+    "site/ui.js",
+    "site/index.html"
   ],
   "scripts": {
-    "build": "webpack --mode production && cp dist/ui.js site/ui.js",
-    "build-dev": "webpack --mode development && cp dist/ui.js site/ui.js",
+    "build": "webpack --mode production",
+    "build-dev": "webpack --mode development",
     "build-docs": "yarn run build && cd mkdocs && mkdocs build",
     "start-prod": "cd site && http-server -p 9990 --cors",
     "start-dev": "webpack serve --mode development",
@@ -106,15 +106,11 @@
       "dist/*.js",
       "dist/prebuilds/${platform}-${arch}/*",
       "dist/build/*",
-      "ui.js",
-      "sw.js",
-      "*.html",
-      "ruffle",
-      "webmanifest.json",
-      {
-        "from": "_site/assets",
-        "to": "assets"
-      }
+      "site/ui.js",
+      "site/sw.js",
+      "site/index.html",
+      "site/ruffle",
+      "site/webmanifest.json"
     ],
     "dmg": {
       "title": "ReplayWeb.page"
