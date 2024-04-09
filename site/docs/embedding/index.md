@@ -137,10 +137,11 @@ The `#!html <replay-web-page>` tag is a web component that supports a number of 
 | `url`        | The starting URL to load from the archive. If omitted, will start with the page list or URL search view. |
 | `ts`         | The timestamp of the starting URL to load. If omitted, the latest available version is used. |
 | `deepLink`   | If set, ReplayWeb.page will modify the URL of the page to allow for 'deep linking' to exact pages in the embed. |
-| `embed`      | (`default` / `full` / `replayonly` / `replay-with-info` ) - See [Embed Modes](#embed-modes) above.
+| `updateFavicons`| If set, ReplayWeb.page will set the favicon of the page to the current webpage being viewed. Only supported in Chrome.|
+| `embed`      | (`default` / `full` / `replayonly` / `replay-with-info` ) - See [Embed Modes](#embed-modes) above. |
 | `swName`     | Service Worker filename (default: `sw.js`). Set if using different name, don't include path, only filename |
 | `replayBase` | Location of the service worker file (eg. sw.js), defaults to `./replay/` as mentioned above, but can be overridden. |
-| `coll`       | Internal ID for this collection, usually generated automatically.
+| `coll`       | Internal ID for this collection, usually generated automatically. |
 | `config`     | Extra per collection config options (such as custom fuzzy matching rules, TODO add more info!) |
 | `sandbox`    | If set, will iframe in `sandbox`. Provides extra isolation, but prevents PDFs from loading in an embed, and may result in links opening in new windows. |
 | `noWebWorker`| If set, will not use Web Worker for loading, only Service Worker. May be useful for certain loading edge cases. |
