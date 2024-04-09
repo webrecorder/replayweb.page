@@ -32,6 +32,7 @@ import {
   getDateFromTS,
 } from "./pageutils";
 
+import fasTriangleExclamation from "@fortawesome/fontawesome-free/svgs/solid/exclamation-triangle.svg";
 import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 
 import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
@@ -1478,7 +1479,11 @@ class Item extends LitElement {
   renderItemInfo() {
     if (!this.itemInfo)
       return html`<sl-alert open variant="warning">
-        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <fa-icon
+          slot="icon"
+          .svg=${fasTriangleExclamation}
+          aria-hidden="true"
+        ></fa-icon>
         <strong>Archive info is not available</strong><br />
         Please reload and try again.
       </sl-alert>`;
