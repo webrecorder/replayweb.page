@@ -181,7 +181,7 @@ class ItemInfo extends LitElement {
               ${certFingerprintUrl
                 ? html`<span
                     ><a target="_blank" href="${certFingerprintUrl}"
-                      >View Certificate</a
+                      >&nbsp;View Certificate</a
                     ></span
                   >`
                 : nothing}
