@@ -2,7 +2,26 @@ import { LitElement, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { wrapCss } from "./../misc";
+import faClone from "@fortawesome/fontawesome-free/svgs/regular/clone.svg";
+import faCheck from "@fortawesome/fontawesome-free/svgs/solid/check.svg";
+import faX from "@fortawesome/fontawesome-free/svgs/solid/times.svg";
+
 import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
+
+import { registerIconLibrary } from "@shoelace-style/shoelace/dist/utilities/icon-library.js";
+
+import systemLibrary from "@shoelace-style/shoelace/dist/components/icon/library.system";
+
+// disable system library to prevent loading of unused data: URLs
+// allow only "x-lg" as it is needed for sl-dialog
+registerIconLibrary("system", {
+  resolver: (name) => {
+    if (name === "x-lg") {
+      return systemLibrary.resolver(name);
+    }
+    return "";
+  },
+});
 
 @customElement("wr-labeled-field")
 class LabeledField extends LitElement {
@@ -48,7 +67,23 @@ class LabeledField extends LitElement {
       <div class="col-content">
         <slot></slot>
         ${this.copy
-          ? html` <sl-copy-button .value=${this.copy || ""}></sl-copy-button>`
+          ? html` <sl-copy-button .value=${this.copy || ""}>
+              <fa-icon
+                slot="copy-icon"
+                .svg=${faClone}
+                aria-hidden="true"
+              ></fa-icon>
+              <fa-icon
+                slot="success-icon"
+                .svg=${faCheck}
+                aria-hidden="true"
+              ></fa-icon>
+              <fa-icon
+                slot="error-icon"
+                .svg=${faX}
+                aria-hidden="true"
+              ></fa-icon>
+            </sl-copy-button>`
           : nothing}
       </div>`;
   }
