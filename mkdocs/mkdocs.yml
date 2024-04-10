@@ -1,7 +1,7 @@
 site_name: ReplayWeb.page Docs
-docs_dir: ../site/
+docs_dir: ./site/
 watch:
-  - ../site/
+  - ./site/
 site_dir: _genhtml/
 repo_url: https://github.com/webrecorder/replayweb.page
 repo_name: ReplayWeb.page
@@ -12,7 +12,7 @@ extra_javascript:
     - docs/js/sw.js
 theme:
   name: material
-  custom_dir: ../site/docs/overrides
+  custom_dir: ./site/docs/overrides
   features:
     - navigation.sections
     - navigation.tabs
@@ -73,7 +73,7 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
       options:
         custom_icons:
-          - ../site/docs/overrides/.icons
+          - ./site/docs/overrides/.icons
   - admonition
   - pymdownx.inlinehilite
   - pymdownx.details

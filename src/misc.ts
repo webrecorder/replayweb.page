@@ -4,7 +4,7 @@ import { LitElement, html, css, unsafeCSS, type CSSResultGroup } from "lit";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 import { styleMap } from "lit/directives/style-map.js";
 
-import allCssRaw from "../assets/main.scss";
+import allCssRaw from "~assets/main.scss";
 
 import type { FavIconEventDetail } from "./types";
 
