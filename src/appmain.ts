@@ -83,6 +83,8 @@ export class ReplayWebApp extends LitElement {
 
   private droppedFile: File | null = null;
 
+  protected adblockUrl: string;
+
   constructor(swName = __SW_NAME__) {
     super();
 
@@ -91,6 +93,8 @@ export class ReplayWebApp extends LitElement {
 
     this.skipRuffle = false;
     this.useRuffle = false;
+
+    this.adblockUrl = "./adblock/adblock.gz";
 
     this.safariKeyframes();
 
@@ -462,6 +466,9 @@ export class ReplayWebApp extends LitElement {
     }
     if (this.embed) {
       qp.set("serveIndex", "1");
+    }
+    if (this.adblockUrl) {
+      qp.set("adblockUrl", this.adblockUrl);
     }
     query = qp.toString();
     if (query.length) {
