@@ -10,7 +10,7 @@
 
 ## Serverless Web Archive Viewer
 
-ReplayWeb.page provides a full web archive replay system running directly in the browser,
+ReplayWeb.page provides a full web archive viewer that runs directly in the browser,
 available at: [https://replayweb.page/](https://replayweb.page)
 
 For full user docs, see: [https://replayweb.page/docs](https://replayweb.page/docs).
@@ -25,7 +25,7 @@ See the [Embedding Guide](https://replayweb.page/docs/embedding/) for more info 
 
 ## What's in this repo
 
-ReplayWeb.page provides a static site generated with mkdocs, an npm package/library, and an Electron app all in this repo.
+ReplayWeb.page provides a static site generated with MkDocs, an npm package/library, and an Electron app all in this repo.
 
 This repository contains the 'frontend' UI for the replay system, while the 'backend' is provided via a service worker
 implementation found at: https://github.com/webrecorder/wabac.js. (Of course, both frontend and backend actually run in the browser).
@@ -35,7 +35,7 @@ The frontend is loaded from `ui.js`, while the backend service/web worker is loa
 This repository contains:
 
 - The core site hosted on https://replayweb.page/ via GitHub Pages
-- The docs for https://replayweb.page/docs` created with mkdocs
+- The docs for https://replayweb.page/docs created with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)
 - The package for npm module: https://www.npmjs.com/package/replaywebpage
 - A build system for https://replayweb.page and ReplayWeb.page App.
 - App releases at: https://github.com/webrecorder/replayweb.page/releases
@@ -44,7 +44,7 @@ This repository contains:
 
 To run ReplayWeb.page and view web archives, a regular HTTP server is all that is needed.
 
-ReplayWeb.page can run with any HTTP server locally. For example, you can run `http-server -p 9990` or `python -m http.server 9990` to run a static web server in the directory of this repository after running `yarn run build`. Then, simply load `http://localhost:9990/` and you'll have the core replayweb.page running locally.
+ReplayWeb.page can run with any HTTP server locally. For example, you can run `http-server -p 9990` or `python -m http.server 9990` to run a static web server in the directory of this repository after running `yarn run build`. Then, load `http://localhost:9990/` and you'll have the core replayweb.page running locally.
 
 ## Developing ReplayWeb.page
 
@@ -70,11 +70,11 @@ The package provides various commands that can be used with yarn/npm. Some usefu
 
 ### Static Site
 
-The static assets are placed in the root `index.html`, `sw.js` and `ui.js`, and can be used with any HTTP server. This provides the core ReplayWeb.page functionality.
+The static assets are placed in the root `index.html`, `sw.js`, and `ui.js`, and can be used with any HTTP server. This provides the core ReplayWeb.page functionality.
 
 ### Static Site + Docs
 
-The full site with docs is built using mkdocs. Using the `yarn build-docs` command, the static assets are copied into `mkdocs/site/` and using markdown in `mkdocs/site/docs`, the final static site is built to `mkdocs/_genhtml`. This is what is published to https://replayweb.page/ via CI.
+The full site with docs is built using MkDocs. Using the `yarn build-docs` command, the static assets are copied into `mkdocs/site/` and using Markdown in `mkdocs/site/docs`, the final static site is built to `mkdocs/_genhtml`. This is what is published to https://replayweb.page/ via CI.
 
 
 ### Service Worker Requirements
