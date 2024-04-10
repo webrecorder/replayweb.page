@@ -1,3 +1,5 @@
+**/sw.js
+**/ui.js
 *.har
 *.warc
 *.warc.gz
@@ -12,8 +14,6 @@ dist/
 plugins-*/
 !mkdocs/site/docs/examples/*.warc
 mkdocs/_genhtml/
-mkdocs/site/sw.js
-mkdocs/site/ui.js
 mkdocs/site/index.html
 mkdocs/site/embed.html
 mkdocs/site/webmanifest.json
