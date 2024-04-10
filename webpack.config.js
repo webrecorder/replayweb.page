@@ -73,7 +73,6 @@ const electronMainConfig = (/*env, argv*/) => {
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
         patterns: [
-          // { from: "node_modules/classic-level/prebuilds/", to: "prebuilds" },
           { from: "build/extra_prebuilds/", to: "prebuilds" },
         ],
       }),
@@ -105,16 +104,13 @@ const browserConfig = (/*env, argv*/) => {
     ui: "./src/index.ts",
   };
 
-  //const patterns = [{ from: "package.json", to: "_data/package.json" }];
-  let patterns = [];
+  const extraPlugins = [];
 
   if (isDevServer) {
     entry["sw"] = "@webrecorder/wabac/src/sw.js";
   } else {
-    patterns.push({
-      from: "node_modules/@webrecorder/wabac/dist/sw.js",
-      to: "sw.js",
-    });
+    const patterns = [{from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js"}];
+    extraPlugins.push(new CopyPlugin({patterns}));
   }
 
 
@@ -170,7 +166,7 @@ const browserConfig = (/*env, argv*/) => {
         __VERSION__: JSON.stringify(package_json.version),
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
-      new CopyPlugin({ patterns }),
+      ...extraPlugins
     ],
 
     module: {
