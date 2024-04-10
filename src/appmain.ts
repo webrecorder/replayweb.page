@@ -608,6 +608,11 @@ export class ReplayWebApp extends LitElement {
       this.loadInfo!.extraConfig.baseUrl = this.pageParams.get("basePageUrl");
     }
 
+    if (this.pageParams.get("adblockUrl")) {
+      this.loadInfo!.extraConfig = this.loadInfo!.extraConfig || {};
+      this.loadInfo!.extraConfig.adblockUrl = this.pageParams.get("adblockUrl");
+    }
+
     if (this.pageParams.get("customColl")) {
       this.loadInfo!.customColl = this.pageParams.get("customColl");
     }

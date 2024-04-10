@@ -12,6 +12,7 @@ coverage/
 **/__pycache__/
 dist/
 plugins-*/
+adblock/adblock.gz
 !mkdocs/site/docs/examples/*.warc
 mkdocs/_genhtml/
 mkdocs/site/index.html
@@ -19,4 +20,5 @@ mkdocs/site/embed.html
 mkdocs/site/webmanifest.json
 mkdocs/site/favicons
 mkdocs/site/ruffle
+mkdocs/site/adblock
 ipfs-core.min.js

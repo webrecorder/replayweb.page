@@ -29,6 +29,8 @@ let defaultReplayFile = "";
 
 const DEFAULT_REPLAY_BASE = "https://replayweb.page/";
 
+const DEFAULT_ADBLOCK_FILE = "./adblock/adblock.gz";
+
 // ===========================================================================
 class Embed extends LitElement {
   @property({ type: String }) url = "";
@@ -63,6 +65,9 @@ class Embed extends LitElement {
   @property({ type: Boolean }) noWebWorker = false;
   @property({ type: Boolean }) noCache = false;
   @property({ type: Boolean }) hideOffscreen: boolean | undefined;
+
+  @property({ type: Boolean }) useAdblock = false;
+  @property({ type: String }) adblockRulesUrl = DEFAULT_ADBLOCK_FILE;
 
   @property({ type: String }) newWindowBase = "";
 
@@ -287,6 +292,7 @@ class Embed extends LitElement {
         loading?: "eager";
         swName?: string;
         ruffle?: "1";
+        adblockUrl?: string;
       } = {
         source,
         customColl: this.coll,
@@ -322,6 +328,10 @@ class Embed extends LitElement {
 
       if (this.useRuffle) {
         params.ruffle = "1";
+      }
+
+      if (this.useAdblock && this.adblockRulesUrl) {
+        params.adblockUrl = this.adblockRulesUrl;
       }
 
       this.paramString = new URLSearchParams(

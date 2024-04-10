@@ -72,6 +72,7 @@ export type LoadInfo = {
     baseUrl?: unknown;
     headers?: unknown;
     recording?: unknown;
+    adblockUrl?: string | null;
   };
   customColl?: string | null;
   noWebWorker?: boolean;
