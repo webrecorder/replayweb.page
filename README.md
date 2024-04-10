@@ -8,7 +8,7 @@
     </div>
 </h1>
 
-## Serverless Web Archive Replay
+## Serverless Web Archive Viewer
 
 ReplayWeb.page provides a full web archive replay system running directly in the browser,
 available at: [https://replayweb.page/](https://replayweb.page)
