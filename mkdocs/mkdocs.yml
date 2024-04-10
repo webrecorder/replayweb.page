@@ -8,8 +8,6 @@ repo_name: ReplayWeb.page
 edit_uri: edit/main/site/docs/
 extra_css:
   - docs/stylesheets/extra.css
-extra_javascript:
-  - docs/js/sw.js
 theme:
   name: material
   custom_dir: ./site/docs/overrides
