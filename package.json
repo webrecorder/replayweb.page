@@ -78,6 +78,7 @@
     "build-docs": "yarn run build && cd mkdocs && ./copy-site.sh && mkdocs build",
     "publish-docs": "yarn run build && cd mkdocs && ./copy-site.sh && mkdocs gh-deploy --force",
     "start-prod": "http-server -p 9990 --cors",
+    "start-docs-prod": "yarn run build-docs && cd mkdocs/_genhtml && http-server -p 9990 --cors",
     "start-dev": "webpack serve --mode development",
     "start-docs": "yarn run build-dev && cd mkdocs && ./copy-site.sh && mkdocs serve",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",

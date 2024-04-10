@@ -4,7 +4,7 @@ export default defineConfig({
   reporter: process.env.CI ? "github" : "list",
   webServer: [
     {
-      command: "yarn run start-prod",
+      command: "yarn run start-docs-prod",
       url: "http://127.0.0.1:9990",
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
