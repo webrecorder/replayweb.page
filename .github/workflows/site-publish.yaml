@@ -29,5 +29,5 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
-      - run: pip install mkdocs-macros-plugin mkdocs-redirects mkdocs-material
+      - run: pip install -r mkdocs/requirements.txt
       - run: yarn run publish-docs

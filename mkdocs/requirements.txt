@@ -1,0 +1,3 @@
+mkdocs-macros-plugin
+mkdocs-redirects
+mkdocs-material

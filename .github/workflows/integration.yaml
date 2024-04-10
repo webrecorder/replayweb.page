@@ -29,5 +29,10 @@ jobs:
       - name: Playwright Install Browsers
         run: yarn playwright install
 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - run: pip install -r mkdocs/requirements.txt
+
       - name: Playwright Run Tests
         run: yarn run playwright test
