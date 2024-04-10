@@ -4,67 +4,83 @@
     </div>
 </h1>
 
-## Serverless Web Archive Replay
+[Embedded Viewer](https://replayweb.page/docs/embedding/) Usage Stats: [![](https://data.jsdelivr.com/v1/package/npm/replaywebpage/badge)](https://www.jsdelivr.com/package/npm/replaywebpage)
 
-[Embedded Viewer](https://replayweb.page/docs/embedding) Usage: [![](https://data.jsdelivr.com/v1/package/npm/replaywebpage/badge)](https://www.jsdelivr.com/package/npm/replaywebpage)
+<br/>
+
+## Serverless Web Archive Replay
 
 ReplayWeb.page provides a full web archive replay system running directly in the browser,
 available at: [https://replayweb.page/](https://replayweb.page)
 
 For full user docs, see: [https://replayweb.page/docs](https://replayweb.page/docs).
 
-See [CHANGES.md](CHANGES.md) for changes in the latest release.
-
 The ReplayWeb.page App can be downloaded from the [Releases](https://replayweb.page/releases) page.
+
+See [CHANGES.md](CHANGES.md) for the current changes, or the release notes on the link above.
 
 ### Embedding Guide
 
-See the [Embedding Guide](https://replayweb.page/docs/embedding) for more info on embedding web archives in other sites.
+See the [Embedding Guide](https://replayweb.page/docs/embedding/) for more info on embedding web archives in other sites.
 
 ## What's in this repo
 
-ReplayWeb.page is a static web site / offline web app + Electron app.
+ReplayWeb.page provides a static site generated with mkdocs, an npm package/library, and an Electron app all in this repo.
 
-This repository contains the frontend UI for the replay system, while the backend is provided via a service worker
-implementation found at: https://github.com/webrecorder/wabac.js
+This repository contains the 'frontend' UI for the replay system, while the 'backend' is provided via a service worker
+implementation found at: https://github.com/webrecorder/wabac.js. (Of course, both frontend and backend actually run in the browser).
 
 The frontend is loaded from `ui.js`, while the backend service/web worker is loaded from `sw.js`.
 
 This repository contains:
 
-- The built assets for the site hosted at https://replayweb.page/ via GitHub Pages
+- The core site hosted on https://replayweb.page/ via GitHub Pages
+- The docs for https://replayweb.page/docs` created with mkdocs
 - The package for npm module: https://www.npmjs.com/package/replaywebpage
 - A build system for https://replayweb.page and ReplayWeb.page App.
-- Docs hosted at: https://replayweb.page/docs
 - App releases at: https://github.com/webrecorder/replayweb.page/releases
 
 ## Running ReplayWeb.page
 
 To run ReplayWeb.page and view web archives, a regular HTTP server is all that is needed.
 
-ReplayWeb.page can run with any HTTP server locally. For example, you can run `http-server -p 9990` or `python -m http.server 9990` to run a static web server in the directory of this repository. Then, simply load `http://localhost:9990/` and you'll have replayweb.page running locally.
+ReplayWeb.page can run with any HTTP server locally. For example, you can run `http-server -p 9990` or `python -m http.server 9990` to run a static web server in the directory of this repository after running `yarn run build`. Then, simply load `http://localhost:9990/` and you'll have the core replayweb.page running locally.
 
 ## Developing ReplayWeb.page
 
-ReplayWeb.page is built as a Node package can be installed using yarn:
+ReplayWeb.page is built as a Node package can be installed using yarn: `yarn install`
 
-`yarn install`
-
-The package provides various commands that can be used with yarn:
+The package provides various commands that can be used with yarn/npm. Some useful commands include:
 
 - `yarn start-dev` - to run in dev mode with Webpack dev server on port 9990. Autobuilds dev assets.
 
-- `yarn build` - to build production assets sw.js, ui.js
+- `yarn start-docs` - to build assets in dev mode, and start docs in dev mode. Autobuilds /docs assets.
 
-- `yarn start-prod` - to run production site on port 9990, with previously built assets
+- `yarn start-prod` - to run production site on port 9990, with previously built assets (without docs)
+
+- `yarn start-prod-docs` - to build production version of the site and build docs with `/docs` endpoint available.
 
 - `yarn start-electron` - to start electron in dev mode, with previously built assets
 
+- `yarn build` - to build production assets sw.js, ui.js
+
+- `yarn build-docs` - to build the docs site in `mkdocs/site` to `mkdocs/_genhtml`
+
 - `yarn dist` - to build production assets + Electron app (in dist/)
 
-The static assets are placed in the root `index.html`, `sw.js` and `ui.js`, and can be used with any HTTP server.
+### Static Site
 
-For service workers to work, they must be served from either localhost or an HTTPS endpoint.
+The static assets are placed in the root `index.html`, `sw.js` and `ui.js`, and can be used with any HTTP server. This provides the core ReplayWeb.page functionality.
+
+### Static Site + Docs
+
+The full site with docs is built using mkdocs. Using the `yarn build-docs` command, the static assets are copied into `mkdocs/site/` and using markdown in `mkdocs/site/docs`, the final static site is built to `mkdocs/_genhtml`. This is what is published to https://replayweb.page/ via CI.
+
+
+### Service Worker Requirements
+
+Note that for the 'backend' service worker to work, the static site must be served from either localhost or an HTTPS endpoint.
+This is browser security requirement and not much can be done to get around that.
 
 See the [user docs](https://replayweb.page/docs/) for additional info about using ReplayWeb.page
 
