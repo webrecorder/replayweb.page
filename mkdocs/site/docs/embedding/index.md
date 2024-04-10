@@ -15,12 +15,12 @@ The `#!html <replay-web-page>` web component consists of a "backend" service wor
 
 ### Loading the ReplayWeb.page UI (Frontend)
 
-To embed a WACZ stored at `https://replayweb.page/docs/assets/tweet-example.wacz`, add the following `#!html <script>` tag to your HTML page to load the user interface from the jsDelivr CDN, and use the `#!html <replay-web-page>` component to point to the WACZ:
+To embed a WACZ stored at `https://replayweb.page/docs/examples/tweet-example.wacz`, add the following `#!html <script>` tag to your HTML page to load the user interface from the jsDelivr CDN, and use the `#!html <replay-web-page>` component to point to the WACZ:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/replaywebpage@{{ rwp_version() }}/ui.js"></script>
 
-<replay-web-page source="https://replayweb.page/docs/assets/tweet-example.wacz"
+<replay-web-page source="https://replayweb.page/docs/examples/tweet-example.wacz"
 url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
 ```
 
@@ -45,7 +45,7 @@ allowing it to render web archives on the `/replay/` path.
 
 That's it! Loading `https://example.com/path/my-web-archive-embed.html` should now load the web archive.
 
-Be sure to add width and height styles to the `#!html <replay-web-page>` tag as needed to scale the embed, and replace `https://replayweb.page/docs/assets/example.wacz` with any web archive hosted on your site.
+Be sure to add width and height styles to the `#!html <replay-web-page>` tag as needed to scale the embed, and replace `https://replayweb.page/docs/examples/example.wacz` with any web archive hosted on your site.
 
 ??? Info "Info: Loading files from different servers"
     If the file is loaded from a different origin, your site must have Cross Origin Resource Sharing (CORS) access to download the web archive.
@@ -124,8 +124,8 @@ ReplayWeb.page offers four different ways to embed the archived content, includi
 - `replay-with-info`: Show the `replayonly` mode, but also add an archive info dropdown, which shows an archival 'receipt' with provenance and verification information (new in 1.7.0)
 
 ??? example "Example: Embed with `replay-with-info` enabled"
-    <script src="https://cdn.jsdelivr.net/npm/replaywebpage/ui.js"></script>
-    <replay-web-page style="height: 600px" loading="eager" embed="replay-with-info" replaybase="../../../" source="../../assets/tweet-example.wacz"url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
+    <script src="/ui.js"></script>
+    <replay-web-page style="height: 600px" loading="eager" embed="replay-with-info" replaybase="/" source="/docs/examples/tweet-example.wacz"url="https://oembed.link/https://twitter.com/webrecorder_io/status/1565881026215219200"></replay-web-page>
 
 ## Embedding Options
 

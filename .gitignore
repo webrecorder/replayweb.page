@@ -10,7 +10,7 @@ coverage/
 **/__pycache__/
 dist/
 plugins-*/
-!mkdocs/site/examples/*.warc
+!mkdocs/site/docs/examples/*.warc
 mkdocs/_genhtml/
 mkdocs/site/sw.js
 mkdocs/site/ui.js

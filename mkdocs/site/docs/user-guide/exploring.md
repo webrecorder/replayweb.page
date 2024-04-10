@@ -16,7 +16,7 @@ Pages can be searched for by their title, URLs, or extracted text if available.
 
 ReplayWeb.page will load pre-generated full-text search data when loading WACZ files, and will also attempt to generate full-text index from HTML files contained in WARC files upon loading a WARC.
 
-[See an example of searching for pages containing "WARC".](https://replayweb.page/?source=examples/netpreserve-twitter.warc#view=pages&query=WARC)
+[See an example of searching for pages containing "WARC".](/?source=docs/examples/netpreserve-twitter.warc#view=pages&query=WARC)
 
 ### Resources
 
@@ -24,7 +24,7 @@ The resources view displays all the content within a loaded archived item, liste
 
 This view is available for all archives that only store raw data.
 
-[See an example of searching for image resources.](https://replayweb.page/?source=examples/netpreserve-twitter.warc#view=resources&currMime=image%2F&urlSearchType=prefix)
+[See an example of searching for image resources.](/?source=docs/examples/netpreserve-twitter.warc#view=resources&currMime=image%2F&urlSearchType=prefix)
 
 #### Searching For Resources
 
