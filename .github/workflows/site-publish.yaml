@@ -26,11 +26,8 @@ jobs:
       - name: Yarn Install
         run: yarn install --frozen-lockfile
 
-      - name: Yarn Build
-        run: yarn build
-
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
       - run: pip install mkdocs-macros-plugin mkdocs-redirects mkdocs-material
-      - run: cd mkdocs && mkdocs gh-deploy --force
+      - run: yarn run publish-docs
