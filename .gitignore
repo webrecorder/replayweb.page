@@ -19,4 +19,5 @@ mkdocs/site/embed.html
 mkdocs/site/webmanifest.json
 mkdocs/site/favicons
 mkdocs/site/ruffle
+mkdocs/site/adblock
 ipfs-core.min.js

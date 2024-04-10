@@ -151,6 +151,8 @@ The `#!html <replay-web-page>` tag is a web component that supports a number of 
 | `requireSubdomainIframe` | If set, will only load embed in an iframe loaded from a subdomain, for increased origin isolation. |
 | `loading="eager"` | If set, will load the entire WACZ file at once (regardless of size), and not attempt on-demand range request loading. |
 | `useRuffle` | If set, will enable include Ruffle Flash emulator. Must include the `ruffle/` directory in `replayBase`. |
+| `useAdblock` | If set, will enable adblocking, by injecting CSS stylesheets to hide ads based on a list of ad filter rules. |
+| `adblockRulesUrl` | Provide a custom adblock filter rules URL. By default, the [EasyList](https://easylist.to/) filters are used, but a custom text file include [Adblock Plus filter rules](https://adblockplus.org/filters) can be provided. Only rules containing css selectors (via `##` filter) are used. |
 
 ## Further Examples
 

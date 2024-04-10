@@ -5,3 +5,4 @@ embed.html
 webmanifest.json
 favicons
 ruffle
+adblock
