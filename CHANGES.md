@@ -3,27 +3,33 @@
 ## CHANGES
 
 v1.8.17
+
 - Dependencies: update to wabac.js 2.17.3, wombat 3.7.3
 - Fidelity: Fix resolving relative URL by avoiding not-http/https URL as base URL, fixes #300 (via wombat 3.7.3)
 
 v1.8.16
+
 - Dependencies: update to wabac.js 2.17.2, electron 29.2.0
 - Fidelity: More accurate rewriting of 'import(' statement (via wabac.js 2.17.2)
 
 v1.8.15
+
 - Dependencies: update to wabac.js 2.17.1, wombat 3.7.2, electron 29.0.1
 - Build: update to latest builder process
 
 v1.8.14
+
 - Loading: fix loading revisit records that may have incorrect content-length (via wabac.js)
 - Fidelity: improved fuzzy matching rules (via wabac.js)
 - Misc: github issue templates, fix typo in CORS config docs
 - Dependencies: Update to wabac.js 2.16.13
 
 v1.8.13
+
 - Loading: Ensure default index.html is served when not in embed mode, don't add '?serveIndex=1' for app itself
 
 v1.8.12
+
 - Loading: Fixes embed 'Purge Cache + Reload', ensure '?serveIndex=1' is always set on all service worker loading
 
 v1.8.11

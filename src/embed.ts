@@ -118,8 +118,6 @@ class Embed extends LitElement {
       await this.swmanager.register();
       this.inited = true;
     } catch (e) {
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.errorMessage = this.swmanager.renderErrorReport();
     }
   }

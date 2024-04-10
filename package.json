@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -65,21 +65,22 @@
     "webpack-merge": "^5.10.0"
   },
   "files": [
-    "/assets",
     "/dist",
     "/src",
-    "site/ruffle",
-    "site/sw.js",
-    "site/ui.js",
-    "site/index.html"
+    "/ruffle",
+    "/sw.js",
+    "/ui.js",
+    "/index.html"
   ],
   "scripts": {
     "build": "webpack --mode production",
     "build-dev": "webpack --mode development",
-    "build-docs": "yarn run build && cd mkdocs && mkdocs build",
-    "start-prod": "cd site && http-server -p 9990 --cors",
+    "build-docs": "yarn run build && cd mkdocs && ./copy-site.sh && mkdocs build",
+    "publish-docs": "yarn run build && cd mkdocs && ./copy-site.sh && mkdocs gh-deploy --force",
+    "start-prod": "http-server -p 9990 --cors",
+    "start-docs-prod": "yarn run build-docs && cd mkdocs/_genhtml && http-server -p 9990 --cors",
     "start-dev": "webpack serve --mode development",
-    "start-docs": "yarn run build-dev && cd mkdocs && mkdocs serve",
+    "start-docs": "yarn run build-dev && cd mkdocs && ./copy-site.sh && mkdocs serve",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
     "test-start-embed": "cd tests/embed; http-server -p 8020",
     "test-start-sandbox": "cd tests/embed/sandbox; http-server -p 8030",
@@ -106,11 +107,11 @@
       "dist/*.js",
       "dist/prebuilds/${platform}-${arch}/*",
       "dist/build/*",
-      "site/ui.js",
-      "site/sw.js",
-      "site/index.html",
-      "site/ruffle",
-      "site/webmanifest.json"
+      "ui.js",
+      "sw.js",
+      "index.html",
+      "ruffle",
+      "webmanifest.json"
     ],
     "dmg": {
       "title": "ReplayWeb.page"

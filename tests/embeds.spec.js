@@ -14,6 +14,20 @@ test("same-domain embed is loading", async ({ page }) => {
   await expect(res).toContainText("Want to help");
 });
 
+test("docs page embed is loading", async ({ page }) => {
+  await page.goto("http://localhost:9990/docs/embedding/");
+
+  const res = page
+    .locator("replay-web-page")
+    .frameLocator("iframe")
+    .locator("replay-app-main wr-item wr-coll-replay")
+    .frameLocator("iframe")
+    .frameLocator("iframe#twitter-widget-0")
+    .locator("body");
+
+  await expect(res).toContainText("Want to help");
+});
+
 test("cross-domain embed is loading", async ({ page }) => {
   await page.goto("http://localhost:8020/");
 
