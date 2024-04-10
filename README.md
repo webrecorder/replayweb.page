@@ -1,12 +1,12 @@
+[Embedded Viewer](https://replayweb.page/docs/embedding/) Usage Stats: [![](https://data.jsdelivr.com/v1/package/npm/replaywebpage/badge)](https://www.jsdelivr.com/package/npm/replaywebpage)
+
+<hr/>
+
 <h1>
     <div align="center">
         <img alt="ReplayWebpage" src="src/assets/brand/replaywebpage-lockup-color-dynamic.svg" width="90%">
     </div>
 </h1>
-
-[Embedded Viewer](https://replayweb.page/docs/embedding/) Usage Stats: [![](https://data.jsdelivr.com/v1/package/npm/replaywebpage/badge)](https://www.jsdelivr.com/package/npm/replaywebpage)
-
-<br/>
 
 ## Serverless Web Archive Replay
 
