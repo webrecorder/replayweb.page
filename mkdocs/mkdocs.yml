@@ -7,9 +7,9 @@ repo_url: https://github.com/webrecorder/replayweb.page
 repo_name: ReplayWeb.page
 edit_uri: edit/main/site/docs/
 extra_css:
-    - docs/stylesheets/extra.css
+  - docs/stylesheets/extra.css
 extra_javascript:
-    - docs/js/sw.js
+  - docs/js/sw.js
 theme:
   name: material
   custom_dir: ./site/docs/overrides
@@ -52,18 +52,18 @@ theme:
 nav:
   - docs/index.md
   - Embedding:
-    - docs/embedding/index.md
-    - docs/embedding/cors-settings.md
+      - docs/embedding/index.md
+      - docs/embedding/cors-settings.md
   - User Guide:
-    - docs/user-guide/index.md
-    - docs/user-guide/loading.md
-    - docs/user-guide/locations.md
-    - docs/user-guide/exploring.md
-    - docs/user-guide/sharing.md
-    - docs/user-guide/offline-use.md
+      - docs/user-guide/index.md
+      - docs/user-guide/loading.md
+      - docs/user-guide/locations.md
+      - docs/user-guide/exploring.md
+      - docs/user-guide/sharing.md
+      - docs/user-guide/offline-use.md
 
 markdown_extensions:
-  - toc: 
+  - toc:
       toc_depth: 3
       permalink: true
   - pymdownx.highlight:
@@ -100,11 +100,11 @@ plugins:
   - search
   - redirects:
       redirect_maps:
-        'docs/cors-settings.md': 'docs/embedding/cors-settings.md'
-        'docs/usage.md': 'docs/user-guide/index.md'
-        'docs/loading_online.md': docs/user-guide/loading.md
-        'docs/loading_offline.md': docs/user-guide/offline-use.md
-        'docs/exploring.md': 'docs/user-guide/exploring.md'
-        'docs/sharing.md': 'docs/user-guide/sharing.md'
-        'docs/locations.md': 'docs/user-guide/locations.md'
-        'docs/formats.md': 'docs/user-guide/index.md#supported-formats'
+        "docs/cors-settings.md": "docs/embedding/cors-settings.md"
+        "docs/usage.md": "docs/user-guide/index.md"
+        "docs/loading_online.md": docs/user-guide/loading.md
+        "docs/loading_offline.md": docs/user-guide/offline-use.md
+        "docs/exploring.md": "docs/user-guide/exploring.md"
+        "docs/sharing.md": "docs/user-guide/sharing.md"
+        "docs/locations.md": "docs/user-guide/locations.md"
+        "docs/formats.md": "docs/user-guide/index.md#supported-formats"

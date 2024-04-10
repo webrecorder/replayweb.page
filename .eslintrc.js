@@ -103,10 +103,11 @@ module.exports = {
   ignorePatterns: [
     "__generated__",
     "__mocks__",
+    "mkdocs/_genhtml",
     "dist",
     "ruffle",
-    "ui.js",
-    "sw.js",
+    "**/ui.js",
+    "**/sw.js",
   ],
   overrides: [
     {

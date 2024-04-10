@@ -28,7 +28,6 @@ test("docs page embed is loading", async ({ page }) => {
   await expect(res).toContainText("Want to help");
 });
 
-
 test("cross-domain embed is loading", async ({ page }) => {
   await page.goto("http://localhost:8020/");
 
