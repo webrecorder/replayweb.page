@@ -65,13 +65,12 @@
     "webpack-merge": "^5.10.0"
   },
   "files": [
-    "/assets",
     "/dist",
     "/src",
-    "site/ruffle",
-    "site/sw.js",
-    "site/ui.js",
-    "site/index.html"
+    "/ruffle",
+    "/sw.js",
+    "/ui.js",
+    "/index.html"
   ],
   "scripts": {
     "build": "webpack --mode production",

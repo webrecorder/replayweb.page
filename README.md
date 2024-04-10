@@ -1,6 +1,6 @@
 <h1>
     <div align="center">
-        <img alt="ReplayWebpage" src="assets/replaywebpage-lockup-color-dynamic.svg" width="90%">
+        <img alt="ReplayWebpage" src="src/assets/brand/replaywebpage-lockup-color-dynamic.svg" width="90%">
     </div>
 </h1>
 
