@@ -2,6 +2,28 @@
 
 ## CHANGES
 
+v2.0.0
+
+- Show snapshot timestamp in location bar by @SuaYoo in https://github.com/webrecorder/replayweb.page/pull/228
+- Migrate ReplayWebApp, Coll and Replay to TS by @SuaYoo in https://github.com/webrecorder/replayweb.page/pull/233
+- Fix missed rename, and improve types by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/276
+- Update NPM packaging, linting, and a bunch of types by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/275
+- Tab list disappears with an empty WARC by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/284
+- ESLint parity with the Browsertrix repo by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/288
+- Typescript config parity with Browsertrix repo by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/289
+- feature: allow embed <replay-web-page> to also support updating favicons from replay by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/287
+- MKDocs conversion by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/278
+- Add example links to exploring section by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/298
+- 2.0 UX Changes by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/295
+- Reasonably Scoped Branding Update by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/299
+- Convert URL encoded images to inline SVGs with fa-icon by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/303
+- Adds sl-copy-button fontawesome icons by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/302
+- Electron Fix for 2.0.0 by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/304
+- Docs: Add `updateFavicons` to the embed options list by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/305
+- Site reorg: Remove site/ subpath by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/306
+- Adblock Support for Embeds by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/308
+- README tweaks for 2.0.0 by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/309
+
 v1.8.17
 
 - Dependencies: update to wabac.js 2.17.3, wombat 3.7.3
