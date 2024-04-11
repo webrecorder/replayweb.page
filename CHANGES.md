@@ -23,6 +23,11 @@ v2.0.0
 - Site reorg: Remove site/ subpath by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/306
 - Adblock Support for Embeds by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/308
 - README tweaks for 2.0.0 by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/309
+- update ruffle to 2024-04-10 release by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/314
+- Dependency Updates by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/315
+- build(deps): bump loader-utils from 2.0.0 to 2.0.4 by @dependabot in https://github.com/webrecorder/replayweb.page/pull/316
+- 2.0.0 Release by @SuaYoo in https://github.com/webrecorder/replayweb.page/pull/269
+
 
 v1.8.17
 
