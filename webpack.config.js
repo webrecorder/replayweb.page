@@ -172,7 +172,7 @@ const browserConfig = (/*env, argv*/) => {
       rules: [
         {
           test: /\.svg$/,
-          use: ["svg-inline-loader"],
+          use: ["raw-loader"],
         },
         {
           test: /main.scss$/,
