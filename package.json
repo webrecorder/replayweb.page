@@ -70,7 +70,8 @@
     "/ruffle",
     "/sw.js",
     "/ui.js",
-    "/index.html"
+    "/index.html",
+    "adblock/adblock.gz"
   ],
   "scripts": {
     "build": "webpack --mode production && ./adblock/fetch-adblock.sh",
