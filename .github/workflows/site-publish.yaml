@@ -6,6 +6,9 @@ on:
     paths:
       - 'site/**'
       - 'mkdocs/**'
+      - 'src/**'
+      - 'package.json'
+      - 'yarn.lock'
 
 permissions:
   contents: write
@@ -30,4 +33,9 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install -r mkdocs/requirements.txt
-      - run: yarn run publish-docs
+
+      - name: Build RWP + Docs
+        run: yarn run build-docs
+
+      - name: Publish to GH
+        run: cd mkdocs; mkdocs gh-deploy --force
