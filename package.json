@@ -83,6 +83,7 @@
     "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
     "test-start-embed": "cd tests/embed; http-server -p 8020",
     "test-start-sandbox": "cd tests/embed/sandbox; http-server -p 8030",
+    "update-ruffle": "./ruffle/download-latest-ruffle.sh",
     "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
     "pack-signed": "electron-builder",
     "dist": "yarn run build && yarn run pack",

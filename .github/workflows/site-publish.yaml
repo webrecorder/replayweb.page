@@ -34,6 +34,9 @@ jobs:
           python-version: 3.x
       - run: pip install -r mkdocs/requirements.txt
 
+      - name: Update Ruffle
+        run: yarn run update-ruffle
+
       - name: Build RWP + Docs
         run: yarn run build-docs
 
