@@ -11,7 +11,7 @@ available at: [https://replayweb.page/](https://replayweb.page)
 
 For full user docs, see: [https://replayweb.page/docs](https://replayweb.page/docs).
 
-The ReplayWeb.page App can be downloaded from the [Releases](https://replayweb.page/releases) page.
+The ReplayWeb.page App can be downloaded from the [Releases](https://github.com/webrecorder/replayweb.page/releases) page.
 
 See [CHANGES.md](CHANGES.md) for the current changes, or the release notes on the link above.
 
