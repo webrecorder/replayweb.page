@@ -2,6 +2,17 @@
 
 ## CHANGES
 
+v2.0.1
+- Fidelity improvements (via wabac.js and wombat), including fixes ebay carousel #326 (via wombat)
+- partial fix to error page escaping #323 (via wabac)
+fixes to reddit pages #317
+- Fixes to twitter/x replay (via wabac / wombat)
+- Build improvements: run mkdocs gh-deploy --force in gh action, instead of publish-docs to avoid accidental updates
+- Auto install ruffle from download script, remove from git, add 'update-ruffle' script
+- Update to latest ruffle which doesn't inject setImmeidate/ clearImmediate to avoid interference with certain sites, fixing fidelity on some sites (including twitter/x)
+- Cleanup: Remove unused src/sw.ts
+- Dependencies: wabac.js to 2.18.2, wombat to 3.7.6
+
 v2.0.0
 
 - Show snapshot timestamp in location bar by @SuaYoo in https://github.com/webrecorder/replayweb.page/pull/228
