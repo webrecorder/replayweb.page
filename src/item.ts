@@ -12,9 +12,7 @@ import type {
   SlDropdown,
   SlSelectEvent,
 } from "@shoelace-style/shoelace";
-import "@shoelace-style/shoelace/dist/components/alert/alert.js";
-import "@shoelace-style/shoelace/dist/components/button/button.js";
-import "@shoelace-style/shoelace/dist/components/dialog/dialog.js";
+
 import {
   wrapCss,
   IS_APP,
