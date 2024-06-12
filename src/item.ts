@@ -314,7 +314,7 @@ class Item extends LitElement {
 
         if (
           this._replaceLoc ||
-          Object.keys(changedProperties.get("tabData")).length === 0
+          Object.keys(changedProperties.get("tabData") || {}).length === 0
         ) {
           const newLoc = new URL(window.location.href);
           newLoc.hash = this._locationHash;

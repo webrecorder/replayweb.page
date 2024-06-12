@@ -137,6 +137,7 @@ class FaIcon extends LitElement {
 class WrModal extends LitElement {
   constructor() {
     super();
+    // eslint-disable-next-line wc/no-constructor-attributes
     this.title = "";
     // @ts-expect-error - TS2339 - Property 'bgClass' does not exist on type 'WrModal'.
     this.bgClass = "";
