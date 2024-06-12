@@ -20,7 +20,6 @@
     "flexsearch": "^0.7.31",
     "keyword-mark-element": "^0.2.0",
     "lit": "^2.8.0",
-    "lodash": "^4.17.21",
     "marked": "^4.0.10",
     "mime-types": "^2.1.32",
     "minimist": "^1.2.5",
