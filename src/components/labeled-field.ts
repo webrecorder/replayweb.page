@@ -6,8 +6,6 @@ import faClone from "@fortawesome/fontawesome-free/svgs/regular/clone.svg";
 import faCheck from "@fortawesome/fontawesome-free/svgs/solid/check.svg";
 import faX from "@fortawesome/fontawesome-free/svgs/solid/times.svg";
 
-import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
-
 import { registerIconLibrary } from "@shoelace-style/shoelace/dist/utilities/icon-library.js";
 
 import systemLibrary from "@shoelace-style/shoelace/dist/components/icon/library.system";

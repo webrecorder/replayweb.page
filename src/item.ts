@@ -12,9 +12,7 @@ import type {
   SlDropdown,
   SlSelectEvent,
 } from "@shoelace-style/shoelace";
-import "@shoelace-style/shoelace/dist/components/alert/alert.js";
-import "@shoelace-style/shoelace/dist/components/button/button.js";
-import "@shoelace-style/shoelace/dist/components/dialog/dialog.js";
+
 import {
   wrapCss,
   IS_APP,
@@ -316,7 +314,7 @@ class Item extends LitElement {
 
         if (
           this._replaceLoc ||
-          Object.keys(changedProperties.get("tabData")).length === 0
+          Object.keys(changedProperties.get("tabData") || {}).length === 0
         ) {
           const newLoc = new URL(window.location.href);
           newLoc.hash = this._locationHash;
