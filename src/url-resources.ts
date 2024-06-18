@@ -112,7 +112,7 @@ class URLResources extends LitElement {
   firstUpdated() {
     //this.doLoadResources();
     if (this.urlSearchType === "") {
-      this.urlSearchType = "prefix";
+      this.urlSearchType = "contains";
     }
   }
 
