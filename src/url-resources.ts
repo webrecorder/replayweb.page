@@ -166,11 +166,6 @@ class URLResources extends LitElement {
     const url = this.urlSearchType !== "contains" ? this.query : "";
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
 
-    // optimization: if not starting with http or urn:, likely won't have a match here, so just add https://
-    // if (url && !url.startsWith("http") && !url.startsWith("urn:")) {
-    //   url = "https://" + url;
-    // }
-
     const mime = this.currMime;
 
     const params = new URLSearchParams({
