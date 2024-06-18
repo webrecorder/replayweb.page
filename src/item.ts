@@ -961,8 +961,7 @@ class Item extends LitElement {
                   ts="${this.tabData.ts || ""}"
                   @coll-tab-nav="${this.onItemTabNav}"
                   id="replay"
-                  @replay-loading="${(e: CustomEvent<{ loading: boolean }>) =>
-                    (this.isLoading = e.detail.loading)}"
+                  @replay-loading="${this.onReplayLoading}"
                   @replay-favicons="${this.onFavIcons}"
                 >
                 </wr-coll-replay>
@@ -1651,6 +1650,19 @@ class Item extends LitElement {
   onHideSidebar(event) {
     event.preventDefault();
     this.showSidebar = false;
+  }
+
+  async onReplayLoading(
+    event: CustomEvent<{ loading: boolean; url: string; ts: string }>,
+  ) {
+    if (
+      this.embed &&
+      window.parent !== window &&
+      this.isLoading !== event.detail.loading
+    ) {
+      window.parent.postMessage({ type: "page-loading", ...event.detail }, "*");
+    }
+    this.isLoading = event.detail.loading;
   }
 
   async onFavIcons(event: CustomEvent<FavIconEventDetail>) {

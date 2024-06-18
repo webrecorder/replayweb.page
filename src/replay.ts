@@ -200,6 +200,14 @@ class Replay extends LitElement {
         }
       } else if (event.data.wb_type === "title") {
         this.title = event.data.title;
+      } else if (event.data.wb_type === "archive-not-found") {
+        const { url, ts } = event.data;
+        if (window.parent !== window) {
+          window.parent.postMessage(
+            { type: "archive-not-found", url, ts },
+            "*",
+          );
+        }
       }
     }
   }
