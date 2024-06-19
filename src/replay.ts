@@ -39,6 +39,9 @@ class Replay extends LitElement {
   @property({ type: Boolean })
   showAuth = false;
 
+  @property({ type: Boolean })
+  replayNotFoundError = false;
+
   @property({ type: Object })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- requestPermission() type mismatch
   authFileHandle: any = null;
@@ -140,7 +143,13 @@ class Replay extends LitElement {
       };
 
       this.dispatchEvent(
-        new CustomEvent("coll-tab-nav", { detail: { replaceLoc: true, data } }),
+        new CustomEvent("coll-tab-nav", {
+          detail: {
+            replaceLoc: true,
+            data,
+            replayNotFoundError: this.replayNotFoundError,
+          },
+        }),
       );
     }
 
@@ -180,12 +189,14 @@ class Replay extends LitElement {
     if (iframe && event.source === iframe.contentWindow) {
       if (
         event.data.wb_type === "load" ||
-        event.data.wb_type === "replace-url"
+        event.data.wb_type === "replace-url" ||
+        event.data.wb_type === "archive-not-found"
       ) {
         this.replayTS = event.data.is_live ? "" : event.data.ts;
         this.actualTS = event.data.ts;
         this.replayUrl = event.data.url;
         this.title = event.data.title || this.title;
+        this.replayNotFoundError = event.data.wb_type === "archive-not-found";
         this.clearLoading(iframe.contentWindow);
 
         if (event.data.icons) {
