@@ -112,7 +112,7 @@ class URLResources extends LitElement {
   firstUpdated() {
     //this.doLoadResources();
     if (this.urlSearchType === "") {
-      this.urlSearchType = "prefix";
+      this.urlSearchType = "contains";
     }
   }
 
@@ -163,13 +163,8 @@ class URLResources extends LitElement {
     }
 
     this.loading = true;
-    let url = this.urlSearchType !== "contains" ? this.query : "";
+    const url = this.urlSearchType !== "contains" ? this.query : "";
     const prefix = url && this.urlSearchType === "prefix" ? 1 : 0;
-
-    // optimization: if not starting with http, likely won't have a match here, so just add https://
-    if (url && !url.startsWith("http")) {
-      url = "https://" + url;
-    }
 
     const mime = this.currMime;
 

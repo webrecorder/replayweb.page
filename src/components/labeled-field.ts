@@ -8,7 +8,7 @@ import faX from "@fortawesome/fontawesome-free/svgs/solid/times.svg";
 
 import { registerIconLibrary } from "@shoelace-style/shoelace/dist/utilities/icon-library.js";
 
-import systemLibrary from "@shoelace-style/shoelace/dist/components/icon/library.system";
+import systemLibrary from "@shoelace-style/shoelace/dist/components/icon/library.system.js";
 
 // disable system library to prevent loading of unused data: URLs
 // allow only "x-lg" as it is needed for sl-dialog
