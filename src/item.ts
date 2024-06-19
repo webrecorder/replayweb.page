@@ -93,11 +93,23 @@ export type EmbedReplayData = {
   query?: string;
 };
 
+export type EmbedReplayEvent = EmbedReplayData & {
+  type: "urlchange";
+  replayNotFoundError: boolean;
+};
+
 export type TabData = EmbedReplayData & {
   multiTs?: string[];
   currList?: number;
   urlSearchType?: string;
   currMime?: string;
+};
+
+export type TabDataUpdate = {
+  reload: boolean;
+  data: TabData;
+  replaceLoc: boolean;
+  replayNotFoundError: boolean;
 };
 
 // ===========================================================================
@@ -174,6 +186,9 @@ class Item extends LitElement {
   @property({ type: String })
   swName: string | null = null;
 
+  @property({ type: Boolean })
+  replayNotFoundError = false;
+
   private splitter: Split.Instance | null = null;
 
   private _replaceLoc = false;
@@ -193,6 +208,8 @@ class Item extends LitElement {
     story: "Story",
     resources: "URLs",
   };
+
+  private _lastUrlUpdate: EmbedReplayData | null = null;
 
   constructor() {
     super();
@@ -248,19 +265,16 @@ class Item extends LitElement {
       return;
     }
     const json = await resp.json();
-    this.updateTabData({ multiTs: json.timestamps });
+    this.updateTabData({ multiTs: json.timestamps }, true);
   }
 
   willUpdate(changedProperties: Map<string, Record<string, unknown>>) {
-    // TODO: Fix this the next time the file is edited.
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (changedProperties.has("tabData") && this.tabData) {
+    if (changedProperties.has("tabData")) {
       // Format tab data from URL query params
-      const tabData = {};
+      const tabData: TabData = {};
       Object.entries(this.tabData).forEach(([key, value]) => {
         if (!value) return;
         if (key === "multiTs" && typeof value === "string") {
-          // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type '"multiTs"' can't be used to index type '{}'.
           tabData[key] = value.split(",");
         } else {
           // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
@@ -271,9 +285,7 @@ class Item extends LitElement {
 
       const prevTabData = changedProperties.get("tabData");
       if (this.tabData.url && this.tabData.url !== prevTabData?.url) {
-        // TODO: Fix this the next time the file is edited.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.getMultiTimestamps();
+        void this.getMultiTimestamps();
       }
     }
   }
@@ -332,10 +344,28 @@ class Item extends LitElement {
         }
         if (this.embed && window.parent !== window) {
           const { url, ts, view, query, title }: EmbedReplayData = this.tabData;
-          window.parent.postMessage(
-            { type: "urlchange", url, ts, view, query, title },
-            "*",
-          );
+          const lastUpdate = this._lastUrlUpdate;
+          const replayNotFoundError = this.replayNotFoundError;
+          if (
+            !lastUpdate ||
+            lastUpdate.url !== url ||
+            lastUpdate.ts !== ts ||
+            lastUpdate.view !== view ||
+            lastUpdate.query !== query ||
+            lastUpdate.title !== title
+          ) {
+            const newUpdate: EmbedReplayEvent = {
+              type: "urlchange",
+              url,
+              ts,
+              view,
+              query,
+              title,
+              replayNotFoundError,
+            };
+            window.parent.postMessage(newUpdate, "*");
+            this._lastUrlUpdate = newUpdate;
+          }
         }
       }
       this._locUpdateNeeded = false;
@@ -542,35 +572,28 @@ class Item extends LitElement {
     return false;
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onItemTabNav(event) {
+  onItemTabNav(event: CustomEvent<TabDataUpdate>) {
     if (event.detail.reload) {
       this.onRefresh(null, true);
       return;
     }
 
+    const targetId = (event.target as HTMLElement).id;
+
+    const { data, replaceLoc, replayNotFoundError } = event.detail;
+
+    this.replayNotFoundError = replayNotFoundError;
+
     if (
-      event.target.id === this.tabData.view ||
-      (event.target.id === "replay" && this.tabData.url)
+      targetId === this.tabData.view ||
+      (targetId === "replay" && this.tabData.url) ||
+      (this.showSidebar && this.tabData.url)
     ) {
-      this.updateTabData(
-        event.detail.data,
-        // TODO: Fix this the next time the file is edited.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        event.detail.replaceLoc /*, false */,
-      );
-    } else if (this.showSidebar && this.tabData.url) {
-      this.updateTabData(
-        event.detail.data,
-        // TODO: Fix this the next time the file is edited.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        event.detail.replaceLoc /*, true */,
-      );
+      this.updateTabData(data, replaceLoc);
     }
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'data' implicitly has an 'any' type.
-  updateTabData(data, replaceLoc = false /*, merge = false*/) {
+  updateTabData(data: TabData, replaceLoc = false) {
     this.tabData = { ...this.tabData, ...data };
     if (this.tabData.url) {
       this.url = this.tabData.url || "";
@@ -961,8 +984,7 @@ class Item extends LitElement {
                   ts="${this.tabData.ts || ""}"
                   @coll-tab-nav="${this.onItemTabNav}"
                   id="replay"
-                  @replay-loading="${(e: CustomEvent<{ loading: boolean }>) =>
-                    (this.isLoading = e.detail.loading)}"
+                  @replay-loading="${this.onReplayLoading}"
                   @replay-favicons="${this.onFavIcons}"
                 >
                 </wr-coll-replay>
@@ -1653,6 +1675,19 @@ class Item extends LitElement {
     this.showSidebar = false;
   }
 
+  async onReplayLoading(
+    event: CustomEvent<{ loading: boolean; url: string; ts: string }>,
+  ) {
+    if (
+      this.embed &&
+      window.parent !== window &&
+      this.isLoading !== event.detail.loading
+    ) {
+      window.parent.postMessage({ type: "page-loading", ...event.detail }, "*");
+    }
+    this.isLoading = event.detail.loading;
+  }
+
   async onFavIcons(event: CustomEvent<FavIconEventDetail>) {
     if (this.embed && window.parent !== window) {
       window.parent.postMessage({ type: "favicons", ...event.detail }, "*");
@@ -1749,7 +1784,7 @@ class Item extends LitElement {
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'value' implicitly has an 'any' type.
   navigateTo(value) {
-    let data;
+    let data: TabData;
 
     if (value.startsWith("http://") || value.startsWith("https://")) {
       data = { url: value };
