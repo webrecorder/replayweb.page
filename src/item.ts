@@ -93,6 +93,11 @@ export type EmbedReplayData = {
   query?: string;
 };
 
+export type EmbedReplayEvent = EmbedReplayData & {
+  type: "urlchange";
+  replayNotFoundError: boolean;
+};
+
 export type TabData = EmbedReplayData & {
   multiTs?: string[];
   currList?: number;
@@ -349,7 +354,7 @@ class Item extends LitElement {
             lastUpdate.query !== query ||
             lastUpdate.title !== title
           ) {
-            const newUpdate = {
+            const newUpdate: EmbedReplayEvent = {
               type: "urlchange",
               url,
               ts,
