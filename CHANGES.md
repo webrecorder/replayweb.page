@@ -2,6 +2,13 @@
 
 ## CHANGES
 
+v2.0.2
+- Fidelity improvements (via wabac.js 2.18.4 and wombat 3.7.7), including improved encoding detection
+- Upgrade Shoelace & Lit by @SuaYoo in https://github.com/webrecorder/replayweb.page/pull/329
+- Adds multi-resolution ICO file for Windows by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/325
+- Resource search remove auto-added http prefix by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/334
+- Configure package exports explicitly by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/336
+
 v2.0.1
 - Fidelity improvements (via wabac.js and wombat), including fixes ebay carousel #326 (via wombat)
 - partial fix to error page escaping #323 (via wabac)
