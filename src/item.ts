@@ -99,7 +99,6 @@ export type EmbedReplayEvent = EmbedReplayData & {
 };
 
 export type TabData = EmbedReplayData & {
-  multiTs?: string[];
   currList?: number;
   urlSearchType?: string;
   currMime?: string;
@@ -189,6 +188,9 @@ class Item extends LitElement {
   @property({ type: Boolean })
   replayNotFoundError = false;
 
+  @property({ type: Array })
+  multiTs?: string[] = [];
+
   private splitter: Split.Instance | null = null;
 
   private _replaceLoc = false;
@@ -262,10 +264,11 @@ class Item extends LitElement {
         window.encodeURIComponent(this.tabData.url),
     );
     if (resp.status !== 200) {
+      this.multiTs = [];
       return;
     }
     const json = await resp.json();
-    this.updateTabData({ multiTs: json.timestamps }, true);
+    this.multiTs = json.timestamps;
   }
 
   willUpdate(changedProperties: Map<string, Record<string, unknown>>) {
@@ -274,12 +277,8 @@ class Item extends LitElement {
       const tabData: TabData = {};
       Object.entries(this.tabData).forEach(([key, value]) => {
         if (!value) return;
-        if (key === "multiTs" && typeof value === "string") {
-          tabData[key] = value.split(",");
-        } else {
-          // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
-          tabData[key] = value;
-        }
+        // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7053 - Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+        tabData[key] = value;
       });
       this.tabData = tabData;
 
@@ -291,18 +290,8 @@ class Item extends LitElement {
   }
 
   updated(changedProperties: PropertyValues<this>) {
-    // if (changedProperties.has("url") || changedProperties.has("ts")) {
-    //   if (this.url.startsWith("rwp?")) {
-    //     this.tabData = Object.fromEntries(new URLSearchParams(this.url.slice(4)).entries());
-    //   } else {
-    //     this.tabData = {view: "replay", url: this.url, ts: this.ts};
-    //   }
-    // }
-
     if (changedProperties.has("sourceUrl")) {
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.doUpdateInfo();
+      void this.doUpdateInfo();
     }
     if (changedProperties.has("editable")) {
       if (this.editable && this.autoUpdateInterval && !this._autoUpdater) {
@@ -1422,7 +1411,7 @@ class Item extends LitElement {
 
   private renderTimestamp() {
     const timestampStrs: { date: string; label: string }[] = [];
-    this.tabData.multiTs?.forEach((ts) => {
+    this.multiTs?.forEach((ts) => {
       // Filter out invalid dates
       try {
         const date = getDateFromTS(+ts);
