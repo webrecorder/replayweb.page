@@ -7,8 +7,18 @@
   "homepage": "https://replayweb.page/",
   "author": "Webrecorder Software",
   "license": "AGPL-3.0-or-later",
-  "main": "ui.js",
-  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./ui.js"
+    },
+    "./misc": {
+      "types": "./dist/types/misc.d.ts",
+      "default": "./dist/misc.js"
+    },
+    "./src/electron-*": "./src/electron-*.ts",
+    "./index.html": "./index.html"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@shoelace-style/shoelace": "~2.15.1",
