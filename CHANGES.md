@@ -2,6 +2,11 @@
 
 ## CHANGES
 
+v2.1.0
+- More fidelity fixes (via wabac.js 2.19.1, wombat 3.7.8)
+- Improved messaging: embed tag emits @rwp-page-loading and @rwp-url-change events
+- Remove multiTs from hashtag, avoid double history nav as it was being set
+
 v2.0.2
 - Fidelity improvements (via wabac.js 2.18.4 and wombat 3.7.7), including improved encoding detection
 - Upgrade Shoelace & Lit by @SuaYoo in https://github.com/webrecorder/replayweb.page/pull/329
