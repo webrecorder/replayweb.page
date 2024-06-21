@@ -189,8 +189,6 @@ const browserConfig = (/*env, argv*/) => {
 };
 
 const miscConfig = (/*env, argv*/) => {
-  const isDevServer = process.env.WEBPACK_SERVE;
-
   /** @type {import('webpack').Configuration['entry']} */
   const entry = {
     misc: "./src/misc.ts",
@@ -201,7 +199,7 @@ const miscConfig = (/*env, argv*/) => {
     target: "web",
     mode: "production",
     cache: {
-      type: isDevServer ? "memory" : "filesystem",
+      type: "filesystem"
     },
     resolve: {
       fallback: { crypto: false },
@@ -215,14 +213,6 @@ const miscConfig = (/*env, argv*/) => {
       libraryTarget: "self",
       globalObject: "self",
       publicPath: "/",
-    },
-
-    devServer: {
-      compress: true,
-      port: 9990,
-      open: false,
-      static: __dirname,
-      //publicPath: "/"
     },
 
     plugins: [
