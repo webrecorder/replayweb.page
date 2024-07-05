@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.1.1
+- Fidelity: fixes to Sharepoint site replay (via wabac.js 2.19.2, wombat 3.7.10)
+- UI: default URL resources search to 'prefix' as contains only works after prefix search
+
 v2.1.0
 - More fidelity fixes (via wabac.js 2.19.1, wombat 3.7.8)
 - Improved messaging: embed tag emits @rwp-page-loading and @rwp-url-change events
