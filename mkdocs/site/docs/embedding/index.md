@@ -6,7 +6,7 @@ A key goal of ReplayWeb.page is to make embedding archived web content into othe
 
 To make this possible ReplayWeb.page provides the `#!html <replay-web-page>` HTML [web component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to support embedding in the pages where you would like to display web archives. This component works in all modern browsers, and has several configuration options that allow for control over the initial URL or snapshot to display from the archive when the component loads. The component can load WACZ files, WARC files and [other formats](../user-guide/index.md#supported-formats).
 
-The `#!html <replay-web-page>` web component consists of a "backend" service worker, which emulates a web server, and a "frontend" UI, though in reality both are scripts running in the browser - there is no web server!
+The `#!html <replay-web-page>` web component consists of a "backend" service worker, which emulates a web server, and a "frontend" UI, though in reality both are scripts running in the browser — there is no web server!
 
 !!! tip "Tip: Serving web archives efficiently with WACZ files"
     While other web archive filetypes may require ReplayWeb.page to download them in their entirety before viewing, WACZ files allow the service worker to pull individual resources from the file as they are requested by the user. Full retrieval of the WACZ by ReplayWeb.page is *not* required as long as the server delivering the WACZ file supports HTTP range requests. This means that serving archived content from WACZ files is effectively as bandwidth efficient as any other web content!
