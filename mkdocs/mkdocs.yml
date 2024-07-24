@@ -5,7 +5,7 @@ watch:
 site_dir: _genhtml/
 repo_url: https://github.com/webrecorder/replayweb.page
 repo_name: ReplayWeb.page
-edit_uri: edit/main/site/docs/
+edit_uri: edit/main/mkdocs/site/
 extra_css:
   - docs/stylesheets/extra.css
 theme:
