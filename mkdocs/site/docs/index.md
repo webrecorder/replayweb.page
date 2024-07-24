@@ -30,7 +30,7 @@ ReplayWeb.page allows web archives seamlessly integrate into existing web sites,
 Below are a few of the integrations we know of that use ReplayWeb.page:
 
 - [Perma.cc](https://archive.blogs.harvard.edu/perma/2022/08/17/new-playback-software-improves-fidelity-of-your-perma-links/) — Web archiving service offered by Harvard's Library Innovation Lab.
-- [GhostArchive](https://ghostarchive.org/) — Free Web Archiving Service
+- [GhostArchive](https://ghostarchive.org/) — Free web archiving service
 - [The Feminist Institute](https://www.thefeministinstitute.org/digital-archive/archived-websites) — Websites archived to document and celebrate feminist contributions to culture.
 - [CineFiles](https://cinefiles.bampfa.berkeley.edu/?f%5Bdoctype_s%5D%5B%5D=web+archive) — Film-related web archive ephemera collected by the UC Berkeley Art Museum and Pacific Film Archive.
 - [Stanford Digital Publication Web Archives](https://archive.supdigital.org/) — Archives of Stanford University Press Digital Publications.
