@@ -2,8 +2,11 @@
 
 ## CHANGES
 
+v2.1.3
+- Fidelity: edge-case rewriting improvements, avoid rewriting inside of strings, detect old-html framesets (via wabac.js 2.19.5, wombat 3.7.12)
+
 v2.1.2
-- Fidelity: Video reply improvements, fix rewriting of DASH manifests (via wabac.js 2.19.4, wombat 3.7.11)
+- Fidelity: Video replay improvements, fix rewriting of DASH manifests (via wabac.js 2.19.4, wombat 3.7.11)
 
 v2.1.1
 - Fidelity: fixes to Sharepoint site replay (via wabac.js 2.19.2, wombat 3.7.10)
