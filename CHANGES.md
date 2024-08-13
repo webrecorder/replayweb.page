@@ -2,6 +2,9 @@
 
 ## CHANGES
 
+v2.1.4
+- Fidelity: improvements to FB rewriting, eval() rewriting, 'object' tag rewriting (via wabac.js 2.19.7, wombat 3.7.14)
+
 v2.1.3
 - Fidelity: edge-case rewriting improvements, avoid rewriting inside of strings, detect old-html framesets (via wabac.js 2.19.5, wombat 3.7.12)
 
