@@ -374,10 +374,19 @@ class ItemIndex extends LitElement {
   }
 
   renderEmpty() {
-    return html`<i
-      >No Archives so far! Archives loaded in the section above will appear
-      here.</i
-    >`;
+    return html`
+      <p>
+        Don't have any web archives yet? Check out
+        <a
+          href="https://chrome.google.com/webstore/detail/webrecorder-archivewebpag/fpeoodllldobpkbkabpblcfaogecpndd"
+          target="blank"
+          >ArchiveWeb.page</a
+        >
+        to save pages as you browse the web, or
+        <a href="https://browsertrix.com">sign up for Browsertrix</a> to archive
+        entire websites with automated crawling!
+      </p>
+    `;
   }
 }
 
