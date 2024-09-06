@@ -30,24 +30,28 @@ const optimization = {
   ],
 };
 /** @type {import("webpack").Configuration} */
-const tsConfig = {
-  resolve: {
-    extensions: [".ts", ".js"],
-    plugins: [new TsconfigPathsPlugin()],
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader",
-        include: path.resolve(__dirname, "src"),
-        options: {
-          onlyCompileBundledFiles: true,
+function makeTsConfig(include) {
+  return {
+    resolve: {
+      extensions: [".ts", ".js"],
+      plugins: [new TsconfigPathsPlugin()],
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          loader: "ts-loader",
+          //include,
+          options: {
+            onlyCompileBundledFiles: true,
+          },
         },
-      },
-    ],
-  },
-};
+      ],
+    }
+  }
+}
+
+const tsConfig = makeTsConfig(path.resolve(__dirname, "src"))
 
 const electronMainConfig = (/*env, argv*/) => {
   /** @type {import('webpack').Configuration} */
@@ -105,7 +109,7 @@ const browserConfig = (/*env, argv*/) => {
   const extraPlugins = [];
 
   if (isDevServer) {
-    entry["sw"] = "@webrecorder/wabac/src/sw.js";
+    entry["sw"] = "./node_modules/@webrecorder/wabac/src/sw.ts";
   } else {
     const patterns = [
       { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js" },
@@ -185,7 +189,15 @@ const browserConfig = (/*env, argv*/) => {
       ],
     },
   };
-  return merge(tsConfig, config);
+  if (!isDevServer) {
+    return merge(tsConfig, config);
+  } else {
+    return merge(makeTsConfig([
+      path.resolve(__dirname, "src"),
+      path.resolve(__dirname, "./node_modules/@webrecorder/wabac/src/"),
+      path.resolve(__dirname, "../wabac.js/src")
+    ]), config);
+  }
 };
 
 const miscConfig = (/*env, argv*/) => {
