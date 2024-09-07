@@ -133,9 +133,15 @@ const browserConfig = (/*env, argv*/) => {
     output: {
       path: path.join(__dirname),
       filename: "[name].js",
-      libraryTarget: "self",
       globalObject: "self",
       publicPath: "/",
+      library: {
+        type: "module"
+      }
+    },
+
+    experiments: {
+      outputModule: true
     },
 
     devServer: {

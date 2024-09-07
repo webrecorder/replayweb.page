@@ -1,0 +1,62 @@
+import { LitElement, type TemplateResult, type PropertyValues } from "lit";
+import { SWManager } from "./swmanager";
+import type { FavIconEventDetail } from "./types";
+import type { EmbedReplayData, EmbedReplayEvent } from "./item";
+type IframeMessage = MessageEvent<EmbedReplayEvent | ({
+    type: "favicons";
+} & FavIconEventDetail) | {
+    loading: boolean;
+    type: "page-loading";
+}>;
+declare class Embed extends LitElement {
+    url: string;
+    ts: string;
+    query: string;
+    source: any;
+    src: any;
+    view: string;
+    embed: string | null;
+    replaybase: string;
+    swName: string;
+    title: string;
+    coll: string;
+    config: string;
+    inited: boolean;
+    paramString: string | null;
+    hashString: string | undefined;
+    deepLink: boolean;
+    updateFavicons: boolean;
+    sandbox: boolean;
+    noSandbox: boolean | null;
+    noWebWorker: boolean;
+    noCache: boolean;
+    hideOffscreen: boolean | undefined;
+    useAdblock: boolean;
+    adblockRulesUrl: string;
+    newWindowBase: string;
+    errorMessage: TemplateResult<1> | string | undefined;
+    requireSubdomainIframe: any;
+    loading: string;
+    useRuffle: boolean;
+    replayfile: string;
+    mainElementName: string;
+    appName: string;
+    customConfig: null;
+    reloadCount: number;
+    isCrossOrigin: boolean | undefined;
+    swmanager: SWManager | undefined;
+    static setDefaultReplayFile(replayfile: any): void;
+    doRegister(): Promise<void>;
+    handleMessage(event: IframeMessage): void;
+    handleUrlChangeMessage(data: EmbedReplayData): void;
+    firstUpdated(): void;
+    loadBrowserDefaults(): void;
+    updateFromHash(): void;
+    mergeConfigs(): string;
+    updated(changedProperties: PropertyValues<this>): void;
+    static get styles(): import("lit").CSSResultGroup;
+    render(): TemplateResult<1>;
+    onLoad(event: any): void;
+}
+export { Embed };
+//# sourceMappingURL=embed.d.ts.map
