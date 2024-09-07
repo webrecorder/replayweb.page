@@ -78,7 +78,7 @@ export class ReplayWebApp extends LitElement {
   swErrorMsg: TemplateResult<1> | string | null = null;
 
   protected swName?: string;
-  private swmanager: SWManager | null;
+  protected swmanager: SWManager | null;
   private useRuffle = false;
 
   private droppedFile: File | null = null;

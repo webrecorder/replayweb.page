@@ -47,11 +47,11 @@ function makeTsConfig(include) {
           },
         },
       ],
-    }
-  }
+    },
+  };
 }
 
-const tsConfig = makeTsConfig(path.resolve(__dirname, "src"))
+const tsConfig = makeTsConfig(path.resolve(__dirname, "src"));
 
 const electronMainConfig = (/*env, argv*/) => {
   /** @type {import('webpack').Configuration} */
@@ -192,11 +192,14 @@ const browserConfig = (/*env, argv*/) => {
   if (!isDevServer) {
     return merge(tsConfig, config);
   } else {
-    return merge(makeTsConfig([
-      path.resolve(__dirname, "src"),
-      path.resolve(__dirname, "./node_modules/@webrecorder/wabac/src/"),
-      path.resolve(__dirname, "../wabac.js/src")
-    ]), config);
+    return merge(
+      makeTsConfig([
+        path.resolve(__dirname, "src"),
+        path.resolve(__dirname, "./node_modules/@webrecorder/wabac/src/"),
+        path.resolve(__dirname, "../wabac.js/src"),
+      ]),
+      config,
+    );
   }
 };
 
@@ -211,7 +214,7 @@ const miscConfig = (/*env, argv*/) => {
     target: "web",
     mode: "production",
     cache: {
-      type: "filesystem"
+      type: "filesystem",
     },
     resolve: {
       fallback: { crypto: false },
