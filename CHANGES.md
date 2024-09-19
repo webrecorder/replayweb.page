@@ -41,7 +41,7 @@ v2.0.1
 
 - Fidelity improvements (via wabac.js and wombat), including fixes ebay carousel #326 (via wombat)
 - partial fix to error page escaping #323 (via wabac)
-  fixes to reddit pages #317
+- fixes to reddit pages #317
 - Fixes to twitter/x replay (via wabac / wombat)
 - Build improvements: run mkdocs gh-deploy --force in gh action, instead of publish-docs to avoid accidental updates
 - Auto install ruffle from download script, remove from git, add 'update-ruffle' script
