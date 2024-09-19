@@ -383,7 +383,7 @@ class ItemIndex extends LitElement {
           >ArchiveWeb.page</a
         >
         to save pages as you browse the web, or
-        <a href="https://browsertrix.com">sign up for Browsertrix</a> to archive
+        <a href="https://browsertrix.com" target="_blank">sign up for Browsertrix</a> to archive
         entire websites with automated crawling!
       </p>
     `;
