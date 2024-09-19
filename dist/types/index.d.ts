@@ -28,4 +28,5 @@ ItemInfo as CollInfo,
  */
 Item as Coll, Story, GDrive, Loader, Pages, PageEntry, Replay, Sorter, URLResources, Embed, SWManager, };
 export type { ItemType, URLResource } from "./types";
+export * from "./misc";
 //# sourceMappingURL=index.d.ts.map

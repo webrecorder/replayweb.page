@@ -100,9 +100,9 @@ declare class Item extends LitElement {
     static get replayBarStyles(): import("lit").CSSResult;
     render(): TemplateResult<1>;
     renderTabHeader(isSidebar: any): TemplateResult<1>;
-    renderLocationBar(): TemplateResult<1> | "";
+    renderLocationBar(): "" | TemplateResult<1>;
     private renderTimestamp;
-    renderVerifyInfo(): TemplateResult<1> | "";
+    renderVerifyInfo(): "" | TemplateResult<1>;
     dragStart(): void;
     dragEnd(): void;
     renderItemInfo(): TemplateResult<1>;

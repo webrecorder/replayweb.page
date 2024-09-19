@@ -12,10 +12,6 @@
       "types": "./dist/types/index.d.ts",
       "default": "./ui.js"
     },
-    "./misc": {
-      "types": "./dist/types/misc.d.ts",
-      "default": "./dist/misc.js"
-    },
     "./src/electron-*": "./src/electron-*.ts",
     "./index.html": "./index.html"
   },

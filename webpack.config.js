@@ -98,7 +98,7 @@ const electronPreloadConfig = (/*env, argv*/) => {
   return merge(tsConfig, config);
 };
 
-const browserConfig = (/*env, argv*/) => {
+const browserConfig = (env, argv) => {
   const isDevServer = process.env.WEBPACK_SERVE;
 
   /** @type {import('webpack').Configuration['entry']} */
@@ -143,6 +143,8 @@ const browserConfig = (/*env, argv*/) => {
     experiments: {
       outputModule: true
     },
+
+    devtool: argv.mode === "production" ? undefined : "source-map",
 
     devServer: {
       compress: true,
@@ -209,81 +211,8 @@ const browserConfig = (/*env, argv*/) => {
   }
 };
 
-const miscConfig = (/*env, argv*/) => {
-  /** @type {import('webpack').Configuration['entry']} */
-  const entry = {
-    misc: "./src/misc.ts",
-  };
-
-  /** @type {import('webpack').Configuration} */
-  const config = {
-    target: "web",
-    mode: "production",
-    cache: {
-      type: "filesystem",
-    },
-    resolve: {
-      fallback: { crypto: false },
-    },
-    entry,
-    optimization,
-
-    output: {
-      path: path.join(__dirname, "dist"),
-      filename: "[name].js",
-      libraryTarget: "self",
-      globalObject: "self",
-      publicPath: "/",
-    },
-
-    plugins: [
-      new webpack.NormalModuleReplacementPlugin(/^node:*/, (resource) => {
-        switch (resource.request) {
-          case "node:stream":
-            resource.request = "stream-browserify";
-            break;
-        }
-      }),
-
-      new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 1,
-      }),
-      new webpack.ProvidePlugin({
-        process: "process/browser",
-      }),
-      new MiniCssExtractPlugin(),
-      new webpack.DefinePlugin({
-        __SW_NAME__: JSON.stringify("sw.js"),
-        __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
-        __GDRIVE_CLIENT_ID__: JSON.stringify(GDRIVE_CLIENT_ID),
-        __VERSION__: JSON.stringify(package_json.version),
-      }),
-      new webpack.BannerPlugin(BANNER_TEXT),
-    ],
-
-    module: {
-      rules: [
-        {
-          test: /\.svg$/,
-          use: ["raw-loader"],
-        },
-        {
-          test: /main.scss$/,
-          use: ["css-loader", "sass-loader"],
-        },
-        {
-          test: /wombat.js|wombatWorkers.js|index.html$/i,
-          use: ["raw-loader"],
-        },
-      ],
-    },
-  };
-  return merge(tsConfig, config);
-};
-
 module.exports = [
   browserConfig,
-  miscConfig,
   electronMainConfig,
   electronPreloadConfig,
 ];
