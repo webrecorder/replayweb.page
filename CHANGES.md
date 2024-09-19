@@ -2,8 +2,12 @@
 
 ## CHANGES
 
-v2.1.4
+v2.1.5
+- Fidelity: updated rewriting rules for instagram
+- Fidelity: disable window online/offline events in replay (via wabac.js)
+- Dependencies: update to wabac.js 2.19.9 + wombat 3.8.2, electron 32.1.0
 
+v2.1.4
 - Fidelity: improvements to FB rewriting, eval() rewriting, 'object' tag rewriting (via wabac.js 2.19.7, wombat 3.7.14)
 
 v2.1.3
