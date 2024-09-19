@@ -379,7 +379,7 @@ class ItemIndex extends LitElement {
         Don't have any web archives yet? Check out
         <a
           href="https://chrome.google.com/webstore/detail/webrecorder-archivewebpag/fpeoodllldobpkbkabpblcfaogecpndd"
-          target="blank"
+          target="_blank"
           >ArchiveWeb.page</a
         >
         to save pages as you browse the web, or
