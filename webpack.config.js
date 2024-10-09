@@ -41,7 +41,7 @@ function makeTsConfig(include) {
         {
           test: /\.tsx?$/,
           loader: "ts-loader",
-          //include,
+          include,
           options: {
             onlyCompileBundledFiles: true,
           },
