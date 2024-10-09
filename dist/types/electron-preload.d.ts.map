@@ -1,1 +1,0 @@
-{"version":3,"file":"electron-preload.d.ts","sourceRoot":"","sources":["../../src/electron-preload.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,gBAAgB,EAAE,MAAM,0BAA0B,CAAC;AAS5D,QAAA,MAAM,MAAM,kBAAyB,CAAC;AAEtC,iBAAe,OAAO,CAAC,IAAI,EAAE,MAAM,gBAalC;AAED,iBAAe,KAAK,CAAC,IAAI,EAAE,MAAM,gBAKhC;AA+BD,OAAO,EAAE,KAAK,EAAE,OAAO,EAAE,MAAM,EAAE,CAAC"}
