@@ -1021,35 +1021,6 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-2.0.5.tgz#325db42395cd49fe6c14057f9a900e427df8810e"
   integrity sha512-lqaoKnRYBdo1UgDX8uF24AfGMifWK19TxPmM5FHc2vAGxrJ/qtyUyFBWoY1tISZdelsQ5fBcOusifo5o5wSJxQ==
 
-"@webrecorder/wabac@^2.19.9":
-  version "2.19.9"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.19.9.tgz#21d357077bc2a85419e7a6002c81a4bc4fec2514"
-  integrity sha512-lyvbKVrdUZMUGxwKg5ZFQnyjGUSqZSGOF3NFG9rXLA+Ni0YcQjZCMexGSmqCwY+BksyrVJISCMs3xQ2WQAekgw==
-  dependencies:
-    "@peculiar/asn1-ecc" "^2.3.4"
-    "@peculiar/asn1-schema" "^2.3.3"
-    "@peculiar/x509" "^1.9.2"
-    "@webrecorder/wombat" "^3.8.2"
-    acorn "^8.10.0"
-    auto-js-ipfs "^2.1.1"
-    base64-js "^1.5.1"
-    brotli "^1.3.3"
-    buffer "^6.0.3"
-    fast-xml-parser "^4.4.1"
-    hash-wasm "^4.9.0"
-    http-link-header "^1.1.3"
-    http-status-codes "^2.1.4"
-    idb "^7.1.1"
-    js-levenshtein "^1.1.6"
-    js-yaml "^4.1.0"
-    pako "^1.0.11"
-    parse5-html-rewriting-stream "^7.0.0"
-    parse5-sax-parser "^7.0.0"
-    path-parser "^6.1.0"
-    process "^0.11.10"
-    stream-browserify "^3.0.0"
-    warcio "^2.3.0"
-
 "@webrecorder/wabac@^2.20.0-beta.2":
   version "2.20.0-beta.2"
   resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.20.0-beta.2.tgz#532b6457cb970039812e3b1470134725d7e72ca5"
@@ -5644,7 +5615,7 @@ vscode-uri@^2.1.2:
   resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-2.1.2.tgz#c8d40de93eb57af31f3c715dd650e2ca2c096f1c"
   integrity sha512-8TEXQxlldWAuIODdukIb+TR5s+9Ds40eSJrw+1iDDA9IFORPjMELarNQE3myz5XIkWWpdprmJjm1/SxMlWOC8A==
 
-warcio@^2.3.0, warcio@^2.3.1:
+warcio@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/warcio/-/warcio-2.3.1.tgz#8ac9de897de1a556161168f2a3938b60929908ca"
   integrity sha512-PjcWqzXfs6HdWfHi1V/i8MoMmV5M0Csg3rOa2mqCJ1dmCJXswVfQ0VXbEVumwavNIW2oFFj6LJoCHHeL4Ls/zw==

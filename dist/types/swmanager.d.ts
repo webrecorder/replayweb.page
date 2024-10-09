@@ -15,6 +15,6 @@ export declare class SWManager {
     getCrossOriginIframeMsg(): string | null;
     isCrossOriginIframe(): boolean;
     getSWErrorMsg(): string | null;
-    renderErrorReport(override?: string): "" | import("lit-html").TemplateResult<1>;
+    renderErrorReport(override?: string): import("lit-html").TemplateResult<1> | "";
 }
 //# sourceMappingURL=swmanager.d.ts.map
