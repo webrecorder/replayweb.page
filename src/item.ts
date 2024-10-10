@@ -1214,7 +1214,7 @@ class Item extends LitElement {
                 : ""}
             </span>
           </a>
-          ${this.renderExtraToolbar()}
+          ${this.renderExtraToolbar(false)}
           <form @submit="${this.onSubmit}">
             <div
               class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}"
@@ -1323,7 +1323,7 @@ class Item extends LitElement {
                       <span>Browse Contents</span>
                     </a>`
                   : ""}
-                ${this.renderExtraToolbar()}
+                ${this.renderExtraToolbar(true)}
                 ${this.clearable
                   ? html` <hr class="dropdown-divider is-hidden-desktop" />
                       <a
@@ -1506,7 +1506,7 @@ class Item extends LitElement {
     ></wr-item-info>`;
   }
 
-  protected renderExtraToolbar(/*isDropdown = false*/): "" | TemplateResult<1> {
+  protected renderExtraToolbar(_isDropdown = false): "" | TemplateResult<1> {
     return "";
   }
 
