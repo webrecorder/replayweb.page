@@ -98,121 +98,135 @@ const electronPreloadConfig = (/*env, argv*/) => {
   return merge(tsConfig, config);
 };
 
-const browserConfig = (env, argv) => {
-  const isDevServer = process.env.WEBPACK_SERVE;
 
-  /** @type {import('webpack').Configuration['entry']} */
-  const entry = {
-    ui: "./src/index.ts",
-  };
+function makeBrowserConfig(isLib = false) {
+  return (env, argv) => {
+    let outputPath = "";
+    const entry = {};
+    if (isLib) {
+      entry["index"] = "./src/index.ts";
+      outputPath = path.join(__dirname, "dist");
+    } else {
+      entry["ui"] = "./src/index.ts";
+      outputPath = path.join(__dirname)
+    }
 
-  const extraPlugins = [];
+    const extraPlugins = [];
+    const isDevServer = !isLib && process.env.WEBPACK_SERVE;
+    const isDevServerWabac = false;
 
-  if (isDevServer) {
-    entry["sw"] = "./node_modules/@webrecorder/wabac/src/sw.ts";
-  } else {
-    const patterns = [
-      { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js" },
-    ];
-    extraPlugins.push(new CopyPlugin({ patterns }));
-  }
+    if (isDevServerWabac) {
+      entry["sw"] = "./node_modules/@webrecorder/wabac/src/sw.ts";
+    } else {
+      const patterns = [
+        { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js" },
+      ];
+      extraPlugins.push(new CopyPlugin({ patterns }));
+    }
 
-  /** @type {import('webpack').Configuration} */
-  const config = {
-    target: "web",
-    mode: "production",
-    cache: {
-      type: isDevServer ? "memory" : "filesystem",
-    },
-    resolve: {
-      fallback: { crypto: false },
-    },
-    entry,
-    optimization,
+    /** @type {import('webpack').Configuration} */
+    const config = {
+      target: "web",
+      mode: "production",
+      cache: {
+        type: isDevServer ? "memory" : "filesystem",
+      },
+      resolve: {
+        fallback: { crypto: false },
+      },
+      entry,
+      optimization,
 
-    output: {
-      path: path.join(__dirname),
-      filename: "[name].js",
-      globalObject: "self",
-      publicPath: "/",
-      library: {
-        type: "module"
-      }
-    },
+      output: {
+        path: outputPath,
+        filename: "[name].js",
+        globalObject: "self",
+        publicPath: "/",
+      },
 
-    experiments: {
-      outputModule: true
-    },
+      devtool: argv.mode === "production" ? undefined : "source-map",
 
-    devtool: argv.mode === "production" ? undefined : "source-map",
+      plugins: [
+        new webpack.NormalModuleReplacementPlugin(/^node:*/, (resource) => {
+          switch (resource.request) {
+            case "node:stream":
+              resource.request = "stream-browserify";
+              break;
+          }
+        }),
 
-    devServer: {
-      compress: true,
-      port: 9990,
-      open: false,
-      static: __dirname,
-      //publicPath: "/"
-    },
-
-    plugins: [
-      new webpack.NormalModuleReplacementPlugin(/^node:*/, (resource) => {
-        switch (resource.request) {
-          case "node:stream":
-            resource.request = "stream-browserify";
-            break;
-        }
-      }),
-
-      new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 1,
-      }),
-      new webpack.ProvidePlugin({
-        process: "process/browser",
-      }),
-      new MiniCssExtractPlugin(),
-      new webpack.DefinePlugin({
-        __SW_NAME__: JSON.stringify("sw.js"),
-        __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
-        __GDRIVE_CLIENT_ID__: JSON.stringify(GDRIVE_CLIENT_ID),
-        __VERSION__: JSON.stringify(package_json.version),
-      }),
-      new webpack.BannerPlugin(BANNER_TEXT),
-      ...extraPlugins,
-    ],
-
-    module: {
-      rules: [
-        {
-          test: /\.svg$/,
-          use: ["raw-loader"],
-        },
-        {
-          test: /main.scss$/,
-          use: ["css-loader", "sass-loader"],
-        },
-        {
-          test: /wombat.js|wombatWorkers.js|index.html$/i,
-          use: ["raw-loader"],
-        },
+        new webpack.optimize.LimitChunkCountPlugin({
+          maxChunks: 1,
+        }),
+        new webpack.ProvidePlugin({
+          process: "process/browser",
+        }),
+        new MiniCssExtractPlugin(),
+        new webpack.DefinePlugin({
+          __SW_NAME__: JSON.stringify("sw.js"),
+          __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
+          __GDRIVE_CLIENT_ID__: JSON.stringify(GDRIVE_CLIENT_ID),
+          __VERSION__: JSON.stringify(package_json.version),
+        }),
+        new webpack.BannerPlugin(BANNER_TEXT),
+        ...extraPlugins,
       ],
-    },
-  };
-  if (!isDevServer) {
-    return merge(tsConfig, config);
-  } else {
-    return merge(
-      makeTsConfig([
-        path.resolve(__dirname, "src"),
-        path.resolve(__dirname, "./node_modules/@webrecorder/wabac/src/"),
-        path.resolve(__dirname, "../wabac.js/src"),
-      ]),
-      config,
-    );
+
+      module: {
+        rules: [
+          {
+            test: /\.svg$/,
+            use: ["raw-loader"],
+          },
+          {
+            test: /main.scss$/,
+            use: ["css-loader", "sass-loader"],
+          },
+          {
+            test: /wombat.js|wombatWorkers.js|index.html$/i,
+            use: ["raw-loader"],
+          },
+        ],
+      },
+    }
+
+    if (isLib) {
+      config.experiments = {
+        outputModule: true
+      };
+      config.output.library = {
+        type: "module"
+      };
+    } else {
+      config.output.libraryTarget = "self";
+
+      config.devServer = {
+        compress: true,
+        port: 9990,
+        open: false,
+        static: __dirname,
+        //publicPath: "/"
+      };
+    }
+
+    if (!isDevServerWabac) {
+      return merge(tsConfig, config);
+    } else {
+      return merge(
+        makeTsConfig([
+          path.resolve(__dirname, "src"),
+          path.resolve(__dirname, "./node_modules/@webrecorder/wabac/src/"),
+          path.resolve(__dirname, "../wabac.js/src"),
+        ]),
+        config,
+      );
+    }
   }
-};
+}
 
 module.exports = [
-  browserConfig,
+  makeBrowserConfig(false),
+  makeBrowserConfig(true),
   electronMainConfig,
   electronPreloadConfig,
 ];

@@ -1,10 +1,4 @@
-import {
-  LitElement,
-  html,
-  css,
-  type PropertyValues,
-  type TemplateResult,
-} from "lit";
+import { LitElement, html, css, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import { ref, createRef, type Ref } from "lit/directives/ref.js";
 import type {
@@ -216,7 +210,8 @@ class Item extends LitElement {
   constructor() {
     super();
 
-    this.showSidebar = localStorage.getItem("pages:showSidebar") === "1";
+    this.showSidebar =
+      localStorage.getItem("pages:showSidebar") === "1" && this.browsable;
   }
 
   firstUpdated() {
@@ -547,7 +542,7 @@ class Item extends LitElement {
       this.tabData.view = "pages";
     }
 
-    if (this.tabData.url && this.tabData.query) {
+    if (this.tabData.url && this.tabData.query && this.browsable) {
       this.showSidebar = true;
     }
   }
@@ -705,7 +700,7 @@ class Item extends LitElement {
       }
 
       .replay-bar {
-        padding: 0.5em 0em 0.5em 0.5em;
+        padding: 0.5em;
         max-width: none;
         border-bottom: solid 0.1rem #97989a;
         width: 100%;
@@ -1110,12 +1105,100 @@ class Item extends LitElement {
     </nav>`;
   }
 
+  protected renderToolbarLeft() {
+    const isReplay = !!this.tabData.url;
+
+    return html` ${this.browsable
+        ? html` <a
+            href="#"
+            role="button"
+            class="button narrow is-borderless is-hidden-mobile ${!isReplay
+              ? "grey-disabled"
+              : ""}"
+            @click="${this.onShowPages}"
+            @keyup="${clickOnSpacebarPress}"
+            ?disabled="${!isReplay}"
+            title="Browse Contents"
+            aria-label="Browse Contents"
+            aria-controls="contents"
+          >
+            <span class="icon is-small">
+              <fa-icon
+                size="1.0em"
+                class="has-text-grey"
+                aria-hidden="true"
+                .svg="${farListAlt}"
+              ></fa-icon>
+            </span>
+          </a>`
+        : ""}
+      <a
+        href="#"
+        role="button"
+        class="button narrow is-borderless"
+        @click="${this.onGoBack}"
+        @keyup="${clickOnSpacebarPress}"
+        title="Back"
+        aria-label="Back"
+      >
+        <span class="icon is-small">
+          <fa-icon
+            size="1.0em"
+            class="has-text-grey"
+            aria-hidden="true"
+            .svg="${fasLeft}"
+          ></fa-icon>
+        </span>
+      </a>
+      <a
+        href="#"
+        role="button"
+        class="button narrow is-borderless"
+        @click="${this.onGoForward}"
+        @keyup="${clickOnSpacebarPress}"
+        title="Forward"
+        aria-label="Forward"
+      >
+        <span class="icon is-small">
+          <fa-icon
+            size="1.0em"
+            class="has-text-grey"
+            aria-hidden="true"
+            .svg="${fasRight}"
+          ></fa-icon>
+        </span>
+      </a>
+      <a
+        href="#"
+        role="button"
+        class="button narrow is-borderless ${this.isLoading
+          ? "is-loading"
+          : ""}"
+        id="refresh"
+        @click="${this.onRefresh}"
+        @keyup="${clickOnSpacebarPress}"
+        title="Reload"
+        aria-label="Reload"
+      >
+        <span class="icon is-small">
+          ${!this.isLoading
+            ? html`
+                <fa-icon
+                  size="1.0em"
+                  class="has-text-grey"
+                  aria-hidden="true"
+                  .svg="${fasRefresh}"
+                ></fa-icon>
+              `
+            : ""}
+        </span>
+      </a>`;
+  }
+
   renderLocationBar() {
     if (this.embed === "replayonly" || this.embed == "replay-with-info") {
       return "";
     }
-
-    const dateStr = tsToDate(this.ts).toLocaleString();
 
     const isReplay = !!this.tabData.url;
 
@@ -1129,92 +1212,7 @@ class Item extends LitElement {
       >
       <nav class="replay-bar" aria-label="replay">
         <div class="field has-addons">
-          ${this.browsable
-            ? html` <a
-                href="#"
-                role="button"
-                class="button narrow is-borderless is-hidden-mobile ${!isReplay
-                  ? "grey-disabled"
-                  : ""}"
-                @click="${this.onShowPages}"
-                @keyup="${clickOnSpacebarPress}"
-                ?disabled="${!isReplay}"
-                title="Browse Contents"
-                aria-label="Browse Contents"
-                aria-controls="contents"
-              >
-                <span class="icon is-small">
-                  <fa-icon
-                    size="1.0em"
-                    class="has-text-grey"
-                    aria-hidden="true"
-                    .svg="${farListAlt}"
-                  ></fa-icon>
-                </span>
-              </a>`
-            : ""}
-          <a
-            href="#"
-            role="button"
-            class="button narrow is-borderless"
-            @click="${this.onGoBack}"
-            @keyup="${clickOnSpacebarPress}"
-            title="Back"
-            aria-label="Back"
-          >
-            <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
-                class="has-text-grey"
-                aria-hidden="true"
-                .svg="${fasLeft}"
-              ></fa-icon>
-            </span>
-          </a>
-          <a
-            href="#"
-            role="button"
-            class="button narrow is-borderless"
-            @click="${this.onGoForward}"
-            @keyup="${clickOnSpacebarPress}"
-            title="Forward"
-            aria-label="Forward"
-          >
-            <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
-                class="has-text-grey"
-                aria-hidden="true"
-                .svg="${fasRight}"
-              ></fa-icon>
-            </span>
-          </a>
-          <a
-            href="#"
-            role="button"
-            class="button narrow is-borderless ${this.isLoading
-              ? "is-loading"
-              : ""}"
-            id="refresh"
-            @click="${this.onRefresh}"
-            @keyup="${clickOnSpacebarPress}"
-            title="Reload"
-            aria-label="Reload"
-          >
-            <span class="icon is-small">
-              ${!this.isLoading
-                ? html`
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
-                      aria-hidden="true"
-                      .svg="${fasRefresh}"
-                    ></fa-icon>
-                  `
-                : ""}
-            </span>
-          </a>
-          ${this.renderExtraToolbar(false)}
+          ${this.renderToolbarLeft()}
           <form @submit="${this.onSubmit}">
             <div
               class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}"
@@ -1236,58 +1234,106 @@ class Item extends LitElement {
                 : html``}
             </div>
           </form>
+          ${this.renderToolbarRight()}
+        </div>
+      </nav>
+      <p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
+  }
 
-          <div
-            class="dropdown is-right ${this.menuActive ? "is-active" : ""}"
-            @click="${() => (this.menuActive = false)}"
+  protected renderToolbarRight() {
+    const isReplay = !!this.tabData.url;
+
+    const dateStr = tsToDate(this.ts).toLocaleString();
+
+    return html` <div
+      class="dropdown is-right ${this.menuActive ? "is-active" : ""}"
+      @click="${() => (this.menuActive = false)}"
+    >
+      <a
+        href="#"
+        role="button"
+        class="button narrow is-borderless is-hidden-touch"
+        id="fullscreen"
+        @click="${this.onFullscreenToggle}"
+        @keyup="${clickOnSpacebarPress}"
+        title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}"
+        aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}"
+      >
+        <span class="icon is-small">
+          <fa-icon
+            size="1.0em"
+            class="has-text-grey"
+            aria-hidden="true"
+            .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"
+          ></fa-icon>
+        </span>
+      </a>
+      <div class="dropdown-trigger">
+        <button
+          class="button is-borderless"
+          aria-haspopup="true"
+          aria-controls="menu-dropdown"
+          aria-expanded="${this.menuActive}"
+          @click="${this.onMenu}"
+          aria-label="more replay controls"
+        >
+          <span class="icon is-small">
+            <fa-icon
+              size="1.0em"
+              class="has-text-grey"
+              aria-hidden="true"
+              .svg="${fasMenuV}"
+            ></fa-icon>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="menu-dropdown">
+        <div class="dropdown-content">
+          <a
+            href="#"
+            role="button"
+            class="dropdown-item is-hidden-desktop"
+            @click="${this.onFullscreenToggle}"
+            @keyup="${clickOnSpacebarPress}"
           >
-            <a
-              href="#"
-              role="button"
-              class="button narrow is-borderless is-hidden-touch"
-              id="fullscreen"
-              @click="${this.onFullscreenToggle}"
-              @keyup="${clickOnSpacebarPress}"
-              title="${this.isFullscreen ? "Exit Full Screen" : "Full Screen"}"
-              aria-label="${this.isFullscreen
-                ? "Exit Fullscreen"
-                : "Fullscreen"}"
-            >
-              <span class="icon is-small">
-                <fa-icon
-                  size="1.0em"
-                  class="has-text-grey"
-                  aria-hidden="true"
-                  .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"
-                ></fa-icon>
-              </span>
-            </a>
-            <div class="dropdown-trigger">
-              <button
-                class="button is-borderless"
-                aria-haspopup="true"
-                aria-controls="menu-dropdown"
-                aria-expanded="${this.menuActive}"
-                @click="${this.onMenu}"
-                aria-label="more replay controls"
+            <span class="icon is-small">
+              <fa-icon
+                size="1.0em"
+                class="has-text-grey"
+                aria-hidden="true"
+                .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"
+              ></fa-icon>
+            </span>
+            <span>Full Screen</span>
+          </a>
+          ${this.browsable
+            ? html` <a
+                href="#"
+                role="button"
+                class="dropdown-item is-hidden-tablet ${!isReplay
+                  ? "grey-disabled"
+                  : ""}"
+                @click="${this.onShowPages}"
+                @keyup="${clickOnSpacebarPress}"
               >
                 <span class="icon is-small">
                   <fa-icon
                     size="1.0em"
                     class="has-text-grey"
                     aria-hidden="true"
-                    .svg="${fasMenuV}"
+                    .svg="${farListAlt}"
                   ></fa-icon>
                 </span>
-              </button>
-            </div>
-            <div class="dropdown-menu" id="menu-dropdown">
-              <div class="dropdown-content">
+                <span>Browse Contents</span>
+              </a>`
+            : ""}
+          ${this.clearable
+            ? html` <hr class="dropdown-divider is-hidden-desktop" />
                 <a
                   href="#"
                   role="button"
-                  class="dropdown-item is-hidden-desktop"
-                  @click="${this.onFullscreenToggle}"
+                  class="dropdown-item"
+                  @click="${this.onPurgeCache}"
                   @keyup="${clickOnSpacebarPress}"
                 >
                   <span class="icon is-small">
@@ -1295,82 +1341,40 @@ class Item extends LitElement {
                       size="1.0em"
                       class="has-text-grey"
                       aria-hidden="true"
-                      .svg="${this.isFullscreen
-                        ? fasUnfullscreen
-                        : fasFullscreen}"
+                      .svg="${fasSync}"
                     ></fa-icon>
                   </span>
-                  <span>Full Screen</span>
-                </a>
-                ${this.browsable
-                  ? html` <a
-                      href="#"
-                      role="button"
-                      class="dropdown-item is-hidden-tablet ${!isReplay
-                        ? "grey-disabled"
-                        : ""}"
-                      @click="${this.onShowPages}"
-                      @keyup="${clickOnSpacebarPress}"
-                    >
-                      <span class="icon is-small">
-                        <fa-icon
-                          size="1.0em"
-                          class="has-text-grey"
-                          aria-hidden="true"
-                          .svg="${farListAlt}"
-                        ></fa-icon>
-                      </span>
-                      <span>Browse Contents</span>
-                    </a>`
-                  : ""}
-                ${this.renderExtraToolbar(true)}
-                ${this.clearable
-                  ? html` <hr class="dropdown-divider is-hidden-desktop" />
-                      <a
-                        href="#"
-                        role="button"
-                        class="dropdown-item"
-                        @click="${this.onPurgeCache}"
-                        @keyup="${clickOnSpacebarPress}"
-                      >
-                        <span class="icon is-small">
-                          <fa-icon
-                            size="1.0em"
-                            class="has-text-grey"
-                            aria-hidden="true"
-                            .svg="${fasSync}"
-                          ></fa-icon>
-                        </span>
-                        <span>Purge Cache + Full Reload</span>
-                      </a>`
-                  : html``}
-                ${(!this.editable && this.sourceUrl?.startsWith("http://")) ||
-                this.sourceUrl?.startsWith("https://")
-                  ? html` <hr class="dropdown-divider" />
-                      <a
-                        href="${this.sourceUrl}"
-                        role="button"
-                        class="dropdown-item"
-                        @keyup="${clickOnSpacebarPress}"
-                      >
-                        <span class="icon is-small">
-                          <fa-icon
-                            size="1.0em"
-                            class="has-text-grey"
-                            aria-hidden="true"
-                            .svg="${fasDownload}"
-                          ></fa-icon>
-                        </span>
-                        <span>Download Archive</span>
-                      </a>`
-                  : html``}
-                ${dateStr
-                  ? html` <hr class="dropdown-divider is-hidden-desktop" />
-                      <div class="dropdown-item info is-hidden-tablet">
-                        <span class="menu-head">Capture Date</span>${dateStr}
-                      </div>`
-                  : ""}
+                  <span>Purge Cache + Full Reload</span>
+                </a>`
+            : html``}
+          ${(!this.editable && this.sourceUrl?.startsWith("http://")) ||
+          this.sourceUrl?.startsWith("https://")
+            ? html` <hr class="dropdown-divider" />
                 <a
+                  href="${this.sourceUrl}"
+                  role="button"
+                  class="dropdown-item"
+                  @keyup="${clickOnSpacebarPress}"
+                >
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasDownload}"
+                    ></fa-icon>
+                  </span>
+                  <span>Download Archive</span>
+                </a>`
+            : html``}
+          ${dateStr
+            ? html` <hr class="dropdown-divider is-hidden-desktop" />
+                <div class="dropdown-item info is-hidden-tablet">
+                  <span class="menu-head">Capture Date</span>${dateStr}
+                </div>`
+            : ""}
+          ${!this.editable
+            ? html` <a
                   href="#"
                   role="button"
                   class="dropdown-item"
@@ -1385,28 +1389,26 @@ class Item extends LitElement {
                   </span>
                   <span>Archive Info</span>
                 </a>
-                <hr class="dropdown-divider" />
-                <a
-                  href="#"
-                  role="button"
-                  class="dropdown-item"
-                  @click="${this.onAbout}"
-                >
-                  <fa-icon
-                    class="has-text-grey"
-                    size="1.0rem"
-                    aria-hidden="true"
-                    .svg=${rwpIcon}
-                  ></fa-icon>
-                  <span>&nbsp;About ${this.appName}</span>
-                  <span class="menu-version">(${this.appVersion})</span>
-                </a>
-              </div>
-            </div>
-          </div>
+                <hr class="dropdown-divider" />`
+            : ``}
+          <a
+            href="#"
+            role="button"
+            class="dropdown-item"
+            @click="${this.onAbout}"
+          >
+            <fa-icon
+              class="has-text-grey"
+              size="1.0rem"
+              aria-hidden="true"
+              .svg=${rwpIcon}
+            ></fa-icon>
+            <span>&nbsp;About ${this.appName}</span>
+            <span class="menu-version">(${this.appVersion})</span>
+          </a>
         </div>
-      </nav>
-      <p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
+      </div>
+    </div>`;
   }
 
   private renderTimestamp() {
@@ -1504,10 +1506,6 @@ class Item extends LitElement {
       ?canDelete="${!this.embed}"
       @item-purge="${this.onPurgeCache}"
     ></wr-item-info>`;
-  }
-
-  protected renderExtraToolbar(_isDropdown = false): "" | TemplateResult<1> {
-    return "";
   }
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'isSidebar' implicitly has an 'any' type.
@@ -1649,6 +1647,9 @@ class Item extends LitElement {
       // otherwise, just go to full pages view
       this.showSidebar = false;
       this.updateTabData({ url: "", ts: "" });
+    }
+    if (!this.browsable) {
+      this.showSidebar = false;
     }
   }
 
