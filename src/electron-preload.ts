@@ -3,9 +3,14 @@
 import { CollectionLoader } from "@webrecorder/wabac/swlib";
 import { type IpcRendererEvent } from "electron";
 
-const { ipcRenderer, contextBridge } = require("electron");
+const { ipcRenderer, contextBridge, webUtils } = require("electron");
 
-contextBridge.exposeInMainWorld("electron", { IS_APP: true });
+contextBridge.exposeInMainWorld("electron", {
+  IS_APP: true,
+  getPath(file: File) {
+    return webUtils.getPathForFile(file);
+  },
+});
 
 const dbs = {};
 

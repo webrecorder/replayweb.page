@@ -125,7 +125,7 @@ const browserConfig = (env, argv) => {
     },
     entry,
     optimization,
-    devtool: argv.mode === "production" ? undefined : "source-map",
+    //devtool: argv.mode === "production" ? undefined : "source-map",
     output: {
       path: path.join(__dirname),
       filename: "[name].js",

@@ -5,8 +5,14 @@ import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
 import { customElement, property } from "lit/decorators.js";
 
 export interface FileWithPath extends File {
-  readonly path: string;
+  path: string;
 }
+
+declare let window: Window & {
+  electron?: {
+    getPath: (file: File) => string;
+  };
+};
 
 // ===========================================================================
 @customElement("wr-chooser")
@@ -89,6 +95,10 @@ export class Chooser extends LitElement {
   setFile(file: FileWithPath) {
     this.file = file;
     // file.path only available in electron app
+    if (IS_APP && window.electron?.getPath) {
+      this.file.path = window.electron.getPath(this.file);
+    }
+
     this.fileDisplayName = "file://" + (file.path || file.name);
   }
 

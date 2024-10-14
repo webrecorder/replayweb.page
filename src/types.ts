@@ -16,7 +16,7 @@ export type URLResource = {
 export type Page = URLResource;
 
 export type ItemType = {
-  filename: string;
+  filename?: string;
   sourceUrl: string;
   replayPrefix: string;
   apiPrefix: string;
