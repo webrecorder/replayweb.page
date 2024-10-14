@@ -89,7 +89,7 @@ class ItemIndex extends LitElement {
     for (const item of this.items) {
       if (
         item.sourceUrl.indexOf(this.query) >= 0 ||
-        item.filename.indexOf(this.query) >= 0 ||
+        (item.filename && item.filename.indexOf(this.query) >= 0) ||
         Boolean(item.loadUrl && item.loadUrl.indexOf(this.query) >= 0) ||
         (item.title && item.title.indexOf(this.query) >= 0)
       ) {

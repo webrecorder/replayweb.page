@@ -94,7 +94,7 @@ const electronPreloadConfig = (/*env, argv*/) => {
   return merge(tsConfig, config);
 };
 
-const browserConfig = (/*env, argv*/) => {
+const browserConfig = (env, argv) => {
   const isDevServer = process.env.WEBPACK_SERVE;
 
   /** @type {import('webpack').Configuration['entry']} */
@@ -125,7 +125,7 @@ const browserConfig = (/*env, argv*/) => {
     },
     entry,
     optimization,
-
+    devtool: argv.mode === "production" ? undefined : "source-map",
     output: {
       path: path.join(__dirname),
       filename: "[name].js",
