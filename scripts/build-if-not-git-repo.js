@@ -27,7 +27,7 @@ const git = (args) => cp.spawnSync("git", args, { stdio: "inherit" });
 // That's why status value needs to be checked explicitly
 if (git(["rev-parse"]).status !== 0 || process.argv.includes("--force")) {
   l(`git command not found, running build`);
-  const compiler = webpack(config.map((c) => c()));
+  const compiler = webpack(config.map((c) => c(process.env, process.argv)));
 
   compiler.run((err) => {
     if (err) {
