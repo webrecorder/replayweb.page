@@ -112,7 +112,7 @@ const libConfig = (env, argv) => {
     target: "web",
     mode: "production",
     cache: {
-      type: isDevServer ? "memory" : "filesystem",
+      type: "filesystem",
     },
     resolve: {
       fallback: { crypto: false },
@@ -180,9 +180,7 @@ const libConfig = (env, argv) => {
   return merge(tsConfig, config);
 };
 
-
-
-const browserConfig = (env, argv) => {
+const browserConfig = (/*env, argv*/) => {
   const isDevServer = process.env.WEBPACK_SERVE;
 
   /** @type {import('webpack').Configuration['entry']} */
@@ -274,4 +272,9 @@ const browserConfig = (env, argv) => {
   return merge(tsConfig, config);
 };
 
-module.exports = [browserConfig, electronMainConfig, electronPreloadConfig];
+module.exports = [
+  libConfig,
+  browserConfig,
+  electronMainConfig,
+  electronPreloadConfig,
+];
