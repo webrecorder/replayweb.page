@@ -129,7 +129,6 @@ const browserConfig = (env, argv) => {
     output: {
       path: path.join(__dirname),
       filename: "[name].js",
-      libraryTarget: "self",
       library: {
         type: "module",
       },
