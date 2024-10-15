@@ -94,6 +94,94 @@ const electronPreloadConfig = (/*env, argv*/) => {
   return merge(tsConfig, config);
 };
 
+const libConfig = (env, argv) => {
+  /** @type {import('webpack').Configuration['entry']} */
+  const entry = {
+    index: "./src/index.ts",
+  };
+
+  const extraPlugins = [];
+
+  const patterns = [
+    { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js" },
+  ];
+  extraPlugins.push(new CopyPlugin({ patterns }));
+
+  /** @type {import('webpack').Configuration} */
+  const config = {
+    target: "web",
+    mode: "production",
+    cache: {
+      type: isDevServer ? "memory" : "filesystem",
+    },
+    resolve: {
+      fallback: { crypto: false },
+    },
+    entry,
+    optimization,
+    output: {
+      path: path.join(__dirname, "dist"),
+      filename: "[name].js",
+      globalObject: "self",
+      library: {
+        type: "module",
+      },
+      publicPath: "/",
+    },
+    experiments: {
+      outputModule: true,
+    },
+
+    devtool: argv.mode === "production" ? undefined : "source-map",
+
+    plugins: [
+      new webpack.NormalModuleReplacementPlugin(/^node:*/, (resource) => {
+        switch (resource.request) {
+          case "node:stream":
+            resource.request = "stream-browserify";
+            break;
+        }
+      }),
+
+      new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 1,
+      }),
+      new webpack.ProvidePlugin({
+        process: "process/browser",
+      }),
+      new MiniCssExtractPlugin(),
+      new webpack.DefinePlugin({
+        __SW_NAME__: JSON.stringify("sw.js"),
+        __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
+        __GDRIVE_CLIENT_ID__: JSON.stringify(GDRIVE_CLIENT_ID),
+        __VERSION__: JSON.stringify(package_json.version),
+      }),
+      new webpack.BannerPlugin(BANNER_TEXT),
+      ...extraPlugins,
+    ],
+
+    module: {
+      rules: [
+        {
+          test: /\.svg$/,
+          use: ["raw-loader"],
+        },
+        {
+          test: /main.scss$/,
+          use: ["css-loader", "sass-loader"],
+        },
+        {
+          test: /wombat.js|wombatWorkers.js|index.html$/i,
+          use: ["raw-loader"],
+        },
+      ],
+    },
+  };
+  return merge(tsConfig, config);
+};
+
+
+
 const browserConfig = (env, argv) => {
   const isDevServer = process.env.WEBPACK_SERVE;
 
@@ -125,18 +213,12 @@ const browserConfig = (env, argv) => {
     },
     entry,
     optimization,
-    devtool: argv.mode === "production" ? undefined : "source-map",
     output: {
       path: path.join(__dirname),
       filename: "[name].js",
-      library: {
-        type: "module",
-      },
+      libraryTarget: "self",
       globalObject: "self",
       publicPath: "/",
-    },
-    experiments: {
-      outputModule: true,
     },
     devServer: {
       compress: true,
