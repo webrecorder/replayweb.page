@@ -89,7 +89,7 @@ class ItemIndex extends LitElement {
     for (const item of this.items) {
       if (
         item.sourceUrl.indexOf(this.query) >= 0 ||
-        item.filename.indexOf(this.query) >= 0 ||
+        (item.filename && item.filename.indexOf(this.query) >= 0) ||
         Boolean(item.loadUrl && item.loadUrl.indexOf(this.query) >= 0) ||
         (item.title && item.title.indexOf(this.query) >= 0)
       ) {
@@ -383,8 +383,10 @@ class ItemIndex extends LitElement {
           >ArchiveWeb.page</a
         >
         to save pages as you browse the web, or
-        <a href="https://browsertrix.com" target="_blank">sign up for Browsertrix</a> to archive
-        entire websites with automated crawling!
+        <a href="https://browsertrix.com" target="_blank"
+          >sign up for Browsertrix</a
+        >
+        to archive entire websites with automated crawling!
       </p>
     `;
   }

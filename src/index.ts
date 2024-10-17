@@ -10,6 +10,7 @@ import { Pages } from "./pages";
 import { PageEntry } from "./pageentry";
 import { Replay } from "./replay";
 import { Sorter } from "./sorter";
+import { SWManager } from "./swmanager";
 import { URLResources } from "./url-resources";
 import { Embed } from "./embed";
 import "./shoelace";
@@ -41,6 +42,9 @@ export {
   Sorter,
   URLResources,
   Embed,
+  SWManager,
 };
 
 export type { ItemType, URLResource } from "./types";
+
+export * from "./misc";

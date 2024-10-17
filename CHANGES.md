@@ -2,30 +2,42 @@
 
 ## CHANGES
 
+v2.2.0
+- Extensability: additional override options for AWP, make location toolbar more extensible
+- Extensability: support importing as module via dist/index.js, separate from ui.js
+- Deps: update to wabac.js 2.20.0, typescript support
+
 v2.1.5
+
 - Fidelity: updated rewriting rules for instagram
 - Fidelity: disable window online/offline events in replay (via wabac.js)
 - Dependencies: update to wabac.js 2.19.9 + wombat 3.8.2, electron 32.1.0
 
 v2.1.4
+
 - Fidelity: improvements to FB rewriting, eval() rewriting, 'object' tag rewriting (via wabac.js 2.19.7, wombat 3.7.14)
 
 v2.1.3
+
 - Fidelity: edge-case rewriting improvements, avoid rewriting inside of strings, detect old-html framesets (via wabac.js 2.19.5, wombat 3.7.12)
 
 v2.1.2
+
 - Fidelity: Video replay improvements, fix rewriting of DASH manifests (via wabac.js 2.19.4, wombat 3.7.11)
 
 v2.1.1
+
 - Fidelity: fixes to Sharepoint site replay (via wabac.js 2.19.2, wombat 3.7.10)
 - UI: default URL resources search to 'prefix' as contains only works after prefix search
 
 v2.1.0
+
 - More fidelity fixes (via wabac.js 2.19.1, wombat 3.7.8)
 - Improved messaging: embed tag emits @rwp-page-loading and @rwp-url-change events
 - Remove multiTs from hashtag, avoid double history nav as it was being set
 
 v2.0.2
+
 - Fidelity improvements (via wabac.js 2.18.4 and wombat 3.7.7), including improved encoding detection
 - Upgrade Shoelace & Lit by @SuaYoo in https://github.com/webrecorder/replayweb.page/pull/329
 - Adds multi-resolution ICO file for Windows by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/325
@@ -33,9 +45,10 @@ v2.0.2
 - Configure package exports explicitly by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/336
 
 v2.0.1
+
 - Fidelity improvements (via wabac.js and wombat), including fixes ebay carousel #326 (via wombat)
 - partial fix to error page escaping #323 (via wabac)
-fixes to reddit pages #317
+- fixes to reddit pages #317
 - Fixes to twitter/x replay (via wabac / wombat)
 - Build improvements: run mkdocs gh-deploy --force in gh action, instead of publish-docs to avoid accidental updates
 - Auto install ruffle from download script, remove from git, add 'update-ruffle' script
@@ -68,7 +81,6 @@ v2.0.0
 - Dependency Updates by @ikreymer in https://github.com/webrecorder/replayweb.page/pull/315
 - build(deps): bump loader-utils from 2.0.0 to 2.0.4 by @dependabot in https://github.com/webrecorder/replayweb.page/pull/316
 - 2.0.0 Release by @SuaYoo in https://github.com/webrecorder/replayweb.page/pull/269
-
 
 v1.8.17
 

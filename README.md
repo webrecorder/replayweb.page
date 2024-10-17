@@ -72,7 +72,6 @@ The static assets are placed in the root `index.html`, `sw.js`, and `ui.js`, and
 
 The full site with docs is built using MkDocs. Using the `yarn build-docs` command, the static assets are copied into `mkdocs/site/` and using Markdown in `mkdocs/site/docs`, the final static site is built to `mkdocs/_genhtml`. This is what is published to https://replayweb.page/ via CI.
 
-
 ### Service Worker Requirements
 
 Note that for the 'backend' service worker to work, the static site must be served from either localhost or an HTTPS endpoint.

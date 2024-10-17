@@ -85,7 +85,7 @@ class Embed extends LitElement {
   replayfile = defaultReplayFile;
   mainElementName = "replay-app-main";
   appName = "ReplayWeb.page";
-  customConfig = null;
+  customConfig: Record<string, string | boolean> | null = null;
   reloadCount = 0;
 
   isCrossOrigin: boolean | undefined;
@@ -255,14 +255,11 @@ class Embed extends LitElement {
   }
 
   mergeConfigs() {
-    // TODO: Fix this the next time the file is edited.
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!this.customConfig) {
       return this.config;
     }
 
     if (this.config) {
-      // @ts-expect-error - TS2339 - Property 'customConfig' does not exist on type 'Embed'. | TS2339 - Property 'config' does not exist on type 'Embed'.
       const config = { ...this.customConfig, ...JSON.parse(this.config) };
       return JSON.stringify(config);
     } else {
