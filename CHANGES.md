@@ -2,6 +2,11 @@
 
 ## CHANGES
 
+v2.2.0
+- Extensability: additional override options for AWP, make location toolbar more extensible
+- Extensability: support importing as module via dist/index.js, separate from ui.js
+- Deps: update to wabac.js 2.20.0, typescript support
+
 v2.1.5
 
 - Fidelity: updated rewriting rules for instagram
