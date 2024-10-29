@@ -4,5 +4,5 @@
   },
   "extends": "./tsconfig.json",
   "include": ["**/*.ts", "**/*.js", ".*.js"],
-  "exclude": ["__generated__", "__mocks__", "dist", "ruffle/*.js"]
+  "exclude": ["dist", "scratch"]
 }

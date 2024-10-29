@@ -16,8 +16,7 @@ import {
 import path from "path";
 import fs from "fs";
 
-// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7016 - Could not find a declaration file for module '@webrecorder/wabac/src/rewrite'. 'node_modules/@webrecorder/wabac/src/rewrite/index.js' implicitly has an 'any' type.
-import { ArchiveResponse, Rewriter } from "@webrecorder/wabac/src/rewrite";
+import { ArchiveResponse, Rewriter } from "@webrecorder/wabac";
 
 import { PassThrough, Readable } from "stream";
 
@@ -414,7 +413,7 @@ class ElectronReplayApp {
       headers = new Headers(headers);
       const date = new Date();
 
-      let response = new ArchiveResponse({
+      let response: ArchiveResponse = new ArchiveResponse({
         payload,
         headers,
         status,
@@ -443,6 +442,9 @@ class ElectronReplayApp {
         headers = Object.fromEntries(response.headers.entries());
 
         let data = await response.getBuffer();
+        if (!data) {
+          data = new Uint8Array();
+        }
 
         if (status === 206 || status === 200) {
           const { statusCode, start, end } = this.parseRange(
@@ -456,9 +458,9 @@ class ElectronReplayApp {
           status = statusCode;
         }
 
-        data = this._bufferToStream(data);
+        const result = this._bufferToStream(data);
 
-        callback({ statusCode: status, headers, data });
+        callback({ statusCode: status, headers, data: result });
       } catch (e) {
         console.warn(e);
       }

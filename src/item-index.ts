@@ -89,7 +89,7 @@ class ItemIndex extends LitElement {
     for (const item of this.items) {
       if (
         item.sourceUrl.indexOf(this.query) >= 0 ||
-        item.filename.indexOf(this.query) >= 0 ||
+        (item.filename && item.filename.indexOf(this.query) >= 0) ||
         Boolean(item.loadUrl && item.loadUrl.indexOf(this.query) >= 0) ||
         (item.title && item.title.indexOf(this.query) >= 0)
       ) {
@@ -374,10 +374,21 @@ class ItemIndex extends LitElement {
   }
 
   renderEmpty() {
-    return html`<i
-      >No Archives so far! Archives loaded in the section above will appear
-      here.</i
-    >`;
+    return html`
+      <p>
+        Don't have any web archives yet? Check out
+        <a
+          href="https://chrome.google.com/webstore/detail/webrecorder-archivewebpag/fpeoodllldobpkbkabpblcfaogecpndd"
+          target="_blank"
+          >ArchiveWeb.page</a
+        >
+        to save pages as you browse the web, or
+        <a href="https://browsertrix.com" target="_blank"
+          >sign up for Browsertrix</a
+        >
+        to archive entire websites with automated crawling!
+      </p>
+    `;
   }
 }
 

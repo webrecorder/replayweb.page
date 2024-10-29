@@ -4,76 +4,60 @@ import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
 // ===========================================================================
 export class SWManager {
+  name: string;
+  scope: string;
+  appName: string;
+  requireSubdomainIframe: boolean;
+
+  errorMsg: string | null = null;
+
   constructor({
     name = "sw.js",
     scope = "./",
     appName = "ReplayWeb.page",
     requireSubdomainIframe = false,
   } = {}) {
-    // @ts-expect-error - TS2339 - Property 'name' does not exist on type 'SWManager'.
     this.name = name;
-    // @ts-expect-error - TS2339 - Property 'scope' does not exist on type 'SWManager'.
     this.scope = scope;
-    // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
     this.appName = appName;
-    // @ts-expect-error - TS2339 - Property 'requireSubdomainIframe' does not exist on type 'SWManager'.
     this.requireSubdomainIframe = requireSubdomainIframe;
-
-    // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-    this.errorMsg = null;
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'newAppName' implicitly has an 'any' type.
-  setAppName(newAppName) {
-    // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
+  setAppName(newAppName: string) {
     this.appName = newAppName;
   }
 
-  // TODO: Fix this the next time the file is edited.
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
-  register() {
+  async register(): Promise<void> {
     // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7034 - Variable 'resolve' implicitly has type 'any' in some locations where its type cannot be determined. | TS7034 - Variable 'reject' implicitly has type 'any' in some locations where its type cannot be determined.
     let resolve, reject;
 
-    const p = new Promise((res, rej) => {
+    const p = new Promise<void>((res, rej) => {
       resolve = res;
       reject = rej;
     });
 
-    // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
     this.errorMsg = this.getSWErrorMsg();
 
-    // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
     if (this.errorMsg) {
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
       console.error(this.errorMsg);
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-      reject(this.errorMsg);
+      reject!(this.errorMsg);
     }
 
     // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'error' implicitly has an 'any' type.
     const handleError = (error) => {
       console.error("Error during service worker registration:", error);
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
       this.errorMsg = this.getCrossOriginIframeMsg();
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
       if (!this.errorMsg) {
-        // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
         this.errorMsg = `${
-          // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
           this.appName
         } could not be loaded due to the following error:\n${error.toString()}`;
       }
 
-      // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
-      reject(this.errorMsg);
+      reject!(this.errorMsg);
     };
 
-    // @ts-expect-error - TS2339 - Property 'scope' does not exist on type 'SWManager'. | TS2339 - Property 'name' does not exist on type 'SWManager'.
     // TODO: Fix this the next time the file is edited.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     register(this.scope + this.name, {
-      // @ts-expect-error - TS2339 - Property 'scope' does not exist on type 'SWManager'.
       registrationOptions: { scope: this.scope },
       registered() {
         console.log("Service worker is registered");
@@ -118,9 +102,7 @@ export class SWManager {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.serviceWorker) {
       // must be loaded from a cross-origin (eg. subdomain)
-      // @ts-expect-error - TS2339 - Property 'requireSubdomainIframe' does not exist on type 'SWManager'.
       if (this.requireSubdomainIframe && !this.isCrossOriginIframe()) {
-        // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
         return `Sorry, due to security settings, this ${this.appName} embed only be viewed within a subdomain iframe.`;
       }
 
@@ -135,12 +117,7 @@ export class SWManager {
 
     if (!window.isSecureContext) {
       return `
-      Sorry, the ${
-        // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
-        this.appName
-      } system must be loaded from an HTTPS URL (or localhost), but was loaded from: ${
-        window.location.host
-      }.
+      Sorry, the ${this.appName} system must be loaded from an HTTPS URL (or localhost), but was loaded from: ${window.location.host}.
       Please try loading this page from an HTTPS URL`;
     }
 
@@ -149,13 +126,11 @@ export class SWManager {
       return "Sorry, Service Workers are disabled in Firefox in Private Mode. Please try loading this page in regular mode instead.";
     }
 
-    // @ts-expect-error - TS2339 - Property 'appName' does not exist on type 'SWManager'.
     return `Sorry, ${this.appName} won't work in this browser as Service Workers are not supported in this window.
   Please try a different browser.`;
   }
 
-  renderErrorReport(override?: string) {
-    // @ts-expect-error - TS2339 - Property 'errorMsg' does not exist on type 'SWManager'.
+  renderErrorReport(override = "") {
     const msg = this.errorMsg || override;
 
     if (!msg) {

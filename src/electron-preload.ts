@@ -1,12 +1,16 @@
 /*eslint-env node */
 
-// @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7016 - Could not find a declaration file for module '@webrecorder/wabac/src/loaders'. 'node_modules/@webrecorder/wabac/src/loaders.js' implicitly has an 'any' type.
-import { CollectionLoader } from "@webrecorder/wabac/src/loaders";
+import { CollectionLoader } from "@webrecorder/wabac/swlib";
 import { type IpcRendererEvent } from "electron";
 
-const { ipcRenderer, contextBridge } = require("electron");
+const { ipcRenderer, contextBridge, webUtils } = require("electron");
 
-contextBridge.exposeInMainWorld("electron", { IS_APP: true });
+contextBridge.exposeInMainWorld("electron", {
+  IS_APP: true,
+  getPath(file: File) {
+    return webUtils.getPathForFile(file);
+  },
+});
 
 const dbs = {};
 

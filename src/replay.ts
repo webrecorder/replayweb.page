@@ -55,12 +55,11 @@ class Replay extends LitElement {
     // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line @typescript-eslint/promise-function-async
     navigator.serviceWorker.addEventListener("message", (event) =>
-      this.handleAuthMessage(event),
+      this.handleSWMessage(event),
     );
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  async handleAuthMessage(event) {
+  async handleSWMessage(event: MessageEvent) {
     if (
       event.data.type === "authneeded" &&
       this.collInfo &&
@@ -90,6 +89,8 @@ class Replay extends LitElement {
       } else {
         this.showAuth = true;
       }
+    } else if (event.data.type) {
+      window.parent.postMessage(event.data);
     }
   }
 
@@ -211,6 +212,10 @@ class Replay extends LitElement {
         }
       } else if (event.data.wb_type === "title") {
         this.title = event.data.title;
+      } else {
+        const passEvent = { type: event.data.wb_type, ...event.data };
+        delete passEvent.wb_type;
+        window.parent.postMessage(passEvent);
       }
     }
   }
@@ -272,9 +277,13 @@ class Replay extends LitElement {
     }
 
     if (iframeWin) {
-      iframeWin.addEventListener("beforeunload", () => {
-        this.setLoading();
-      });
+      try {
+        iframeWin.addEventListener("beforeunload", () => {
+          this.setLoading();
+        });
+      } catch (e) {
+        // ignore
+      }
     }
   }
 
