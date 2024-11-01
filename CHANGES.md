@@ -2,6 +2,9 @@
 
 ## CHANGES
 
+v2.2.1
+- Fidelity: Update to wabac.js 2.20.1 for document.write() comment frame detection improvement
+
 v2.2.0
 - Extensability: additional override options for AWP, make location toolbar more extensible
 - Extensability: support importing as module via dist/index.js, separate from ui.js
