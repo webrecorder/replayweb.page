@@ -106,7 +106,7 @@ For example, if you publish your JavaScript files at:
 Then you must adjust your HTML to reference the new resources:
 
 ```html
-<script src=""/js/ui.js""></script>
+<script src="/js/ui.js"></script>
 
 <replay-web-page replayBase="/js/" source="/wacz/example.wacz" url="https://webrecorder.net"></replay-web-page>
 ```

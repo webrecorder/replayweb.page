@@ -7,7 +7,7 @@
 
 ## Supported Formats
 
-While ReplayWeb.page aims to support a variety of formats for archived web content, for best performance we recommend using WACZ files. To archive webpages to WACZ files on a per-page basis, we recommend [ArchiveWeb.page](https://archiveweb.page). If you need to archive entire websites, check out [Browsertrix](https://browsertrix.com).
+While ReplayWeb.page aims to support a variety of formats for archived web content, for best performance we recommend using WACZ files. To archive webpages to WACZ files on a per-page basis, we recommend [ArchiveWeb.page](https://webrecorder.net/archivewebpage). If you need to archive entire websites, check out [Browsertrix](https://webrecorder.net/browsertrix).
 
 ??? question "WARC?  WACZ?  What's the difference?"
     Due to the nature of the WARC format, the entire file must be read on first use to generate an index — a list of all the pages and content available in the file used by ReplayWebpage to rebuild and display the archived content.
