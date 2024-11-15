@@ -2,6 +2,9 @@
 
 ## CHANGES
 
+v2.2.2
+- Fidelity: Update to wabac.js 2.20.2, wombat 3.8.5 for cache-override related fidelity improvements
+
 v2.2.1
 - Fidelity: Update to wabac.js 2.20.1 for document.write() comment frame detection improvement
 
