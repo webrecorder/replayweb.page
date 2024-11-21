@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.2.3
+- Fidelity: Update to wabac.js 2.20.6, wombat 3.8.7, improved support for localStorage replay, if available
+- Fidelity: Improved upport for FB video replay (via wabac.js 2.20.6)
+
 v2.2.2
 - Fidelity: Update to wabac.js 2.20.3, wombat 3.8.6 for cache-override and worker rewrite improvements
 
