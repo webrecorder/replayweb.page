@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.2.4
+- Loading: Fix for loading nested WACZ files (via wabac.js 2.20.7)
+- Embeds: Support full reload on embeds via fullReload() call on embed web component
+
 v2.2.3
 - Fidelity: Update to wabac.js 2.20.6, wombat 3.8.7, improved support for localStorage replay, if available
 - Fidelity: Improved upport for FB video replay (via wabac.js 2.20.6)

@@ -229,6 +229,16 @@ class Item extends LitElement {
 
       this.observer.observe(this);
     }
+
+    if (this.embed) {
+      window.addEventListener("message", (event: MessageEvent) => {
+        if (event.source === window.parent) {
+          if (event.data.type === "fullReload") {
+            void this.deleteFully(true);
+          }
+        }
+      });
+    }
   }
 
   async runUpdateLoop() {
