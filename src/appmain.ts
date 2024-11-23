@@ -416,8 +416,8 @@ export class ReplayWebApp extends LitElement {
               <i
                 ><a
                   target="_blank"
-                  href="./docs/#archives-repositories-and-other-projects-using-replaywebpage"
-                  >(See Examples)</a
+                  href="https://webrecorder.net/replaywebpage/"
+                  >(Learn More)</a
                 ></i
               >
             </p>
