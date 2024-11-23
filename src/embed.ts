@@ -126,6 +126,13 @@ class Embed extends LitElement {
     }
   }
 
+  fullReload() {
+    const iframe = this.renderRoot.querySelector("iframe");
+    if (iframe?.contentWindow) {
+      iframe.contentWindow.postMessage({ type: "fullReload" });
+    }
+  }
+
   handleMessage(event: IframeMessage) {
     const iframe = this.renderRoot.querySelector("iframe");
 
