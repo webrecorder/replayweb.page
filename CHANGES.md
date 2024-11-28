@@ -3,20 +3,25 @@
 ## CHANGES
 
 v2.2.4
+
 - Loading: Fix for loading nested WACZ files (via wabac.js 2.20.7)
 - Embeds: Support full reload on embeds via fullReload() call on embed web component
 
 v2.2.3
+
 - Fidelity: Update to wabac.js 2.20.6, wombat 3.8.7, improved support for localStorage replay, if available
 - Fidelity: Improved upport for FB video replay (via wabac.js 2.20.6)
 
 v2.2.2
+
 - Fidelity: Update to wabac.js 2.20.3, wombat 3.8.6 for cache-override and worker rewrite improvements
 
 v2.2.1
+
 - Fidelity: Update to wabac.js 2.20.1 for document.write() comment frame detection improvement
 
 v2.2.0
+
 - Extensability: additional override options for AWP, make location toolbar more extensible
 - Extensability: support importing as module via dist/index.js, separate from ui.js
 - Deps: update to wabac.js 2.20.0, typescript support
