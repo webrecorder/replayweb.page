@@ -1,5 +1,4 @@
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
-import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
 import webrecorderLockupColor from "~assets/brand/webrecorder-lockup-color.svg";
 import btAngleDoubleDown from "~assets/icons/chevron-double-down.svg";
 import btAngleDoubleUp from "~assets/icons/chevron-double-up.svg";
