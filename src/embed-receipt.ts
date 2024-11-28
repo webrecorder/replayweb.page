@@ -1,5 +1,5 @@
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
-import brandLockupColor from "~assets/brand/replaywebpage-lockup-color.svg";
+import webrecorderLockupColor from "~assets/brand/webrecorder-lockup-color.svg";
 import btAngleDoubleDown from "~assets/icons/chevron-double-down.svg";
 import btAngleDoubleUp from "~assets/icons/chevron-double-up.svg";
 import fabGithub from "@fortawesome/fontawesome-free/svgs/brands/github.svg";
@@ -232,7 +232,7 @@ export class RWPEmbedReceipt extends LitElement {
                 style="white-space: nowrap;"
                 target="_blank"
                 href="https://replayweb.page"
-                >replayweb.page</a
+                >ReplayWeb.page</a
               >.
             </p>
             ${sourceUrl
@@ -310,16 +310,17 @@ export class RWPEmbedReceipt extends LitElement {
               <div>
                 <a
                   target="_blank"
-                  href="https://replayweb.page"
-                  aria-label="ReplayWeb.page Home"
+                  href="https://webrecorder.net/"
+                  aria-label="Webrecorder"
                 >
                   <fa-icon
                     size=""
-                    height="1.5rem"
-                    width="12rem"
-                    .svg=${brandLockupColor}
+                    height="1rem"
+                    width="10rem"
+                    .svg=${webrecorderLockupColor}
                     aria-label=""
                     aria-hidden="true"
+                    style="color:#001219;"
                   ></fa-icon>
                 </a>
               </div>
@@ -332,7 +333,7 @@ export class RWPEmbedReceipt extends LitElement {
                   >Source Code
                   <fa-icon
                     class="menu-logo ml-1"
-                    size="1.0rem"
+                    size="1rem"
                     aria-hidden="true"
                     .svg=${fabGithub}
                   ></fa-icon>
