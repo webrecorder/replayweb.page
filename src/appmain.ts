@@ -416,8 +416,8 @@ export class ReplayWebApp extends LitElement {
               <i
                 ><a
                   target="_blank"
-                  href="./docs/#archives-repositories-and-other-projects-using-replaywebpage"
-                  >(See Examples)</a
+                  href="https://webrecorder.net/replaywebpage/"
+                  >(Learn More)</a
                 ></i
               >
             </p>
@@ -771,13 +771,13 @@ export class ReplayWebApp extends LitElement {
                     }
                   </div>
 
-                  <p>Full source code is available at:
-                    <a href="https://github.com/webrecorder/replayweb.page" target="_blank">https://github.com/webrecorder/replayweb.page</a>
+                  <p>Full source code is available 
+                    <a href="https://github.com/webrecorder/replayweb.page" target="_blank">on GitHub</a>.
                   </p>
 
-                  <p>See the <a target="_blank" href="./docs">User Docs</a> or the GitHub README for more info on how it works.</p>
+                  <p>See the <a target="_blank" href="./docs">documentation</a> for more info on how it works.</p>
 
-                  <p>ReplayWeb.page is part of the <a href="https://webrecorder.net/" target="_blank">Webrecorder Project</a>.</p>
+                  <p>ReplayWeb.page is developed by <a href="https://webrecorder.net/" target="_blank">Webrecorder</a>.</p>
 
                   <h3>Privacy</h3>
                   <p><b>No data is uploaded anywhere and no information is collected.</b></p>
