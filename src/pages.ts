@@ -651,7 +651,7 @@ class Pages extends LitElement {
               `
             : html` <div
                   class="index-bar-label ${this.collInfo!.description
-                    ? ""
+                    ? "is-hidden-mobile"
                     : "is-sr-only"}"
                 >
                   Collection Title
@@ -663,11 +663,11 @@ class Pages extends LitElement {
                   ${this.collInfo!.name || this.collInfo!.title}
                 </div>
                 ${this.collInfo!.description
-                  ? html` <div class="index-bar-label">
+                  ? html` <div class="index-bar-label  is-hidden-mobile">
                         About This Collection
                       </div>
                       <div
-                        class="index-bar-description"
+                        class="index-bar-description  is-hidden-mobile"
                         @dblclick="${() => (this.editing = true)}"
                       >
                         ${this.collInfo!.description}
