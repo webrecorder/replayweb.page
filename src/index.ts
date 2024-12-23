@@ -41,10 +41,16 @@ export {
   Replay,
   Sorter,
   URLResources,
+  /**
+   * @deprecated use {@linkcode ReplayWebPage}
+   */
   Embed,
+  Embed as ReplayWebPage,
   SWManager,
 };
 
 export type { ItemType, URLResource } from "./types";
+
+export type { EmbedReplayEvent } from "./item";
 
 export * from "./misc";
