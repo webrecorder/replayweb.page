@@ -51,4 +51,6 @@ export {
 
 export type { ItemType, URLResource } from "./types";
 
+export type { EmbedReplayEvent } from "./item";
+
 export * from "./misc";
