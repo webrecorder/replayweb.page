@@ -3,7 +3,11 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 RUFFLE_DIR=$SCRIPT_DIR
 
-SELFHOST_URL=$(curl -s "https://api.github.com/repos/ruffle-rs/ruffle/releases" | jq -r '.[0].assets[] | select(.name | contains("selfhosted")) | .browser_download_url')
+if [ -z "$GH_TOKEN" ]; then
+  SELFHOST_URL=$(curl -s "https://api.github.com/repos/ruffle-rs/ruffle/releases" | jq -r '.[0].assets[] | select(.name | contains("selfhosted")) | .browser_download_url')
+else
+  SELFHOST_URL=$(curl -s --header "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/ruffle-rs/ruffle/releases" | jq -r '.[0].assets[] | select(.name | contains("selfhosted")) | .browser_download_url')
+fi
 
 echo "$SELFHOST_URL"
 
