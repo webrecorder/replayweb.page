@@ -394,12 +394,22 @@ class Pages extends LitElement {
         background-color: whitesmoke;
         padding-right: 0px;
         position: relative;
+        /* overflow: auto; */
+      }
+
+      .index-bar-label {
+        text-transform: uppercase;
+        font-size: var(--sl-font-size-x-small);
+        font-weight: var(--sl-font-weight-semibold);
+        color: var(--sl-color-neutral-500);
+        margin-bottom: var(--sl-spacing-2x-small);
+        line-height: 1;
       }
 
       .index-bar-title {
-        font-size: 1.25rem;
-        text-transform: uppercase;
-        margin-bottom: 1rem;
+        font-size: var(--sl-font-size-large);
+        font-weight: var(--sl-font-weight-semibold);
+        margin-bottom: var(--sl-spacing-large);
         word-break: break-word;
       }
 
@@ -529,7 +539,7 @@ class Pages extends LitElement {
 
       .index-bar-description {
         margin-bottom: 20px;
-        font-style: italic;
+        line-height: var(--sl-line-height-normal);
       }
     `);
   }
@@ -637,19 +647,23 @@ class Pages extends LitElement {
                   />
                 </form>
               `
-            : html` <div
+            : html` <div class="index-bar-label">Collection Title</div>
+                <div
                   class="index-bar-title"
                   @dblclick="${() => (this.editing = true)}"
                 >
                   ${this.collInfo!.name || this.collInfo!.title}
                 </div>
                 ${this.collInfo!.description
-                  ? html`<div
-                      class="index-bar-description"
-                      @dblclick="${() => (this.editing = true)}"
-                    >
-                      ${this.collInfo!.description}
-                    </div>`
+                  ? html` <div class="index-bar-label">
+                        About This Collection
+                      </div>
+                      <div
+                        class="index-bar-description"
+                        @dblclick="${() => (this.editing = true)}"
+                      >
+                        ${this.collInfo!.description}
+                      </div>`
                   : html``}`}
           ${this.editable
             ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`
