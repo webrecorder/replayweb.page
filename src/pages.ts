@@ -538,6 +538,7 @@ class Pages extends LitElement {
       }
 
       .index-bar-description {
+        margin-bottom: var(--sl-spacing-x-small);
         flex: 1 1 auto;
         overflow: auto;
         line-height: var(--sl-line-height-normal);
@@ -648,7 +649,13 @@ class Pages extends LitElement {
                   />
                 </form>
               `
-            : html` <div class="index-bar-label">Collection Title</div>
+            : html` <div
+                  class="index-bar-label ${this.collInfo!.description
+                    ? ""
+                    : "is-sr-only"}"
+                >
+                  Collection Title
+                </div>
                 <div
                   class="index-bar-title"
                   @dblclick="${() => (this.editing = true)}"
