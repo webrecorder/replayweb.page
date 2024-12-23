@@ -32,6 +32,7 @@ $modal-card-title-size: 1.2rem;
 // Set placeholder contrast to ~4.5:1 for WCAG AA compliance
 $input-placeholder-color: #757575;
 $input-disabled-placeholder-color: #707070;
+
 .input::placeholder, .textarea::placeholder, .select select::placeholder {
     opacity: 1;
 }
@@ -115,6 +116,11 @@ a:focus {
 
 // Add html and body styles to :host for webcomponents
 :host {
+  --primary: #{$wr-green};
+  --info: #{$wr-light-bg};
+  --warning: #{$wr-yellow};
+  --link: #{$wr-dark-blue};
+
   //background-color: $body-background-color;
   font-size: $body-size;
   -moz-osx-font-smoothing: grayscale;
@@ -130,6 +136,7 @@ a:focus {
   line-height: $body-line-height;
 
   box-sizing: border-box;
+  
 }
 
 // Make available to screen readers while hiding element visually:

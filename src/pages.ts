@@ -539,9 +539,10 @@ class Pages extends LitElement {
 
       .index-bar-description {
         margin-bottom: var(--sl-spacing-x-small);
+        line-height: var(--sl-line-height-normal);
         flex: 1 1 auto;
         overflow: auto;
-        line-height: var(--sl-line-height-normal);
+        border-bottom: 1px solid var(--sl-panel-border-color);
       }
     `);
   }
@@ -654,7 +655,7 @@ class Pages extends LitElement {
                     ? "is-hidden-mobile"
                     : "is-sr-only"}"
                 >
-                  Collection Title
+                  Collection Name
                 </div>
                 <div
                   class="index-bar-title"
@@ -670,7 +671,9 @@ class Pages extends LitElement {
                         class="index-bar-description  is-hidden-mobile"
                         @dblclick="${() => (this.editing = true)}"
                       >
-                        ${this.collInfo!.description}
+                        <wr-coll-description
+                          value=${this.collInfo!.description}
+                        ></wr-coll-description>
                       </div>`
                   : html``}`}
           ${this.editable
