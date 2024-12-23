@@ -341,7 +341,8 @@ class Pages extends LitElement {
     return wrapCss(css`
       :host {
         width: 100%;
-        height: 100%;
+        flex: 1 1 auto;
+        overflow: hidden;
         display: flex;
         min-width: 0px;
         flex-direction: column;
@@ -396,10 +397,19 @@ class Pages extends LitElement {
         position: relative;
       }
 
-      .index-bar-title {
-        font-size: 1.25rem;
+      .index-bar-label {
         text-transform: uppercase;
-        margin-bottom: 1rem;
+        font-size: var(--sl-font-size-x-small);
+        font-weight: var(--sl-font-weight-semibold);
+        color: var(--sl-color-neutral-500);
+        margin-bottom: var(--sl-spacing-2x-small);
+        line-height: 1;
+      }
+
+      .index-bar-title {
+        font-size: var(--sl-font-size-large);
+        font-weight: var(--sl-font-weight-semibold);
+        margin-bottom: var(--sl-spacing-large);
         word-break: break-word;
       }
 
@@ -528,8 +538,11 @@ class Pages extends LitElement {
       }
 
       .index-bar-description {
-        margin-bottom: 20px;
-        font-style: italic;
+        margin-bottom: var(--sl-spacing-x-small);
+        line-height: var(--sl-line-height-normal);
+        flex: 1 1 auto;
+        overflow: auto;
+        border-bottom: 1px solid var(--sl-panel-border-color);
       }
     `);
   }
@@ -638,18 +651,30 @@ class Pages extends LitElement {
                 </form>
               `
             : html` <div
+                  class="index-bar-label ${this.collInfo!.description
+                    ? "is-hidden-mobile"
+                    : "is-sr-only"}"
+                >
+                  Collection Name
+                </div>
+                <div
                   class="index-bar-title"
                   @dblclick="${() => (this.editing = true)}"
                 >
                   ${this.collInfo!.name || this.collInfo!.title}
                 </div>
                 ${this.collInfo!.description
-                  ? html`<div
-                      class="index-bar-description"
-                      @dblclick="${() => (this.editing = true)}"
-                    >
-                      ${this.collInfo!.description}
-                    </div>`
+                  ? html` <div class="index-bar-label  is-hidden-mobile">
+                        About This Collection
+                      </div>
+                      <div
+                        class="index-bar-description  is-hidden-mobile"
+                        @dblclick="${() => (this.editing = true)}"
+                      >
+                        <wr-coll-description
+                          value=${this.collInfo!.description}
+                        ></wr-coll-description>
+                      </div>`
                   : html``}`}
           ${this.editable
             ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`

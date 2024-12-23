@@ -13,6 +13,7 @@ import { Sorter } from "./sorter";
 import { SWManager } from "./swmanager";
 import { URLResources } from "./url-resources";
 import { Embed } from "./embed";
+import "./coll-description";
 import "./shoelace";
 
 export {
