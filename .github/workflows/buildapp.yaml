@@ -8,10 +8,10 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-12, ubuntu-latest]
+        os: [macos-13, ubuntu-latest]
         platform: [windows, linux]
         exclude:
-          - os: macos-12
+          - os: macos-13
             platform: windows
 
     steps:
@@ -21,7 +21,8 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'yarn'
 
       - name: Cache Dirs
         uses: actions/cache@v2
@@ -105,4 +106,4 @@ jobs:
                 yarn --link-duplicates --pure-lockfile --ignore-engines install
                 yarn run $YARN_BUILD_CMD
               fi
-               
+
