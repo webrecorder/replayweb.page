@@ -341,7 +341,8 @@ class Pages extends LitElement {
     return wrapCss(css`
       :host {
         width: 100%;
-        height: 100%;
+        flex: 1 1 auto;
+        overflow: hidden;
         display: flex;
         min-width: 0px;
         flex-direction: column;
@@ -394,7 +395,6 @@ class Pages extends LitElement {
         background-color: whitesmoke;
         padding-right: 0px;
         position: relative;
-        /* overflow: auto; */
       }
 
       .index-bar-label {
@@ -538,7 +538,8 @@ class Pages extends LitElement {
       }
 
       .index-bar-description {
-        margin-bottom: 20px;
+        flex: 1 1 auto;
+        overflow: auto;
         line-height: var(--sl-line-height-normal);
       }
     `);
