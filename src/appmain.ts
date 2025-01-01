@@ -179,7 +179,8 @@ export class ReplayWebApp extends LitElement {
         flex-direction: column;
       }
       wr-item {
-        height: 100%;
+        flex: 1 1 auto;
+        overflow: hidden;
       }
       .navbar {
         padding: 0 0.5em;
