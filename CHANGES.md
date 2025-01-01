@@ -2,6 +2,13 @@
 
 ## CHANGES
 
+v2.2.5
+- Branding: Update Site Links and Branding by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/375
+- CI: Bump macos version to 13 and node to 20 in CI by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/386
+- CI: Rename exported `Embed` to `ReplayWebPage`, and export `EmbedReplayEvent` type by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/384
+- UI: Support description markdown and longer length by @SuaYoo in https://github.com/webrecorder/replayweb.page/pull/385
+- Fidelity: Improved 'meta charset' in HTML detection (via wabac.js via 2.20.8)
+
 v2.2.4
 
 - Loading: Fix for loading nested WACZ files (via wabac.js 2.20.7)
