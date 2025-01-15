@@ -301,7 +301,7 @@ export class Chooser extends LitElement {
                   autocomplete="off"
                   placeholder="${this.newFullImport
                     ? "Click 'Choose File' to select a local archive to import"
-                    : "Enter a URL or click 'Choose File' to select a WARC, WACZ, or HAR file"}"
+                    : "Enter a URL or click 'Choose File' to select a WARC, WACZ, CDX, or HAR file"}"
                 />
               </p>
               <div class="control">
