@@ -28,7 +28,7 @@ class Loader extends LitElement {
   @property({ type: String }) swName?: string;
 
   private get isLoadingWacz() {
-    return this.loadInfo?.sourceUrl?.toLowerCase().endsWith(".wacz");
+    return this.sourceUrl?.toLowerCase().endsWith(".wacz");
   }
 
   pingInterval: number | NodeJS.Timer = 0;
@@ -340,13 +340,20 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     return html`
       <section class="container">
         <div class="is-justify-content-center is-flex">
-          <fa-icon
-            size="5rem"
-            style="margin-bottom: 1rem;"
-            .svg=${rwpLogo}
-            aria-label="ReplayWeb.page Logo"
-            role="img"
-          ></fa-icon>
+          <sl-animation
+            name="pulse"
+            easing="ease-in-out"
+            duration="2000"
+            ?play=${this.isLoadingWacz}
+          >
+            <fa-icon
+              size="5rem"
+              style="margin-bottom: 1rem;"
+              .svg=${rwpLogo}
+              aria-label="ReplayWeb.page Logo"
+              role="img"
+            ></fa-icon>
+          </sl-animation>
         </div>
         ${!this.embed
           ? html` <div class="level">
