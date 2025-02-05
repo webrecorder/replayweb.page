@@ -9,6 +9,9 @@ import { property } from "lit/decorators.js";
 import type { LoadInfo } from "./item";
 
 // ===========================================================================
+/**
+ * @fires coll-load-cancel
+ */
 class Loader extends LitElement {
   @property({ type: String }) sourceUrl?: string;
   @property({ type: Object }) loadInfo: LoadInfo | null = null;
@@ -271,7 +274,15 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     const msg = { msg_type: "cancelLoad", name: this.coll };
 
     if (!this.noWebWorker) {
+      console.log("has web worker", new URL(window.location.href).origin);
       this.worker.postMessage(msg);
+      this.dispatchEvent(
+        new CustomEvent("coll-load-cancel", {
+          bubbles: true,
+          composed: true,
+        }),
+      );
+
       return;
     }
 
