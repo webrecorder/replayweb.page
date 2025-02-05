@@ -1,4 +1,4 @@
-import { LitElement, html, css, type PropertyValues } from "lit";
+import { LitElement, html, css, type PropertyValues, nothing } from "lit";
 import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 
@@ -26,6 +26,10 @@ class Loader extends LitElement {
   @property({ type: Boolean }) errorAllowRetry = false;
   @property({ type: String }) extraMsg?: string;
   @property({ type: String }) swName?: string;
+
+  private get isLoadingWacz() {
+    return this.loadInfo?.sourceUrl?.toLowerCase().endsWith(".wacz");
+  }
 
   pingInterval: number | NodeJS.Timer = 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- requestPermission() type mismatch
@@ -368,26 +372,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
       case "started":
         return html` <div class="progress-div">
-          <progress
-            id="progress"
-            class="progress is-primary is-large"
-            value="${this.percent}"
-            max="100"
-          ></progress>
-          <label class="progress-label" for="progress">${this.percent}%</label>
-
-          ${this.currentSize && this.totalSize
-            ? html` <div class="loaded-prog">
-                Loaded
-                <b>${prettyBytes(this.currentSize)}</b>
-                of
-
-                <b>${prettyBytes(this.totalSize)}</b>
-
-                ${this.extraMsg &&
-                html` <p class="extra-msg">(${this.extraMsg})</p> `}
-              </div>`
-            : html``}
+          ${this.isLoadingWacz ? nothing : this.renderProgressBar()}
           ${!this.embed
             ? html` <button @click="${this.onCancel}" class="button is-danger">
                 Cancel
@@ -431,6 +416,31 @@ You can select a file to upload from the main page by clicking the 'Choose File.
           style="max-width: 400px"
         ></progress>`;
     }
+  }
+
+  private renderProgressBar() {
+    return html`
+      <progress
+        id="progress"
+        class="progress is-primary is-large"
+        value="${this.percent}"
+        max="100"
+      ></progress>
+      <label class="progress-label" for="progress">${this.percent}%</label>
+
+      ${this.currentSize && this.totalSize
+        ? html` <div class="loaded-prog">
+            Loaded
+            <b>${prettyBytes(this.currentSize)}</b>
+            of
+
+            <b>${prettyBytes(this.totalSize)}</b>
+
+            ${this.extraMsg &&
+            html` <p class="extra-msg">(${this.extraMsg})</p> `}
+          </div>`
+        : html``}
+    `;
   }
 
   async onAskPermission() {
