@@ -443,20 +443,24 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     // Calculate percentage based on currentSize and totalSize
     // if data is available before actual percent
     const percent =
-      this.percent || (this.currentSize && this.totalSize)
-        ? ((this.currentSize / this.totalSize) * 100).toFixed(0)
-        : 0;
+      this.currentSize && this.totalSize
+        ? Math.max(this.percent, (this.currentSize / this.totalSize) * 100)
+        : this.percent;
+    // Round up <1 percentages
+    const displayPercent = percent ? Math.max(percent, 1) : undefined;
 
     return html`
       <progress
         id="progress"
         class="progress is-primary is-large"
-        value=${ifDefined(percent || undefined)}
+        value=${ifDefined(displayPercent)}
         max="100"
       ></progress>
-      ${percent
+      ${displayPercent
         ? html`
-            <label class="progress-label" for="progress">${percent}%</label>
+            <label class="progress-label" for="progress"
+              >${displayPercent}%</label
+            >
           `
         : nothing}
       ${this.currentSize && this.totalSize
