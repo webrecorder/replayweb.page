@@ -1,6 +1,5 @@
 // Cherry-picked Shoelace components
 import "@shoelace-style/shoelace/dist/components/alert/alert.js";
-import "@shoelace-style/shoelace/dist/components/animation/animation.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
 import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
 import "@shoelace-style/shoelace/dist/components/dialog/dialog.js";

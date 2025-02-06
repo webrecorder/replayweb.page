@@ -1,6 +1,7 @@
 import { LitElement, html, css, type PropertyValues, nothing } from "lit";
 import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
+import rwpLogoAnimated from "~assets/brand/replaywebpage-icon-color-animated.svg";
 
 import prettyBytes from "pretty-bytes";
 
@@ -354,20 +355,13 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     return html`
       <section class="container">
         <div class="is-justify-content-center is-flex">
-          <sl-animation
-            name="pulse"
-            easing="ease-in-out"
-            duration="2000"
-            ?play=${this.isLoadingWacz || !this.percent}
-          >
-            <fa-icon
-              size="5rem"
-              style="margin-bottom: 1rem;"
-              .svg=${rwpLogo}
-              aria-label="ReplayWeb.page Logo"
-              role="img"
-            ></fa-icon>
-          </sl-animation>
+          <fa-icon
+            size="5rem"
+            style="margin-bottom: 1rem;"
+            .svg=${this.isLoadingWacz ? rwpLogoAnimated : rwpLogo}
+            aria-label="ReplayWeb.page Logo"
+            role="img"
+          ></fa-icon>
         </div>
         ${!this.embed
           ? html` <div class="level">
