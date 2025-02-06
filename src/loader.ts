@@ -274,7 +274,6 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     const msg = { msg_type: "cancelLoad", name: this.coll };
 
     if (!this.noWebWorker) {
-      console.log("has web worker", new URL(window.location.href).origin);
       this.worker.postMessage(msg);
       this.dispatchEvent(
         new CustomEvent("coll-load-cancel", {
