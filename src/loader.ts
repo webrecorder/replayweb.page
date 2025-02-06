@@ -7,6 +7,7 @@ import prettyBytes from "pretty-bytes";
 import { parseURLSchemeHostPath } from "./pageutils";
 import { property } from "lit/decorators.js";
 import type { LoadInfo } from "./item";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 // ===========================================================================
 /**
@@ -266,7 +267,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     }
   }
 
-  onCancel() {
+  async onCancel() {
     if (!this.worker) {
       return;
     }
@@ -275,6 +276,9 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
     if (!this.noWebWorker) {
       this.worker.postMessage(msg);
+
+      await this.updateComplete;
+
       this.dispatchEvent(
         new CustomEvent("coll-load-cancel", {
           bubbles: true,
@@ -354,7 +358,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
             name="pulse"
             easing="ease-in-out"
             duration="2000"
-            ?play=${this.isLoadingWacz}
+            ?play=${this.isLoadingWacz || !this.percent}
           >
             <fa-icon
               size="5rem"
@@ -436,15 +440,25 @@ You can select a file to upload from the main page by clicking the 'Choose File.
   }
 
   private renderProgressBar() {
+    // Calculate percentage based on currentSize and totalSize
+    // if data is available before actual percent
+    const percent =
+      this.percent || (this.currentSize && this.totalSize)
+        ? ((this.currentSize / this.totalSize) * 100).toFixed(0)
+        : 0;
+
     return html`
       <progress
         id="progress"
         class="progress is-primary is-large"
-        value="${this.percent}"
+        value=${ifDefined(percent || undefined)}
         max="100"
       ></progress>
-      <label class="progress-label" for="progress">${this.percent}%</label>
-
+      ${percent
+        ? html`
+            <label class="progress-label" for="progress">${percent}%</label>
+          `
+        : nothing}
       ${this.currentSize && this.totalSize
         ? html` <div class="loaded-prog">
             Loaded
