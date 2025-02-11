@@ -11,6 +11,8 @@ on:
       - 'yarn.lock'
       - 'webpack.config.js'
 
+  workflow_dispatch:
+
 permissions:
   contents: write
 
