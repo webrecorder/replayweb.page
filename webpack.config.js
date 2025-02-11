@@ -105,7 +105,7 @@ const libConfig = (env, argv) => {
   const patterns = [
     { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js" },
   ];
-  extraPlugins.push(new CopyPlugin({ patterns }));
+  //extraPlugins.push(new CopyPlugin({ patterns }));
 
   /** @type {import('webpack').Configuration} */
   const config = {
