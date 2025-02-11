@@ -9,6 +9,7 @@ on:
       - 'src/**'
       - 'package.json'
       - 'yarn.lock'
+      - 'webpack.config.js'
 
 permissions:
   contents: write
