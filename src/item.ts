@@ -85,6 +85,7 @@ export type EmbedReplayData = {
   ts?: string;
   title?: string;
   query?: string;
+  waczhash?: string;
 };
 
 export type EmbedReplayEvent = EmbedReplayData & {
@@ -976,6 +977,7 @@ class Item extends LitElement {
                   sourceUrl="${this.sourceUrl || ""}"
                   url="${this.tabData.url || ""}"
                   ts="${this.tabData.ts || ""}"
+                  waczhash="${this.tabData.waczhash || ""}"
                   @coll-tab-nav="${this.onItemTabNav}"
                   id="replay"
                   @replay-loading="${this.onReplayLoading}"

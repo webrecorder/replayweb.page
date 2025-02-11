@@ -11,6 +11,7 @@ export type URLResource = {
   size: number;
   favIconUrl: string;
   text?: string;
+  waczhash?: string;
 };
 
 export type Page = URLResource;
@@ -49,6 +50,7 @@ export type ItemType = {
   ctime?: string;
   totalSize?: unknown;
   size?: number | string;
+  hasPagesQuery?: boolean;
 };
 
 export type FavIconEventDetail = {

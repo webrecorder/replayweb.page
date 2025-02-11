@@ -245,6 +245,7 @@ class PageEntry extends LitElement {
                     "pages",
                     this.page!.url,
                     this.page!.timestamp!,
+                    this.page!.waczhash,
                   )}"
                 >
                   <p class="is-size-6 has-text-weight-bold has-text-link text">
@@ -298,6 +299,12 @@ class PageEntry extends LitElement {
     `;
   }
 
+  private getReplayPrefix() {
+    const waczhash = this.page!.waczhash ? `:${this.page!.waczhash}/` : "";
+    const ts = this.page!.timestamp || "";
+    return this.replayPrefix + "/" + waczhash + ts + "id_";
+  }
+
   private renderPageIcon() {
     if (!this.thumbnailValid) {
       return this.renderFavicon();
@@ -305,9 +312,7 @@ class PageEntry extends LitElement {
     return html`<img
       class="thumbnail"
       @error=${() => (this.thumbnailValid = false)}
-      src=${`${this.replayPrefix}/${this.page!.timestamp}id_/urn:thumbnail:${
-        this.page!.url
-      }`}
+      src=${`${this.getReplayPrefix()}/urn:thumbnail:${this.page!.url}`}
       loading="lazy"
     />`;
   }
@@ -319,9 +324,7 @@ class PageEntry extends LitElement {
     return html`<img
       class="favicon"
       @error=${() => (this.iconValid = false)}
-      src=${`${this.replayPrefix}/${this.page!.timestamp}id_/${
-        this.page!.favIconUrl
-      }`}
+      src=${`${this.getReplayPrefix()}/${this.page!.favIconUrl}`}
       loading="lazy"
     />`;
   }
@@ -377,6 +380,7 @@ class PageEntry extends LitElement {
     const data = {
       url: this.page!.url,
       ts: this.page!.timestamp,
+      waczhash: this.page!.waczhash,
     };
     this.sendChangeEvent(data, reload);
     return false;

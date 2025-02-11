@@ -103,6 +103,9 @@ class Pages extends LitElement {
   @property({ type: String })
   defaultKey = "";
 
+  @property({ type: Boolean })
+  dynamicPagesQuery = false;
+
   private _ival: number | undefined;
 
   static get sortKeys() {
@@ -218,6 +221,16 @@ class Pages extends LitElement {
       this.filteredPages = [...this.collInfo!.pages];
     }
 
+    if (this.query && this.dynamicPagesQuery) {
+      const resp = await fetch(
+        `${this.collInfo!.apiPrefix}/pages?q=${this.query}`,
+      );
+      const json = await resp.json();
+      if (json.pages) {
+        this.addDynamicPages(json.pages);
+      }
+    }
+
     if (this.currList !== 0) {
       await this.filterCurated();
     }
@@ -236,6 +249,55 @@ class Pages extends LitElement {
     this.changeNeeded = false;
     const data = { query: this.query, currList: this.currList };
     this.sendChangeEvent(data);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  addDynamicPages(pages: any[]) {
+    const knownPages = new Set();
+    this.filteredPages.forEach((x) => knownPages.add(x.id));
+
+    const newPages = [];
+
+    for (const {
+      id,
+      url,
+      title,
+      mime,
+      status,
+      ts,
+      favIconUrl,
+      waczhash,
+    } of pages) {
+      if (knownPages.has(id)) {
+        continue;
+      }
+
+      let tsActual;
+
+      if (typeof ts === "string") {
+        tsActual = new Date(ts).getTime();
+      } else {
+        tsActual = ts;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const newPage: any = {
+        id,
+        url,
+        title,
+        mime,
+        status,
+        ts: tsActual,
+        favIconUrl,
+        waczhash,
+      };
+
+      newPages.push(newPage);
+    }
+
+    if (newPages.length) {
+      this.filteredPages = [...this.filteredPages, ...newPages];
+    }
   }
 
   async filterCurated() {
@@ -268,6 +330,10 @@ class Pages extends LitElement {
         this.collInfo?.pages &&
         this.textPages.length > this.collInfo.pages.length,
     );
+
+    if (this.collInfo) {
+      this.dynamicPagesQuery = this.collInfo.hasPagesQuery || false;
+    }
 
     return Promise.all(
       // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'page' implicitly has an 'any' type. | TS7006 - Parameter 'index' implicitly has an 'any' type.

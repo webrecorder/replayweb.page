@@ -20,6 +20,9 @@ class Replay extends LitElement {
   @property({ type: String })
   ts = "";
 
+  @property({ type: String })
+  waczhash = "";
+
   // actual replay url
   @property({ type: String })
   replayUrl = "";
@@ -97,7 +100,9 @@ class Replay extends LitElement {
   doSetIframeUrl() {
     this.iframeUrl =
       this.url && this.collInfo
-        ? `${this.collInfo.replayPrefix}/${this.ts || ""}mp_/${this.url}`
+        ? `${this.collInfo.replayPrefix}/${
+            this.waczhash ? `:${this.waczhash}/` : ""
+          }${this.ts || ""}mp_/${this.url}`
         : "";
   }
 
