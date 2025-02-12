@@ -7,7 +7,7 @@ import {
 } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { wrapCss, updateFaviconLinks } from "./misc";
+import { wrapCss, updateFaviconLinks, apiPrefix } from "./misc";
 import { SWManager } from "./swmanager";
 import { property, query } from "lit/decorators.js";
 import type { FavIconEventDetail } from "./types";
@@ -70,8 +70,6 @@ class Embed extends LitElement {
 
   @property({ type: String }) newWindowBase = "";
 
-  @property({ type: Boolean }) doFullReload = false;
-
   @property({ type: String }) errorMessage:
     | TemplateResult<1>
     | string
@@ -131,10 +129,24 @@ class Embed extends LitElement {
     }
   }
 
-  fullReload() {
-    if (this.iframe?.contentWindow) {
-      this.iframe.contentWindow.postMessage({ type: "fullReload" });
+  async fullReload() {
+    if (!this.iframe?.contentWindow) {
+      return false;
     }
+
+    const deleteURL = apiPrefix + "/c/" + this.coll + "?reload=1";
+
+    const resp = await this.iframe.contentWindow.fetch(deleteURL, {
+      method: "DELETE",
+    });
+
+    if (resp.status !== 200) {
+      return false;
+    }
+
+    this.iframe.contentWindow.location.reload();
+
+    return true;
   }
 
   handleMessage(event: IframeMessage) {
@@ -368,11 +380,6 @@ class Embed extends LitElement {
       }
 
       this.hashString = new URLSearchParams(hashParams).toString();
-    }
-
-    if (this.doFullReload && this.iframe?.contentWindow) {
-      this.fullReload();
-      this.doFullReload = false;
     }
   }
 
