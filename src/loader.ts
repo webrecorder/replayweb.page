@@ -14,10 +14,23 @@ import { ifDefined } from "lit/directives/if-defined.js";
 /**
  * @fires coll-load-cancel
  */
+type LoadingState =
+  | "started"
+  | "waiting"
+  | "googledrive"
+  | "errored"
+  | "permission_needed";
+
+const NO_ANIM_STATES: LoadingState[] = [
+  "errored",
+  "googledrive",
+  "permission_needed",
+];
+
 class Loader extends LitElement {
   @property({ type: String }) sourceUrl?: string;
   @property({ type: Object }) loadInfo: LoadInfo | null = null;
-  @property({ type: String }) state = "waiting";
+  @property({ type: String }) state: LoadingState = "waiting";
   @property({ type: Number }) progress = 0;
   @property({ type: Number }) percent = 0;
   @property({ type: Number }) currentSize = 0;
@@ -31,10 +44,6 @@ class Loader extends LitElement {
   @property({ type: Boolean }) errorAllowRetry = false;
   @property({ type: String }) extraMsg?: string;
   @property({ type: String }) swName?: string;
-
-  private get isLoadingWacz() {
-    return this.sourceUrl?.toLowerCase().endsWith(".wacz");
-  }
 
   pingInterval: number | NodeJS.Timer = 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- requestPermission() type mismatch
@@ -358,7 +367,9 @@ You can select a file to upload from the main page by clicking the 'Choose File.
           <fa-icon
             size="5rem"
             style="margin-bottom: 1rem;"
-            .svg=${this.isLoadingWacz ? rwpLogoAnimated : rwpLogo}
+            .svg=${NO_ANIM_STATES.includes(this.state)
+              ? rwpLogo
+              : rwpLogoAnimated}
             aria-label="ReplayWeb.page Logo"
             role="img"
           ></fa-icon>
@@ -387,7 +398,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
       case "started":
         return html` <div class="progress-div">
-          ${this.isLoadingWacz ? nothing : this.renderProgressBar()}
+          ${!this.currentSize ? nothing : this.renderProgressBar()}
           ${!this.embed
             ? html` <button @click="${this.onCancel}" class="button is-danger">
                 Cancel
