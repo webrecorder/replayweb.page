@@ -50,7 +50,7 @@ export type ItemType = {
   ctime?: string;
   totalSize?: unknown;
   size?: number | string;
-  hasPagesQuery?: boolean;
+  canQueryPages?: boolean;
 };
 
 export type FavIconEventDetail = {

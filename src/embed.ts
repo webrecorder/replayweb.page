@@ -7,9 +7,9 @@ import {
 } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { wrapCss, updateFaviconLinks } from "./misc";
+import { wrapCss, updateFaviconLinks, apiPrefix } from "./misc";
 import { SWManager } from "./swmanager";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 import type { FavIconEventDetail } from "./types";
 import type { EmbedReplayData, EmbedReplayEvent } from "./item";
 
@@ -82,6 +82,9 @@ class Embed extends LitElement {
 
   @property({ type: Boolean }) useRuffle = false;
 
+  @query("iframe")
+  private readonly iframe?: HTMLIFrameElement | null;
+
   replayfile = defaultReplayFile;
   mainElementName = "replay-app-main";
   appName = "ReplayWeb.page";
@@ -126,17 +129,28 @@ class Embed extends LitElement {
     }
   }
 
-  fullReload() {
-    const iframe = this.renderRoot.querySelector("iframe");
-    if (iframe?.contentWindow) {
-      iframe.contentWindow.postMessage({ type: "fullReload" });
+  async fullReload() {
+    if (!this.iframe?.contentWindow) {
+      return false;
     }
+
+    const deleteURL = apiPrefix + "/c/" + this.coll + "?reload=1";
+
+    const resp = await this.iframe.contentWindow.fetch(deleteURL, {
+      method: "DELETE",
+    });
+
+    if (resp.status !== 200) {
+      return false;
+    }
+
+    this.iframe.contentWindow.location.reload();
+
+    return true;
   }
 
   handleMessage(event: IframeMessage) {
-    const iframe = this.renderRoot.querySelector("iframe");
-
-    if (iframe && event.source === iframe.contentWindow) {
+    if (this.iframe && event.source === this.iframe.contentWindow) {
       switch (event.data.type) {
         case "urlchange":
           if (this.deepLink) {
