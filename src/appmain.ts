@@ -403,6 +403,7 @@ export class ReplayWebApp extends LitElement {
       @replay-favicons=${this.onFavIcons}
       @update-title=${this.onTitle}
       @coll-loaded=${this.onCollLoaded}
+      @coll-load-cancel=${this.onCollLoadCancel}
       @about-show=${() => (this.showAbout = true)}
     ></wr-item>`;
   }
@@ -689,6 +690,12 @@ export class ReplayWebApp extends LitElement {
       this.pageParams.set("source", event.detail.sourceUrl);
       window.location.search = this.pageParams.toString();
     }
+  }
+
+  private onCollLoadCancel() {
+    this.sourceUrl = null;
+    this.loadInfo = null;
+    window.history.pushState({}, "", new URL(window.location.href).origin);
   }
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.

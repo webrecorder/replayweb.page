@@ -1,18 +1,36 @@
-import { LitElement, html, css, type PropertyValues } from "lit";
+import { LitElement, html, css, type PropertyValues, nothing } from "lit";
 import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
+import rwpLogoAnimated from "~assets/brand/replaywebpage-icon-color-animated.svg";
 
 import prettyBytes from "pretty-bytes";
 
 import { parseURLSchemeHostPath } from "./pageutils";
 import { property } from "lit/decorators.js";
 import type { LoadInfo } from "./item";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 // ===========================================================================
+/**
+ * @fires coll-load-cancel
+ */
+type LoadingState =
+  | "started"
+  | "waiting"
+  | "googledrive"
+  | "errored"
+  | "permission_needed";
+
+const NO_ANIM_STATES: LoadingState[] = [
+  "errored",
+  "googledrive",
+  "permission_needed",
+];
+
 class Loader extends LitElement {
   @property({ type: String }) sourceUrl?: string;
   @property({ type: Object }) loadInfo: LoadInfo | null = null;
-  @property({ type: String }) state = "waiting";
+  @property({ type: String }) state: LoadingState = "waiting";
   @property({ type: Number }) progress = 0;
   @property({ type: Number }) percent = 0;
   @property({ type: Number }) currentSize = 0;
@@ -259,7 +277,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
     }
   }
 
-  onCancel() {
+  async onCancel() {
     if (!this.worker) {
       return;
     }
@@ -268,6 +286,16 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
     if (!this.noWebWorker) {
       this.worker.postMessage(msg);
+
+      await this.updateComplete;
+
+      this.dispatchEvent(
+        new CustomEvent("coll-load-cancel", {
+          bubbles: true,
+          composed: true,
+        }),
+      );
+
       return;
     }
 
@@ -339,7 +367,9 @@ You can select a file to upload from the main page by clicking the 'Choose File.
           <fa-icon
             size="5rem"
             style="margin-bottom: 1rem;"
-            .svg=${rwpLogo}
+            .svg=${NO_ANIM_STATES.includes(this.state)
+              ? rwpLogo
+              : rwpLogoAnimated}
             aria-label="ReplayWeb.page Logo"
             role="img"
           ></fa-icon>
@@ -368,26 +398,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
       case "started":
         return html` <div class="progress-div">
-          <progress
-            id="progress"
-            class="progress is-primary is-large"
-            value="${this.percent}"
-            max="100"
-          ></progress>
-          <label class="progress-label" for="progress">${this.percent}%</label>
-
-          ${this.currentSize && this.totalSize
-            ? html` <div class="loaded-prog">
-                Loaded
-                <b>${prettyBytes(this.currentSize)}</b>
-                of
-
-                <b>${prettyBytes(this.totalSize)}</b>
-
-                ${this.extraMsg &&
-                html` <p class="extra-msg">(${this.extraMsg})</p> `}
-              </div>`
-            : html``}
+          ${!this.currentSize ? nothing : this.renderProgressBar()}
           ${!this.embed
             ? html` <button @click="${this.onCancel}" class="button is-danger">
                 Cancel
@@ -426,11 +437,47 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
       case "waiting":
       default:
-        return html`<progress
-          class="progress is-primary is-large"
-          style="max-width: 400px"
-        ></progress>`;
+        return html``;
     }
+  }
+
+  private renderProgressBar() {
+    // Calculate percentage based on currentSize and totalSize
+    // if data is available before actual percent
+    const percent =
+      this.currentSize && this.totalSize
+        ? Math.max(this.percent, (this.currentSize / this.totalSize) * 100)
+        : this.percent;
+    // Round up <1 percentages
+    const displayPercent = percent ? Math.max(percent, 1) : undefined;
+
+    return html`
+      <progress
+        id="progress"
+        class="progress is-primary is-large"
+        value=${ifDefined(displayPercent)}
+        max="100"
+      ></progress>
+      ${displayPercent
+        ? html`
+            <label class="progress-label" for="progress"
+              >${displayPercent}%</label
+            >
+          `
+        : nothing}
+      ${this.currentSize && this.totalSize
+        ? html` <div class="loaded-prog">
+            Loaded
+            <b>${prettyBytes(this.currentSize)}</b>
+            of
+
+            <b>${prettyBytes(this.totalSize)}</b>
+
+            ${this.extraMsg &&
+            html` <p class="extra-msg">(${this.extraMsg})</p> `}
+          </div>`
+        : html``}
+    `;
   }
 
   async onAskPermission() {

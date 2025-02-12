@@ -2,7 +2,12 @@
 
 ## CHANGES
 
+v2.3.0
+
+- UI: Add animating spinner for loading, show progress bar only when progress is available
+
 v2.2.5
+
 - Branding: Update Site Links and Branding by @Shrinks99 in https://github.com/webrecorder/replayweb.page/pull/375
 - CI: Bump macos version to 13 and node to 20 in CI by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/386
 - CI: Rename exported `Embed` to `ReplayWebPage`, and export `EmbedReplayEvent` type by @emma-sg in https://github.com/webrecorder/replayweb.page/pull/384
