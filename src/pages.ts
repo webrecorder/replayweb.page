@@ -261,7 +261,7 @@ class Pages extends LitElement {
 
   async addDynamicPages() {
     const search = new URLSearchParams();
-    search.set("q", this.query);
+    search.set("search", this.query);
     search.set("page", this.dynamicPageCount + "");
     search.set("pageSize", DYNAMIC_PAGE_SIZE + "");
 
@@ -358,7 +358,7 @@ class Pages extends LitElement {
     );
 
     if (this.collInfo) {
-      this.dynamicPagesQuery = this.collInfo.hasPagesQuery || false;
+      this.dynamicPagesQuery = this.collInfo.canQueryPages || false;
     }
 
     return Promise.all(
