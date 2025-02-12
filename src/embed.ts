@@ -70,6 +70,8 @@ class Embed extends LitElement {
 
   @property({ type: String }) newWindowBase = "";
 
+  @property({ type: Boolean }) doFullReload = false;
+
   @property({ type: String }) errorMessage:
     | TemplateResult<1>
     | string
@@ -215,6 +217,10 @@ class Embed extends LitElement {
     }
 
     this.loadBrowserDefaults();
+
+    if (this.doFullReload) {
+      this.fullReload();
+    }
   }
 
   loadBrowserDefaults() {
