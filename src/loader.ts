@@ -437,10 +437,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
 
       case "waiting":
       default:
-        return html`<progress
-          class="progress is-primary is-large"
-          style="max-width: 400px"
-        ></progress>`;
+        return html``;
     }
   }
 
