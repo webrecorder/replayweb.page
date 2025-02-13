@@ -14,7 +14,9 @@ export type URLResource = {
   waczhash?: string;
 };
 
-export type Page = URLResource;
+export type Page = URLResource & {
+  isSeed?: boolean;
+};
 
 export type ItemType = {
   filename?: string;
@@ -44,7 +46,7 @@ export type ItemType = {
     software?: string;
   };
   onDemand?: boolean;
-  pages: URLResource[];
+  pages: Page[];
   curatedPages: (URLResource & { list: string })[];
   lists: URLResource[];
   ctime?: string;

@@ -228,13 +228,20 @@ class Pages extends LitElement {
       );
     } else if (this.showAllPages && this.hasExtraPages) {
       this.filteredPages = [...this.textPages!];
-    } else {
+    } else if (!this.dynamicPagesQuery) {
       this.filteredPages = [...this.collInfo!.pages];
     }
 
     this.totalPages = this.filteredPages.length;
 
     if (this.dynamicPagesQuery) {
+      if (!this.query) {
+        const seedPages = this.collInfo!.pages.filter((x) => x.isSeed);
+        this.filteredPages = this.showAllPages
+          ? [...this.collInfo!.pages]
+          : seedPages;
+        this.hasExtraPages = seedPages.length !== this.collInfo!.pages.length;
+      }
       this.dynamicPageCount = 1;
       await this.addDynamicPages();
     }
@@ -289,8 +296,13 @@ class Pages extends LitElement {
       ts,
       favIconUrl,
       waczhash,
+      isSeed,
     } of json.pages) {
       if (knownPages.has(id)) {
+        continue;
+      }
+
+      if (!this.showAllPages && !isSeed) {
         continue;
       }
 
@@ -353,11 +365,13 @@ class Pages extends LitElement {
     this.flex = flex;
     this.textPages = pages;
 
-    this.hasExtraPages = Boolean(
-      this.textPages &&
-        this.collInfo?.pages &&
-        this.textPages.length > this.collInfo.pages.length,
-    );
+    if (!this.dynamicPagesQuery) {
+      this.hasExtraPages = Boolean(
+        this.textPages &&
+          this.collInfo?.pages &&
+          this.textPages.length > this.collInfo.pages.length,
+      );
+    }
 
     if (this.collInfo) {
       this.dynamicPagesQuery = this.collInfo.canQueryPages || false;
