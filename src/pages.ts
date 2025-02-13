@@ -234,7 +234,7 @@ class Pages extends LitElement {
 
     this.totalPages = this.filteredPages.length;
 
-    if (this.query && this.dynamicPagesQuery) {
+    if (this.dynamicPagesQuery) {
       this.dynamicPageCount = 1;
       await this.addDynamicPages();
     }
@@ -261,7 +261,9 @@ class Pages extends LitElement {
 
   async addDynamicPages() {
     const search = new URLSearchParams();
-    search.set("search", this.query);
+    if (this.query) {
+      search.set("search", this.query);
+    }
     search.set("page", this.dynamicPageCount + "");
     search.set("pageSize", DYNAMIC_PAGE_SIZE + "");
 
