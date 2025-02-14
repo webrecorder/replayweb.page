@@ -69,11 +69,19 @@ function getTS(iso: string) {
 }
 
 // ===========================================================================
-function getReplayLink(view: string, url: string, ts: string) {
+function getReplayLink(
+  view: string,
+  url: string,
+  ts: string,
+  waczhash?: string,
+) {
   const params = new URLSearchParams();
   params.set("view", view);
   params.set("url", url);
   params.set("ts", ts);
+  if (waczhash) {
+    params.set("waczhash", waczhash);
+  }
   return "#" + params.toString();
 }
 

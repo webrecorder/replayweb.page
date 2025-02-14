@@ -20,6 +20,8 @@ import type { PageEntry } from "./pageentry";
 import type { Id, Index } from "flexsearch";
 import type { ItemType, URLResource } from "./types";
 
+const DYNAMIC_PAGE_SIZE = 25;
+
 // ===========================================================================
 class Pages extends LitElement {
   @property({ type: Array })
@@ -102,6 +104,18 @@ class Pages extends LitElement {
 
   @property({ type: String })
   defaultKey = "";
+
+  @property({ type: Boolean })
+  dynamicPagesQuery = false;
+
+  @property({ type: Number })
+  totalPages = 0;
+
+  @property({ type: Number })
+  dynamicPageCount = 1;
+
+  @property({ type: Boolean })
+  skipScrollMore = false;
 
   private _ival: number | undefined;
 
@@ -214,8 +228,23 @@ class Pages extends LitElement {
       );
     } else if (this.showAllPages && this.hasExtraPages) {
       this.filteredPages = [...this.textPages!];
-    } else {
+    } else if (!this.dynamicPagesQuery) {
       this.filteredPages = [...this.collInfo!.pages];
+    }
+
+    this.totalPages = this.filteredPages.length;
+
+    if (this.dynamicPagesQuery) {
+      if (!this.query) {
+        const seedPages = this.collInfo!.pages.filter((x) => x.isSeed);
+        this.filteredPages =
+          this.showAllPages || !seedPages.length
+            ? [...this.collInfo!.pages]
+            : seedPages;
+        this.hasExtraPages = seedPages.length !== this.collInfo!.pages.length;
+      }
+      this.dynamicPageCount = 1;
+      await this.addDynamicPages();
     }
 
     if (this.currList !== 0) {
@@ -236,6 +265,80 @@ class Pages extends LitElement {
     this.changeNeeded = false;
     const data = { query: this.query, currList: this.currList };
     this.sendChangeEvent(data);
+  }
+
+  async addDynamicPages() {
+    const search = new URLSearchParams();
+    if (this.query) {
+      search.set("search", this.query);
+    }
+    search.set("page", this.dynamicPageCount + "");
+    search.set("pageSize", DYNAMIC_PAGE_SIZE + "");
+
+    const resp = await fetch(
+      `${this.collInfo!.apiPrefix}/pages?${search.toString()}`,
+    );
+    const json = await resp.json();
+    if (!json.pages) {
+      return;
+    }
+
+    const knownPages = new Set();
+    this.filteredPages.forEach((x) => knownPages.add(x.id));
+
+    const newPages = [];
+
+    for (const {
+      id,
+      url,
+      title,
+      mime,
+      status,
+      ts,
+      favIconUrl,
+      waczhash,
+      isSeed,
+    } of json.pages) {
+      if (knownPages.has(id)) {
+        continue;
+      }
+
+      if (!this.showAllPages && this.hasExtraPages && !this.query && !isSeed) {
+        continue;
+      }
+
+      let tsActual;
+
+      if (typeof ts === "string") {
+        tsActual = new Date(ts).getTime();
+      } else {
+        tsActual = ts;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const newPage: any = {
+        id,
+        url,
+        title,
+        mime,
+        status,
+        ts: tsActual,
+        favIconUrl,
+        waczhash,
+      };
+
+      newPages.push(newPage);
+    }
+
+    if (newPages.length) {
+      this.filteredPages = [...this.filteredPages, ...newPages];
+    }
+
+    if (json.total) {
+      this.totalPages = json.total;
+    } else {
+      this.totalPages = this.filteredPages.length;
+    }
   }
 
   async filterCurated() {
@@ -263,11 +366,17 @@ class Pages extends LitElement {
     this.flex = flex;
     this.textPages = pages;
 
-    this.hasExtraPages = Boolean(
-      this.textPages &&
-        this.collInfo?.pages &&
-        this.textPages.length > this.collInfo.pages.length,
-    );
+    if (!this.dynamicPagesQuery) {
+      this.hasExtraPages = Boolean(
+        this.textPages &&
+          this.collInfo?.pages &&
+          this.textPages.length > this.collInfo.pages.length,
+      );
+    }
+
+    if (this.collInfo) {
+      this.dynamicPagesQuery = this.collInfo.canQueryPages || false;
+    }
 
     return Promise.all(
       // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'page' implicitly has an 'any' type. | TS7006 - Parameter 'index' implicitly has an 'any' type.
@@ -893,7 +1002,7 @@ class Pages extends LitElement {
           .sortDesc="${this.sortDesc}"
           .sortKeys="${Pages.sortKeys}"
           .data="${this.filteredPages}"
-          pageResults="100"
+          .pageResults="${this.dynamicPagesQuery ? this.totalPages : 100}"
           @sort-changed="${this.onSortChanged}"
           class="${this.filteredPages.length ? "" : "is-hidden"}"
         >
@@ -1064,6 +1173,8 @@ class Pages extends LitElement {
     this.sortedPages = event.detail.sortedData;
     this.sortKey = event.detail.sortKey;
     this.sortDesc = event.detail.sortDesc;
+
+    void this.updateComplete.then(() => (this.skipScrollMore = false));
   }
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
@@ -1184,21 +1295,11 @@ class Pages extends LitElement {
   }
 
   formatResults() {
-    // Default behavior: Count all available pages
-    if (!this.query) {
-      const length = this.filteredPages.length;
-      if (length === this.sortedPages.length) {
-        return `${length} Page${length !== 1 ? "s" : ""}`;
-      } else {
-        return `${this.sortedPages.length} of ${length} Pages Shown`;
-      }
-    }
-
-    // ... unless they were filtered
-    if (this.sortedPages.length === 1) {
-      return "1 Page";
+    const length = this.totalPages;
+    if (length === this.sortedPages.length) {
+      return `${length} Page${length !== 1 ? "s" : ""}`;
     } else {
-      return `${this.sortedPages.length} Pages`;
+      return `${this.sortedPages.length} of ${length} Pages Shown`;
     }
   }
 
@@ -1229,14 +1330,23 @@ class Pages extends LitElement {
   }
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onScroll(event) {
+  async onScroll(event) {
     const element = event.currentTarget;
     const diff =
       element.scrollHeight - element.scrollTop - element.clientHeight;
-    if (diff < 40) {
+    if (diff < 40 && !this.skipScrollMore) {
+      this.skipScrollMore = true;
+      if (
+        this.dynamicPagesQuery &&
+        this.filteredPages.length < this.totalPages
+      ) {
+        this.dynamicPageCount += 1;
+        await this.addDynamicPages();
+      }
+
       const sorter = this.renderRoot.querySelector<Sorter>("wr-sorter");
       if (sorter) {
-        sorter.getMore();
+        sorter.getMore(DYNAMIC_PAGE_SIZE);
       }
     }
   }
