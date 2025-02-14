@@ -237,9 +237,10 @@ class Pages extends LitElement {
     if (this.dynamicPagesQuery) {
       if (!this.query) {
         const seedPages = this.collInfo!.pages.filter((x) => x.isSeed);
-        this.filteredPages = this.showAllPages
-          ? [...this.collInfo!.pages]
-          : seedPages;
+        this.filteredPages =
+          this.showAllPages || !seedPages.length
+            ? [...this.collInfo!.pages]
+            : seedPages;
         this.hasExtraPages = seedPages.length !== this.collInfo!.pages.length;
       }
       this.dynamicPageCount = 1;
