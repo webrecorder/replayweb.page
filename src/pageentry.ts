@@ -5,7 +5,7 @@ import { property, state } from "lit/decorators.js";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
-import { getReplayLink } from "./pageutils";
+import { getPageDateTS, getReplayLink } from "./pageutils";
 
 import { wrapCss } from "./misc";
 import type { URLResource } from "./types";
@@ -192,7 +192,7 @@ class PageEntry extends LitElement {
 
   render() {
     const p = this.page!;
-    const date = this.page!.date;
+    const { date } = getPageDateTS(p);
 
     const hasSize = typeof p.size === "number";
 
