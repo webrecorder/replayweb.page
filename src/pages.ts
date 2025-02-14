@@ -303,7 +303,7 @@ class Pages extends LitElement {
         continue;
       }
 
-      if (!this.showAllPages && !isSeed) {
+      if (!this.showAllPages && this.hasExtraPages && !this.query && !isSeed) {
         continue;
       }
 
