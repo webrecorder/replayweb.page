@@ -11,9 +11,12 @@ export type URLResource = {
   size: number;
   favIconUrl: string;
   text?: string;
+  waczhash?: string;
 };
 
-export type Page = URLResource;
+export type Page = URLResource & {
+  isSeed?: boolean;
+};
 
 export type ItemType = {
   filename?: string;
@@ -43,12 +46,13 @@ export type ItemType = {
     software?: string;
   };
   onDemand?: boolean;
-  pages: URLResource[];
+  pages: Page[];
   curatedPages: (URLResource & { list: string })[];
   lists: URLResource[];
   ctime?: string;
   totalSize?: unknown;
   size?: number | string;
+  canQueryPages?: boolean;
 };
 
 export type FavIconEventDetail = {
