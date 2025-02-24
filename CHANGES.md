@@ -5,6 +5,7 @@
 v2.3.0
 
 - UI: Add animating spinner for loading, show progress bar only when progress is available
+- Loading: Optimizations for loading Multi-WACZ collections, support for dynamic page query (via wabac.js 2.21.x)
 
 v2.2.5
 
