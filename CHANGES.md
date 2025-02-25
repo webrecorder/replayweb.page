@@ -2,6 +2,9 @@
 
 ## CHANGES
 
+v2.3.1
+- Loading: additional loading optimizations, bump wabac.js to 2.21.1
+
 v2.3.0
 
 - UI: Add animating spinner for loading, show progress bar only when progress is available
