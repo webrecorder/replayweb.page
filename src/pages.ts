@@ -241,7 +241,9 @@ class Pages extends LitElement {
           this.showAllPages || !seedPages.length
             ? [...this.collInfo!.pages]
             : seedPages;
-        this.hasExtraPages = seedPages.length !== this.collInfo!.pages.length;
+        this.hasExtraPages = seedPages.length < this.collInfo!.pages.length;
+      } else {
+        this.hasExtraPages = false;
       }
       this.dynamicPageCount = 1;
       await this.addDynamicPages();
