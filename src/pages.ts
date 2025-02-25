@@ -241,7 +241,9 @@ class Pages extends LitElement {
           this.showAllPages || !seedPages.length
             ? [...this.collInfo!.pages]
             : seedPages;
-        this.hasExtraPages = seedPages.length !== this.collInfo!.pages.length;
+        this.hasExtraPages = seedPages.length < this.collInfo!.pages.length;
+      } else {
+        this.hasExtraPages = false;
       }
       this.dynamicPageCount = 1;
       await this.addDynamicPages();
@@ -281,6 +283,10 @@ class Pages extends LitElement {
     const json = await resp.json();
     if (!json.pages) {
       return;
+    }
+
+    if (!json.pages.length) {
+      this.skipScrollMore = true;
     }
 
     const knownPages = new Set();
@@ -334,11 +340,7 @@ class Pages extends LitElement {
       this.filteredPages = [...this.filteredPages, ...newPages];
     }
 
-    if (json.total) {
-      this.totalPages = json.total;
-    } else {
-      this.totalPages = this.filteredPages.length;
-    }
+    this.totalPages = this.filteredPages.length;
   }
 
   async filterCurated() {
@@ -1336,10 +1338,7 @@ class Pages extends LitElement {
       element.scrollHeight - element.scrollTop - element.clientHeight;
     if (diff < 40 && !this.skipScrollMore) {
       this.skipScrollMore = true;
-      if (
-        this.dynamicPagesQuery &&
-        this.filteredPages.length < this.totalPages
-      ) {
+      if (this.dynamicPagesQuery) {
         this.dynamicPageCount += 1;
         await this.addDynamicPages();
       }
