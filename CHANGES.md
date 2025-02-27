@@ -2,6 +2,9 @@
 
 ## CHANGES
 
+v2.3.2
+- Loading: fix dynamic page lookup for URLs with query strings (via wabac.js 2.21.2)
+
 v2.3.1
 - Loading: additional loading optimizations, bump wabac.js to 2.21.1
 
