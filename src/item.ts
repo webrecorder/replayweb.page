@@ -55,6 +55,7 @@ import type { Replay } from "./replay";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import "./item-info";
+import { dateTimeFormatter } from "./utils/dateTimeFormatter";
 
 const RWP_SCHEME = "search://";
 
@@ -756,6 +757,7 @@ class Item extends LitElement {
         align-items: center;
         transition: background-color var(--sl-transition-fast);
         color: var(--sl-color-neutral-600);
+        font-variant-numeric: tabular-nums;
       }
 
       .timestamp-dropdown-btn:hover {
@@ -780,6 +782,10 @@ class Item extends LitElement {
       .timestamp-count {
         font-weight: 600;
         transform: translateY(0.075em);
+      }
+
+      .timestamp-menu-item {
+        font-variant-numeric: tabular-nums;
       }
 
       .timestamp-menu-item[aria-selected="true"]::part(label) {
@@ -1245,7 +1251,9 @@ class Item extends LitElement {
   protected renderToolbarRight() {
     const isReplay = !!this.tabData.url;
 
-    const dateStr = tsToDate(this.ts).toLocaleString();
+    const dateStr = this.ts
+      ? dateTimeFormatter.format(tsToDate(this.ts) as Date)
+      : "";
 
     return html` <div
       class="dropdown is-right ${this.menuActive ? "is-active" : ""}"
@@ -1419,7 +1427,9 @@ class Item extends LitElement {
       // Filter out invalid dates
       try {
         const date = getDateFromTS(+ts);
-        const dateStr = tsToDate(date).toLocaleString();
+        const dateStr = date
+          ? dateTimeFormatter.format(tsToDate(date) as Date)
+          : "";
         timestampStrs.push({
           date,
           label: dateStr,
@@ -1428,7 +1438,9 @@ class Item extends LitElement {
         /* empty */
       }
     });
-    const currDateStr = tsToDate(this.ts).toLocaleString();
+    const currDateStr = this.ts
+      ? dateTimeFormatter.format(tsToDate(this.ts) as Date)
+      : "";
     return html`<div id="datetime" class="control is-hidden-mobile">
       ${timestampStrs.length > 1
         ? html`

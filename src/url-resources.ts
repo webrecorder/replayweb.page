@@ -8,6 +8,7 @@ import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 import "keyword-mark-element/lib/keyword-mark.js";
 import { type ItemType } from "./types";
 import { type URLResource } from "./types";
+import { dateTimeFormatter } from "./utils/dateTimeFormatter";
 
 // ===========================================================================
 /**
@@ -544,7 +545,7 @@ class URLResources extends LitElement {
                     </td>
                     <td class="column col-ts is-2">
                       <p class="minihead is-hidden-tablet">Date</p>
-                      ${new Date(result.date).toLocaleString()}
+                      ${dateTimeFormatter.format(new Date(result.date))}
                     </td>
                     <td class="column col-mime is-3">
                       <p class="minihead is-hidden-tablet">Media Type</p>

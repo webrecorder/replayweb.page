@@ -7,6 +7,7 @@ import prettyBytes from "pretty-bytes";
 import type { ItemType } from "./types";
 
 import "./components/labeled-field";
+import { dateTimeFormatter } from "./utils/dateTimeFormatter";
 
 // ===========================================================================
 class ItemInfo extends LitElement {
@@ -111,7 +112,9 @@ class ItemInfo extends LitElement {
           </wr-labeled-field>`
         : nothing}
       <wr-labeled-field label="Date Loaded" class="column is-2">
-        ${item!.ctime ? new Date(item!.ctime).toLocaleString() : nothing}
+        ${item!.ctime
+          ? dateTimeFormatter.format(new Date(item!.ctime))
+          : nothing}
       </wr-labeled-field>
       <wr-labeled-field label="Total Size" class="column is-2">
         ${prettyBytes(Number(item!.totalSize || item!.size || 0))}

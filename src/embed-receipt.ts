@@ -12,6 +12,7 @@ import { tsToDate } from "./pageutils";
 import prettyBytes from "pretty-bytes";
 import { property } from "lit/decorators.js";
 import type { ItemType } from "./types";
+import { dateTimeFormatter } from "./utils/dateTimeFormatter";
 
 // ===========================================================================
 export class RWPEmbedReceipt extends LitElement {
@@ -184,7 +185,9 @@ export class RWPEmbedReceipt extends LitElement {
       ? `https://crt.sh/?q=${certFingerprint}`
       : "";
 
-    const dateStr = tsToDate(this.ts).toLocaleString();
+    const dateStr = this.ts
+      ? dateTimeFormatter.format(tsToDate(this.ts) as Date)
+      : "";
 
     return html`
       <div class="dropdown mb-4 ${this.active ? "is-active" : ""}">
