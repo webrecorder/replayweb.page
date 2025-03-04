@@ -1,4 +1,4 @@
-site_name: ReplayWeb.page Docs
+site_name: Replay Webpage Docs
 docs_dir: ./site/
 watch:
   - ./site/
