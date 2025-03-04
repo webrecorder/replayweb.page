@@ -2,6 +2,12 @@
 
 ## CHANGES
 
+v2.3.3
+- UI: Support custom 'downloadUrl' when loading from Multi-WACZ JSON source - don't show download if unset
+- UI: Don't show 'Archive Info' menu option for Multi-WACZ JSON source in embed mode
+- UI: Use localized data format for current language settings
+- Loading: Use negative offset range requests (via wabac.js 2.21.3)
+
 v2.3.2
 - Loading: fix dynamic page lookup for URLs with query strings (via wabac.js 2.21.2)
 

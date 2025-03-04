@@ -115,6 +115,9 @@ class Item extends LitElement {
   @property({ type: String })
   sourceUrl: string | null = null;
 
+  @property({ type: String })
+  downloadUrl: string | null = null;
+
   @property({ type: Object, attribute: false })
   loadInfo: LoadInfo | null = null;
 
@@ -446,8 +449,16 @@ class Item extends LitElement {
       });
     }
 
-    if (!this.itemInfo!.title) {
-      this.itemInfo!.title = this.itemInfo!.filename;
+    const { title, name, filename, downloadUrl } = this.itemInfo!;
+
+    if (!title) {
+      this.itemInfo!.title = name || filename;
+    }
+
+    if (downloadUrl === null) {
+      this.downloadUrl = null;
+    } else {
+      this.downloadUrl = downloadUrl || this.sourceUrl;
     }
 
     if (this.embed === "replayonly" || this.embed === "replay-with-info") {
@@ -1357,11 +1368,11 @@ class Item extends LitElement {
                   <span>Purge Cache + Full Reload</span>
                 </a>`
             : html``}
-          ${(!this.editable && this.sourceUrl?.startsWith("http://")) ||
-          this.sourceUrl?.startsWith("https://")
+          ${(!this.editable && this.downloadUrl?.startsWith("http://")) ||
+          this.downloadUrl?.startsWith("https://")
             ? html` <hr class="dropdown-divider" />
                 <a
-                  href="${this.sourceUrl}"
+                  href="${this.downloadUrl}"
                   role="button"
                   class="dropdown-item"
                   @keyup="${clickOnSpacebarPress}"
@@ -1383,24 +1394,25 @@ class Item extends LitElement {
                   <span class="menu-head">Capture Date</span>${dateStr}
                 </div>`
             : ""}
-          ${!this.editable
+          ${!this.editable &&
+          (this.downloadUrl === this.sourceUrl || !this.embed)
             ? html` <a
-                  href="#"
-                  role="button"
-                  class="dropdown-item"
-                  @click="${this.onShowInfoDialog}"
-                >
-                  <span class="icon is-small">
-                    <fa-icon
-                      class="has-text-grey"
-                      aria-hidden="true"
-                      .svg="${fasInfoIcon}"
-                    ></fa-icon>
-                  </span>
-                  <span>Archive Info</span>
-                </a>
-                <hr class="dropdown-divider" />`
+                href="#"
+                role="button"
+                class="dropdown-item"
+                @click="${this.onShowInfoDialog}"
+              >
+                <span class="icon is-small">
+                  <fa-icon
+                    class="has-text-grey"
+                    aria-hidden="true"
+                    .svg="${fasInfoIcon}"
+                  ></fa-icon>
+                </span>
+                <span>Archive Info</span>
+              </a>`
             : ``}
+          <hr class="dropdown-divider" />
           <a
             href="#"
             role="button"

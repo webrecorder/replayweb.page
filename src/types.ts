@@ -33,6 +33,7 @@ export type ItemType = {
   name?: string;
   title?: string;
   loadUrl?: string;
+  downloadUrl?: string | null;
   desc?: string;
   description?: string;
   resources?: { path: string; name: string }[];
