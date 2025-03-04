@@ -1,11 +1,11 @@
-site_name: ReplayWeb.page Docs
+site_name: Replay Webpage Docs
 docs_dir: ./site/
 watch:
   - ./site/
 site_dir: _genhtml/
 repo_url: https://github.com/webrecorder/replayweb.page
 repo_name: ReplayWeb.page
-edit_uri: edit/main/mkdocs/site/docs/
+edit_uri: edit/main/mkdocs/site/
 extra_css:
   - docs/stylesheets/extra.css
 theme:
