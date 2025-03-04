@@ -9,6 +9,11 @@ import { getPageDateTS, getReplayLink } from "./pageutils";
 
 import { wrapCss } from "./misc";
 import type { URLResource } from "./types";
+import {
+  dateFormatter,
+  dateTimeFormatter,
+  timeFormatter,
+} from "./utils/dateTimeFormatter";
 
 // ===========================================================================
 class PageEntry extends LitElement {
@@ -154,6 +159,10 @@ class PageEntry extends LitElement {
       .media-content a {
         display: block;
       }
+
+      .col-date {
+        font-variant-numeric: tabular-nums;
+      }
     `);
   }
 
@@ -218,20 +227,8 @@ class PageEntry extends LitElement {
             `
           : ""}
         <div class="column col-date is-2">
-          <div>
-            ${
-              // TODO: Fix this the next time the file is edited.
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              date ? date.toLocaleDateString() : ""
-            }
-          </div>
-          <div>
-            ${
-              // TODO: Fix this the next time the file is edited.
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              date ? date.toLocaleTimeString() : ""
-            }
-          </div>
+          <div>${date ? dateFormatter.format(date) : ""}</div>
+          <div>${date ? timeFormatter.format(date) : ""}</div>
         </div>
         <div class="column">
           <div class="media">
@@ -259,11 +256,7 @@ class PageEntry extends LitElement {
                     >${this.thumbnailValid ? this.renderFavicon() : ""}
                   </p>
                   <p class="has-text-grey-dark text is-inline-date">
-                    ${
-                      // TODO: Fix this the next time the file is edited.
-                      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                      date ? date.toLocaleString() : ""
-                    }
+                    ${date ? dateTimeFormatter.format(date) : ""}
                   </p>
                 </a>
                 ${this.textSnippet

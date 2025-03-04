@@ -10,6 +10,7 @@ import { getTS, getReplayLink } from "./pageutils";
 import Split from "split.js";
 import { type ItemType } from "./types";
 import { customElement, property } from "lit/decorators.js";
+import { dateTimeFormatter } from "./utils/dateTimeFormatter";
 
 // ===========================================================================
 @customElement("wr-coll-story")
@@ -364,7 +365,7 @@ class Story extends LitElement {
           <p class="is-size-6 has-text-weight-bold has-text-link">${p.title}</p>
           <p class="has-text-dark">${p.url}</p>
         </a>
-        <p>${date.toLocaleString()}</p>
+        <p>${dateTimeFormatter.format(date)}</p>
         <p>${p.desc}</p>
       </div>
       <hr />
