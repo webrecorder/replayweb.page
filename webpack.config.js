@@ -186,6 +186,7 @@ const browserConfig = (/*env, argv*/) => {
   /** @type {import('webpack').Configuration['entry']} */
   const entry = {
     ui: "./src/index.ts",
+    proxyui: "./src/proxyreplay/main.ts",
   };
 
   const extraPlugins = [];

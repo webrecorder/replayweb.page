@@ -9,6 +9,7 @@ import { parseURLSchemeHostPath } from "./pageutils";
 import { property } from "lit/decorators.js";
 import type { LoadInfo } from "./item";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { serviceWorkerActivated } from "./swmanager";
 
 // ===========================================================================
 /**
@@ -231,14 +232,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
       file: source,
     };
 
-    if (!navigator.serviceWorker.controller) {
-      await new Promise((resolve) => {
-        navigator.serviceWorker.addEventListener("controllerchange", () =>
-          // @ts-expect-error - TS2794 - Expected 1 arguments, but got 0. Did you forget to include 'void' in your type argument to 'Promise'?
-          resolve(),
-        );
-      });
-    }
+    await serviceWorkerActivated();
 
     if (this.worker) {
       if (!this.noWebWorker) {
