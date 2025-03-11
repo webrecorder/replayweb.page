@@ -7,8 +7,12 @@ import fasRefresh from "@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg";
 import rwpIcon from "~assets/icons/replaywebpage.svg";
 
 declare let self: Window & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  __wbinfo?: any;
+  __wbinfo?: {
+    url: string;
+    collName: string;
+    collUrl: string;
+    timestamp?: string;
+  };
 };
 
 export class WBBanner extends LitElement {
@@ -27,13 +31,17 @@ export class WBBanner extends LitElement {
   constructor() {
     super();
 
-    if (self.__wbinfo?.timestamp) {
-      this.date = tsToDate(self.__wbinfo.timestamp as string) as Date;
+    if (!self.__wbinfo) {
+      throw new Error("__wbinfo missing");
     }
 
-    this.origin = new URL(self.__wbinfo?.url).origin;
-    this.collName = self.__wbinfo?.collName;
-    this.collUrl = self.__wbinfo?.collUrl;
+    if (self.__wbinfo.timestamp) {
+      this.date = tsToDate(self.__wbinfo.timestamp) as Date;
+    }
+
+    this.origin = new URL(self.__wbinfo.url).origin;
+    this.collName = self.__wbinfo.collName;
+    this.collUrl = self.__wbinfo.collUrl;
   }
 
   static get styles() {
