@@ -2,6 +2,7 @@ import { html, css, LitElement } from "lit";
 import { tsToDate } from "../pageutils";
 import { dateTimeFormatter } from "../utils/dateTimeFormatter";
 import fasRefresh from "@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg";
+import rwpIcon from "~assets/icons/replaywebpage.svg";
 
 declare let self: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -136,23 +137,22 @@ export class WBBanner extends LitElement {
 
     return html`
       <header class="webrecorder-banner">
-        <a href="https://webrecorder.net/browsertrix" target="_blank">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="auto"
-            style="height: 1rem;"
-            viewBox="0 0 96 96"
-          >
-            <path
-              fill="white"
-              d="M85.399 51.084a1 1 0 0 0 0 1.832C89.283 54.615 92 58.493 92 63s-2.717 8.385-6.601 10.084a1 1 0 0 0 0 1.832C89.283 76.615 92 80.493 92 85c0 6.071-4.929 11-11 11-4.507 0-8.385-2.717-10.084-6.601a1 1 0 0 0-1.832 0C67.385 93.283 63.507 96 59 96s-8.385-2.717-10.084-6.601a1 1 0 0 0-1.832 0C45.385 93.283 41.507 96 37 96s-8.385-2.717-10.084-6.601a1 1 0 0 0-1.832 0C23.385 93.283 19.507 96 15 96 8.929 96 4 91.071 4 85c0-4.507 2.717-8.385 6.601-10.084a1 1 0 0 0 0-1.832C6.717 71.385 4 67.507 4 63s2.717-8.385 6.601-10.084a1 1 0 0 0 0-1.832C6.717 49.385 4 45.507 4 41c0-6.071 4.929-11 11-11 4.507 0 8.385 2.717 10.084 6.601a1 1 0 0 0 1.832 0C28.615 32.717 32.493 30 37 30s8.385 2.717 10.084 6.601a1 1 0 0 0 1.832 0C50.615 32.717 54.493 30 59 30s8.385 2.717 10.084 6.601a1 1 0 0 0 1.832 0C72.615 32.717 76.493 30 81 30c6.071 0 11 4.929 11 11 0 4.507-2.717 8.385-6.601 10.084m-58.483-5.685a1 1 0 0 0-1.832 0 11.06 11.06 0 0 1-5.685 5.685 1 1 0 0 0 0 1.832 11.06 11.06 0 0 1 5.685 5.685 1 1 0 0 0 1.832 0 11.06 11.06 0 0 1 5.685-5.685 1 1 0 0 0 0-1.832 11.06 11.06 0 0 1-5.685-5.685m44 22a1 1 0 0 0-1.832 0 11.06 11.06 0 0 1-5.685 5.685 1 1 0 0 0 0 1.832 11.06 11.06 0 0 1 5.685 5.685 1 1 0 0 0 1.832 0 11.06 11.06 0 0 1 5.685-5.685 1 1 0 0 0 0-1.832 11.06 11.06 0 0 1-5.685-5.685m0-22a1 1 0 0 0-1.832 0 11.06 11.06 0 0 1-5.685 5.685 1 1 0 0 0 0 1.832 11.06 11.06 0 0 1 5.685 5.685 1 1 0 0 0 1.832 0 11.06 11.06 0 0 1 5.685-5.685 1 1 0 0 0 0-1.832 11.06 11.06 0 0 1-5.685-5.685m-22 0a1 1 0 0 0-1.832 0 11.06 11.06 0 0 1-5.685 5.685 1 1 0 0 0 0 1.832 11.06 11.06 0 0 1 5.685 5.685 1 1 0 0 0 1.832 0 11.06 11.06 0 0 1 5.685-5.685 1 1 0 0 0 0-1.832 11.06 11.06 0 0 1-5.685-5.685m-22 22a1 1 0 0 0-1.832 0 11.06 11.06 0 0 1-5.685 5.685 1 1 0 0 0 0 1.832 11.06 11.06 0 0 1 5.685 5.685 1 1 0 0 0 1.832 0 11.06 11.06 0 0 1 5.685-5.685 1 1 0 0 0 0-1.832 11.06 11.06 0 0 1-5.685-5.685m22 0a1 1 0 0 0-1.832 0 11.06 11.06 0 0 1-5.685 5.685 1 1 0 0 0 0 1.832 11.06 11.06 0 0 1 5.685 5.685 1 1 0 0 0 1.832 0 11.06 11.06 0 0 1 5.685-5.685 1 1 0 0 0 0-1.832 11.06 11.06 0 0 1-5.685-5.685M70.916 15.399a1 1 0 0 0-1.832 0C67.385 19.283 63.507 22 59 22s-8.385-2.717-10.084-6.601a1 1 0 0 0-1.832 0C45.385 19.283 41.507 22 37 22s-8.385-2.717-10.084-6.601a1 1 0 0 0-1.832 0C23.385 19.283 19.507 22 15 22 8.929 22 4 17.071 4 11S8.929 0 15 0c4.507 0 8.385 2.717 10.084 6.601a1 1 0 0 0 1.832 0C28.615 2.717 32.493 0 37 0s8.385 2.717 10.084 6.601a1 1 0 0 0 1.832 0C50.615 2.717 54.493 0 59 0s8.385 2.717 10.084 6.601a1 1 0 0 0 1.832 0C72.615 2.717 76.493 0 81 0c6.071 0 11 4.929 11 11s-4.929 11-11 11c-4.507 0-8.385-2.717-10.084-6.601"
-            />
-          </svg>
+        <a
+          href="https://webrecorder.net/replaywebpage"
+          target="_blank"
+          title="ReplayWeb.page"
+        >
+          <fa-icon
+            size="1rem"
+            style="color: white;"
+            .svg=${rwpIcon}
+            aria-label="ReplayWeb.page Logo"
+            role="img"
+          ></fa-icon>
         </a>
         <details class="webrecorder-banner-text-container">
-          <summary class="webrecorder-banner-text">
-            You are viewing an archived web page. The page was archived on
-            ${dateStr}. More Details
+          <summary class="webrecorder-banner-text" title="Archive Details">
+            You are viewing an archived web page created on ${dateStr}
           </summary>
           <div class="webrecorder-details-flexcontainer">
             <div class="webrecorder-details-container">
