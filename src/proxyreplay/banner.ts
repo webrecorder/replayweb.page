@@ -251,7 +251,7 @@ export class WBBanner extends LitElement {
 
     if (self.__wbinfo) {
       const wbinfo = self.__wbinfo;
-      banner.timestamp = wbinfo.timestamp;
+      banner.timestamp = wbinfo.timestamp || "";
       banner.origin = new URL(wbinfo.url).origin;
       banner.collName = wbinfo.collName || "";
       banner.collUrl = wbinfo.collUrl || "";
