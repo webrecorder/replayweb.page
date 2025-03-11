@@ -1,6 +1,9 @@
 import { html, css, LitElement } from "lit";
 import { tsToDate } from "../pageutils";
 import { dateTimeFormatter } from "../utils/dateTimeFormatter";
+import prettyBytes from "pretty-bytes";
+import { customElement, property } from "lit/decorators.js";
+
 import fasRefresh from "@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg";
 import rwpIcon from "~assets/icons/replaywebpage.svg";
 
@@ -8,15 +11,76 @@ declare let self: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   __wbinfo: any;
 };
-
+@customElement("replay-collection-banner")
 export class WBBanner extends LitElement {
-  private date: Date | null = null;
+  @property({ type: String })
+  endpoint = "";
+
+  @property({ type: String })
+  org!: string;
+
+  @property({ type: String })
+  collection!: string;
+
+  @property({ type: URL })
+  href: URL | null = null;
+
+  @property({ type: String })
+  name: string | null = null;
+
+  @property({ type: String })
+  caption: string | null = null;
+
+  @property({ type: Date })
+  date: Date | null = null;
+
+  @property({ type: Number })
+  totalSize: number | null = null;
+
+  @property({ type: Number })
+  pageCount: number | null = null;
 
   constructor() {
     super();
 
-    if (self.__wbinfo && self.__wbinfo.timestamp) {
-      this.date = tsToDate(self.__wbinfo.timestamp) as Date;
+    this.endpoint = "https://app.browsertrix.com";
+    this.org = "";
+    this.collection = "";
+    this.href = null;
+    this.caption = "";
+  }
+
+  async fetchCollectionData() {
+    try {
+      const url = `${this.endpoint}/api/public/orgs/${this.org}/collections/${this.collection}`;
+      console.log("Attempting to fetch from URL:", url);
+
+      // bypass service worker
+      const request = new Request(url, {
+        mode: "no-cors",
+        credentials: "omit",
+        cache: "no-store",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      const res = await fetch(request);
+      const coll = await res.json();
+      this.href = new URL(
+        `${this.endpoint}/explore/${this.org}/collections/${this.collection}`,
+      );
+      this.name = coll.name;
+      this.caption = coll.caption;
+      this.totalSize = coll.totalSize;
+      this.pageCount = coll.pageCount;
+    } catch (error) {
+      console.error("Failed to fetch collection info:", error);
+
+      // fallback values if fetch fails
+      // this.href = new URL(`${this.endpoint}/explore/${org}/collections/${collection}`);
+      // this.name = collection;
+      // this.caption = "Collection information unavailable";
+      // this.size = null;
     }
   }
 
@@ -134,6 +198,8 @@ export class WBBanner extends LitElement {
 
   render() {
     const dateStr = this.date ? dateTimeFormatter.format(this.date) : "";
+    const sizeStr = this.totalSize ? prettyBytes(this.totalSize) : "Unknown";
+    const pageCount = this.pageCount ? `${this.pageCount} pages` : "Unknown";
 
     return html`
       <header class="webrecorder-banner">
