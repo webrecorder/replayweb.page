@@ -106,7 +106,7 @@ export class WBBanner extends LitElement {
       }
       .webrecorder-details-container {
         width: 100%;
-        max-width: 960px;
+        max-width: 1400px;
         display: flex;
         gap: 2rem;
       }
@@ -228,6 +228,7 @@ export class WBBanner extends LitElement {
                     platform that enables you to archive, curate, and replay web
                     content, even if the original site is changed or goes
                     offline.
+                    <br />
                     <a
                       href="https://webrecorder.net/browsertrix/#get-started"
                       target="_blank"
@@ -236,6 +237,22 @@ export class WBBanner extends LitElement {
                     and start creating your own archives of sites you care
                     about!
                   </p>
+                </div>
+              </div>
+              <div class="webrecorder-details-textsection">
+                <div>
+                  <p>
+                    <strong>Collection Details for ${this.name}</strong>
+                  </p>
+                  <ul style="list-style-type: none; padding: 0;">
+                    <li><strong>Creation Date:</strong> ${dateStr}</li>
+                    <li><strong>Collection Size:</strong> ${sizeStr}</li>
+                    <li><strong>Page Count:</strong> ${pageCount} pages</li>
+                  </ul>
+                  <p>${this.caption}</p>
+                  <a href="${this.url}" target="_blank">
+                    View Browsertrix collection
+                  </a>
                 </div>
               </div>
             </div>
