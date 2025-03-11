@@ -1,6 +1,24 @@
 import { html, css, LitElement } from "lit";
+import { tsToDate } from "../pageutils";
+import { dateTimeFormatter } from "../utils/dateTimeFormatter";
+import fasRefresh from "@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg";
+
+declare let self: Window & {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  __wbinfo: any;
+};
 
 export class WBBanner extends LitElement {
+  private date: Date | null = null;
+
+  constructor() {
+    super();
+
+    if (self.__wbinfo && self.__wbinfo.timestamp) {
+      this.date = tsToDate(self.__wbinfo.timestamp) as Date;
+    }
+  }
+
   static get styles() {
     return css`
       * {
@@ -28,6 +46,13 @@ export class WBBanner extends LitElement {
         border-bottom: solid;
         border-color: #a39d8f;
         border-width: 0.1rem;
+      }
+      .refresh-button {
+        color: white;
+        background-color: transparent;
+        border: 0px;
+        margin-left: auto;
+        cursor: pointer;
       }
       .webrecorder-banner-top-line {
         display: flex;
@@ -107,6 +132,8 @@ export class WBBanner extends LitElement {
   }
 
   render() {
+    const dateStr = this.date ? dateTimeFormatter.format(this.date) : "";
+
     return html`
       <header class="webrecorder-banner">
         <a href="https://webrecorder.net/browsertrix" target="_blank">
@@ -124,7 +151,8 @@ export class WBBanner extends LitElement {
         </a>
         <details class="webrecorder-banner-text-container">
           <summary class="webrecorder-banner-text">
-            This site is served from a web archive hosted with Browsertrix
+            You are viewing an archived web page. The page was archived on
+            ${dateStr}. More Details
           </summary>
           <div class="webrecorder-details-flexcontainer">
             <div class="webrecorder-details-container">
@@ -213,11 +241,23 @@ export class WBBanner extends LitElement {
             </div>
           </div>
         </details>
-        <button style="margin-left: auto;" @click="${this.fullReload}">
-          Full Reload
+        <button
+          class="refresh-button narrow is-borderless"
+          id="refresh"
+          @click="${this.fullReload}"
+          title="Full Reload"
+          aria-label="Full Reload"
+        >
+          <span class="icon is-small">
+            <fa-icon
+              size="1.0em"
+              class="has-text-grey"
+              aria-hidden="true"
+              .svg="${fasRefresh}"
+            ></fa-icon>
+          </span>
         </button>
       </header>
-      ;
     `;
   }
 
@@ -247,9 +287,11 @@ export function addBanner() {
     return;
   }
 
-  customElements.define("rwp-web-archive-banner", WBBanner);
+  const tagName = "rwp-web-archive-banner";
 
-  const banner = document.createElement("rwp-web-archive-banner");
+  customElements.define(tagName, WBBanner);
+
+  const banner = document.createElement(tagName);
 
   const html = document.querySelector("html");
   if (html) {
@@ -259,7 +301,7 @@ export function addBanner() {
   document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(banner);
     setInterval(() => {
-      if (!document.querySelector("web-archive-banner")) {
+      if (!document.querySelector(tagName)) {
         document.body.appendChild(banner);
       }
     }, 1000);
