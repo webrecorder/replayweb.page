@@ -1,4 +1,6 @@
 import { html, css, LitElement } from "lit";
+import { property } from "lit/decorators.js";
+
 import { tsToDate } from "../pageutils";
 import { dateTimeFormatter } from "../utils/dateTimeFormatter";
 import fasRefresh from "@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg";
@@ -6,18 +8,32 @@ import rwpIcon from "~assets/icons/replaywebpage.svg";
 
 declare let self: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  __wbinfo: any;
+  __wbinfo?: any;
 };
 
 export class WBBanner extends LitElement {
-  private date: Date | null = null;
+  @property({ type: Object })
+  date: Date | null = null;
+
+  @property({ type: String })
+  origin = "";
+
+  @property({ type: String })
+  collName = "";
+
+  @property({ type: String })
+  collUrl = "";
 
   constructor() {
     super();
 
-    if (self.__wbinfo && self.__wbinfo.timestamp) {
-      this.date = tsToDate(self.__wbinfo.timestamp) as Date;
+    if (self.__wbinfo?.timestamp) {
+      this.date = tsToDate(self.__wbinfo.timestamp as string) as Date;
     }
+
+    this.origin = new URL(self.__wbinfo?.url).origin;
+    this.collName = self.__wbinfo?.collName;
+    this.collUrl = self.__wbinfo?.collUrl;
   }
 
   static get styles() {
@@ -152,7 +168,7 @@ export class WBBanner extends LitElement {
         </a>
         <details class="webrecorder-banner-text-container">
           <summary class="webrecorder-banner-text" title="Archive Details">
-            You are viewing an archived web page created on ${dateStr}
+            You are viewing an archived version of this page from ${dateStr}
           </summary>
           <div class="webrecorder-details-flexcontainer">
             <div class="webrecorder-details-container">
@@ -184,12 +200,23 @@ export class WBBanner extends LitElement {
                     ></strong>
                   </p>
                   <p>
-                    We are a collaborative partner in the
-                    <a href="https://eotarchive.org/" target="_blank"
-                      >2024 End of Term web archiving project</a
+                    This page is a single-domain mirror of the original site
+                    from <i>${this.origin}</i>
+                  </p>
+                  <p>
+                    It is part of our effort to archive United States Government
+                    websites as part of
+                    <a target="_blank" href="https://eotarchive.org/"
+                      >End-of-Term Archive.</a
                     >
-                    which seeks to capture public United States government
-                    websites at the end of each presidential administration.
+                  </p>
+                  <p>
+                    <strong
+                      ><a href="${this.collUrl}" target="_blank"
+                        >View the full ${this.collName} Collection on
+                        Browsertrix</a
+                      ></strong
+                    >
                   </p>
                 </div>
               </div>
