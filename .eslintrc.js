@@ -108,6 +108,7 @@ module.exports = {
     "ruffle",
     "**/ui.js",
     "**/sw.js",
+    "proxyui.js",
   ],
   overrides: [
     {

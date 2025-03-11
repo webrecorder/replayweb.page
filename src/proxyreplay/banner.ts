@@ -7,8 +7,12 @@ import fasRefresh from "@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg";
 import rwpIcon from "~assets/icons/replaywebpage.svg";
 
 declare let self: Window & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  __wbinfo?: any;
+  __wbinfo?: {
+    url: string;
+    collName: string;
+    collUrl: string;
+    timestamp?: string;
+  };
 };
 
 export class WBBanner extends LitElement {
