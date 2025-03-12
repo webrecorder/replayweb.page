@@ -1,5 +1,9 @@
 @import "tailwindcss";
 @import "@webrecorder/hickory/tokens/tailwind.css";
+
+@source "../components";
+@source "./src/proxyreplay"
+
 @import "./fonts";
 
 @theme {
@@ -15,21 +19,27 @@
 }
 
 @utility details-wrapper {
-  @apply font-normal px-4 py-3 absolute top-full flex content-center shadow-xl
-  shadow-stone-800 inset-x-4 rounded-xl bg-cyan-50;
+  @apply font-normal px-4 py-3 absolute top-full flex content-center inset-x-4 rounded-xl bg-stone-50 border-2 border-earth-100;
 }
 
 @utility details-container {
-  @apply w-full max-w-screen-lg flex md:gap-8 flex-col md:flex-row mx-auto;
+  @apply w-full max-w-screen-lg flex gap-4 md:gap-8 flex-col md:flex-row mx-auto;
 }
 
 @utility details-content {
-  @apply w-full text-base [&_a]:text-cyan-600 [&_a]:hover:underline-offset-2 [&_p]:leading-normal;
+  @apply w-full text-base [&_a]:text-lime-600 [&_a]:hover:underline-offset-2 [&_p]:leading-normal;
+
+  a {
+    @apply text-lime-600 underline-offset-2 hover:text-lime-800 underline transition;
+  }
 
   h2 {
     @apply font-bold;
-    a svg {
-      @apply text-black inline-block;
+    a {
+      @apply text-black;
+      svg {
+        @apply inline-block;
+      }
     }
   }
 
