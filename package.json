@@ -15,7 +15,7 @@
     "./src/electron-*": "./src/electron-*.ts",
     "./index.html": "./index.html",
     "./utils": {
-      "types": "./dist/types/utils.d.ts",
+      "types": "./dist/types/utils/index.d.ts",
       "default": "./dist/utils.js"
     }
   },
