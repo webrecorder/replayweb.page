@@ -222,9 +222,9 @@ export {
   html,
   /** @deprecated Import this directly from `lit` instead */
   css,
-  /** @deprecated Import this directly from `lit` instead */
+  /** @deprecated Import this directly from `lit/directives/unsafe-css.js` instead */
   unsafeCSS,
-  /** @deprecated Import this directly from `lit` instead */
+  /** @deprecated Import this directly from `lit/directives/unsafe-svg.js` instead */
   unsafeSVG,
   apiPrefix,
   replayPrefix,
