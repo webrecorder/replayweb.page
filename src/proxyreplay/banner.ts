@@ -104,7 +104,7 @@ export class WBBanner extends LitElement {
           </details>
         </div>
         <button
-          class="cursor-pointer rounded-xl bg-lime-50 flex p-2 items-center shadow hover:ring-1 hover:ring-lime-700"
+          class="cursor-pointer rounded-xl bg-lime-50 flex p-2 items-center hover:bg-lime-100 transition shadow hover:ring-1 hover:ring-lime-700"
           id="refresh"
           @click="${this.fullReload}"
           title="Full Reload"
