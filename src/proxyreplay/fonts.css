@@ -1,0 +1,22 @@
+@font-face {
+  font-family: "Inter Variable";
+  font-weight: 100 900;
+  font-style: normal;
+  font-named-instance: "Regular";
+  font-feature-settings: "ss04";
+  src:
+    local("Inter Variable"),
+    url("https://cdn.webrecorder.net/fonts/inter/InterVariable.woff2")
+      format("woff2");
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-weight: 100 900;
+  font-style: italic;
+  font-named-instance: "Italic";
+  font-feature-settings: "ss04";
+  src:
+    local("Inter Variable"),
+    url("https://cdn.webrecorder.net/fonts/inter/InterVariable-Italic.woff2")
+      format("woff2");
+}

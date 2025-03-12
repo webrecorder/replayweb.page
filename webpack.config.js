@@ -10,6 +10,8 @@ const TerserPlugin = require("terser-webpack-plugin");
 const package_json = require("./package.json");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
+const proxyReplay = require("./webpack.proxyreplay.js");
+
 // helper proxy URL, run locally for app
 const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
 
@@ -278,4 +280,5 @@ module.exports = [
   browserConfig,
   electronMainConfig,
   electronPreloadConfig,
+  // proxyReplay,
 ];

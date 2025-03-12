@@ -4,22 +4,22 @@ import {
   LitElement,
   type TemplateResult,
   type CSSResultGroup,
+  unsafeCSS,
 } from "lit";
 import rwpLogoAnimated from "~assets/brand/replaywebpage-icon-color-animated.svg";
 import { serviceWorkerActivated, SWManager } from "../swmanager";
 import { property } from "lit/decorators.js";
-import { wrapCss } from "../misc";
+
+import globalStyleRaw from "./global.css";
+const globalStyle = unsafeCSS(globalStyleRaw);
+export const withGlobalStyles = (css: CSSResultGroup) => [globalStyle, css];
 
 export class ProxyInitApp extends LitElement {
   @property({ type: String })
   errorMessage?: TemplateResult<1> | string;
 
   static get styles() {
-    return wrapCss(ProxyInitApp.appStyles);
-  }
-
-  static get appStyles(): CSSResultGroup {
-    return css`
+    return withGlobalStyles(css`
       :host {
         position: fixed;
         left: 0px;
@@ -40,7 +40,7 @@ export class ProxyInitApp extends LitElement {
       section.container {
         margin: auto;
       }
-    `;
+    `);
   }
 
   async initProxyApp(

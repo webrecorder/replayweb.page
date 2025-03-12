@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@import "@webrecorder/hickory/tokens/tailwind.css";
+@import "./fonts";
+
+@theme {
+  --default-font-family: "Inter Variable";
+  --default-font-feature-settings: "ss04" off, "ss07" on, "ss08" on, "cv10" on;
+}
+
+@utility summary-reset {
+  list-style: none;
+  &::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@utility details-wrapper {
+  @apply font-normal px-4 py-3 absolute top-full flex content-center shadow-xl
+  shadow-stone-800 inset-x-4 rounded-xl bg-cyan-50;
+}
+
+@utility details-container {
+  @apply w-full max-w-screen-lg flex md:gap-8 flex-col md:flex-row mx-auto;
+}
+
+@utility details-content {
+  @apply w-full text-base [&_a]:text-cyan-600 [&_a]:hover:underline-offset-2 [&_p]:leading-normal;
+
+  h2 {
+    @apply font-bold;
+    a svg {
+      @apply text-black inline-block;
+    }
+  }
+
+  h2,
+  p {
+    @apply mb-3 text-pretty;
+  }
+}

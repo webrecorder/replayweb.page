@@ -1,4 +1,7 @@
-declare module "*.svg";
+declare module "*.svg" {
+  declare const value: string;
+  export = value;
+}
 declare module "*.html";
 declare module "*.scss";
 declare module "*.sass";

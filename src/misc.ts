@@ -2,11 +2,11 @@
 
 import { LitElement, html, css, unsafeCSS, type CSSResultGroup } from "lit";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
-import { styleMap } from "lit/directives/style-map.js";
 
 import allCssRaw from "~assets/main.scss";
 
 import type { FavIconEventDetail } from "./types";
+import { FaIcon } from "./components/icon";
 
 const apiPrefix = "./w/api";
 const replayPrefix = "./w";
@@ -53,83 +53,6 @@ export function updateFaviconLinks(data: FavIconEventDetail) {
     link.rel = icon.rel;
     link.href = icon.href;
     head.appendChild(link);
-  }
-}
-
-// ===========================================================================
-class FaIcon extends LitElement {
-  constructor() {
-    super();
-    // @ts-expect-error - TS2339 - Property 'size' does not exist on type 'FaIcon'.
-    this.size = "1.1em";
-    // @ts-expect-error - TS2339 - Property 'width' does not exist on type 'FaIcon'.
-    this.width = null;
-    // @ts-expect-error - TS2339 - Property 'height' does not exist on type 'FaIcon'.
-    this.height = null;
-  }
-
-  static get properties() {
-    return {
-      svg: { type: String },
-      size: { type: String },
-      width: { type: String },
-      height: { type: String },
-    };
-  }
-
-  static get styles() {
-    return css`
-      :host {
-        display: inline-block;
-        padding: 0;
-        margin: 0;
-        line-height: 1em;
-      }
-      :host svg {
-        fill: var(--fa-icon-fill-color, currentcolor);
-        width: var(--fa-icon-width, 19px);
-        height: var(--fa-icon-height, 19px);
-      }
-    `;
-  }
-
-  render() {
-    // @ts-expect-error - TS2339 - Property 'svg' does not exist on type 'FaIcon'.
-    if (!this.svg) {
-      return html``;
-    }
-
-    const styles = {};
-
-    // @ts-expect-error - TS2339 - Property 'size' does not exist on type 'FaIcon'.
-    if (this.size) {
-      // @ts-expect-error - TS2339 - Property 'width' does not exist on type '{}'. | TS2339 - Property 'size' does not exist on type 'FaIcon'.
-      styles.width = this.size;
-      // @ts-expect-error - TS2339 - Property 'height' does not exist on type '{}'. | TS2339 - Property 'size' does not exist on type 'FaIcon'.
-      styles.height = this.size;
-    } else {
-      // @ts-expect-error - TS2339 - Property 'width' does not exist on type 'FaIcon'.
-      if (this.width) {
-        // @ts-expect-error - TS2339 - Property 'width' does not exist on type '{}'. | TS2339 - Property 'width' does not exist on type 'FaIcon'.
-        styles.width = this.width;
-      }
-      // @ts-expect-error - TS2339 - Property 'height' does not exist on type 'FaIcon'.
-      if (this.height) {
-        // @ts-expect-error - TS2339 - Property 'height' does not exist on type '{}'. | TS2339 - Property 'height' does not exist on type 'FaIcon'.
-        styles.height = this.height;
-      }
-    }
-
-    return html`<svg style="${styleMap(styles)}">
-      <g>
-        ${
-          // @ts-expect-error - TS2339 - Property 'svg' does not exist on type 'FaIcon'.
-          // TODO: Fix this the next time the file is edited.
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          unsafeSVG(this.svg)
-        }
-      </g>
-    </svg>`;
   }
 }
 
@@ -204,8 +127,6 @@ class WrModal extends LitElement {
     this.dispatchEvent(new CustomEvent("modal-closed"));
   }
 }
-
-customElements.define("fa-icon", FaIcon);
 
 customElements.define("wr-modal", WrModal);
 
