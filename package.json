@@ -13,7 +13,11 @@
       "default": "./dist/index.js"
     },
     "./src/electron-*": "./src/electron-*.ts",
-    "./index.html": "./index.html"
+    "./index.html": "./index.html",
+    "./utils": {
+      "types": "./dist/types/utils.d.ts",
+      "default": "./dist/utils.js"
+    }
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
