@@ -19,7 +19,7 @@
 }
 
 @utility details-wrapper {
-  @apply font-normal px-4 py-3 absolute top-full flex content-center inset-x-4 rounded-xl bg-stone-50 border-2 border-earth-100;
+  @apply font-normal px-4 py-8 absolute top-full flex content-center inset-x-4 rounded-xl bg-stone-50 border-2 border-earth-100;
 }
 
 @utility details-container {
@@ -37,9 +37,6 @@
     @apply font-bold;
     a {
       @apply text-black;
-      svg {
-        @apply inline-block;
-      }
     }
   }
 

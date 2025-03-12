@@ -48,100 +48,6 @@ export class WBBanner extends LitElement {
         height: 100%;
         z-index: 1000000000;
       }
-      /* .banner {
-        width: 100%;
-        background: linear-gradient(0deg, #3a5f09 0%, #4d7c0f 100%);
-        font-family: system-ui, sans-serif;
-        font-weight: 500;
-        padding: 0.25rem 1rem 0.25rem 1rem;
-        display: flex;
-        gap: 1rem;
-        align-content: center;
-        border-bottom: solid;
-        border-color: #a39d8f;
-        border-width: 0.1rem;
-      }
-      .refresh-button {
-        color: white;
-        background-color: transparent;
-        border: 0px;
-        margin-left: auto;
-        cursor: pointer;
-      }
-      .banner-top-line {
-        display: flex;
-        justify-items: space-between;
-      }
-      .banner-text-container {
-        display: flex;
-        gap: 0.25rem;
-        color: white;
-        font-size: 0.75rem;
-        & summary {
-          cursor: pointer;
-        }
-        && summary {
-          list-style: none;
-        }
-        && summary::-webkit-details-marker {
-          display: none;
-        }
-
-        && summary::after {
-          content: "▼";
-          margin-left: 0.3rem;
-          font-size: 0.7rem;
-        }
-        &&[open] summary:after {
-          content: "▲";
-          margin-left: 0.3rem;
-          font-size: 0.7rem;
-        }
-      }
-      .banner-text {
-        margin: 0;
-        text-wrap: wrap;
-      }
-      .details-flexcontainer {
-        background-color: #fefcf7;
-        color: black;
-        font-weight: 400;
-        padding: 0.75rem 1rem 0.75rem 1rem;
-        width: 100%;
-        position: absolute;
-        left: 0;
-        top: 37.5px;
-        display: flex;
-        justify-content: center;
-        border-bottom: solid;
-        border-color: #a39d8f;
-        border-width: 0.1rem;
-      }
-      .details-container {
-        width: 100%;
-        max-width: 960px;
-        display: flex;
-        gap: 2rem;
-      }
-      @media screen and (max-width: 700px) {
-        .details-container {
-          flex-direction: column;
-          gap: 0;
-        }
-      }
-      .details-textsection {
-        width: 100%;
-        font-size: 0.9rem;
-        && a {
-          color: #035b71;
-        }
-        && a:hover {
-          text-underline-offset: 0.2rem;
-        }
-        && p {
-          line-height: 1.2rem;
-        }
-      } */
     `);
   }
 
@@ -156,7 +62,7 @@ export class WBBanner extends LitElement {
 
     return html`
       <header
-        class="w-full relative bg-white px-4
+        class="w-full relative bg-white dark:bg-earth-800 px-4
         min-h-8 py-2 flex align-center gap-4 text-sm justify-between"
       >
         <div
@@ -281,7 +187,7 @@ export class WBBanner extends LitElement {
 
     const html = document.querySelector("html");
     if (html) {
-      html.style.marginTop = "37.5px";
+      html.style.marginTop = "48px";
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -350,10 +256,14 @@ export class GovArchiveBanner extends WBBanner {
           <div>
             <h2>
               These pages were archived using
-              <a href="https://webrecorder.net/browsertrix" target="_blank">
+              <a
+                href="https://webrecorder.net/browsertrix"
+                target="_blank"
+                class="my-[-0.235em] align-[-0.235em]"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-[1.7cap] inline-block color-black my-[-3%] w-auto ml-1 align-[0]"
+                  class="h-[1.7cap] inline-block color-black  w-auto ml-1 align-[0]"
                   viewBox="0 0 649 96"
                 >
                   <title>Browsertrix</title>
