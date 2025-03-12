@@ -216,10 +216,15 @@ export {
   clickOnSpacebarPress,
   FaIcon,
   WrModal,
+  /** @deprecated Import this directly from `lit` instead */
   LitElement,
+  /** @deprecated Import this directly from `lit` instead */
   html,
+  /** @deprecated Import this directly from `lit` instead */
   css,
+  /** @deprecated Import this directly from `lit` instead */
   unsafeCSS,
+  /** @deprecated Import this directly from `lit` instead */
   unsafeSVG,
   apiPrefix,
   replayPrefix,
