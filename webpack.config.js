@@ -98,6 +98,7 @@ const libConfig = (env, argv) => {
   /** @type {import('webpack').Configuration['entry']} */
   const entry = {
     index: "./src/index.ts",
+    utils: "./src/utils/index.ts",
   };
 
   const extraPlugins = [];

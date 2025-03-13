@@ -153,3 +153,15 @@ export class SWManager {
     `;
   }
 }
+
+export async function serviceWorkerActivated() {
+  if (navigator.serviceWorker.controller) {
+    return;
+  }
+
+  await new Promise<void>((resolve) => {
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      resolve();
+    });
+  });
+}
