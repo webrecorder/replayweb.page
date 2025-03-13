@@ -2,6 +2,11 @@
 
 ## CHANGES
 
+v2.3.4
+
+- API: Add utils module for basic utility function exports
+- Loading: Update to wabac.js (2.22.0), includes fixes to MultiWACZ loading
+
 v2.3.3
 
 - UI: Support custom 'downloadUrl' when loading from Multi-WACZ JSON source - don't show download if unset
