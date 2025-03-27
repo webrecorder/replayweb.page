@@ -979,7 +979,6 @@ class Item extends LitElement {
             ? html`
                 <wr-coll-replay
                   role="main"
-                  tabindex="-1"
                   .collInfo="${this.itemInfo}"
                   sourceUrl="${this.sourceUrl || ""}"
                   url="${this.tabData.url || ""}"
