@@ -1,6 +1,9 @@
 <!-- cSpell:ignoreRegExp @\w+ -->
 
 ## CHANGES
+v2.3.5
+
+- Fidelity: Update to wabac.js 2.22.12, various fidelity improvements
 
 v2.3.4
 
