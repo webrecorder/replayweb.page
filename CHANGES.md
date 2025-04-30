@@ -3,8 +3,8 @@
 ## CHANGES
 v2.3.5
 
-- Fidelity: Update to wabac.js 2.22.13, various fidelity improvements
-- Fidelity: Hardened CSP policy for all error pages, prevent live leakage at service worker level (via wabac.js 2.22.13)
+- Fidelity: Update to wabac.js 2.22.14, various fidelity improvements
+- Fidelity: Hardened CSP policy for all error pages, further prevent loading external origin from replay (via wabac.js 2.22.14)
 
 v2.3.4
 
