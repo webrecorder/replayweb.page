@@ -72,3 +72,55 @@ test("require subdomain iframe", async ({ page }) => {
     "Sorry, due to security settings, this ReplayWeb.page embed only be viewed within a subdomain iframe.",
   );
 });
+
+test("csp blocking in place", async ({ page }) => {
+  await page.goto("http://localhost:9990/embed.html");
+
+  const frame = page
+    .locator("replay-web-page")
+    .frameLocator("iframe")
+    .locator("replay-app-main wr-item wr-coll-replay")
+    .frameLocator("iframe")
+    .locator(":root");
+
+  const didNotFetch = await frame.evaluate(async () => {
+    const blocked = async (win, url) => {
+      try {
+        const resp = await win.fetch(url);
+        if (!resp.ok) {
+          return 1;
+        }
+        return 0;
+      } catch (e) {
+        return 1;
+      }
+    };
+
+    let block = 0;
+
+    // blocks (1 - 3)
+    block += await blocked(window, "https://webrecorder.net/");
+    block += await blocked(window, "http://localhost:9990/ui.js");
+    block += await blocked(window, "http://localhost:9990/sw.js");
+
+    const iframe = document.createElement("iframe");
+    iframe.src = "http://localhost:9990/static/wombat.js";
+    document.body.appendChild(iframe);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // (4) still blocked from loading due to csp
+    block += await blocked(iframe.contentWindow, "https://webrecorder.net/");
+
+    // (5-6) blocked by csp policy, even though local
+    block += await blocked(iframe.contentWindow, "http://localhost:9990/sw.js");
+    block += await blocked(
+      iframe.contentWindow,
+      "http://localhost:9990/static/wombat.js",
+    );
+
+    return block;
+  });
+
+  expect(didNotFetch).toBe(6);
+});

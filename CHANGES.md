@@ -1,6 +1,12 @@
 <!-- cSpell:ignoreRegExp @\w+ -->
 
 ## CHANGES
+
+v2.3.6
+
+- Security: Improved CSP policy again, block loading of iframes outsides of replay (via wabac.js 2.22.15)
+- Tests: Update tests to check CSP behavior
+
 v2.3.5
 
 - Fidelity: Update to wabac.js 2.22.14, various fidelity improvements
