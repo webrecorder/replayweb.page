@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.3.7
+
+- Fidelity: Rewriting fixes via wabac.js 2.22.16
+
 v2.3.6
 
 - Security: Improved CSP policy again, block loading of iframes outsides of replay (via wabac.js 2.22.15)
