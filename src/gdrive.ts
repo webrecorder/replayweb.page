@@ -194,12 +194,12 @@ class GDrive extends LitElement {
   }
 
   script() {
-    if (this.state === "trypublic" || this.scriptLoaded) {
+    if (this.state === "trypublic" || this.scriptLoaded || !__GDRIVE_API__) {
       return html``;
     }
     const script = document.createElement("script");
     script.onload = () => this.onLoad();
-    script.src = "https://apis.google.com/js/platform.js";
+    script.src = __GDRIVE_API__;
     return script;
   }
 

@@ -17,6 +17,8 @@ const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
 const GDRIVE_CLIENT_ID =
   "160798412227-tko4c82uopud11q105b2lvbogsj77hlg.apps.googleusercontent.com";
 
+const GDRIVE_API = "https://apis.google.com/js/platform.js";
+
 // Copyright banner text
 const BANNER_TEXT = `'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020-${new Date().getFullYear()}, Webrecorder Software. Licensed under the Affero General Public License v3.'`;
 
@@ -155,6 +157,7 @@ const libConfig = (env, argv) => {
         __SW_NAME__: JSON.stringify("sw.js"),
         __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
         __GDRIVE_CLIENT_ID__: JSON.stringify(GDRIVE_CLIENT_ID),
+        __GDRIVE_API__: JSON.stringify(""),
         __VERSION__: JSON.stringify(package_json.version),
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
@@ -247,6 +250,7 @@ const browserConfig = (/*env, argv*/) => {
         __SW_NAME__: JSON.stringify("sw.js"),
         __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
         __GDRIVE_CLIENT_ID__: JSON.stringify(GDRIVE_CLIENT_ID),
+        __GDRIVE_API__: JSON.stringify(GDRIVE_API),
         __VERSION__: JSON.stringify(package_json.version),
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
