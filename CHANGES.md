@@ -3,6 +3,7 @@
 ## CHANGES
 
 v2.3.8
+
 - Library: disable GDrive integration in library (for AWP use)
 - Fidelity: Fix Ruffle injection, rewriting improvements (via wabac.js 2.22.17)
 - Loading: Support .wacz.zip extension for loading WACZ files when .zip is auto-added (eg. on Android devices)
