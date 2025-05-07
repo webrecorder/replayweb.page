@@ -461,6 +461,7 @@ export class ReplayWebApp extends LitElement {
     let query = "";
     if (this.useRuffle) {
       qp.set("injectScripts", "ruffle/ruffle.js");
+      qp.set("allowProxyPaths", "ruffle/");
     }
     if (this.embed) {
       qp.set("serveIndex", "1");

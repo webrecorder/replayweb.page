@@ -39,7 +39,7 @@ export class Chooser extends LitElement {
         accept: {
           "application/warc": [".warc", ".gz"],
           "application/har": [".har"],
-          "application/wacz": [".wacz"],
+          "application/wacz": [".wacz", ".wacz.zip"],
           "application/json": [".json"],
         },
       },
@@ -295,7 +295,7 @@ export class Chooser extends LitElement {
                   type="text"
                   name="filename"
                   id="filename"
-                  pattern="((file|http|https|ipfs|s3)://.*.(warc|warc.gz|zip|wacz|har|json|cdx|cdxj)([?#].*)?)|(googledrive://.+)|(ssb://.+)"
+                  pattern="((file|http|https|ipfs|s3)://.*.(warc|warc.gz|zip|wacz|wacz.zip|har|json|cdx|cdxj)([?#].*)?)|(googledrive://.+)|(ssb://.+)"
                   .value="${this.fileDisplayName}"
                   @input="${this.onInput}"
                   autocomplete="off"
