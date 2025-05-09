@@ -22,7 +22,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@shoelace-style/shoelace": "~2.15.1",
-    "@webrecorder/wabac": "^2.22.17",
+    "@webrecorder/wabac": "^2.23.0-beta.0",
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
     "electron-updater": "^6.3.9",
@@ -97,7 +97,7 @@
     "start-dev": "webpack serve --mode development",
     "start-docs": "yarn run build-dev && cd mkdocs && ./copy-site.sh && mkdocs serve",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
-    "test-start-embed": "cd tests/embed; http-server -p 8020",
+    "test-start-embed": "cp tests/embed/iframe-test.html mkdocs/_genhtml/; cd tests/embed; http-server -p 8020",
     "test-start-sandbox": "cd tests/embed/sandbox; http-server -p 8030",
     "update-ruffle": "./ruffle/download-latest-ruffle.sh",
     "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
