@@ -4,6 +4,22 @@ import { IS_APP, wrapCss } from "./misc";
 import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
 import { customElement, property } from "lit/decorators.js";
 
+declare global {
+  interface Window {
+    WebTorrent: new (...args: any[]) => {
+      add(
+        torrentId: string,
+        callback: (torrent: {
+          files: {
+            name: string;
+            getBlob: (cb: (err: any, blob: Blob) => void) => void;
+          }[];
+        }) => void,
+      ): void;
+    };
+  }
+}
+
 export interface FileWithPath extends File {
   path: string;
 }
@@ -60,6 +76,42 @@ export class Chooser extends LitElement {
     }
   }
 
+  async handleMagnetLink(magnetURI: string) {
+    const client = new window.WebTorrent();
+    client.add(magnetURI, async (torrent) => {
+      const supportedFile = torrent.files.find((file) =>
+        /\.wacz$/i.test(file.name),
+      );
+
+      if (!supportedFile) {
+        console.error("No compatible file found in torrent");
+        return;
+      }
+
+      // Optional: Display progress/log here if needed
+      const blob: Blob = await new Promise((resolve, reject) => {
+        supportedFile.getBlob((err, blob) => {
+          if (err) reject(err);
+          else resolve(blob);
+        });
+      });
+
+      const file: FileWithPath = new File([blob], supportedFile.name, {
+        type: blob.type,
+      }) as FileWithPath;
+
+      file.path = supportedFile.name;
+
+      this.setFile(file);
+
+      this.dispatchEvent(
+        new CustomEvent("did-drop-file", { bubbles: true, composed: true }),
+      );
+
+      this.onStartLoad();
+    });
+  }
+
   onDropFile() {
     const allowedFileExtensions = this.showOpenFilePickerOptions.types
       .map((type) => type.accept)
@@ -99,7 +151,8 @@ export class Chooser extends LitElement {
       this.file.path = window.electron.getPath(this.file);
     }
 
-    this.fileDisplayName = "file://" + (file.path || file.name);
+    this.fileDisplayName =
+      "file://" + encodeURIComponent(file.path || file.name);
   }
 
   async onChooseNativeFile() {
@@ -149,9 +202,10 @@ export class Chooser extends LitElement {
 
     if (this.file) {
       loadInfo.isFile = true;
-      // file.path only available in electron app
-      if (this.file.path) {
-        loadInfo.loadUrl = "file2://" + this.file.path;
+
+      // ✅ Only use file2:// if running in Electron (not browser)
+      if (IS_APP && this.file.path) {
+        loadInfo.loadUrl = "file2://" + encodeURIComponent(this.file.path);
         loadInfo.noCache = true;
       } else if (this.fileHandle) {
         loadInfo.loadUrl = this.fileDisplayName;
@@ -162,6 +216,7 @@ export class Chooser extends LitElement {
         loadInfo.blob = this.file;
         loadInfo.noCache = false;
       }
+
       loadInfo.size = this.file.size;
       loadInfo.name = this.fileDisplayName;
     }
@@ -189,6 +244,10 @@ export class Chooser extends LitElement {
       this.file = null;
 
       this.fileDisplayName = "";
+    }
+
+    if (this.fileDisplayName.startsWith("magnet:?")) {
+      this.handleMagnetLink(this.fileDisplayName);
     }
   }
 

@@ -151,6 +151,7 @@ const libConfig = (env, argv) => {
       }),
       new webpack.ProvidePlugin({
         process: "process/browser",
+        Buffer: ["buffer", "Buffer"],
       }),
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({
@@ -211,7 +212,14 @@ const browserConfig = (/*env, argv*/) => {
       type: isDevServer ? "memory" : "filesystem",
     },
     resolve: {
-      fallback: { crypto: false },
+      alias: {
+        webtorrent: "webtorrent/webtorrent.min.js",
+      },
+      fallback: {
+        crypto: false,
+        stream: require.resolve("stream-browserify"),
+        buffer: require.resolve("buffer/"),
+      },
     },
     entry,
     optimization,
