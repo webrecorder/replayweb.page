@@ -1,7 +1,22 @@
 /* eslint-env node */
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   reporter: process.env.CI ? "github" : "list",
+  expect: { timeout: 30_000 },
+  projects: [
+    {
+      name: "chrome",
+      use: { ...devices['Desktop Chrome'], channel: "chrome" },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+  ],
   webServer: [
     {
       command: "yarn run start-docs-prod",

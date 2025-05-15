@@ -2,6 +2,11 @@
 
 ## CHANGES
 
+v2.3.9
+- Loading: Avoid unnecessary reloads of multiWACZ JSON, prune expired (via wabac.js 2.23.0)
+- Fidelity: Fix CSP issue with iframes in Firefox (via wabac.js 2.23.0)
+- Testing: Add testing for CSP handling and embeds in Firefox and Webkit
+
 v2.3.8
 
 - Library: disable GDrive integration in library (for AWP use)

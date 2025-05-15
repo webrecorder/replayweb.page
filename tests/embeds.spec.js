@@ -42,6 +42,42 @@ test("cross-domain embed is loading", async ({ page }) => {
   await expect(res).toContainText("Want to help");
 });
 
+test("same-domain iframe embed is loading", async ({ page }) => {
+  await page.goto("http://localhost:9990/iframe-test.html");
+
+  const res = page
+    .locator("replay-web-page")
+    .frameLocator("iframe")
+    .locator("replay-app-main wr-item wr-coll-replay")
+    .frameLocator("iframe")
+    .locator("body");
+
+  await expect(res).toContainText("Outside iframe");
+
+  const inside = res.frameLocator("iframe").locator("body");
+
+  await expect(inside).toContainText("Inside iframe");
+
+});
+
+test("cross-domain iframe embed is loading", async ({ page }) => {
+  await page.goto("http://localhost:8020/iframe-test-cross.html");
+
+  const res = page
+    .locator("replay-web-page")
+    .frameLocator("iframe")
+    .locator("replay-app-main wr-item wr-coll-replay")
+    .frameLocator("iframe")
+    .locator("body");
+
+  await expect(res).toContainText("Outside iframe");
+
+  const inside = res.frameLocator("iframe").locator("body");
+
+  await expect(inside).toContainText("Inside iframe");
+
+});
+
 test("sandbox + cross-domain embed is loading", async ({ page }) => {
   await page.goto("http://localhost:8030/");
 
@@ -73,7 +109,7 @@ test("require subdomain iframe", async ({ page }) => {
   );
 });
 
-test("csp blocking in place", async ({ page }) => {
+test("csp blocking in place", async ({ page }, workerInfo) => {
   await page.goto("http://localhost:9990/embed.html");
 
   const frame = page
@@ -114,6 +150,8 @@ test("csp blocking in place", async ({ page }) => {
 
     // (5-6) blocked by csp policy, even though local
     block += await blocked(iframe.contentWindow, "http://localhost:9990/sw.js");
+
+    // not blocked in FF
     block += await blocked(
       iframe.contentWindow,
       "http://localhost:9990/static/wombat.js",
@@ -122,5 +160,19 @@ test("csp blocking in place", async ({ page }) => {
     return block;
   });
 
-  expect(didNotFetch).toBe(6);
+  const name = workerInfo.project.name;
+
+  switch (name) {
+    case "chrome":
+      expect(didNotFetch).toBe(6);
+      break;
+
+    case "firefox":
+      expect(didNotFetch).toBe(5);
+      break;
+
+    case "webkit":
+      expect(didNotFetch).toBe(4);
+      break;
+  }
 });
