@@ -2,6 +2,9 @@
 
 ## CHANGES
 
+v2.3.10
+- Fidelity: Fix to importmaps (via wabac.js 2.23.1)
+
 v2.3.9
 - Loading: Avoid unnecessary reloads of multiWACZ JSON, prune expired (via wabac.js 2.23.0)
 - Fidelity: Fix CSP issue with iframes in Firefox (via wabac.js 2.23.0)
