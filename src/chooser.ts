@@ -77,39 +77,10 @@ export class Chooser extends LitElement {
   }
 
   async handleMagnetLink(magnetURI: string) {
-    const client = new window.WebTorrent();
-    client.add(magnetURI, async (torrent) => {
-      const supportedFile = torrent.files.find((file) =>
-        /\.wacz$/i.test(file.name),
-      );
-
-      if (!supportedFile) {
-        console.error("No compatible file found in torrent");
-        return;
-      }
-
-      // Optional: Display progress/log here if needed
-      const blob: Blob = await new Promise((resolve, reject) => {
-        supportedFile.getBlob((err, blob) => {
-          if (err) reject(err);
-          else resolve(blob);
-        });
-      });
-
-      const file: FileWithPath = new File([blob], supportedFile.name, {
-        type: blob.type,
-      }) as FileWithPath;
-
-      file.path = supportedFile.name;
-
-      this.setFile(file);
-
-      this.dispatchEvent(
-        new CustomEvent("did-drop-file", { bubbles: true, composed: true }),
-      );
-
-      this.onStartLoad();
-    });
+    // Just validate and set file display name
+    if (magnetURI.startsWith("magnet:?")) {
+      this.fileDisplayName = magnetURI;
+    }
   }
 
   onDropFile() {
@@ -188,7 +159,7 @@ export class Chooser extends LitElement {
       isFile?: boolean;
       loadUrl?: string;
       noCache?: boolean;
-      extra?: { fileHandle: FileSystemFileHandle };
+      extra?: { fileHandle: FileSystemFileHandle } | { isMagnet: boolean };
       blob?: Blob;
       size?: number;
       name?: string;
@@ -200,7 +171,13 @@ export class Chooser extends LitElement {
       newFullImport: this.newFullImport,
     };
 
-    if (this.file) {
+    // Handle magnet links
+    if (this.fileDisplayName.startsWith("magnet:?")) {
+      loadInfo.loadUrl = this.fileDisplayName;
+      loadInfo.extra = { isMagnet: true };
+      loadInfo.isFile = false;
+      loadInfo.noCache = false;
+    } else if (this.file) {
       loadInfo.isFile = true;
 
       // ✅ Only use file2:// if running in Electron (not browser)
@@ -354,7 +331,7 @@ export class Chooser extends LitElement {
                   type="text"
                   name="filename"
                   id="filename"
-                  pattern="((file|http|https|ipfs|s3)://.*.(warc|warc.gz|zip|wacz|wacz.zip|har|json|cdx|cdxj)([?#].*)?)|(googledrive://.+)|(ssb://.+)"
+                  pattern="((file|http|https|ipfs|s3)://.*.(warc|warc.gz|zip|wacz|wacz.zip|har|json|cdx|cdxj)([?#].*)?)|(googledrive://.+)|(ssb://.+)|(magnet:?.*)"
                   .value="${this.fileDisplayName}"
                   @input="${this.onInput}"
                   autocomplete="off"
