@@ -20,6 +20,10 @@ import { Readable } from "stream";
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
 
+import WebTorrent, { type TorrentFile, type Torrent } from "webtorrent";
+
+//import crypto from "crypto";
+
 import mime from "mime-types";
 import url from "url";
 
@@ -33,12 +37,20 @@ const STATIC_PREFIX = "http://localhost:5471/";
 const REPLAY_PREFIX = STATIC_PREFIX + "w/";
 
 const FILE_PROTO = "file2";
+const MAGNET_PROTO = "magnet";
 
 const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
+
+//const PEER_ID = undefined;//"-WD2390-" + Buffer.from(crypto.randomBytes(9).toString('base64'));
+//console.log("PEER_ID", PEER_ID.length, PEER_ID);
+
+console.log("WEBRTC?", WebTorrent.WEBRTC_SUPPORT);
 
 // ============================================================================
 class ElectronReplayApp {
   pluginPath = "";
+
+  client: WebTorrent.Instance | null = null;
 
   appPath = app.getAppPath();
 
@@ -124,6 +136,18 @@ class ElectronReplayApp {
           stream: true,
         },
       },
+      {
+        scheme: MAGNET_PROTO,
+        privileges: {
+          standard: false,
+          secure: true,
+          bypassCSP: true,
+          allowServiceWorkers: true,
+          supportFetchAPI: true,
+          corsEnabled: true,
+          stream: true,
+        },
+      },
     ]);
 
     app.on("will-finish-launching", () => {
@@ -192,6 +216,10 @@ class ElectronReplayApp {
 
     protocol.handle(FILE_PROTO, async (request: Request) =>
       this.doHandleFile(request),
+    );
+
+    protocol.handle(MAGNET_PROTO, async (request: Request) =>
+      this.doHandleBT(request),
     );
 
     this.origUA = sesh.getUserAgent();
@@ -432,17 +460,82 @@ class ElectronReplayApp {
       return { status };
     }
 
-    const m = range.match(/bytes=([\d]+)-([\d]*)/);
+    const m = range.match(/bytes=(-?[\d]+)(?:-([\d]+))?/);
     if (!m) {
       return { status };
     }
 
-    const start = Number(m[1]);
+    let start = Number(m[1]);
+    if (start < 0) {
+      start = size + start;
+    }
     const end = m[2] ? Number(m[2]) : size - 1;
     status = 206;
     headers.set("content-range", `bytes ${start}-${end}/${size}`);
     headers.set("content-length", `${end - start + 1}`);
     return { status, start, end };
+  }
+
+  async doHandleBT(request: Request) {
+    if (!this.client) {
+      this.client = new WebTorrent();
+    }
+
+    // special ping from wabac.js to ensure the scheme works
+    if (request.url === "magnet://localhost" && request.method === "HEAD") {
+      return new Response();
+    }
+
+    const url = new URL(request.url);
+
+    const magnet = "magnet:" + url.search;
+
+    if (!url.search) {
+      return this.notFound("invalid magnet: link");
+    }
+
+    let torrent = await this.client.get(magnet);
+
+    if (!torrent) {
+      const p = new Promise<Torrent>((resolve) => {
+        this.client!.add(magnet, (torrent: Torrent) => {
+          resolve(torrent);
+        });
+      });
+      torrent = await p;
+
+      // deselect all files and pieces
+      torrent.files.forEach((file) => file.deselect());
+      torrent.deselect(0, torrent.pieces.length - 1, 1000);
+    }
+
+    const waczs = torrent.files.filter((x: TorrentFile) =>
+      x.name.endsWith(".wacz"),
+    );
+    if (!waczs.length) {
+      return this.notFound("no WACZ found");
+    }
+    const wacz = waczs[0];
+
+    const headers = new Headers({ "Content-Type": "application/octet-stream" });
+    const reqHeaders = new Headers(request.headers);
+
+    const { status, start, end } = this.parseRange(
+      reqHeaders,
+      headers,
+      wacz.length,
+    );
+
+    const data =
+      request.method === "HEAD"
+        ? null
+        : wacz.createReadStream({ start: start!, end: end! });
+
+    return new Response(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
+      data ? (Readable.toWeb(Readable.from(data)) as any) : null,
+      { status, headers },
+    );
   }
 
   createMainWindow(argv: string[]) {
