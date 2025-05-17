@@ -202,8 +202,8 @@ You can select a file to upload from the main page by clicking the 'Choose File.
           if (IS_APP) {
             source = {
               sourceUrl,
-              name: url.searchParams.get("name") || sourceUrl,
-              loadUrl: `magnet://${url.search}#.wacz`,
+              name: url.searchParams.get("dn") + ".wacz" || "torrent.wacz",
+              loadUrl: `magnet://magnet${url.search}`,
             };
           }
           break;
