@@ -1,3 +1,4 @@
+// chooser.ts:
 import { LitElement, html, css, type PropertyValues } from "lit";
 import { IS_APP, wrapCss } from "./misc";
 
@@ -69,6 +70,37 @@ export class Chooser extends LitElement {
   noHead = false;
 
   fileHandle?: FileSystemFileHandle;
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    // Add the event listener for magnet file creation
+    document.addEventListener(
+      "magnet-file-created",
+      this.onMagnetFileCreated as EventListener,
+    );
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    // Clean up by removing the event listener
+    document.removeEventListener(
+      "magnet-file-created",
+      this.onMagnetFileCreated as EventListener,
+    );
+  }
+
+  private onMagnetFileCreated = (event: CustomEvent) => {
+    const file = event.detail.file as FileWithPath;
+    if (file) {
+      this.setFile(file);
+      this.dispatchEvent(
+        new CustomEvent("did-drop-file", { bubbles: true, composed: true }),
+      );
+      this.onStartLoad();
+    }
+  };
 
   updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("droppedFile") && this.droppedFile) {

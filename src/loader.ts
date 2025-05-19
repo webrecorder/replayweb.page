@@ -5,11 +5,13 @@ import rwpLogoAnimated from "~assets/brand/replaywebpage-icon-color-animated.svg
 
 import prettyBytes from "pretty-bytes";
 
-import { parseURLSchemeHostPath } from "./pageutils";
+import { parseURLSchemeHostPath, digestMessage } from "./pageutils";
 import { property } from "lit/decorators.js";
 import type { LoadInfo } from "./item";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { serviceWorkerActivated } from "./swmanager";
+import { FileWithPath } from "./chooser";
+
 // ===========================================================================
 /**
  * @fires coll-load-cancel
@@ -332,44 +334,35 @@ You can select a file to upload from the main page by clicking the 'Choose File.
           }
 
           try {
-            // Create a unique file name to avoid conflicts
-            const fileName = `archive-${Date.now()}.${supportedFile.name
-              .split(".")
-              .pop()}`;
-
             // Create a File object from the blob
-            const file = new File([blob], fileName, {
-              type: blob.type || "application/octet-stream",
-            });
+            const file: FileWithPath = new File([blob], supportedFile.name, {
+              type: blob.type,
+            }) as FileWithPath;
 
-            // Create a temporary URL for the blob
+            const digest = await digestMessage(magnetURI, "SHA-256");
+            const collId = "id-" + digest.slice(0, 12);
+
+            // Set the collection ID for this loader instance
+            this.coll = collId;
+
             const objectUrl = URL.createObjectURL(blob);
 
-            // Clean up WebTorrent
-            this.torrentClient.destroy();
-            this.torrentClient = null;
-
-            // Use this.loadInfo instead of creating a new loadInfo object
-            // This integrates better with the existing loader system
-            this.loadInfo = {
-              sourceUrl: objectUrl, // Use the objectURL as the source
-              loadUrl: objectUrl, // Use the same URL for loading
-              blob: blob, // Pass the blob directly
-              size: blob.size, // Set the size
-              isFile: true, // Mark as a file (not a URL)
-            } as ExtendedLoadInfo;
-
-            // Set the state to "started" to transition to normal file loading
-            this.state = "started";
-
-            // Continue with normal file loading process
-            const msg = {
-              msg_type: "addColl",
-              name: this.coll,
-              skipExisting: true,
-              file: this.loadInfo,
+            // Create a more complete loadInfo
+            const loadInfo: LoadInfo = {
+              sourceUrl: magnetURI,
+              loadUrl: objectUrl,
+              name: file.name,
             };
 
+            // Use the existing worker infrastructure to register this collection
+            const msg = {
+              msg_type: "addColl",
+              name: collId,
+              skipExisting: true,
+              file: loadInfo,
+            };
+
+            // Send the message to register the collection
             if (this.worker) {
               if (!this.noWebWorker) {
                 this.worker.postMessage(msg);
@@ -377,6 +370,16 @@ You can select a file to upload from the main page by clicking the 'Choose File.
                 navigator.serviceWorker.controller.postMessage(msg);
               }
             }
+
+            document.dispatchEvent(
+              new CustomEvent("magnet-file-created", {
+                detail: { file },
+              }),
+            );
+
+            // Clean up WebTorrent
+            this.torrentClient.destroy();
+            this.torrentClient = null;
           } catch (e) {
             this.state = "errored";
             this.error = `Error processing downloaded file: ${
