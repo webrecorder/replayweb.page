@@ -371,6 +371,7 @@ You can select a file to upload from the main page by clicking the 'Choose File.
               }
             }
 
+            // THIS can probably be done better but it works for now
             document.dispatchEvent(
               new CustomEvent("magnet-file-created", {
                 detail: { file },

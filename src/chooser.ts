@@ -108,13 +108,6 @@ export class Chooser extends LitElement {
     }
   }
 
-  async handleMagnetLink(magnetURI: string) {
-    // Just validate and set file display name
-    if (magnetURI.startsWith("magnet:?")) {
-      this.fileDisplayName = magnetURI;
-    }
-  }
-
   onDropFile() {
     const allowedFileExtensions = this.showOpenFilePickerOptions.types
       .map((type) => type.accept)
@@ -253,10 +246,6 @@ export class Chooser extends LitElement {
       this.file = null;
 
       this.fileDisplayName = "";
-    }
-
-    if (this.fileDisplayName.startsWith("magnet:?")) {
-      this.handleMagnetLink(this.fileDisplayName);
     }
   }
 
