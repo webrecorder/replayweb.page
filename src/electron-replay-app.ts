@@ -10,6 +10,8 @@ import {
   shell,
 } from "electron";
 
+process.env.WS_NO_BUFFER_UTIL = "true";
+
 import path from "path";
 import fs from "fs";
 
@@ -22,7 +24,7 @@ import log from "electron-log";
 
 import WebTorrent, { type TorrentFile, type Torrent } from "webtorrent";
 
-//import crypto from "crypto";
+import crypto from "crypto";
 
 import mime from "mime-types";
 import url from "url";
@@ -41,8 +43,21 @@ const MAGNET_PROTO = "magnet";
 
 const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
-//const PEER_ID = undefined;//"-WD2390-" + Buffer.from(crypto.randomBytes(9).toString('base64'));
-//console.log("PEER_ID", PEER_ID.length, PEER_ID);
+const peerId = Buffer.from(
+  "-WD2390-" + crypto.randomBytes(9).toString("base64"),
+);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(globalThis as any).WEBTORRENT_ANNOUNCE = [
+  "udp://tracker.leechers-paradise.org:6969",
+  "udp://tracker.coppersurfer.tk:6969",
+  "udp://tracker.opentrackr.org:1337",
+  "udp://explodie.org:6969",
+  "udp://tracker.empire-js.us:1337",
+  "wss://tracker.btorrent.xyz",
+  "wss://tracker.openwebtorrent.com",
+  "wss://tracker.webtorrent.dev",
+];
 
 console.log("WEBRTC?", WebTorrent.WEBRTC_SUPPORT);
 
@@ -478,7 +493,7 @@ class ElectronReplayApp {
 
   async doHandleBT(request: Request) {
     if (!this.client) {
-      this.client = new WebTorrent();
+      this.client = new WebTorrent({ peerId });
     }
 
     // special ping from wabac.js to ensure the scheme works
