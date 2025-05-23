@@ -7324,6 +7324,7 @@ __metadata:
     "@webrecorder/wabac": "npm:^2.27.4"
     bulma: "npm:^0.9.3"
     copy-webpack-plugin: "npm:^9.0.1"
+    create-torrent: "npm:^6.1.0"
     css-loader: "npm:^6.2.0"
     electron: "npm:^43.3.0"
     electron-builder: "npm:^27.0.0-alpha.7"

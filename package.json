@@ -25,6 +25,7 @@
     "@types/webtorrent": "^0.110.1",
     "@webrecorder/wabac": "^2.27.4",
     "bulma": "^0.9.3",
+    "create-torrent": "^6.1.0",
     "electron-log": "^4.4.1",
     "electron-updater": "^6.8.9",
     "flexsearch": "^0.7.31",
