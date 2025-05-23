@@ -74,7 +74,10 @@ const electronMainConfig = (/*env, argv*/) => {
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
-        patterns: [{ from: "build/extra_prebuilds/", to: "prebuilds" }],
+        patterns: [
+          { from: "build/extra_prebuilds/", to: "prebuilds" },
+          { from: "node_modules/bufferutil/prebuilds/", to: "prebuilds" },
+        ],
       }),
     ],
     resolve: {
