@@ -25,6 +25,7 @@
     "@types/webtorrent": "^0.110.1",
     "@webrecorder/wabac": "^2.25.5",
     "bulma": "^0.9.3",
+    "create-torrent": "^6.1.0",
     "electron-log": "^4.4.1",
     "electron-updater": "^6.6.2",
     "fetch-ndjson": "^1.1.6",

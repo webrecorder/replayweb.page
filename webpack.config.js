@@ -77,6 +77,11 @@ const electronMainConfig = (/*env, argv*/) => {
         patterns: [{ from: "build/extra_prebuilds/", to: "prebuilds" }],
       }),
     ],
+    resolve: {
+      alias: {
+        "bufferutil": path.join(__dirname, "./node_modules/bufferutil/fallback.js")
+      }
+    }
   };
   return merge(tsConfig, config);
 };
