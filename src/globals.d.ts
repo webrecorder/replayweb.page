@@ -8,6 +8,8 @@ declare const __GDRIVE_CLIENT_ID__: string;
 declare const __GDRIVE_API__: string;
 declare const __VERSION__: string;
 
+declare module "create-torrent";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TODOFixMe = any;
 
