@@ -28,6 +28,7 @@ import "./item-index";
 import "./chooser";
 import { type LoadInfo } from "./item";
 import type { FavIconEventDetail } from "./types";
+import { registerWT } from "./wt";
 
 // ===========================================================================
 @customElement("replay-app-main")
@@ -486,6 +487,9 @@ export class ReplayWebApp extends LitElement {
   updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("sourceUrl")) {
       this.collTitle = null;
+      if (!IS_APP && this.sourceUrl?.startsWith("magnet:")) {
+        registerWT();
+      }
     }
   }
 

@@ -43,7 +43,7 @@
     "split.js": "^1.6.4",
     "stream-browserify": "^3.0.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
-    "webtorrent": "^2.6.7"
+    "webtorrent": "^2.6.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
@@ -52,6 +52,7 @@
     "@types/mime-types": "^2.1.4",
     "@types/minimist": "^1.2.5",
     "@types/node": "^22.15.18",
+    "@types/web": "^0.0.235",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "copy-webpack-plugin": "^9.0.1",
@@ -67,6 +68,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^14.0.0",
     "mini-css-extract-plugin": "^2.3.0",
+    "path-browserify": "^1.0.1",
     "playwright": "^1.52.0",
     "prettier": "^3.0.1",
     "raw-loader": "^4.0.2",

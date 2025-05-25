@@ -9,6 +9,7 @@ import { property } from "lit/decorators.js";
 import type { LoadInfo } from "./item";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { serviceWorkerActivated } from "./swmanager";
+import { registerWT } from "./wt";
 
 // ===========================================================================
 /**
@@ -67,7 +68,7 @@ class Loader extends LitElement {
   }
 
   initMessages() {
-    this.noWebWorker = Boolean(this.loadInfo && this.loadInfo.noWebWorker);
+    this.noWebWorker = true; //Boolean(this.loadInfo && this.loadInfo.noWebWorker);
 
     if (!this.noWebWorker) {
       this.worker = new Worker(this.swName!);
@@ -216,12 +217,13 @@ class Loader extends LitElement {
           break;
 
         case "magnet":
-          if (IS_APP) {
-            source = {
-              sourceUrl,
-              name: url.searchParams.get("dn") + ".wacz" || "torrent.wacz",
-              loadUrl: `magnet://magnet${url.search}`,
-            };
+          source = {
+            sourceUrl,
+            name: url.searchParams.get("dn") + ".wacz" || "torrent.wacz",
+            loadUrl: `magnet://magnet${url.search}`,
+          };
+          if (!IS_APP) {
+            registerWT();
           }
           break;
       }

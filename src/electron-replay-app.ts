@@ -500,7 +500,7 @@ class ElectronReplayApp {
       return this.notFound("invalid magnet: link");
     }
 
-    let torrent = await this.client.get(magnet);
+    let torrent = (await this.client.get(magnet)) as Torrent | null;
 
     if (!torrent) {
       const p = new Promise<Torrent>((resolve) => {
@@ -513,6 +513,11 @@ class ElectronReplayApp {
       // deselect all files and pieces
       torrent.files.forEach((file) => file.deselect());
       torrent.deselect(0, torrent.pieces.length - 1, 1000);
+    } else if (!torrent.ready) {
+      const p = new Promise<void>((resolve) => {
+        torrent!.on("ready", () => resolve());
+      });
+      await p;
     }
 
     const waczs = torrent.files.filter((x: TorrentFile) =>

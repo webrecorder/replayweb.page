@@ -126,7 +126,12 @@ const libConfig = (env, argv) => {
       type: "filesystem",
     },
     resolve: {
-      fallback: { crypto: false },
+      fallback: {
+        crypto: false,
+        'process/browser': require.resolve('process/browser'),
+        //"stream": require.resolve("stream-browserify"),
+        "path": require.resolve("path-browserify")
+      }
     },
     entry,
     optimization,
@@ -159,6 +164,7 @@ const libConfig = (env, argv) => {
       }),
       new webpack.ProvidePlugin({
         process: "process/browser",
+        //Buffer: ["buffer", "Buffer"],
       }),
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({
@@ -219,7 +225,12 @@ const browserConfig = (/*env, argv*/) => {
       type: isDevServer ? "memory" : "filesystem",
     },
     resolve: {
-      fallback: { crypto: false },
+      fallback: {
+        crypto: false,
+        'process/browser': require.resolve('process/browser'),
+        //"stream": require.resolve("stream-browserify"),
+        "path": require.resolve("path-browserify")
+      }
     },
     entry,
     optimization,
@@ -252,6 +263,7 @@ const browserConfig = (/*env, argv*/) => {
       }),
       new webpack.ProvidePlugin({
         process: "process/browser",
+        //Buffer: ["buffer", "Buffer"],
       }),
       new MiniCssExtractPlugin(),
       new webpack.DefinePlugin({
