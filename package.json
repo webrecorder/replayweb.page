@@ -107,7 +107,7 @@
     "test-start-embed": "cp tests/embed/iframe-test.html mkdocs/_genhtml/; cd tests/embed; http-server -p 8020",
     "test-start-sandbox": "cd tests/embed/sandbox; http-server -p 8030",
     "update-ruffle": "./ruffle/download-latest-ruffle.sh",
-    "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
+    "pack": "electron-builder --publish never",
     "pack-signed": "electron-builder",
     "dist": "yarn run build && yarn run pack",
     "dist-dev": "yarn run build-dev && yarn run pack",

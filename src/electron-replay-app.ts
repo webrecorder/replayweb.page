@@ -52,6 +52,10 @@ const peerId = Buffer.from(
   (x) => x[0],
 );
 
+type RealTorrentFile = TorrentFile & {
+  stream: ({ start, end }: { start?: number; end?: number }) => ReadableStream;
+};
+
 // ============================================================================
 class ElectronReplayApp {
   pluginPath = "";
@@ -526,7 +530,7 @@ class ElectronReplayApp {
     if (!waczs.length) {
       return this.notFound("no WACZ found");
     }
-    const wacz = waczs[0];
+    const wacz = waczs[0] as RealTorrentFile;
 
     const headers = new Headers({ "Content-Type": "application/octet-stream" });
     const reqHeaders = new Headers(request.headers);
@@ -537,16 +541,9 @@ class ElectronReplayApp {
       wacz.length,
     );
 
-    const data =
-      request.method === "HEAD"
-        ? null
-        : wacz.createReadStream({ start: start!, end: end! });
+    const data = request.method === "HEAD" ? null : wacz.stream({ start, end });
 
-    return new Response(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
-      data ? (Readable.toWeb(Readable.from(data)) as any) : null,
-      { status, headers },
-    );
+    return new Response(data, { status, headers });
   }
 
   createMainWindow(argv: string[]) {
