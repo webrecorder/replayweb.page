@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "module": "esnext",
-    "lib": ["es2021"],
+    "lib": ["esnext", "dom", "dom.iterable"],
     "target": "es6",
     "moduleResolution": "Bundler",
     "allowJs": true,
