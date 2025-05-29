@@ -10,7 +10,7 @@ export interface FileWithPath extends File {
 
 declare let window: Window & {
   electron?: {
-    getPath: (file: File) => string;
+    getPath: (file: File) => { path: string; displayName: string };
   };
 };
 
@@ -96,10 +96,12 @@ export class Chooser extends LitElement {
     this.file = file;
     // file.path only available in electron app
     if (IS_APP && window.electron?.getPath) {
-      this.file.path = window.electron.getPath(this.file);
+      const { path, displayName } = window.electron.getPath(this.file);
+      this.file.path = path;
+      this.fileDisplayName = path || displayName;
+    } else {
+      this.fileDisplayName = "file://" + (file.path || file.name);
     }
-
-    this.fileDisplayName = "file://" + (file.path || file.name);
   }
 
   async onChooseNativeFile() {
