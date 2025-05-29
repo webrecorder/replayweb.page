@@ -11,7 +11,9 @@ contextBridge.exposeInMainWorld("electron", {
   IS_APP: true,
   getPath(file: File) {
     const path = webUtils.getPathForFile(file) as string;
-    return pathSep === "/" ? path : (path.replaceAll(pathSep, "/") as string);
+    return pathSep === "/"
+      ? path
+      : (path.replaceAll(pathSep, "/").replace(":", "/") as string);
   },
 });
 

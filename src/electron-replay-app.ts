@@ -214,7 +214,13 @@ class ElectronReplayApp {
       return new Response("", { status: 200 });
     }
 
-    const filename = url.fileURLToPath(request.url.replace(FILE_PROTO, "file"));
+    let urlStr = request.url.replace(FILE_PROTO, "file");
+    if (path.sep !== "/") {
+      urlStr = urlStr.replace(/(\/\/\w)(\/\/)/, "$1:/");
+      urlStr = urlStr.replaceAll("/", path.sep);
+    }
+
+    const filename = url.fileURLToPath(urlStr);
 
     const headers = new Headers({ "Content-Type": "application/octet-stream" });
     const reqHeaders = new Headers(request.headers);
