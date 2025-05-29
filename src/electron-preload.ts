@@ -5,10 +5,13 @@ import { type IpcRendererEvent } from "electron";
 
 const { ipcRenderer, contextBridge, webUtils } = require("electron");
 
+const pathSep = require("path").sep as string;
+
 contextBridge.exposeInMainWorld("electron", {
   IS_APP: true,
   getPath(file: File) {
-    return webUtils.getPathForFile(file);
+    const path = webUtils.getPathForFile(file) as string;
+    return pathSep === "/" ? path : (path.replaceAll(pathSep, "/") as string);
   },
 });
 
