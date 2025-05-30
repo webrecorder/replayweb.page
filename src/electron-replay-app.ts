@@ -468,7 +468,7 @@ class ElectronReplayApp {
   }
 
   getOpenUrl(argv: string[]) {
-    const parsed = minimist(argv);
+    const parsed = minimist(argv.slice(process.defaultApp ? 2 : 1));
 
     const filename =
       this.openNextFile ||

@@ -11,11 +11,10 @@ contextBridge.exposeInMainWorld("electron", {
   IS_APP: true,
   getPath(file: File) {
     let path = webUtils.getPathForFile(file) as string;
-    let displayName = path;
     if (pathSep !== "/") {
       path = path.replaceAll(pathSep, "/").replace(":", "/");
     }
-    displayName = "file://" + displayName;
+    const displayName = "file://" + path;
     return { path, displayName };
   },
 });
