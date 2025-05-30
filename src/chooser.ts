@@ -5,12 +5,16 @@ import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
 import { customElement, property } from "lit/decorators.js";
 
 export interface FileWithPath extends File {
-  path: string;
+  path?: string;
 }
 
 declare let window: Window & {
   electron?: {
-    getPath: (file: File) => { path: string; displayName: string };
+    getPaths: (file: File) => {
+      loadUrl: string;
+      sourceUrl: string;
+      displayName: string;
+    };
   };
 };
 
@@ -94,13 +98,12 @@ export class Chooser extends LitElement {
 
   setFile(file: FileWithPath) {
     this.file = file;
-    // file.path only available in electron app
-    if (IS_APP && window.electron?.getPath) {
-      const { path, displayName } = window.electron.getPath(this.file);
-      this.file.path = path;
-      this.fileDisplayName = displayName;
+    if (IS_APP && window.electron?.getPaths) {
+      const { loadUrl, sourceUrl } = window.electron.getPaths(this.file);
+      this.file.path = loadUrl;
+      this.fileDisplayName = sourceUrl;
     } else {
-      this.fileDisplayName = "file://" + (file.path || file.name);
+      this.fileDisplayName = "file://" + file.name;
     }
   }
 
@@ -151,9 +154,10 @@ export class Chooser extends LitElement {
 
     if (this.file) {
       loadInfo.isFile = true;
-      // file.path only available in electron app
+      // should only be set in Electron app
       if (this.file.path) {
-        loadInfo.loadUrl = "file2://" + this.file.path;
+        loadInfo.loadUrl = this.file.path;
+        loadInfo.sourceUrl = this.fileDisplayName;
         loadInfo.noCache = true;
       } else if (this.fileHandle) {
         loadInfo.loadUrl = this.fileDisplayName;

@@ -640,12 +640,12 @@ export class ReplayWebApp extends LitElement {
       this.swName = this.pageParams.get("swName") || undefined;
     }
 
-    if (IS_APP && this.sourceUrl.startsWith("file://")) {
-      this.loadInfo = {
-        sourceUrl: this.sourceUrl,
-        loadUrl: this.sourceUrl.replace("file://", "file2://"),
-      };
-    }
+    // if (IS_APP && this.sourceUrl.startsWith("file://")) {
+    //   this.loadInfo = {
+    //     sourceUrl: this.sourceUrl,
+    //     loadUrl: this.sourceUrl.replace("file://", "file2://"),
+    //   };
+    // }
   }
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
