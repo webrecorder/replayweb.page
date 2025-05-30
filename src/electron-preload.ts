@@ -7,29 +7,30 @@ import { sep as pathSep } from "node:path";
 
 import { ipcRenderer, contextBridge, webUtils } from "electron";
 
-const FILE_SCHEME = "file2://";
+const FILE_SCHEME = "file://";
+const CUSTOM_FILE_SCHEME = "file2://";
+
+function rewriteLoadUrl(loadUrl: string) {
+  if (pathSep !== "/") {
+    // for windows, will replace such that C:\path\to\file becomes C//path/to/file
+    loadUrl = loadUrl.replaceAll(pathSep, "/").replace(":", "/");
+  }
+  return CUSTOM_FILE_SCHEME + loadUrl;
+}
 
 contextBridge.exposeInMainWorld("electron", {
   IS_APP: true,
   getPaths(file: File) {
-    let loadUrl = webUtils.getPathForFile(file);
-    const sourceUrl = "file://" + loadUrl;
-    if (pathSep !== "/") {
-      loadUrl = loadUrl.replaceAll(pathSep, "/").replace(":", "/");
-    }
-    loadUrl = FILE_SCHEME + loadUrl;
+    const url = webUtils.getPathForFile(file);
+    const sourceUrl = FILE_SCHEME + url;
+    const loadUrl = rewriteLoadUrl(url);
     return { loadUrl, sourceUrl };
   },
   getFileLoadUrl(sourceUrl: string) {
-    if (!sourceUrl.startsWith("file://")) {
+    if (!sourceUrl.startsWith(FILE_SCHEME)) {
       return sourceUrl;
     }
-    let loadUrl = sourceUrl.slice(7);
-    if (pathSep !== "/") {
-      loadUrl = loadUrl.replaceAll(pathSep, "/").replace(":", "/");
-    }
-    loadUrl = FILE_SCHEME + loadUrl;
-    return loadUrl;
+    return rewriteLoadUrl(sourceUrl.slice(FILE_SCHEME.length));
   },
 });
 
