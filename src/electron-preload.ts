@@ -3,16 +3,16 @@
 import { CollectionLoader } from "@webrecorder/wabac/swlib";
 import { type IpcRendererEvent } from "electron";
 
-const { ipcRenderer, contextBridge, webUtils } = require("electron");
+import { sep as pathSep } from "node:path";
 
-const { sep: pathSep } = require("path");
+import { ipcRenderer, contextBridge, webUtils } from "electron";
 
 const FILE_SCHEME = "file2://";
 
 contextBridge.exposeInMainWorld("electron", {
   IS_APP: true,
   getPaths(file: File) {
-    let loadUrl = webUtils.getPathForFile(file) as string;
+    let loadUrl = webUtils.getPathForFile(file);
     const sourceUrl = "file://" + loadUrl;
     if (pathSep !== "/") {
       loadUrl = loadUrl.replaceAll(pathSep, "/").replace(":", "/");
