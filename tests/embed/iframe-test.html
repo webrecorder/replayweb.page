@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <script src="http://localhost:9990/ui.js"></script>
+    <script src="./ui.js"></script>
     <style>
       body {
         background-color: lightgrey;
@@ -11,9 +11,8 @@
   </head>
   <body>
     <replay-web-page
-      noWebWorker
-      embed="replay-with-info"
-      src="http://localhost:9990/docs/examples/tweet-example.wacz"
+      replaybase="./"
+      src="./docs/examples/iframetest.wacz"
       url="page:0"
     ></replay-web-page>
   </body>

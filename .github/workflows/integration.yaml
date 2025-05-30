@@ -27,7 +27,7 @@ jobs:
         run: yarn build
 
       - name: Playwright Install Browsers
-        run: yarn playwright install
+        run: yarn playwright install --with-deps
 
       - uses: actions/setup-python@v4
         with:
