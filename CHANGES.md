@@ -4,7 +4,8 @@
 
 v2.3.12
 
-- Loading: App: fix loading files from disk on Windows, existing files should work
+- App: Cleanup Electron app code and add typing
+- App: fix loading files from disk on Windows, existing files should continue to load
 - Fidelity: Fix meta refresh rewriting (via wabac.js 2.23.2)
 
 v2.3.11

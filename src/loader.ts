@@ -214,16 +214,6 @@ class Loader extends LitElement {
         case "proxy":
           sourceUrl = "proxy:" + sourceUrl!.slice("proxy://".length);
           break;
-
-        case "magnet":
-          if (IS_APP) {
-            source = {
-              sourceUrl,
-              name: url.searchParams.get("name") || sourceUrl,
-              loadUrl: `magnet://${url.search}#.wacz`,
-            };
-          }
-          break;
       }
     } catch (e) {
       console.log(e);
