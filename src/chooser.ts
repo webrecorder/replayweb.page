@@ -13,7 +13,6 @@ declare let window: Window & {
     getPaths: (file: File) => {
       loadUrl: string;
       sourceUrl: string;
-      displayName: string;
     };
   };
 };
@@ -158,6 +157,7 @@ export class Chooser extends LitElement {
       if (this.file.path) {
         loadInfo.loadUrl = this.file.path;
         loadInfo.sourceUrl = this.fileDisplayName;
+        loadInfo.name = this.file.name;
         loadInfo.noCache = true;
       } else if (this.fileHandle) {
         loadInfo.loadUrl = this.fileDisplayName;
@@ -169,7 +169,9 @@ export class Chooser extends LitElement {
         loadInfo.noCache = false;
       }
       loadInfo.size = this.file.size;
-      loadInfo.name = this.fileDisplayName;
+      if (!loadInfo.name) {
+        loadInfo.name = this.fileDisplayName;
+      }
     }
 
     this.dispatchEvent(

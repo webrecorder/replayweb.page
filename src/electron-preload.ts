@@ -7,6 +7,8 @@ const { ipcRenderer, contextBridge, webUtils } = require("electron");
 
 const { sep: pathSep } = require("path");
 
+const FILE_SCHEME = "file2://";
+
 contextBridge.exposeInMainWorld("electron", {
   IS_APP: true,
   getPaths(file: File) {
@@ -15,8 +17,19 @@ contextBridge.exposeInMainWorld("electron", {
     if (pathSep !== "/") {
       loadUrl = loadUrl.replaceAll(pathSep, "/").replace(":", "/");
     }
-    loadUrl = "file2://" + loadUrl;
+    loadUrl = FILE_SCHEME + loadUrl;
     return { loadUrl, sourceUrl };
+  },
+  getFileLoadUrl(sourceUrl: string) {
+    if (!sourceUrl.startsWith("file://")) {
+      return sourceUrl;
+    }
+    let loadUrl = sourceUrl.slice(7);
+    if (pathSep !== "/") {
+      loadUrl = loadUrl.replaceAll(pathSep, "/").replace(":", "/");
+    }
+    loadUrl = FILE_SCHEME + loadUrl;
+    return loadUrl;
   },
 });
 

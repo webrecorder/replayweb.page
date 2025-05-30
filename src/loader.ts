@@ -27,6 +27,12 @@ const NO_ANIM_STATES: LoadingState[] = [
   "permission_needed",
 ];
 
+declare let window: Window & {
+  electron?: {
+    getFileLoadUrl: (sourceUrl: string) => string;
+  };
+};
+
 class Loader extends LitElement {
   @property({ type: String }) sourceUrl?: string;
   @property({ type: Object }) loadInfo: LoadInfo | null = null;
@@ -182,16 +188,27 @@ class Loader extends LitElement {
           break;
 
         case "file":
-          if (!this.loadInfo && !this.tryFileHandle) {
-            this.state = "errored";
-            this.error = `\
-File URLs can not be entered directly or shared.
-You can select a file to upload from the main page by clicking the 'Choose File...' button.`;
-            this.errorAllowRetry = false;
-            return;
-          }
+          if (!this.loadInfo && sourceUrl && IS_APP && window.electron) {
+            const loadUrl = window.electron.getFileLoadUrl(sourceUrl);
+            const name = loadUrl.slice(loadUrl.lastIndexOf("/") + 1);
+            source = {
+              sourceUrl,
+              loadUrl,
+              name,
+              noCache: true,
+            };
+          } else {
+            if (!this.loadInfo && !this.tryFileHandle) {
+              this.state = "errored";
+              this.error = `\
+  File URLs can not be entered directly or shared.
+  You can select a file to upload from the main page by clicking the 'Choose File...' button.`;
+              this.errorAllowRetry = false;
+              return;
+            }
 
-          source = this.loadInfo;
+            source = this.loadInfo;
+          }
           break;
 
         case "proxy":
