@@ -98,7 +98,7 @@ export class Chooser extends LitElement {
     if (IS_APP && window.electron?.getPath) {
       const { path, displayName } = window.electron.getPath(this.file);
       this.file.path = path;
-      this.fileDisplayName = path || displayName;
+      this.fileDisplayName = displayName;
     } else {
       this.fileDisplayName = "file://" + (file.path || file.name);
     }
