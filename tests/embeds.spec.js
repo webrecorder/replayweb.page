@@ -57,7 +57,6 @@ test("same-domain iframe embed is loading", async ({ page }) => {
   const inside = res.frameLocator("iframe").locator("body");
 
   await expect(inside).toContainText("Inside iframe");
-
 });
 
 test("cross-domain iframe embed is loading", async ({ page }) => {
@@ -75,7 +74,6 @@ test("cross-domain iframe embed is loading", async ({ page }) => {
   const inside = res.frameLocator("iframe").locator("body");
 
   await expect(inside).toContainText("Inside iframe");
-
 });
 
 test("sandbox + cross-domain embed is loading", async ({ page }) => {
