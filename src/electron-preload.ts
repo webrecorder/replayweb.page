@@ -3,12 +3,34 @@
 import { CollectionLoader } from "@webrecorder/wabac/swlib";
 import { type IpcRendererEvent } from "electron";
 
-const { ipcRenderer, contextBridge, webUtils } = require("electron");
+import { sep as pathSep } from "node:path";
+
+import { ipcRenderer, contextBridge, webUtils } from "electron";
+
+const FILE_SCHEME = "file://";
+const CUSTOM_FILE_SCHEME = "file2://";
+
+function rewriteLoadUrl(loadUrl: string) {
+  if (pathSep !== "/") {
+    // for windows, will replace such that C:\path\to\file becomes C//path/to/file
+    loadUrl = loadUrl.replaceAll(pathSep, "/").replace(":", "/");
+  }
+  return CUSTOM_FILE_SCHEME + loadUrl;
+}
 
 contextBridge.exposeInMainWorld("electron", {
   IS_APP: true,
-  getPath(file: File) {
-    return webUtils.getPathForFile(file);
+  getPaths(file: File) {
+    const url = webUtils.getPathForFile(file);
+    const sourceUrl = FILE_SCHEME + url;
+    const loadUrl = rewriteLoadUrl(url);
+    return { loadUrl, sourceUrl };
+  },
+  getFileLoadUrl(sourceUrl: string) {
+    if (!sourceUrl.startsWith(FILE_SCHEME)) {
+      return sourceUrl;
+    }
+    return rewriteLoadUrl(sourceUrl.slice(FILE_SCHEME.length));
   },
 });
 

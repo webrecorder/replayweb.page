@@ -1,11 +1,10 @@
 import { LitElement, html, css, type PropertyValues, nothing } from "lit";
-import { wrapCss } from "./misc";
+import { IS_APP, wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 import rwpLogoAnimated from "~assets/brand/replaywebpage-icon-color-animated.svg";
 
 import prettyBytes from "pretty-bytes";
 
-import { parseURLSchemeHostPath } from "./pageutils";
 import { property } from "lit/decorators.js";
 import type { LoadInfo } from "./item";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -28,6 +27,12 @@ const NO_ANIM_STATES: LoadingState[] = [
   "permission_needed",
 ];
 
+declare let window: Window & {
+  electron?: {
+    getFileLoadUrl: (sourceUrl: string) => string;
+  };
+};
+
 class Loader extends LitElement {
   @property({ type: String }) sourceUrl?: string;
   @property({ type: Object }) loadInfo: LoadInfo | null = null;
@@ -46,7 +51,7 @@ class Loader extends LitElement {
   @property({ type: String }) extraMsg?: string;
   @property({ type: String }) swName?: string;
 
-  pingInterval: number | NodeJS.Timer = 0;
+  pingInterval: number | NodeJS.Timeout = 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- requestPermission() type mismatch
   fileHandle: any = null;
   noWebWorker = false;
@@ -161,7 +166,8 @@ class Loader extends LitElement {
 
     // custom protocol handlers here...
     try {
-      const { scheme, host, path } = parseURLSchemeHostPath(sourceUrl!);
+      const url = new URL(sourceUrl!);
+      const scheme = url.protocol.slice(0, -1);
 
       switch (scheme) {
         case "googledrive":
@@ -174,22 +180,35 @@ class Loader extends LitElement {
         case "s3":
           source = {
             sourceUrl,
-            loadUrl: `https://${host}.s3.amazonaws.com${path}`,
+            loadUrl: `https://${url.hostname}.s3.amazonaws.com${url.href.slice(
+              url.origin.length,
+            )}`,
             name: this.sourceUrl,
           };
           break;
 
         case "file":
-          if (!this.loadInfo && !this.tryFileHandle) {
-            this.state = "errored";
-            this.error = `\
-File URLs can not be entered directly or shared.
-You can select a file to upload from the main page by clicking the 'Choose File...' button.`;
-            this.errorAllowRetry = false;
-            return;
-          }
+          if (!this.loadInfo && sourceUrl && IS_APP && window.electron) {
+            const loadUrl = window.electron.getFileLoadUrl(sourceUrl);
+            const name = loadUrl.slice(loadUrl.lastIndexOf("/") + 1);
+            source = {
+              sourceUrl,
+              loadUrl,
+              name,
+              noCache: true,
+            };
+          } else {
+            if (!this.loadInfo && !this.tryFileHandle) {
+              this.state = "errored";
+              this.error = `\
+  File URLs can not be entered directly or shared.
+  You can select a file to upload from the main page by clicking the 'Choose File...' button.`;
+              this.errorAllowRetry = false;
+              return;
+            }
 
-          source = this.loadInfo;
+            source = this.loadInfo;
+          }
           break;
 
         case "proxy":

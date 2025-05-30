@@ -103,7 +103,7 @@ async function sourceToId(url: string) {
 // simple parse of scheme, host, rest of path
 // not using URL due to different browser behavior
 function parseURLSchemeHostPath(url: string) {
-  let inx = url.indexOf("://");
+  let inx = url.indexOf(":");
   let hostInx = 0;
   let scheme = "";
   let host = "";
@@ -111,12 +111,11 @@ function parseURLSchemeHostPath(url: string) {
 
   if (inx >= 0) {
     scheme = url.slice(0, inx);
-    inx += 3;
-  } else {
-    inx++;
-    if (url.startsWith("//")) {
-      inx += 2;
-    }
+    url = url.slice(inx + 1);
+    inx += 1;
+  }
+  if (url.startsWith("//")) {
+    inx += 2;
   }
 
   hostInx = url.indexOf("/", inx);

@@ -2,13 +2,22 @@
 
 ## CHANGES
 
+v2.3.12
+
+- App: Cleanup Electron app code and add typing
+- App: fix loading files from disk on Windows, existing files should continue to load
+- Fidelity: Fix meta refresh rewriting (via wabac.js 2.23.2)
+
 v2.3.11
+
 - Fidelity: Fix to importmaps (via wabac.js 2.23.1)
 
 v2.3.10
+
 - Dependencies: Update Electron dependencies
 
 v2.3.9
+
 - Loading: Avoid unnecessary reloads of multiWACZ JSON, prune expired (via wabac.js 2.23.0)
 - Fidelity: Fix CSP issue with iframes in Firefox (via wabac.js 2.23.0)
 - Testing: Add testing for CSP handling and embeds in Firefox and Webkit

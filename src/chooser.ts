@@ -5,12 +5,15 @@ import fasUpload from "@fortawesome/fontawesome-free/svgs/solid/upload.svg";
 import { customElement, property } from "lit/decorators.js";
 
 export interface FileWithPath extends File {
-  path: string;
+  path?: string;
 }
 
 declare let window: Window & {
   electron?: {
-    getPath: (file: File) => string;
+    getPaths: (file: File) => {
+      loadUrl: string;
+      sourceUrl: string;
+    };
   };
 };
 
@@ -94,12 +97,13 @@ export class Chooser extends LitElement {
 
   setFile(file: FileWithPath) {
     this.file = file;
-    // file.path only available in electron app
-    if (IS_APP && window.electron?.getPath) {
-      this.file.path = window.electron.getPath(this.file);
+    if (IS_APP && window.electron?.getPaths) {
+      const { loadUrl, sourceUrl } = window.electron.getPaths(this.file);
+      this.file.path = loadUrl;
+      this.fileDisplayName = sourceUrl;
+    } else {
+      this.fileDisplayName = "file://" + file.name;
     }
-
-    this.fileDisplayName = "file://" + (file.path || file.name);
   }
 
   async onChooseNativeFile() {
@@ -149,9 +153,11 @@ export class Chooser extends LitElement {
 
     if (this.file) {
       loadInfo.isFile = true;
-      // file.path only available in electron app
+      // should only be set in Electron app
       if (this.file.path) {
-        loadInfo.loadUrl = "file2://" + this.file.path;
+        loadInfo.loadUrl = this.file.path;
+        loadInfo.sourceUrl = this.fileDisplayName;
+        loadInfo.name = this.file.name;
         loadInfo.noCache = true;
       } else if (this.fileHandle) {
         loadInfo.loadUrl = this.fileDisplayName;
@@ -163,7 +169,9 @@ export class Chooser extends LitElement {
         loadInfo.noCache = false;
       }
       loadInfo.size = this.file.size;
-      loadInfo.name = this.fileDisplayName;
+      if (!loadInfo.name) {
+        loadInfo.name = this.fileDisplayName;
+      }
     }
 
     this.dispatchEvent(
