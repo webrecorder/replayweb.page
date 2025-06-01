@@ -93,7 +93,7 @@ class ElectronReplayApp {
   get mainWindowWebPreferences() {
     return {
       plugins: true,
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(this.appPath, "preload.js"),
       nativeWindowOpen: true,
       contextIsolation: true,
       enableRemoteModule: false,
@@ -123,7 +123,6 @@ class ElectronReplayApp {
     }
 
     console.log("app path", this.appPath);
-    console.log("dir name", __dirname);
     console.log("proj path", this.projPath);
 
     console.log("app data", app.getPath("appData"));
@@ -533,7 +532,16 @@ class ElectronReplayApp {
 
   async doHandleBT(request: Request) {
     if (!this.client) {
-      this.client = new WebTorrent({ peerId, utp: false });
+      const downloads = path.join(app.getPath("downloads"), "rwp-torrents");
+      console.log("downloads", downloads);
+      this.client = new WebTorrent({
+        peerId,
+        //@ts-expect-error destoryStoreOnDestory not in type
+        destroyStoreOnDestroy: true,
+        path: downloads,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      console.log((this.client as any).utp);
     }
 
     // special ping from wabac.js to ensure the scheme works
