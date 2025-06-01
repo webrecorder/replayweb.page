@@ -90,17 +90,17 @@ const electronMainConfig = (/*env, argv*/) => {
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
-        patterns: [
-          { from: "build/extra_prebuilds/", to: "prebuilds" },
-          { from: "node_modules/bufferutil/prebuilds/", to: "prebuilds" },
-        ],
+        patterns: [{ from: "build/extra_prebuilds/", to: "prebuilds" }],
       }),
     ],
     resolve: {
       alias: {
-        "bufferutil": path.join(__dirname, "./node_modules/bufferutil/fallback.js")
-      }
-    }
+        bufferutil: path.join(
+          __dirname,
+          "./node_modules/bufferutil/fallback.js",
+        ),
+      },
+    },
   };
   return merge(tsConfig, config);
 };
@@ -132,7 +132,7 @@ const libConfig = (env, argv) => {
   const patterns = [
     { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js" },
   ];
-  //extraPlugins.push(new CopyPlugin({ patterns }));
+  extraPlugins.push(new CopyPlugin({ patterns }));
 
   /** @type {import('webpack').Configuration} */
   const config = {
@@ -211,7 +211,7 @@ const browserConfig = (/*env, argv*/) => {
   const patterns = [
     { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js" },
   ];
-  //extraPlugins.push(new CopyPlugin({ patterns }));
+  extraPlugins.push(new CopyPlugin({ patterns }));
   //}
 
   /** @type {import('webpack').Configuration} */
