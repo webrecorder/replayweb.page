@@ -303,7 +303,7 @@ export class Chooser extends LitElement {
                   type="text"
                   name="filename"
                   id="filename"
-                  pattern="((file|http|https|ipfs|s3)://.*.(warc|warc.gz|zip|wacz|wacz.zip|har|json|cdx|cdxj)([?#].*)?)|(googledrive://.+)|(ssb://.+)"
+                  pattern="((file|http|https|ipfs|s3)://.*.(warc|warc.gz|zip|wacz|wacz.zip|har|json|cdx|cdxj)([?#].*)?)|(googledrive://.+)|(ssb://.+)|(magnet:.+)"
                   .value="${this.fileDisplayName}"
                   @input="${this.onInput}"
                   autocomplete="off"
