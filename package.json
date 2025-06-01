@@ -1,7 +1,11 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
+<<<<<<< HEAD
   "version": "2.4.3",
+=======
+  "version": "2.4.0-beta.0",
+>>>>>>> 9cfe899 (wt streaming: use read stream directly, ensure torrent is ready)
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
