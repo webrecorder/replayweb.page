@@ -22,8 +22,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@shoelace-style/shoelace": "~2.15.1",
-    "@webrecorder/wabac": "^2.23.2",
     "@types/webtorrent": "^0.110.0",
+    "@webrecorder/wabac": "^2.23.2",
     "bulma": "^0.9.3",
     "create-torrent": "^6.1.0",
     "electron-log": "^4.4.1",
@@ -43,7 +43,7 @@
     "split.js": "^1.6.4",
     "stream-browserify": "^3.0.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
-    "webtorrent": "^2.6.7"
+    "webtorrent": "^2.6.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
@@ -76,7 +76,7 @@
     "ts-lit-plugin": "^2.0.0-pre.1",
     "ts-loader": "^9.4.4",
     "typescript": "^5.2.2",
-    "webpack": "^5.91.0",
+    "webpack": "^5.99.9",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4",
     "webpack-merge": "^5.10.0"
@@ -123,10 +123,11 @@
     "extraMetadata": {
       "main": "dist/electron.js"
     },
+    "npmRebuild": false,
     "files": [
-      "!**/node_modules/**/*",
+      "!**node_modules/**/*",
       "dist/*.js",
-      "dist/prebuilds/${platform}-${arch}/*",
+      "!dist/node_modules*.js",
       "dist/build/*",
       "ui.js",
       "sw.js",
@@ -160,7 +161,7 @@
       "extraResources": [
         "plugins-mac"
       ],
-      "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**}"
+      "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**,node_modules/**/prebuilds/**}"
     },
     "linux": {
       "category": "Archiving;Utility;",

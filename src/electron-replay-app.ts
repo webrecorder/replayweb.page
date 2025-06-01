@@ -90,7 +90,7 @@ class ElectronReplayApp {
   get mainWindowWebPreferences() {
     return {
       plugins: true,
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(this.appPath, "preload.js"),
       nativeWindowOpen: true,
       contextIsolation: true,
       enableRemoteModule: false,
@@ -120,7 +120,6 @@ class ElectronReplayApp {
     }
 
     console.log("app path", this.appPath);
-    console.log("dir name", __dirname);
     console.log("proj path", this.projPath);
 
     console.log("app data", app.getPath("appData"));
@@ -180,10 +179,31 @@ class ElectronReplayApp {
     void app.whenReady().then(() => this.onAppReady());
 
     // Quit when all windows are closed.
-    app.on("window-all-closed", function () {
-      // On macOS it is common for applications and their menu bar
-      // to stay active until the user quits explicitly with Cmd + Q
-      //if (process.platform !== 'darwin')
+    app.on("window-all-closed", async () => {
+      if (this.client) {
+        //console.log("closing all torrents", this.client.torrents.length);
+        // try {
+        //   await Promise.allSettled(
+        //     this.client.torrents.map(
+        //       async (x) =>
+        //         new Promise<void>(
+        //           (resolve) => () => x.destroy({}, () => resolve()),
+        //         ),
+        //     ),
+        //   );
+        // } catch (e) {
+        //   // ignore
+        // }
+        // await Promise.race([
+        //   new Promise((resolve) => setTimeout(resolve, 10000)),
+        //   new Promise<void>((resolve) => () => {
+        //     this.client!.destroy(() => {
+        //       console.log("wt closed!");
+        //       resolve();
+        //     });
+        //   }),
+        // ]);
+      }
       app.quit();
     });
   }
@@ -488,7 +508,16 @@ class ElectronReplayApp {
 
   async doHandleBT(request: Request) {
     if (!this.client) {
-      this.client = new WebTorrent({ peerId, utp: false });
+      const downloads = path.join(app.getPath("downloads"), "rwp-torrents");
+      console.log("downloads", downloads);
+      this.client = new WebTorrent({
+        peerId,
+        //@ts-expect-error destoryStoreOnDestory not in type
+        destroyStoreOnDestroy: true,
+        path: downloads,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      console.log((this.client as any).utp);
     }
 
     // special ping from wabac.js to ensure the scheme works

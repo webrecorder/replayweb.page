@@ -65,26 +65,15 @@ const electronMainConfig = (/*env, argv*/) => {
       filename: "[name].js",
     },
     node: {
-      __dirname: false,
-      __filename: false,
+      __dirname: true,
+      __filename: true,
     },
     plugins: [
       new webpack.DefinePlugin({
         __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
-      new CopyPlugin({
-        patterns: [{ from: "build/extra_prebuilds/", to: "prebuilds" }],
-      }),
     ],
-    resolve: {
-      alias: {
-        bufferutil: path.join(
-          __dirname,
-          "./node_modules/bufferutil/fallback.js",
-        ),
-      },
-    },
   };
   return merge(tsConfig, config);
 };
