@@ -21,7 +21,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'yarn'
 
       - name: Cache Dirs
@@ -106,6 +106,7 @@ jobs:
                 #rm PepperFlashPlayer.plugin.zip;
                 #popd;
                 yarn --link-duplicates --pure-lockfile --ignore-engines install
+                yarn run build
                 yarn run $YARN_BUILD_CMD
               fi
 
