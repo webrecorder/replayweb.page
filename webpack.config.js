@@ -129,7 +129,6 @@ const libConfig = (env, argv) => {
       fallback: {
         crypto: false,
         'process/browser': require.resolve('process/browser'),
-        //"stream": require.resolve("stream-browserify"),
         "path": require.resolve("path-browserify")
       }
     },
@@ -228,7 +227,6 @@ const browserConfig = (/*env, argv*/) => {
       fallback: {
         crypto: false,
         'process/browser': require.resolve('process/browser'),
-        //"stream": require.resolve("stream-browserify"),
         "path": require.resolve("path-browserify")
       }
     },
