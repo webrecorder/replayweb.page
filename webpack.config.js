@@ -9,6 +9,11 @@ const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const package_json = require("./package.json");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const {
+  ReplaceOperation,
+  ModifySourcePlugin,
+} = require("modify-source-webpack-plugin");
+
 
 // helper proxy URL, run locally for app
 const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
@@ -73,6 +78,20 @@ const electronMainConfig = (/*env, argv*/) => {
         __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
+      new ModifySourcePlugin({
+        rules: [
+          {
+            test: /lib\/binding\.js$/,
+            operations: [
+              new ReplaceOperation(
+                "once",
+                `require('node-gyp-build')(path.join(__dirname, '..'))`,
+                `require('node-gyp-build')(path.join(__dirname, "..", "node_modules", "utp-native"))`,
+              ),
+            ],
+          }
+        ]
+      })
     ],
   };
   return merge(tsConfig, config);
