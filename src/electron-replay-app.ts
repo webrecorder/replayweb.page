@@ -93,7 +93,7 @@ class ElectronReplayApp {
   get mainWindowWebPreferences() {
     return {
       plugins: true,
-      preload: path.join(this.appPath, "preload.js"),
+      preload: path.join(__dirname, "preload.js"),
       nativeWindowOpen: true,
       contextIsolation: true,
       enableRemoteModule: false,
@@ -122,6 +122,7 @@ class ElectronReplayApp {
       });
     }
 
+    console.log("dir name", __dirname);
     console.log("app path", this.appPath);
     console.log("proj path", this.projPath);
 
