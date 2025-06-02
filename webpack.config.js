@@ -65,8 +65,8 @@ const electronMainConfig = (/*env, argv*/) => {
       filename: "[name].js",
     },
     node: {
-      __dirname: true,
-      __filename: true,
+      __dirname: false,
+      __filename: false,
     },
     plugins: [
       new webpack.DefinePlugin({
