@@ -14,7 +14,6 @@ const {
   ModifySourcePlugin,
 } = require("modify-source-webpack-plugin");
 
-
 // helper proxy URL, run locally for app
 const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
 
@@ -51,6 +50,10 @@ const tsConfig = {
         options: {
           onlyCompileBundledFiles: true,
         },
+      },
+      {
+        test: /\.node$/,
+        use: "node-loader",
       },
     ],
   },
@@ -89,10 +92,31 @@ const electronMainConfig = (/*env, argv*/) => {
                 `require('node-gyp-build')(path.join(__dirname, "..", "node_modules", "utp-native"))`,
               ),
             ],
-          }
-        ]
-      })
+          },
+          {
+            test: /lib\/node-datachannel.js$/,
+            operations: [
+              new ReplaceOperation(
+                "once",
+                `const nodeDataChannel = require('../build/Release/node_datachannel.node');`,
+                `import nodeDataChannel from '../build/Release/node_datachannel.node';`,
+              ),
+            ],
+          },
+        ],
+      }),
     ],
+    externals: {
+      //"node-datachannel": "node-datachannel",
+    },
+    resolve: {
+      alias: {
+        "node_datachannel.node":
+          "node_modules/node-datachannel/build/Release/node_datachannel.node",
+        "../build/Release/node_datachannel.node":
+          "node_modules/node-datachannel/build/Release/node_datachannel.node",
+      },
+    },
   };
   return merge(tsConfig, config);
 };
