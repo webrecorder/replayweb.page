@@ -1,0 +1,6 @@
+{
+  "name": "node-datachannel-prebuilds",
+  "version": "1.0.0",
+  "main": "index.cjs",
+  "license": "MIT"
+}

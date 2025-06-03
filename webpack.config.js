@@ -99,24 +99,13 @@ const electronMainConfig = (/*env, argv*/) => {
               new ReplaceOperation(
                 "once",
                 `const nodeDataChannel = require('../build/Release/node_datachannel.node');`,
-                `import nodeDataChannel from '../build/Release/node_datachannel.node';`,
+                `const path = require("path"); const nodeDataChannel = require(path.join(__dirname, "..", "node_modules", "node-datachannel-prebuilds"));`,
               ),
             ],
           },
         ],
       }),
     ],
-    externals: {
-      //"node-datachannel": "node-datachannel",
-    },
-    resolve: {
-      alias: {
-        "node_datachannel.node":
-          "node_modules/node-datachannel/build/Release/node_datachannel.node",
-        "../build/Release/node_datachannel.node":
-          "node_modules/node-datachannel/build/Release/node_datachannel.node",
-      },
-    },
   };
   return merge(tsConfig, config);
 };
