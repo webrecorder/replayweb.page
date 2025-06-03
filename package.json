@@ -55,6 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "copy-webpack-plugin": "^9.0.1",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.2.0",
     "electron": "^36.3.2",
     "electron-builder": "^26.0.12",
@@ -103,11 +104,11 @@
     "start-docs-prod": "yarn run build-docs && cd mkdocs/_genhtml && http-server -p 9990 --cors",
     "start-dev": "webpack serve --mode development",
     "start-docs": "yarn run build-dev && cd mkdocs && ./copy-site.sh && mkdocs serve",
-    "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
+    "start-electron": "cross-env NODE_ENV=development electron ./dist/electron.js $1",
     "test-start-embed": "cp tests/embed/iframe-test.html mkdocs/_genhtml/; cd tests/embed; http-server -p 8020",
     "test-start-sandbox": "cd tests/embed/sandbox; http-server -p 8030",
     "update-ruffle": "./ruffle/download-latest-ruffle.sh",
-    "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
+    "pack": "cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
     "pack-signed": "electron-builder",
     "prebuild": "node build/get-node-datachannel.cjs && cp -r build/node-datachannel-prebuilds/ node_modules/node-datachannel-prebuilds/",
     "dist": "yarn run build && yarn run pack",
@@ -141,7 +142,11 @@
       {
         "from": "build/node-datachannel-prebuilds",
         "to": "node_modules/node-datachannel-prebuilds",
-        "filter": ["index.cjs", "package.json", "node-datachannel-${platform}-*"]
+        "filter": [
+          "index.cjs",
+          "package.json",
+          "node-datachannel-${platform}-*"
+        ]
       }
     ],
     "dmg": {

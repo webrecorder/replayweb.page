@@ -8,11 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-13, ubuntu-latest]
-        platform: [windows, linux]
-        exclude:
-          - os: macos-13
-            platform: windows
+        os: [macos-13, ubuntu-latest, windows-latest]
 
     steps:
       - name: Check out Git repository
@@ -39,6 +35,7 @@ jobs:
         run: yarn run update-ruffle
 
       - name: Run Build
+        shell: bash
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
@@ -51,12 +48,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         run: |
-
-              #if [ "$RUNNER_OS" != "Linux" ]; then
-              #  sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-              #  sudo xcode-select -s "/Applications/Xcode_12.3.app"
-              #fi
-
               if [ "$GITHUB_REF" == "refs/heads/main" ] || [ -f ./force_release ]; then
                 export YARN_BUILD_CMD="release"
               else
@@ -64,49 +55,11 @@ jobs:
               fi
 
               if [ "$RUNNER_OS" == "Linux" ]; then
-                if [ "$PLATFORM" == "linux" ]; then
-                  #mkdir -p plugins-linux;
-                  #pushd plugins-linux;
-                  #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/libpepflashplayer.so";
-                  #popd;
-
-                  docker run --rm \
-                    -e CI=${CI} \
-                    -e GH_TOKEN=${GH_TOKEN} \
-                    -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
-                    -v ${PWD}:/project \
-                    -v ~/.cache/electron:/root/.cache/electron \
-                    -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-                    electronuserland/builder:wine \
-                    /bin/bash -c "yarn --link-duplicates --pure-lockfile --ignore-engines install && yarn run $YARN_BUILD_CMD --linux --x64"
-                else
-                  #mkdir -p plugins-win;
-                  #pushd plugins-win;
-                  #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86_64.dll";
-                  #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86.dll";
-                  #popd;
-
-                  docker run --rm \
-                    -e CI=${CI} \
-                    -e GH_TOKEN=${GH_TOKEN} \
-                    -e WIN_CSC_LINK=${WIN_CSC_LINK} \
-                    -e WIN_CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD} \
-                    -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
-                    -v ${PWD}:/project \
-                    -v ~/.cache/electron:/root/.cache/electron \
-                    -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-                    electronuserland/builder:wine \
-                    /bin/bash -c "yarn --link-duplicates --pure-lockfile --ignore-engines install && yarn run $YARN_BUILD_CMD --win --x64 --ia32 -c.npmRebuild=false"
-                fi
+                export FLAGS="--win --x64 --ia32"
               else
-                #mkdir -p plugins-mac;
-                #pushd plugins-mac;
-                #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/PepperFlashPlayer.plugin.zip";
-                #unzip PepperFlashPlayer.plugin.zip;
-                #rm PepperFlashPlayer.plugin.zip;
-                #popd;
-                yarn --link-duplicates --pure-lockfile --ignore-engines install
-                yarn run build
-                yarn run $YARN_BUILD_CMD
+                export FLAGS=""
               fi
 
+              yarn --link-duplicates --pure-lockfile --ignore-engines install
+              yarn run build
+              yarn run $YARN_BUILD_CMD $FLAGS

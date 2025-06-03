@@ -1,13 +1,26 @@
 const { execSync } = require("child_process");
 const path = require("path");
+const fs = require("fs");
+
+const { pipeline } = require('stream');
+const { promisify } = require('util');
+
+const streamPipeline = promisify(pipeline);
 
 const version = "v0.27.0";
 
-function loadPrebuilt(platform, arch) {
+async function downloadToFile(url, filename) {
+  const res = await fetch(url);
+  console.log("Fetching " + url);
+  if (!res.ok) throw new Error(`Fetch failed: ${res.statusText}`);
+  await streamPipeline(res.body, fs.createWriteStream(filename));
+}
+
+async function loadPrebuilt(platform, arch) {
   const url = `https://github.com/murat-dogan/node-datachannel/releases/download/${version}/node-datachannel-${version}-napi-v8-${platform}-${arch}.tar.gz`;
   const filename = path.basename(url);
 
-  execSync(`wget ${url}`);
+  await downloadToFile(url, filename);
   execSync(`tar xvfz ${filename}`);
 
   const target = path.join(__dirname, "node-datachannel-prebuilds", `node-datachannel-${platform}-${arch}.node`);
@@ -17,9 +30,11 @@ function loadPrebuilt(platform, arch) {
   execSync(`rm ${filename}`);
 }
 
-loadPrebuilt("darwin", "arm64");
-loadPrebuilt("darwin", "x64");
-loadPrebuilt("linux", "arm64");
-loadPrebuilt("linux", "x64");
-loadPrebuilt("win32", "ia32");
-loadPrebuilt("win32", "x64");
+(async function() {
+  await loadPrebuilt("darwin", "arm64");
+  await loadPrebuilt("darwin", "x64");
+  await loadPrebuilt("linux", "arm64");
+  await loadPrebuilt("linux", "x64");
+  await loadPrebuilt("win32", "ia32");
+  await loadPrebuilt("win32", "x64");
+})();
