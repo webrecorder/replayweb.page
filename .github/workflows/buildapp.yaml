@@ -42,8 +42,8 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
-          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+          #WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          #WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
           PLATFORM: ${{ matrix.platform }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -56,6 +56,8 @@ jobs:
 
               if [ "$RUNNER_OS" == "Windows" ]; then
                 export FLAGS="--win --x64 --ia32"
+                unset CSC_LINK
+                unset CSC_KEY_PASSWORD
               else
                 export FLAGS=""
               fi

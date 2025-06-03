@@ -31,10 +31,19 @@ async function loadPrebuilt(platform, arch) {
 }
 
 (async function() {
-  await loadPrebuilt("darwin", "arm64");
-  await loadPrebuilt("darwin", "x64");
-  await loadPrebuilt("linux", "arm64");
-  await loadPrebuilt("linux", "x64");
-  await loadPrebuilt("win32", "ia32");
-  await loadPrebuilt("win32", "x64");
+  switch (os.platform()) {
+    case "darwin":
+      await loadPrebuilt("darwin", "arm64");
+      await loadPrebuilt("darwin", "x64");
+      break;
+
+    case "linux":
+      await loadPrebuilt("linux", "arm64");
+      await loadPrebuilt("linux", "x64");
+      break;
+
+    case "win32":
+      await loadPrebuilt("win32", "ia32");
+      await loadPrebuilt("win32", "x64");
+      break;
 })();
