@@ -54,7 +54,7 @@ jobs:
                 export YARN_BUILD_CMD="dist"
               fi
 
-              if [ "$RUNNER_OS" == "Linux" ]; then
+              if [ "$RUNNER_OS" == "Windows" ]; then
                 export FLAGS="--win --x64 --ia32"
               else
                 export FLAGS=""
