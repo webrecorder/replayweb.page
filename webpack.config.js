@@ -94,6 +94,26 @@ const electronMainConfig = (/*env, argv*/) => {
             ],
           },
           {
+            test: /bufferutil\/index\.js$/,
+            operations: [
+              new ReplaceOperation(
+                "once",
+                `module.exports = require('node-gyp-build')(__dirname)`,
+                `const path = require("path"); module.exports = require('node-gyp-build')(path.join(__dirname, "node_modules", "bufferutil"))`,
+              ),
+            ],
+          },
+          {
+            test: /utf-8-validate\/index\.js$/,
+            operations: [
+              new ReplaceOperation(
+                "once",
+                `module.exports = require('node-gyp-build')(__dirname)`,
+                `const path = require("path"); module.exports = require('node-gyp-build')(path.join(__dirname, "node_modules", "utf-8-validate"))`,
+              ),
+            ],
+          },
+          {
             test: /lib\/node-datachannel.js$/,
             operations: [
               new ReplaceOperation(
