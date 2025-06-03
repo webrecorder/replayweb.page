@@ -46,4 +46,5 @@ async function loadPrebuilt(platform, arch) {
       await loadPrebuilt("win32", "ia32");
       await loadPrebuilt("win32", "x64");
       break;
+  }
 })();
