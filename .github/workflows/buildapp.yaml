@@ -38,6 +38,7 @@ jobs:
         shell: bash
 
       - name: Run Build
+        shell: bash
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
