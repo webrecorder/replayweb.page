@@ -1,6 +1,7 @@
 const { execSync } = require("child_process");
 const path = require("path");
 const fs = require("fs");
+const os = require("os");
 
 const { pipeline } = require('stream');
 const { promisify } = require('util');
