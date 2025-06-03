@@ -135,6 +135,8 @@
       "dist/*.node",
       "!dist/node_modules*.js",
       "node_modules/utp-native/{*.js,lib/*.js,prebuilds/${platform}-*/**}",
+      "node_modules/bufferutil/{*.js,prebuilds/${platform}-*/**}",
+      "node_modules/utf-8-validate/{*.js,prebuilds/${platform}-*/**}",
       "ui.js",
       "sw.js",
       "index.html",

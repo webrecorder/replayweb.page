@@ -182,28 +182,19 @@ class ElectronReplayApp {
     // Quit when all windows are closed.
     app.on("window-all-closed", async () => {
       if (this.client) {
-        //console.log("closing all torrents", this.client.torrents.length);
-        // try {
-        //   await Promise.allSettled(
-        //     this.client.torrents.map(
-        //       async (x) =>
-        //         new Promise<void>(
-        //           (resolve) => () => x.destroy({}, () => resolve()),
-        //         ),
-        //     ),
-        //   );
-        // } catch (e) {
-        //   // ignore
-        // }
-        // await Promise.race([
-        //   new Promise((resolve) => setTimeout(resolve, 10000)),
-        //   new Promise<void>((resolve) => () => {
-        //     this.client!.destroy(() => {
-        //       console.log("wt closed!");
-        //       resolve();
-        //     });
-        //   }),
-        // ]);
+        console.log(
+          "wait upto 2 seconds for all torrent to close",
+          this.client.torrents.length,
+        );
+        await Promise.race([
+          new Promise((resolve) => setTimeout(resolve, 2000)),
+          new Promise<void>((resolve) => () => {
+            this.client!.destroy(() => {
+              //console.log("wt closed!");
+              resolve();
+            });
+          }),
+        ]);
       }
       app.quit();
     });
@@ -513,12 +504,10 @@ class ElectronReplayApp {
       console.log("downloads", downloads);
       this.client = new WebTorrent({
         peerId,
-        //@ts-expect-error destoryStoreOnDestory not in type
+        //@ts-expect-error destoryStoreOnDestroy not in type
         destroyStoreOnDestroy: true,
         path: downloads,
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      console.log((this.client as any).utp);
     }
 
     // special ping from wabac.js to ensure the scheme works
@@ -535,6 +524,7 @@ class ElectronReplayApp {
     }
 
     let torrent = (await this.client.get(magnet)) as Torrent | null;
+    let isNew = false;
 
     if (!torrent) {
       const p = new Promise<Torrent>((resolve) => {
@@ -542,6 +532,7 @@ class ElectronReplayApp {
           resolve(torrent);
         });
       });
+      isNew = true;
       torrent = await p;
 
       // deselect all files and pieces
@@ -551,6 +542,7 @@ class ElectronReplayApp {
       const p = new Promise<void>((resolve) => {
         torrent!.on("ready", () => resolve());
       });
+      isNew = true;
       await p;
     }
 
@@ -561,6 +553,10 @@ class ElectronReplayApp {
       return this.notFound("no WACZ found");
     }
     const wacz = waczs[0] as RealTorrentFile;
+    // enable this to download full WACZ in the background
+    if (isNew) {
+      wacz.select();
+    }
 
     const headers = new Headers({ "Content-Type": "application/octet-stream" });
     const reqHeaders = new Headers(request.headers);
