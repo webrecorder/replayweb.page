@@ -104,6 +104,13 @@ class ElectronReplayApp {
     console.log("app data", app.getPath("appData"));
     console.log("user data", app.getPath("userData"));
 
+    // possible workaround for GTK issue on Linux
+    // https://github.com/webrecorder/replayweb.page/issues/430
+    // https://github.com/electron/electron/issues/46538#issuecomment-2808806722
+    if (process.env.APPIMAGE) {
+      app.commandLine.appendSwitch("--gtk-version", "3");
+    }
+
     if (this.profileName) {
       app.setPath(
         "userData",
