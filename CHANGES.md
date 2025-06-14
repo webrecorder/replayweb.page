@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.3.13
+- Loading: Fix regression in loading s3:// URLs
+- Rewrite: Fix rewrite of HLS when only available bandwidth exceeds max (via wabac.js 2.23.3)
+
 v2.3.12
 
 - App: Cleanup Electron app code and add typing
