@@ -181,7 +181,7 @@ class Loader extends LitElement {
           source = {
             sourceUrl,
             loadUrl: `https://${url.hostname}.s3.amazonaws.com${url.href.slice(
-              url.origin.length,
+              url.hostname.length + "s3://".length,
             )}`,
             name: this.sourceUrl,
           };
