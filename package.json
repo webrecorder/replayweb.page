@@ -99,7 +99,7 @@
     "start-dev": "webpack serve --mode development",
     "start-docs": "yarn run build-dev && cd mkdocs && ./copy-site.sh && mkdocs serve",
     "start-electron": "NODE_ENV=development electron ./dist/electron.js $1",
-    "test-start-prod": "yarn run build-docs; cp tests/embeds/test-serve.json mkdocs/_genhtml/serve.json; serve -l 9990 --cors",
+    "test-start-prod": "yarn run build-docs; cp tests/embed/test-serve.json mkdocs/_genhtml/serve.json; cd mkdocs/_genhtml; serve -l 9990 --cors",
     "test-start-embed": "cp tests/embed/iframe-test.html mkdocs/_genhtml/; cd tests/embed; serve -l 8020",
     "test-start-sandbox": "cd tests/embed/sandbox; serve -l 8030",
     "update-ruffle": "./ruffle/download-latest-ruffle.sh",

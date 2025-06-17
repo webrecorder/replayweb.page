@@ -1,4 +1,5 @@
 {
+  "cleanUrls": false,
   "headers": [{
     "source": "*",
     "headers": [{
@@ -7,4 +8,3 @@
     }]
   }]
 }
-      
