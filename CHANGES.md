@@ -2,9 +2,13 @@
 
 ## CHANGES
 
+v2.3.14
+- Loading: Make hash check optional, don't requires wasm to load (via wabac.js 2.23.4)
+
 v2.3.13
 - Loading: Fix regression in loading s3:// URLs
 - Rewrite: Fix rewrite of HLS when only available bandwidth exceeds max (via wabac.js 2.23.3)
+- Loading: Fix for AppImage
 
 v2.3.12
 

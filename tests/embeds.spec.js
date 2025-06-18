@@ -1,6 +1,12 @@
 import { test, expect } from "@playwright/test";
 
 test("same-domain embed is loading", async ({ page }) => {
+  page.on("response", async (response) => {
+    if (response.url() === "http://localhost:9990/embed.html") {
+      expect(await response.headerValue("Content-Security-Policy")).toBe("default-src 'self' 'unsafe-inline' data: blob:");
+    }
+  });
+
   await page.goto("http://localhost:9990/embed.html");
 
   const res = page
@@ -15,7 +21,7 @@ test("same-domain embed is loading", async ({ page }) => {
 });
 
 test("docs page embed is loading", async ({ page }) => {
-  await page.goto("http://localhost:9990/docs/embedding/");
+  await page.goto("http://localhost:9990/docs/embedding/index.html");
 
   const res = page
     .locator("replay-web-page")
