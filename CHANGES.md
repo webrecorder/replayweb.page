@@ -2,6 +2,9 @@
 
 ## CHANGES
 
+v2.3.15
+- Fidelity: Update to wabac.js 2.23.7 for fidelity improvements (including global class declaration hoisting)
+
 v2.3.14
 - Loading: Make hash check optional, don't requires wasm to load (via wabac.js 2.23.4)
 
