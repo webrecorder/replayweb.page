@@ -2,6 +2,9 @@
 
 ## CHANGES
 
+v2.3.16
+- Fidelity: Update to wabac.js 2.23.9 for various fidelity improvements
+
 v2.3.15
 - Fidelity: Update to wabac.js 2.23.7 for fidelity improvements (including global class declaration hoisting)
 
