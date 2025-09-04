@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.3.17
+- Security: Fix possible XSS issue in not found page via wabac.js 2.23.11
+- Fidelity: Fix possible eval() rewriting issue via wabac.js 2.23.10
+
 v2.3.16
 - Fidelity: Update to wabac.js 2.23.9 for various fidelity improvements
 
