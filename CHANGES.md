@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.3.18
+- Fidelity: Better detection of UTF-8 charset (via wabac.js 2.24.0)
+- Fidelity: Web Worker module rewriting improvements (via wabac.js 2.24.0)
+
 v2.3.17
 - Security: Fix possible XSS issue in not found page via wabac.js 2.23.11
 - Fidelity: Fix possible eval() rewriting issue via wabac.js 2.23.10
