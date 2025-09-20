@@ -1075,16 +1075,16 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-2.0.5.tgz#325db42395cd49fe6c14057f9a900e427df8810e"
   integrity sha512-lqaoKnRYBdo1UgDX8uF24AfGMifWK19TxPmM5FHc2vAGxrJ/qtyUyFBWoY1tISZdelsQ5fBcOusifo5o5wSJxQ==
 
-"@webrecorder/wabac@^2.24.0":
-  version "2.24.0"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.24.0.tgz#119cda1984158516874fa016939c660b055cc129"
-  integrity sha512-/3OZq61A+3hHvkXMj+UO3CbkYVm6285IhSHebgjWsuKlPeWzhUr9GFuamr3HLyiHHbCAWeM7cf+/8c6Phax90Q==
+"@webrecorder/wabac@^2.24.1":
+  version "2.24.1"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wabac/-/wabac-2.24.1.tgz#4cf2423a8a593410eabc7cb84041331d39081a96"
+  integrity sha512-n3MwHpPNbU1LrwZjlax9UJVvYwfYAiYQDjzAQbeE6SrAU/YFGgD3BthLCaHP5YyIvFjIKtUpfxbsxHYRqNAyxg==
   dependencies:
     "@peculiar/asn1-ecc" "^2.3.4"
     "@peculiar/asn1-schema" "^2.3.3"
     "@peculiar/x509" "^1.9.2"
     "@types/js-levenshtein" "^1.1.3"
-    "@webrecorder/wombat" "^3.9.0"
+    "@webrecorder/wombat" "^3.9.1"
     acorn "^8.10.0"
     auto-js-ipfs "^2.1.1"
     base64-js "^1.5.1"
@@ -1102,14 +1102,14 @@
     path-parser "^6.1.0"
     process "^0.11.10"
     stream-browserify "^3.0.0"
-    warcio "^2.4.5"
+    warcio "^2.4.7"
 
-"@webrecorder/wombat@^3.9.0":
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.9.0.tgz#a10116d01e1df66df791dc79c4ad58ee07de9308"
-  integrity sha512-o6ahV9DIi4/DkD13Qh4oGK0P+ZLn9ruu5sAUdqe51UXEdDsQNVuGbtf++bsOoKkLlsjL5QJZny2CEiJesLlsnw==
+"@webrecorder/wombat@^3.9.1":
+  version "3.9.1"
+  resolved "https://registry.yarnpkg.com/@webrecorder/wombat/-/wombat-3.9.1.tgz#266135612e8063fa6b453f45d37d2c94e7be93d6"
+  integrity sha512-NX7vYQxulVRPgZk4ok9JbrUsf0dct2f34D/B1ZUCcB4M9aTKDhDAxwoIJbMha4DLhQlPcPp2wjH5/uJtPvtsXQ==
   dependencies:
-    warcio "^2.4.0"
+    warcio "^2.4.7"
 
 "@xmldom/xmldom@^0.8.8":
   version "0.8.10"
@@ -6480,24 +6480,10 @@ vscode-uri@^2.1.2:
   resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-2.1.2.tgz#c8d40de93eb57af31f3c715dd650e2ca2c096f1c"
   integrity sha512-8TEXQxlldWAuIODdukIb+TR5s+9Ds40eSJrw+1iDDA9IFORPjMELarNQE3myz5XIkWWpdprmJjm1/SxMlWOC8A==
 
-warcio@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/warcio/-/warcio-2.4.0.tgz#13bae2837f1bbf5cf7585f75857e6311d30557bd"
-  integrity sha512-EfxXCgsnZ35CGf2j99QBMyB6EI98KEQ6YmeER+8Lnv/4KFJ3thT76PiX37HfZVbPJS21JihA0Eddjk9QBQRlPg==
-  dependencies:
-    "@types/pako" "^1.0.7"
-    "@types/stream-buffers" "^3.0.7"
-    base32-encode "^2.0.0"
-    hash-wasm "^4.9.0"
-    pako "^1.0.11"
-    tempy "^3.1.0"
-    uuid-random "^1.3.2"
-    yargs "^17.7.2"
-
-warcio@^2.4.5:
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/warcio/-/warcio-2.4.5.tgz#ba39c38e433491ab9016282813b9cf6539c3d808"
-  integrity sha512-b6R/aIsR4fXzrpY/Zud7LqHFi2Bt8Ov5VLOnruHQ10rk129e9d0KOCZlyRmPD6ENTcV7yze5rXvJ5WSNS8R1zw==
+warcio@^2.4.7:
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/warcio/-/warcio-2.4.7.tgz#7c3918463e550f62fe63df5f76a871424e74097a"
+  integrity sha512-WGRqvoUqSalAkx+uJ8xnrxiiSPZ7Ru/h7iKC2XmuMMSOUSnS917l4V+qpaN9thAsZkZ+8qJRtee3uyOjlq4Dgg==
   dependencies:
     "@types/pako" "^1.0.7"
     "@types/stream-buffers" "^3.0.7"

@@ -2,6 +2,9 @@
 
 ## CHANGES
 
+v2.3.19
+- Fidelity: 'embed' tag rewriting fix, (via wabac.js 2.24.1)
+
 v2.3.18
 - Fidelity: Better detection of UTF-8 charset (via wabac.js 2.24.0)
 - Fidelity: Web Worker module rewriting improvements (via wabac.js 2.24.0)
