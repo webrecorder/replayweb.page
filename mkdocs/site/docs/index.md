@@ -35,5 +35,6 @@ Below are a few of the integrations we know of that use ReplayWeb.page:
 - [CineFiles](https://cinefiles.bampfa.berkeley.edu/?f%5Bdoctype_s%5D%5B%5D=web+archive) — Film-related web archive ephemera collected by the UC Berkeley Art Museum and Pacific Film Archive.
 - [Stanford Digital Publication Web Archives](https://archive.supdigital.org/) — Archives of Stanford University Press Digital Publications.
 - [ysdn.info](https://ysdn.info/) — Final year grad show websites from the now defunct York / Sheridan design program.
+- [Archipelago Commons](https://archipelago.nyc/) — Digital Object Repository developed by the Metropolitan New York Library Council.
 
 If you know of any additional sites that you'd like us to include here, let us know by writing to _info_ [at] _webrecorder.net_
