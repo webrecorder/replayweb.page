@@ -85,7 +85,7 @@ class FaIcon extends LitElement {
         margin: 0;
         line-height: 1em;
       }
-      :host svg {
+      :host > svg {
         fill: var(--fa-icon-fill-color, currentcolor);
         width: var(--fa-icon-width, 19px);
         height: var(--fa-icon-height, 19px);
