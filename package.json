@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "2.3.19",
+  "version": "2.3.20",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -53,7 +53,7 @@
     "@typescript-eslint/parser": "^6.12.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
-    "electron": "^36.3.2",
+    "electron": "^38.2.1",
     "electron-builder": "^26.0.12",
     "electron-notarize": "^1.2.2",
     "eslint": "^8.56.0",
