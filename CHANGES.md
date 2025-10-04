@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.3.20
+- UI: Fix SVGs rendering for latest Chrome
+- Depenedencies: Update to latest Electron (38.2.1) to fix MacOS perf issue
+
 v2.3.19
 - Fidelity: 'embed' tag rewriting fix, (via wabac.js 2.24.1)
 

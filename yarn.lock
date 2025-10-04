@@ -2382,10 +2382,10 @@ electron-updater@^6.6.2:
     semver "^7.6.3"
     tiny-typed-emitter "^2.1.0"
 
-electron@^36.3.2:
-  version "36.8.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-36.8.1.tgz#c27dfb13fcc1bedf29929fe67430ee13a778c4df"
-  integrity sha512-honaH58/cyCb9QAzIvD+WXWuNIZ0tW9zfBqMz5wZld/rXB+LCTEDb2B3TAv8+pDmlzPlkPio95RkUe86l6MNjg==
+electron@^38.2.1:
+  version "38.2.1"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-38.2.1.tgz#c018fa527253ecbe10ac04ea61aeec4d2b7baf62"
+  integrity sha512-P4pE2RpRg3kM8IeOK+heg6iAxR5wcXnNHrbVchn7M3GBnYAhjfJRkROusdOro5PlKzdtfKjesbbqaG4MqQXccg==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^22.7.7"
