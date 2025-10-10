@@ -320,6 +320,7 @@ class Replay extends LitElement {
         display: flex;
         flex-direction: column;
         height: 100%;
+        color-scheme: light dark;
       }
 
       .iframe-container {
