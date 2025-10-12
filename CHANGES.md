@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.3.21
+- Fidelity: Fix replay of archives relying on dark theme css styles
+- Fidelity: Update to wabac.js 2.24.2 for fidelity improvements, more complete cdx loading for query fuzzy matching
+
 v2.3.20
 - UI: Fix SVGs rendering for latest Chrome
 - Depenedencies: Update to latest Electron (38.2.1) to fix MacOS perf issue
