@@ -3,38 +3,48 @@
 ## CHANGES
 
 v2.3.22
-- Fidelity: Better loading of pages that have sync XHR (via wombat.js)
-- Loading: Truncate loading of URLs that have very large POST requests (via wabac.js)
+
+- Fidelity: Better loading of pages that have sync XHR, cache XHR and use on reload (via wombat.js 3.10.0)
+- Loading: Truncate loading of URLs that have very large POST requests (via wabac.js 2.24.4)
 
 v2.3.21
+
 - Fidelity: Fix replay of archives relying on dark theme css styles
 - Fidelity: Update to wabac.js 2.24.2 for fidelity improvements, more complete cdx loading for query fuzzy matching
 
 v2.3.20
+
 - UI: Fix SVGs rendering for latest Chrome
 - Depenedencies: Update to latest Electron (38.2.1) to fix MacOS perf issue
 
 v2.3.19
+
 - Fidelity: 'embed' tag rewriting fix, (via wabac.js 2.24.1)
 
 v2.3.18
+
 - Fidelity: Better detection of UTF-8 charset (via wabac.js 2.24.0)
 - Fidelity: Web Worker module rewriting improvements (via wabac.js 2.24.0)
 
 v2.3.17
+
 - Security: Fix possible XSS issue in not found page via wabac.js 2.23.11
 - Fidelity: Fix possible eval() rewriting issue via wabac.js 2.23.10
 
 v2.3.16
+
 - Fidelity: Update to wabac.js 2.23.9 for various fidelity improvements
 
 v2.3.15
+
 - Fidelity: Update to wabac.js 2.23.7 for fidelity improvements (including global class declaration hoisting)
 
 v2.3.14
+
 - Loading: Make hash check optional, don't requires wasm to load (via wabac.js 2.23.4)
 
 v2.3.13
+
 - Loading: Fix regression in loading s3:// URLs
 - Rewrite: Fix rewrite of HLS when only available bandwidth exceeds max (via wabac.js 2.23.3)
 - Loading: Fix for AppImage

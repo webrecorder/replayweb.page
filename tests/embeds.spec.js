@@ -3,7 +3,9 @@ import { test, expect } from "@playwright/test";
 test("same-domain embed is loading", async ({ page }) => {
   page.on("response", async (response) => {
     if (response.url() === "http://localhost:9990/embed.html") {
-      expect(await response.headerValue("Content-Security-Policy")).toBe("default-src 'self' 'unsafe-inline' data: blob:");
+      expect(await response.headerValue("Content-Security-Policy")).toBe(
+        "default-src 'self' 'unsafe-inline' data: blob:",
+      );
     }
   });
 
