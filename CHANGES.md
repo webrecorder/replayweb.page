@@ -3,8 +3,8 @@
 ## CHANGES
 
 v2.3.22
-- Fidelity: Better loading of pages that have sync XHR (via wombat.js)
-- Loading: Truncate loading of URLs that have very large POST requests (via wabac.js)
+- Fidelity: Better loading of pages that have sync XHR, cache XHR and use on reload (via wombat.js 3.10.0)
+- Loading: Truncate loading of URLs that have very large POST requests (via wabac.js 2.24.4)
 
 v2.3.21
 - Fidelity: Fix replay of archives relying on dark theme css styles
