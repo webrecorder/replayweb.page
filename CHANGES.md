@@ -2,6 +2,10 @@
 
 ## CHANGES
 
+v2.3.23
+
+- Fidelity: Fix possible regression from different JS parser in wabac.js, additional XHR improvements (viw abac.js 2.24.5)
+
 v2.3.22
 
 - Fidelity: Better loading of pages that have sync XHR, cache XHR and use on reload (via wombat.js 3.10.0)
