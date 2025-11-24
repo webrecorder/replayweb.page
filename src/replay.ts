@@ -56,8 +56,7 @@ class Replay extends LitElement {
 
   private _loadPoll: null | number = null;
 
-  private hiliteElem: HTMLElement | null = null;
-  private clickToDownload = false;
+  private hiliter: HoverHiliter | null = null;
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
@@ -298,10 +297,6 @@ class Replay extends LitElement {
         // ignore
       }
     }
-
-    if (iframe?.contentDocument) {
-      this.addHoverDetect(iframe, iframe.contentDocument);
-    }
   }
 
   setLoading() {
@@ -385,9 +380,8 @@ class Replay extends LitElement {
         display: none;
         position: absolute;
         z-index: 9999;
-        background-color: blue;
-        opacity: 33%;
-        border: solid 4px darkblue;
+        background-color: rgba(0, 0, 255, 0.5);
+        border: solid 10px blue;
       }
     `);
   }
@@ -472,20 +466,11 @@ class Replay extends LitElement {
           `}`;
   }
 
-  clearHilite(clearClickToDownload = false) {
-    if (clearClickToDownload) {
-      this.clickToDownload = false;
+  clearHilite(removeListeners = false) {
+    if (this.hiliter) {
+      this.hiliter.clearHilite(removeListeners);
+      this.hiliter = null;
     }
-    this.hiliteElem = null;
-
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    const hilite = this.renderRoot.querySelector(
-      ".hilite-overlay",
-    ) as HTMLElement | null;
-    if (!hilite) {
-      return;
-    }
-    hilite.style.display = "none";
   }
 
   hiliteClicked() {
@@ -494,71 +479,169 @@ class Replay extends LitElement {
   }
 
   setClickToDownload() {
-    this.clickToDownload = true;
+    if (this.hiliter) {
+      return;
+    }
+
+    try {
+      this.hiliter = new HoverHiliter(this);
+    } catch (e) {
+      this.hiliter = null;
+    }
+  }
+}
+
+// ===========================================================================
+class HoverHiliter {
+  doc: Document;
+  replay: Replay;
+
+  hiliteElem: HTMLElement | null = null;
+  hiliteOverlay: HTMLElement;
+  iframe: HTMLIFrameElement;
+
+  onMove: (event: MouseEvent) => void;
+  onRecompute: () => void;
+
+  constructor(replay: Replay) {
+    this.replay = replay;
+
+    const iframe = this.replay.renderRoot.querySelector("iframe");
+    const hiliteOverlay =
+      this.replay.renderRoot.querySelector(".hilite-overlay");
+
+    if (!hiliteOverlay || !iframe?.contentDocument) {
+      throw new Error("missing elements");
+    }
+
+    this.iframe = iframe;
+    this.hiliteOverlay = hiliteOverlay as HTMLElement;
+
+    this.onMove = (event: MouseEvent) => this.hiliteOnMove(event);
+    this.onRecompute = () => this.hiliteRecompute();
+
+    const doc = iframe.contentDocument;
+
+    this.doc = doc;
+
+    doc.addEventListener("mousemove", this.onMove);
+
+    doc.addEventListener("scroll", this.onRecompute);
+
+    doc.defaultView?.addEventListener("resize", this.onRecompute);
   }
 
-  addHoverDetect(iframe: HTMLIFrameElement, doc: Document) {
-    const recomputeHilite = () => {
-      if (!this.hiliteElem) {
-        return;
+  clearHilite(removeListeners = false) {
+    if (removeListeners) {
+      this.doc.removeEventListener("mousemove", this.onMove);
+
+      this.doc.removeEventListener("scroll", this.onRecompute);
+
+      this.doc.defaultView?.removeEventListener("scroll", this.onRecompute);
+    }
+    this.hiliteElem = null;
+
+    this.hiliteOverlay.style.display = "none";
+  }
+
+  hiliteRecompute() {
+    if (!this.hiliteElem) {
+      return;
+    }
+    const iframeRect = this.iframe.getBoundingClientRect();
+    const elemRect = this.hiliteElem.getBoundingClientRect();
+
+    const offset = 10;
+
+    const leftX = iframeRect.left + window.scrollX + elemRect.left - offset;
+    const topY = iframeRect.top + window.scrollY + elemRect.top - offset;
+
+    const hilite = this.hiliteOverlay;
+
+    hilite.style.display = "block";
+    hilite.style.left = leftX + "px";
+    hilite.style.top = topY + "px";
+    hilite.style.width = elemRect.width + offset * 2 + "px";
+    hilite.style.height = elemRect.height + offset * 2 + "px";
+  }
+
+  hiliteOnMove(event: MouseEvent) {
+    const elem = this.hiliteFindBestElement(event.clientX, event.clientY);
+
+    if (elem && this.hiliteElem === elem) {
+      return;
+    }
+
+    if (
+      elem &&
+      ((elem as HTMLImageElement).currentSrc || elem.hasAttribute("src"))
+    ) {
+      const src =
+        (elem as HTMLImageElement).currentSrc ||
+        HTMLElement.prototype.getAttribute.call(elem, "src");
+      if (src) {
+        const newSrc = src.replace(
+          /([\d]*)([\w][\w]_)(\/(https:|http:)?\/)/,
+          "$1dl_$3",
+        );
+        this.replay.downloadResUrl = newSrc;
+        this.hiliteElem = elem;
+        this.hiliteRecompute();
       }
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      const hilite = this.renderRoot.querySelector(
-        ".hilite-overlay",
-      ) as HTMLElement | null;
-      if (!hilite) {
-        return;
+    } else {
+      this.clearHilite();
+    }
+  }
+
+  hiliteFindBestElement(x: number, y: number): HTMLElement | null {
+    const elems = this.doc.elementsFromPoint(x, y) as HTMLElement[];
+
+    if (!elems.length) {
+      return null;
+    }
+
+    const firstElem = elems[0];
+    if (
+      (firstElem as HTMLImageElement).currentSrc ||
+      firstElem.hasAttribute("src")
+    ) {
+      return firstElem;
+    }
+
+    // allow other elements only if they're within same bounding rect
+    // as the deepest element
+    const firstRect = firstElem.getBoundingClientRect();
+    for (let i = 1; i < elems.length; i++) {
+      const elem = elems[i];
+      const rect = elem.getBoundingClientRect();
+      if (
+        rect.x < firstRect.x ||
+        rect.y < firstRect.y ||
+        rect.width > firstRect.width ||
+        rect.height > firstRect.height
+      ) {
+        return null;
       }
 
-      const iframeRect = iframe.getBoundingClientRect();
-      const elemRect = this.hiliteElem.getBoundingClientRect();
-
-      const leftX = iframeRect.left + window.scrollX + elemRect.left; // + (doc.defaultView?.scrollX || 0)
-      const topY = iframeRect.top + window.scrollY + elemRect.top; // + (doc.defaultView?.scrollY || 0);
-
-      hilite.style.display = "block";
-      hilite.style.left = leftX + "px";
-      hilite.style.top = topY + "px";
-      hilite.style.width = elemRect.width + "px";
-      hilite.style.height = elemRect.height + "px";
-    };
-
-    doc.addEventListener("mousemove", (event) => {
-      if (!this.clickToDownload) {
-        return;
-      }
-      const elem = doc.elementFromPoint(
-        event.clientX,
-        event.clientY,
-      ) as HTMLElement | null;
-
-      if (elem && this.hiliteElem === elem) {
-        return;
+      if ((elem as HTMLImageElement).currentSrc || elem.hasAttribute("src")) {
+        return elem;
       }
 
-      if (elem && (elem as HTMLImageElement).src) {
-        const src = HTMLElement.prototype.getAttribute.call(elem, "src");
-        if (src) {
-          const newSrc = src.replace(
-            /([\d]*)([\w][\w]_)(\/(https:|http:)?\/)/,
-            "$1dl_$3",
-          );
-          this.downloadResUrl = newSrc;
-          this.hiliteElem = elem;
-          recomputeHilite();
+      const subelem = elem.querySelector("[src]:not(script)");
+      if (subelem) {
+        const subRect = subelem.getBoundingClientRect();
+        if (
+          x >= subRect.left &&
+          y >= subRect.top &&
+          x < subRect.right &&
+          y <= subRect.bottom
+        ) {
+          return subelem as HTMLElement | null;
         }
-      } else {
-        this.clearHilite();
       }
-    });
+    }
 
-    doc.addEventListener("scroll", () => {
-      recomputeHilite();
-    });
-
-    doc.addEventListener("resize", () => {
-      recomputeHilite();
-    });
+    return null;
   }
 }
 
