@@ -29,6 +29,8 @@ import fasTriangleExclamation from "@fortawesome/fontawesome-free/svgs/solid/exc
 import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 
 import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
+import fasFileDownload from "@fortawesome/fontawesome-free/svgs/regular/arrow-alt-circle-down.svg";
+import fasCrosshairs from "@fortawesome/fontawesome-free/svgs/solid/crosshairs.svg";
 
 import farListAlt from "@fortawesome/fontawesome-free/svgs/regular/list-alt.svg";
 import farResources from "@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg";
@@ -1377,10 +1379,10 @@ class Item extends LitElement {
                   <span>Purge Cache + Full Reload</span>
                 </a>`
             : html``}
-          ${isReplay && this.downloadResUrl
+          ${isReplay
             ? html`<hr class="dropdown-divider" />
                 <a
-                  href="${this.downloadResUrl}"
+                  @click="${this.clickToDownload}"
                   role="button"
                   class="dropdown-item"
                   @keyup="${clickOnSpacebarPress}"
@@ -1390,10 +1392,18 @@ class Item extends LitElement {
                       size="1.0em"
                       class="has-text-grey"
                       aria-hidden="true"
-                      .svg="${fasDownload}"
+                      .svg="${fasCrosshairs}"
                     ></fa-icon>
                   </span>
-                  <span>Download Current Resource Only</span>
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasFileDownload}"
+                    ></fa-icon>
+                  </span>
+                  <span>Pick Image/Video to Download</span>
                 </a>`
             : html``}
           ${(!this.editable && this.downloadUrl?.startsWith("http://")) ||
@@ -1540,6 +1550,14 @@ class Item extends LitElement {
     if (replay) {
       replay.setDisablePointer(false);
     }
+  }
+
+  clickToDownload() {
+    const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
+    if (replay) {
+      replay.setClickToDownload();
+    }
+    return false;
   }
 
   renderItemInfo() {

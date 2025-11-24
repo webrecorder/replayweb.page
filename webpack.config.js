@@ -197,10 +197,10 @@ const browserConfig = (/*env, argv*/) => {
   //if (isDevServer) {
   //  entry["sw"] = "@webrecorder/wabac/src/sw.js";
   //} else {
-  const patterns = [
-    { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js" },
-  ];
-  extraPlugins.push(new CopyPlugin({ patterns }));
+  //const patterns = [
+  //  { from: "node_modules/@webrecorder/wabac/dist/sw.js", to: "sw.js" },
+  //];
+  //extraPlugins.push(new CopyPlugin({ patterns }));
   //}
 
   /** @type {import('webpack').Configuration} */

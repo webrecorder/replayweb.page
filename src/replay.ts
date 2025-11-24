@@ -49,9 +49,15 @@ class Replay extends LitElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- requestPermission() type mismatch
   authFileHandle: any = null;
 
+  @property({ type: String })
+  downloadResUrl = "";
+
   private reauthWait: null | Promise<void> = null;
 
   private _loadPoll: null | number = null;
+
+  private hiliteElem: HTMLElement | null = null;
+  private clickToDownload = false;
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
@@ -204,7 +210,7 @@ class Replay extends LitElement {
         this.replayUrl = event.data.url;
         this.title = event.data.title || this.title;
         this.replayNotFoundError = event.data.wb_type === "archive-not-found";
-        this.clearLoading(iframe.contentWindow);
+        this.clearLoading(iframe);
 
         if (event.data.icons) {
           const icons = event.data.icons;
@@ -266,13 +272,12 @@ class Replay extends LitElement {
         (iframe.contentDocument.readyState === "complete" &&
           !(iframe.contentWindow as Window & { _WBWombat: unknown })._WBWombat)
       ) {
-        this.clearLoading(iframe?.contentWindow);
+        this.clearLoading(iframe);
       }
     }, 5000);
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'iframeWin' implicitly has an 'any' type.
-  clearLoading(iframeWin) {
+  clearLoading(iframe: HTMLIFrameElement | null) {
     this.dispatchEvent(
       new CustomEvent("replay-loading", { detail: { loading: false } }),
     );
@@ -281,6 +286,8 @@ class Replay extends LitElement {
       window.clearInterval(this._loadPoll);
       this._loadPoll = null;
     }
+
+    const iframeWin = iframe?.contentWindow;
 
     if (iframeWin) {
       try {
@@ -291,9 +298,14 @@ class Replay extends LitElement {
         // ignore
       }
     }
+
+    if (iframe?.contentDocument) {
+      this.addHoverDetect(iframe, iframe.contentDocument);
+    }
   }
 
   setLoading() {
+    this.clearHilite(true);
     this.dispatchEvent(
       new CustomEvent("replay-loading", { detail: { loading: true } }),
     );
@@ -368,6 +380,15 @@ class Replay extends LitElement {
         margin: 3em;
         background-color: white;
       }
+
+      .hilite-overlay {
+        display: none;
+        position: absolute;
+        z-index: 9999;
+        background-color: blue;
+        opacity: 33%;
+        border: solid 4px darkblue;
+      }
     `);
   }
 
@@ -389,6 +410,11 @@ class Replay extends LitElement {
             </div>
           </div>`
         : html`
+            <a
+              href="${this.downloadResUrl}"
+              @click="${this.hiliteClicked}"
+              class="hilite-overlay"
+            ></a>
             <div class="iframe-container">
               <iframe
                 class="iframe-main"
@@ -444,6 +470,95 @@ class Replay extends LitElement {
                 : ""}
             </div>
           `}`;
+  }
+
+  clearHilite(clearClickToDownload = false) {
+    if (clearClickToDownload) {
+      this.clickToDownload = false;
+    }
+    this.hiliteElem = null;
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const hilite = this.renderRoot.querySelector(
+      ".hilite-overlay",
+    ) as HTMLElement | null;
+    if (!hilite) {
+      return;
+    }
+    hilite.style.display = "none";
+  }
+
+  hiliteClicked() {
+    this.clearHilite(true);
+    return true;
+  }
+
+  setClickToDownload() {
+    this.clickToDownload = true;
+  }
+
+  addHoverDetect(iframe: HTMLIFrameElement, doc: Document) {
+    const recomputeHilite = () => {
+      if (!this.hiliteElem) {
+        return;
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      const hilite = this.renderRoot.querySelector(
+        ".hilite-overlay",
+      ) as HTMLElement | null;
+      if (!hilite) {
+        return;
+      }
+
+      const iframeRect = iframe.getBoundingClientRect();
+      const elemRect = this.hiliteElem.getBoundingClientRect();
+
+      const leftX = iframeRect.left + window.scrollX + elemRect.left; // + (doc.defaultView?.scrollX || 0)
+      const topY = iframeRect.top + window.scrollY + elemRect.top; // + (doc.defaultView?.scrollY || 0);
+
+      hilite.style.display = "block";
+      hilite.style.left = leftX + "px";
+      hilite.style.top = topY + "px";
+      hilite.style.width = elemRect.width + "px";
+      hilite.style.height = elemRect.height + "px";
+    };
+
+    doc.addEventListener("mousemove", (event) => {
+      if (!this.clickToDownload) {
+        return;
+      }
+      const elem = doc.elementFromPoint(
+        event.clientX,
+        event.clientY,
+      ) as HTMLElement | null;
+
+      if (elem && this.hiliteElem === elem) {
+        return;
+      }
+
+      if (elem && (elem as HTMLImageElement).src) {
+        const src = HTMLElement.prototype.getAttribute.call(elem, "src");
+        if (src) {
+          const newSrc = src.replace(
+            /([\d]*)([\w][\w]_)(\/(https:|http:)?\/)/,
+            "$1dl_$3",
+          );
+          this.downloadResUrl = newSrc;
+          this.hiliteElem = elem;
+          recomputeHilite();
+        }
+      } else {
+        this.clearHilite();
+      }
+    });
+
+    doc.addEventListener("scroll", () => {
+      recomputeHilite();
+    });
+
+    doc.addEventListener("resize", () => {
+      recomputeHilite();
+    });
   }
 }
 
