@@ -1,9 +1,10 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
 
-import { getReplayLink } from "./pageutils";
+import { getReplayLink, getDownloadLink } from "./pageutils";
 
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
+import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 import { type ItemType } from "./types";
@@ -315,6 +316,9 @@ class URLResources extends LitElement {
       .all-results .column {
         word-break: break-word;
       }
+      .dl-button {
+        padding: 4px;
+      }
       div.sort-header {
         padding: 10px;
         margin-bottom: 0px !important;
@@ -528,6 +532,21 @@ class URLResources extends LitElement {
                   <tr class="columns result">
                     <td class="column col-url is-6">
                       <p class="minihead is-hidden-tablet">URL</p>
+                      <a
+                        class="dl-button"
+                        href="${getDownloadLink(
+                          this.collInfo!.replayPrefix,
+                          result.url,
+                          result.ts,
+                        )}"
+                        ><fa-icon
+                          size="1.0em"
+                          class="has-text-black"
+                          aria-hidden="true"
+                          title="Download Resource"
+                          .svg="${fasDownload}"
+                        ></fa-icon>
+                      </a>
                       <a
                         @click="${this.onReplay}"
                         data-url="${result.url}"

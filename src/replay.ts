@@ -146,6 +146,7 @@ class Replay extends LitElement {
       const data = {
         url: this.replayUrl,
         ts: this.replayTS,
+        waczhash: this.waczhash,
       };
 
       this.dispatchEvent(

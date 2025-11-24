@@ -22,6 +22,7 @@ import {
   tsToDate,
   getPageDateTS,
   getDateFromTS,
+  getDownloadLink,
 } from "./pageutils";
 
 import fasTriangleExclamation from "@fortawesome/fontawesome-free/svgs/solid/exclamation-triangle.svg";
@@ -189,6 +190,9 @@ class Item extends LitElement {
 
   @property({ type: Array })
   multiTs?: string[] = [];
+
+  @property({ type: String })
+  downloadResUrl = "";
 
   private splitter: Split.Instance | null = null;
 
@@ -600,6 +604,12 @@ class Item extends LitElement {
     }
     this._replaceLoc = !this._locUpdateNeeded && replaceLoc;
     this._locUpdateNeeded = true;
+    this.downloadResUrl = getDownloadLink(
+      this.itemInfo!.replayPrefix,
+      this.url,
+      this.ts,
+      this.tabData.waczhash,
+    );
   }
 
   static get styles() {
@@ -1365,6 +1375,25 @@ class Item extends LitElement {
                     ></fa-icon>
                   </span>
                   <span>Purge Cache + Full Reload</span>
+                </a>`
+            : html``}
+          ${isReplay && this.downloadResUrl
+            ? html`<hr class="dropdown-divider" />
+                <a
+                  href="${this.downloadResUrl}"
+                  role="button"
+                  class="dropdown-item"
+                  @keyup="${clickOnSpacebarPress}"
+                >
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasDownload}"
+                    ></fa-icon>
+                  </span>
+                  <span>Download Current Resource Only</span>
                 </a>`
             : html``}
           ${(!this.editable && this.downloadUrl?.startsWith("http://")) ||

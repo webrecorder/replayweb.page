@@ -86,6 +86,18 @@ function getReplayLink(
 }
 
 // ===========================================================================
+function getDownloadLink(
+  replayPrefix: string,
+  url: string,
+  ts: string,
+  waczhash?: string,
+) {
+  return `${replayPrefix}/${waczhash ? `:${waczhash}/` : ""}${
+    ts || ""
+  }dl_/${url}`;
+}
+
+// ===========================================================================
 async function sourceToId(url: string) {
   try {
     new URL(url);
@@ -137,6 +149,7 @@ export {
   getPageDateTS,
   getDateFromTS,
   getReplayLink,
+  getDownloadLink,
   sourceToId,
   parseURLSchemeHostPath,
 };
