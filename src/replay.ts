@@ -572,22 +572,47 @@ class HoverHiliter {
       return;
     }
 
-    if (
-      elem &&
-      ((elem as HTMLImageElement).currentSrc || elem.hasAttribute("src"))
-    ) {
-      const src =
-        (elem as HTMLImageElement).currentSrc ||
-        HTMLElement.prototype.getAttribute.call(elem, "src");
-      if (src) {
-        const newSrc = src.replace(
-          /([\d]*)([\w][\w]_)(\/(https:|http:)?\/)/,
-          "$1dl_$3",
-        );
-        this.replay.downloadResUrl = newSrc;
-        this.hiliteElem = elem;
-        this.hiliteRecompute();
+    const getSrc = (elem: HTMLElement | null): string => {
+      if (!elem) {
+        return "";
       }
+
+      if ((elem as HTMLImageElement).currentSrc) {
+        return (elem as HTMLImageElement).currentSrc;
+      }
+
+      if (elem.tagName === "image") {
+        const href = elem.getAttribute("href");
+        if (href) {
+          return href;
+        }
+      }
+
+      const src = HTMLElement.prototype.getAttribute.call(elem, "src");
+      if (src) {
+        return src;
+      }
+
+      if (elem.style.backgroundImage) {
+        return elem.style.backgroundImage.replace(
+          /(url\s*\(\s*[\\"']*)([^)'"]+)([\\"']*\s*\)?)/i,
+          "$2",
+        );
+      }
+
+      return "";
+    };
+
+    const src = getSrc(elem);
+
+    if (src) {
+      const newSrc = src.replace(
+        /([\d]*)([\w][\w]_)(\/(https:|http:)?\/)/,
+        "$1dl_$3",
+      );
+      this.replay.downloadResUrl = newSrc;
+      this.hiliteElem = elem;
+      this.hiliteRecompute();
     } else {
       this.clearHilite();
     }
@@ -601,36 +626,41 @@ class HoverHiliter {
     }
 
     const firstElem = elems[0];
-    if (
-      (firstElem as HTMLImageElement).currentSrc ||
-      firstElem.hasAttribute("src")
-    ) {
-      return firstElem;
-    }
+
+    const containsRect = (rect: DOMRect) => {
+      return (
+        rect.x >= firstRect.x &&
+        rect.y >= firstRect.y &&
+        rect.width <= firstRect.width &&
+        rect.height <= firstRect.height
+      );
+    };
 
     // allow other elements only if they're within same bounding rect
     // as the deepest element
     const firstRect = firstElem.getBoundingClientRect();
-    for (let i = 1; i < elems.length; i++) {
-      const elem = elems[i];
+    let isLast = false;
+    for (const elem of elems) {
       const rect = elem.getBoundingClientRect();
-      if (
-        rect.x < firstRect.x ||
-        rect.y < firstRect.y ||
-        rect.width > firstRect.width ||
-        rect.height > firstRect.height
-      ) {
-        return null;
+      if (elem === firstElem || containsRect(rect)) {
+        if ((elem as HTMLImageElement).currentSrc || elem.hasAttribute("src")) {
+          return elem;
+        }
+
+        if (elem.tagName === "image" && elem.hasAttribute("href")) {
+          return elem;
+        }
+      } else {
+        isLast = true;
       }
 
-      if ((elem as HTMLImageElement).currentSrc || elem.hasAttribute("src")) {
-        return elem;
-      }
-
-      const subelem = elem.querySelector("[src]:not(script)");
+      const subelem =
+        elem.querySelector("[src]:not(script)") ||
+        elem.querySelector(`div[style*="background-image: url("]`);
       if (subelem) {
         const subRect = subelem.getBoundingClientRect();
         if (
+          containsRect(subRect) &&
           x >= subRect.left &&
           y >= subRect.top &&
           x < subRect.right &&
@@ -638,6 +668,10 @@ class HoverHiliter {
         ) {
           return subelem as HTMLElement | null;
         }
+      }
+
+      if (isLast) {
+        break;
       }
     }
 
