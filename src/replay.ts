@@ -558,11 +558,11 @@ class HoverHiliter {
 
     const hilite = this.hiliteOverlay;
 
-    hilite.style.display = "block";
     hilite.style.left = leftX + "px";
     hilite.style.top = topY + "px";
     hilite.style.width = elemRect.width + offset * 2 + "px";
     hilite.style.height = elemRect.height + offset * 2 + "px";
+    hilite.style.display = "block";
   }
 
   hiliteOnMove(event: MouseEvent) {

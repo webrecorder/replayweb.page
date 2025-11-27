@@ -53,7 +53,7 @@ function getDateFromTS(ts: string | number) {
 function getPageDateTS(page: URLResource) {
   let date: Date | null = null;
   try {
-    date = new Date(page.ts || page.date);
+    date = new Date(page.ts ?? page.date);
   } catch (e) {
     // leave date unchanged in case of error
   }
