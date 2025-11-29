@@ -22,7 +22,6 @@ import {
   tsToDate,
   getPageDateTS,
   getDateFromTS,
-  getDownloadLink,
 } from "./pageutils";
 
 import fasTriangleExclamation from "@fortawesome/fontawesome-free/svgs/solid/exclamation-triangle.svg";
@@ -193,8 +192,8 @@ class Item extends LitElement {
   @property({ type: Array })
   multiTs?: string[] = [];
 
-  @property({ type: String })
-  downloadResUrl = "";
+  @property({ type: Boolean })
+  clickToDownloadMode = false;
 
   private splitter: Split.Instance | null = null;
 
@@ -606,12 +605,6 @@ class Item extends LitElement {
     }
     this._replaceLoc = !this._locUpdateNeeded && replaceLoc;
     this._locUpdateNeeded = true;
-    this.downloadResUrl = getDownloadLink(
-      this.itemInfo!.replayPrefix,
-      this.url,
-      this.ts,
-      this.tabData.waczhash,
-    );
   }
 
   static get styles() {
@@ -755,8 +748,22 @@ class Item extends LitElement {
         line-height: 2;
       }
 
+      #click-download-msg {
+        position: absolute;
+        right: 0.5rem;
+        z-index: 10;
+        background: #09c1ff;
+        top: 5px;
+        bottom: 5px;
+        margin-right: -3px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        line-height: 2;
+      }
+
       /* Gradient to indicate URL clipping */
-      #datetime:before {
+      .loc-overlay:before {
         content: "";
         position: absolute;
         top: 0;
@@ -1000,6 +1007,8 @@ class Item extends LitElement {
                   id="replay"
                   @replay-loading="${this.onReplayLoading}"
                   @replay-favicons="${this.onFavIcons}"
+                  @cancel-click-download="${() =>
+                    (this.clickToDownloadMode = false)}"
                 >
                 </wr-coll-replay>
               `
@@ -1256,7 +1265,11 @@ class Item extends LitElement {
                 .value="${this.url}"
                 placeholder="Enter text to search or a URL to replay"
               />
-              ${isReplay ? this.renderTimestamp() : ""}
+              ${isReplay
+                ? this.clickToDownloadMode
+                  ? this.renderClickToDownloadNotify()
+                  : this.renderTimestamp()
+                : ""}
               ${showFavIcon
                 ? html` <span class="favicon icon is-small is-left">
                     <img src="${this.favIconUrl}" />
@@ -1268,6 +1281,22 @@ class Item extends LitElement {
         </div>
       </nav>
       <p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
+  }
+
+  protected renderClickToDownloadNotify() {
+    return html`<article
+      id="click-download-msg"
+      class="loc-overlay has-background-link-light is-size-7"
+    >
+      <p class="ml-4">
+        Hover over an image or media and click to download resource.
+      </p>
+      <button
+        class="mx-4 delete"
+        aria-label="delete"
+        @click="${this.cancelClickToDownload}"
+      ></button>
+    </article>`;
   }
 
   protected renderToolbarRight() {
@@ -1392,14 +1421,6 @@ class Item extends LitElement {
                       size="1.0em"
                       class="has-text-grey"
                       aria-hidden="true"
-                      .svg="${fasCrosshairs}"
-                    ></fa-icon>
-                  </span>
-                  <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
-                      aria-hidden="true"
                       .svg="${fasFileDownload}"
                     ></fa-icon>
                   </span>
@@ -1491,7 +1512,7 @@ class Item extends LitElement {
     const currDateStr = this.ts
       ? dateTimeFormatter.format(tsToDate(this.ts) as Date)
       : "";
-    return html`<div id="datetime" class="control is-hidden-mobile">
+    return html`<div id="datetime" class="control is-hidden-mobile loc-overlay">
       ${timestampStrs.length > 1
         ? html`
             <sl-dropdown placement="top-end" hoist>
@@ -1555,7 +1576,17 @@ class Item extends LitElement {
   clickToDownload() {
     const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
     if (replay) {
+      this.clickToDownloadMode = true;
       replay.setClickToDownload();
+    }
+    return false;
+  }
+
+  cancelClickToDownload() {
+    const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
+    if (replay) {
+      this.clickToDownloadMode = false;
+      replay.clearHilite(true);
     }
     return false;
   }

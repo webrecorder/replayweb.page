@@ -383,6 +383,7 @@ class Replay extends LitElement {
         z-index: 9999;
         background-color: rgba(0, 0, 255, 0.5);
         border: solid 10px blue;
+        cursor: crosshair;
       }
     `);
   }
@@ -477,14 +478,18 @@ class Replay extends LitElement {
       this.hiliter.clearHilite(removeListeners);
       this.hiliter = null;
     }
+
+    if (removeListeners) {
+      this.removeEventListener(
+        "update-download-res-url",
+        this.onUpdateDownloadResUrl,
+      );
+      this.dispatchEvent(new CustomEvent("cancel-click-download"));
+    }
   }
 
   hiliteClicked() {
     this.clearHilite(true);
-    this.removeEventListener(
-      "update-download-res-url",
-      this.onUpdateDownloadResUrl,
-    );
     return true;
   }
 
