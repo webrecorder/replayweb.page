@@ -1421,6 +1421,14 @@ class Item extends LitElement {
                       size="1.0em"
                       class="has-text-grey"
                       aria-hidden="true"
+                      .svg="${fasCrosshairs}"
+                    ></fa-icon>
+                  </span>
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
                       .svg="${fasFileDownload}"
                     ></fa-icon>
                   </span>

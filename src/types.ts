@@ -5,7 +5,7 @@ export type URLResource = {
   mime: string;
   status: string;
   date: Date;
-  ts: string;
+  ts?: string;
   desc?: string;
   timestamp?: string;
   size: number;
