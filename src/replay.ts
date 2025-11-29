@@ -1,4 +1,5 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { property } from "lit/decorators.js";
 
 import { wrapCss } from "./misc";
@@ -408,6 +409,11 @@ class Replay extends LitElement {
               href="${this.downloadResUrl}"
               @click="${this.hiliteClicked}"
               class="hilite-overlay"
+              download="${ifDefined(
+                this.downloadResUrl.startsWith("blob:")
+                  ? "image.svg"
+                  : undefined,
+              )}"
             ></a>
             <div class="iframe-container">
               <iframe
@@ -475,13 +481,27 @@ class Replay extends LitElement {
 
   hiliteClicked() {
     this.clearHilite(true);
+    this.removeEventListener(
+      "update-download-res-url",
+      this.onUpdateDownloadResUrl,
+    );
     return true;
+  }
+
+  onUpdateDownloadResUrl(e: Event) {
+    const { url } = (e as CustomEvent).detail;
+    this.downloadResUrl = url;
   }
 
   setClickToDownload() {
     if (this.hiliter) {
       return;
     }
+
+    this.addEventListener(
+      "update-download-res-url",
+      this.onUpdateDownloadResUrl,
+    );
 
     try {
       this.hiliter = new HoverHiliter(this);
@@ -588,6 +608,15 @@ class HoverHiliter {
         }
       }
 
+      if (elem.tagName === "svg") {
+        if (!elem.getAttribute("xmlns")) {
+          elem.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        }
+        const buff = new TextEncoder().encode(elem.outerHTML);
+        const blob = new Blob([buff], { type: "image/svg+xml" });
+        return URL.createObjectURL(blob);
+      }
+
       const src = HTMLElement.prototype.getAttribute.call(elem, "src");
       if (src) {
         return src;
@@ -610,7 +639,9 @@ class HoverHiliter {
         /([\d]*)([\w][\w]_)(\/(https:|http:)?\/)/,
         "$1dl_$3",
       );
-      this.replay.downloadResUrl = newSrc;
+      this.replay.dispatchEvent(
+        new CustomEvent("update-download-res-url", { detail: { url: newSrc } }),
+      );
       this.hiliteElem = elem;
       this.hiliteRecompute();
     } else {
@@ -643,11 +674,18 @@ class HoverHiliter {
     for (const elem of elems) {
       const rect = elem.getBoundingClientRect();
       if (elem === firstElem || containsRect(rect)) {
-        if ((elem as HTMLImageElement).currentSrc || elem.hasAttribute("src")) {
+        if (
+          (elem as HTMLImageElement).currentSrc ||
+          (elem.hasAttribute("src") && !(elem instanceof HTMLIFrameElement))
+        ) {
           return elem;
         }
 
         if (elem.tagName === "image" && elem.hasAttribute("href")) {
+          return elem;
+        }
+
+        if (elem.tagName === "svg") {
           return elem;
         }
       } else {
