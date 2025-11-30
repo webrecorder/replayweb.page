@@ -53,7 +53,9 @@ function getDateFromTS(ts: string | number) {
 function getPageDateTS(page: Page) {
   let date: Date | null = null;
   try {
-    date = new Date(page.ts);
+    if (page.ts > 0) {
+      date = new Date(page.ts);
+    }
   } catch (e) {
     // ignore
   }

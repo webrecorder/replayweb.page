@@ -17,7 +17,7 @@ export type Page = {
 
   ts: number;
   timestamp: string;
-  date: Date;
+  date: Date | null;
 
   favIconUrl?: string;
   waczhash?: string;

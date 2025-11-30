@@ -258,7 +258,7 @@ class Pages extends LitElement {
     for (const page of this.filteredPages) {
       const { timestamp, date } = getPageDateTS(page);
       page.timestamp = timestamp;
-      page.date = date || new Date(0);
+      page.date = date;
     }
 
     this.loading = false;
