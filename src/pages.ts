@@ -290,7 +290,7 @@ class Pages extends LitElement {
     const knownPages = new Set();
     this.filteredPages.forEach((x) => knownPages.add(x.id));
 
-    const newPages = [];
+    const newPages: Page[] = [];
 
     for (const {
       id,
@@ -302,6 +302,7 @@ class Pages extends LitElement {
       favIconUrl,
       waczhash,
       isSeed,
+      size,
     } of json.pages) {
       if (knownPages.has(id)) {
         continue;
@@ -311,16 +312,21 @@ class Pages extends LitElement {
         continue;
       }
 
-      let tsActual;
+      let tsActual: number;
+      let timestamp: string;
+      let date: Date;
 
       if (typeof ts === "string") {
+        date = new Date(ts);
         tsActual = new Date(ts).getTime();
+        timestamp = ts;
       } else {
         tsActual = ts;
+        date = new Date(tsActual);
+        timestamp = getTS(date.toISOString());
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const newPage: any = {
+      const newPage: Page = {
         id,
         url,
         title,
@@ -329,6 +335,9 @@ class Pages extends LitElement {
         ts: tsActual,
         favIconUrl,
         waczhash,
+        timestamp,
+        size,
+        date,
       };
 
       newPages.push(newPage);

@@ -26,6 +26,12 @@ export type Page = {
   desc?: string;
 };
 
+export type URLTsChange = {
+  url: string;
+  ts: string;
+  waczhash?: string;
+};
+
 export type ItemType = {
   filename?: string;
   sourceUrl: string;

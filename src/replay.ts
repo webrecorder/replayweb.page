@@ -4,7 +4,7 @@ import { property } from "lit/decorators.js";
 
 import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
-import type { ItemType } from "./types";
+import type { ItemType, URLTsChange } from "./types";
 
 // ===========================================================================
 class Replay extends LitElement {
@@ -149,7 +149,7 @@ class Replay extends LitElement {
       (this.replayUrl && changedProperties.has("replayUrl")) ||
       (this.replayTS && changedProperties.has("replayTS"))
     ) {
-      const data = {
+      const data: URLTsChange = {
         url: this.replayUrl,
         ts: this.replayTS,
         waczhash: this.waczhash,

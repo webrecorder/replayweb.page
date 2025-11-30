@@ -8,7 +8,7 @@ import "keyword-mark-element/lib/keyword-mark.js";
 import { getPageDateTS, getReplayLink } from "./pageutils";
 
 import { wrapCss } from "./misc";
-import type { Page } from "./types";
+import type { Page, URLTsChange } from "./types";
 import {
   dateFormatter,
   dateTimeFormatter,
@@ -370,11 +370,12 @@ class PageEntry extends LitElement {
   onReplay(event: Event, reload = false) {
     event.preventDefault();
 
-    const data = {
+    const data: URLTsChange = {
       url: this.page!.url,
-      ts: this.page!.ts,
+      ts: this.page!.timestamp,
       waczhash: this.page!.waczhash,
     };
+
     this.sendChangeEvent(data, reload);
     return false;
   }
