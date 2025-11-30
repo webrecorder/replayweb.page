@@ -18,17 +18,17 @@ import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
 import type { Sorter } from "./sorter";
 import type { PageEntry } from "./pageentry";
 import type { Id, Index } from "flexsearch";
-import type { ItemType, URLResource } from "./types";
+import type { ItemType, Page } from "./types";
 
 const DYNAMIC_PAGE_SIZE = 25;
 
 // ===========================================================================
 class Pages extends LitElement {
   @property({ type: Array })
-  filteredPages: URLResource[] = [];
+  filteredPages: Page[] = [];
 
   @property({ type: Array })
-  sortedPages: URLResource[] = [];
+  sortedPages: Page[] = [];
 
   @property({ type: String })
   query = "";
@@ -37,7 +37,7 @@ class Pages extends LitElement {
   flex: Index | null = null;
 
   @property({ attribute: false })
-  textPages: URLResource[] | null = null;
+  textPages: Page[] | null = null;
 
   @property()
   newQuery: string | null = null;
@@ -94,7 +94,7 @@ class Pages extends LitElement {
   toDeletePages: Set<number> | number[] | null = null;
 
   @property({ type: Object })
-  toDeletePage: URLResource | null = null;
+  toDeletePage: Page | null = null;
 
   @property({ type: Object })
   collInfo: ItemType | Record<string, never> | null = null;
@@ -181,8 +181,7 @@ class Pages extends LitElement {
         this.sortKey = "date";
         this.sortDesc = true;
       }
-      const sorter =
-        this.renderRoot.querySelector<Sorter<URLResource>>("wr-sorter");
+      const sorter = this.renderRoot.querySelector<Sorter<Page>>("wr-sorter");
       if (sorter) {
         sorter.sortKey = this.sortKey;
         sorter.sortDesc = this.sortDesc;
@@ -236,7 +235,9 @@ class Pages extends LitElement {
 
     if (this.dynamicPagesQuery) {
       if (!this.query) {
-        const seedPages = this.collInfo!.pages.filter((x) => x.isSeed);
+        const seedPages = this.collInfo!.pages.filter(
+          (x) => x.isSeed || x.seed,
+        );
         this.filteredPages =
           this.showAllPages || !seedPages.length
             ? [...this.collInfo!.pages]
@@ -256,11 +257,8 @@ class Pages extends LitElement {
     // normalize the date
     for (const page of this.filteredPages) {
       const { timestamp, date } = getPageDateTS(page);
-      if (date == null) {
-        throw new Error("Page date is null");
-      }
       page.timestamp = timestamp;
-      page.date = date;
+      page.date = date || new Date(0);
     }
 
     this.loading = false;

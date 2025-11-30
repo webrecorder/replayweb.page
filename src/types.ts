@@ -1,21 +1,29 @@
 export type URLResource = {
-  id: number;
-  title: string;
-  url: string;
   mime: string;
   status: string;
   date: Date;
-  ts?: string;
-  desc?: string;
-  timestamp?: string;
-  size: number;
-  favIconUrl: string;
-  text?: string;
-  waczhash?: string;
+  ts: string;
+  url: string;
 };
 
-export type Page = URLResource & {
+export type Page = {
+  id: number;
+  title: string;
+  text?: string;
+  url: string;
+  mime: string;
+  status: string;
+  size: number;
+
+  ts: number;
+  timestamp: string;
+  date: Date;
+
+  favIconUrl?: string;
+  waczhash?: string;
+  seed?: boolean;
   isSeed?: boolean;
+  desc?: string;
 };
 
 export type ItemType = {
@@ -48,8 +56,8 @@ export type ItemType = {
   };
   onDemand?: boolean;
   pages: Page[];
-  curatedPages: (URLResource & { list: string })[];
-  lists: URLResource[];
+  curatedPages: (Page & { list: string })[];
+  lists: Page[];
   ctime?: string;
   totalSize?: unknown;
   size?: number | string;

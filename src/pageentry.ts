@@ -8,7 +8,7 @@ import "keyword-mark-element/lib/keyword-mark.js";
 import { getPageDateTS, getReplayLink } from "./pageutils";
 
 import { wrapCss } from "./misc";
-import type { URLResource } from "./types";
+import type { Page } from "./types";
 import {
   dateFormatter,
   dateTimeFormatter,
@@ -24,7 +24,7 @@ class PageEntry extends LitElement {
   textSnippet: string | null = "";
 
   @property({ type: Object })
-  page: URLResource | null = null;
+  page: Page | null = null;
 
   @property({ type: String })
   replayPrefix = "";
@@ -241,7 +241,7 @@ class PageEntry extends LitElement {
                   href="${getReplayLink(
                     "pages",
                     this.page!.url,
-                    this.page!.timestamp!,
+                    this.page!.timestamp,
                     this.page!.waczhash,
                   )}"
                 >
@@ -294,7 +294,7 @@ class PageEntry extends LitElement {
 
   private getReplayPrefix() {
     const waczhash = this.page!.waczhash ? `:${this.page!.waczhash}/` : "";
-    const ts = this.page!.timestamp || "";
+    const ts = this.page!.ts || "";
     return this.replayPrefix + "/" + waczhash + ts + "id_";
   }
 
@@ -372,7 +372,7 @@ class PageEntry extends LitElement {
 
     const data = {
       url: this.page!.url,
-      ts: this.page!.timestamp,
+      ts: this.page!.ts,
       waczhash: this.page!.waczhash,
     };
     this.sendChangeEvent(data, reload);

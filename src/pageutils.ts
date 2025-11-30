@@ -1,4 +1,4 @@
-import type { URLResource } from "./types";
+import type { Page } from "./types";
 
 // ===========================================================================
 async function digestMessage(message: string, hashtype: AlgorithmIdentifier) {
@@ -50,16 +50,15 @@ function getDateFromTS(ts: string | number) {
 }
 
 // ===========================================================================
-function getPageDateTS(page: URLResource) {
+function getPageDateTS(page: Page) {
   let date: Date | null = null;
   try {
-    date = new Date(page.ts ?? page.date);
+    date = new Date(page.ts);
   } catch (e) {
-    // leave date unchanged in case of error
+    // ignore
   }
 
-  const timestamp =
-    date && date instanceof Date ? getTS(date.toISOString()) : "";
+  const timestamp = date ? getTS(date.toISOString()) : "";
   return { date, timestamp };
 }
 
