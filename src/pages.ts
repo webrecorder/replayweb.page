@@ -313,18 +313,17 @@ class Pages extends LitElement {
       }
 
       let tsActual: number;
-      let timestamp: string;
       let date: Date;
 
       if (typeof ts === "string") {
         date = new Date(ts);
         tsActual = new Date(ts).getTime();
-        timestamp = ts;
       } else {
         tsActual = ts;
         date = new Date(tsActual);
-        timestamp = getTS(date.toISOString());
       }
+
+      const timestamp = getTS(date.toISOString());
 
       const newPage: Page = {
         id,
