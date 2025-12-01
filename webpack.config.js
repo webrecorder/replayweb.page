@@ -22,6 +22,12 @@ const GDRIVE_API = "https://apis.google.com/js/platform.js";
 // Copyright banner text
 const BANNER_TEXT = `'[name].js is part of ReplayWeb.page (https://replayweb.page) Copyright (C) 2020-${new Date().getFullYear()}, Webrecorder Software. Licensed under the Affero General Public License v3.'`;
 
+const shoelaceAssetsSrcPath = path.resolve(
+  __dirname,
+  "node_modules/@shoelace-style/shoelace/dist/assets",
+);
+const shoelaceAssetsPublicPath = "shoelace/assets";
+
 /** @type {import("webpack").Configuration['optimization']} */
 const optimization = {
   minimize: true,
@@ -74,7 +80,14 @@ const electronMainConfig = (/*env, argv*/) => {
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
       new CopyPlugin({
-        patterns: [{ from: "build/extra_prebuilds/", to: "prebuilds" }],
+        patterns: [
+          { from: "build/extra_prebuilds/", to: "prebuilds" },
+          // Copy Shoelace assets to dist/shoelace
+          {
+            from: shoelaceAssetsSrcPath,
+            to: path.resolve(__dirname, "dist", shoelaceAssetsPublicPath),
+          },
+        ],
       }),
     ],
   };
