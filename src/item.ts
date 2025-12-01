@@ -29,7 +29,6 @@ import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 
 import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
 import fasFileDownload from "@fortawesome/fontawesome-free/svgs/regular/arrow-alt-circle-down.svg";
-import fasCrosshairs from "@fortawesome/fontawesome-free/svgs/solid/crosshairs.svg";
 
 import farListAlt from "@fortawesome/fontawesome-free/svgs/regular/list-alt.svg";
 import farResources from "@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg";
@@ -762,6 +761,15 @@ class Item extends LitElement {
         line-height: 2;
       }
 
+      #hilite-sample {
+        width: 20px;
+        height: 20px;
+        background-color: rgba(0, 0, 255, 0.5);
+        border: solid 4px blue;
+        margin: 2px;
+        display: inline-flex;
+      }
+
       /* Gradient to indicate URL clipping */
       .loc-overlay:before {
         content: "";
@@ -1288,9 +1296,11 @@ class Item extends LitElement {
       id="click-download-msg"
       class="loc-overlay has-background-link-light is-size-7"
     >
-      <p class="ml-4">
-        Hover over an image or media and click to download resource.
-      </p>
+      <div class="ml-4 is-flex">
+        Select image or media when shown with
+        <div id="hilite-sample"></div>
+        to download the resource.
+      </div>
       <button
         class="mx-4 delete"
         aria-label="delete"
@@ -1421,18 +1431,10 @@ class Item extends LitElement {
                       size="1.0em"
                       class="has-text-grey"
                       aria-hidden="true"
-                      .svg="${fasCrosshairs}"
-                    ></fa-icon>
-                  </span>
-                  <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      class="has-text-grey"
-                      aria-hidden="true"
                       .svg="${fasFileDownload}"
                     ></fa-icon>
                   </span>
-                  <span>Pick Image/Video to Download</span>
+                  <span>Select to Download</span>
                 </a>`
             : html``}
           ${(!this.editable && this.downloadUrl?.startsWith("http://")) ||
