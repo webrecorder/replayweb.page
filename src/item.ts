@@ -1426,8 +1426,13 @@ class Item extends LitElement {
                   class="dropdown-item"
                   @keyup="${clickOnSpacebarPress}"
                 >
-                  <span class="">
-                    <sl-icon name="crosshair"></sl-icon>
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasFileDownload}"
+                    ></fa-icon>
                   </span>
                   <span>Select to Download</span>
                 </a>`
