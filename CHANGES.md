@@ -2,11 +2,11 @@
 
 ## CHANGES
 
-v2.4.0+
+*From release 2.4.0+, changes will now be listed in the release notes on GitHub.*
+*Please see [the list of releases](https://github.com/webrecorder/replayweb.page/releases) for an up-to-date
+list of changes for each release.*
 
-Changes will now be listed in the release notes on GitHub.
-Please see [the list of releases](https://github.com/webrecorder/replayweb.page/releases) on GitHub for an up-to-date
-list of changes for each release.
+---
 
 v2.3.23
 
