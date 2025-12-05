@@ -1297,7 +1297,8 @@ class Item extends LitElement {
       class="loc-overlay has-background-link-light is-size-7"
     >
       <div class="ml-4 is-flex">
-        Select image or media highlighted with <div id="hilite-sample"></div> on hover to download.
+        Select image or media highlighted with 🟦 (blue box) on hover to
+        download.
       </div>
       <button
         class="mx-4 delete"
