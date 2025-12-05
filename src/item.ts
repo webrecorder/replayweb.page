@@ -1434,7 +1434,7 @@ class Item extends LitElement {
                       .svg="${fasFileDownload}"
                     ></fa-icon>
                   </span>
-                  <span>Select to Download</span>
+                  <span>Select Media to Download</span>
                 </a>`
             : html``}
           ${(!this.editable && this.downloadUrl?.startsWith("http://")) ||
