@@ -43,7 +43,7 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.57.0",
     "@types/flexsearch": "^0.7.3",
     "@types/lodash": "^4.17.5",
     "@types/mime-types": "^2.1.4",
