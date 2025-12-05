@@ -2,6 +2,12 @@
 
 ## CHANGES
 
+v2.4.0+
+
+Changes will now be listed in the release notes on GitHub.
+Please see [the list of releases](https://github.com/webrecorder/replayweb.page/releases) on GitHub for an up-to-date
+list of changes for each release.
+
 v2.3.23
 
 - Fidelity: Fix possible regression from different JS parser in wabac.js, additional XHR improvements (viw abac.js 2.24.5)
