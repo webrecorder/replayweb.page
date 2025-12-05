@@ -18,17 +18,17 @@ import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
 import type { Sorter } from "./sorter";
 import type { PageEntry } from "./pageentry";
 import type { Id, Index } from "flexsearch";
-import type { ItemType, URLResource } from "./types";
+import type { ItemType, Page } from "./types";
 
 const DYNAMIC_PAGE_SIZE = 25;
 
 // ===========================================================================
 class Pages extends LitElement {
   @property({ type: Array })
-  filteredPages: URLResource[] = [];
+  filteredPages: Page[] = [];
 
   @property({ type: Array })
-  sortedPages: URLResource[] = [];
+  sortedPages: Page[] = [];
 
   @property({ type: String })
   query = "";
@@ -37,7 +37,7 @@ class Pages extends LitElement {
   flex: Index | null = null;
 
   @property({ attribute: false })
-  textPages: URLResource[] | null = null;
+  textPages: Page[] | null = null;
 
   @property()
   newQuery: string | null = null;
@@ -94,7 +94,7 @@ class Pages extends LitElement {
   toDeletePages: Set<number> | number[] | null = null;
 
   @property({ type: Object })
-  toDeletePage: URLResource | null = null;
+  toDeletePage: Page | null = null;
 
   @property({ type: Object })
   collInfo: ItemType | Record<string, never> | null = null;
@@ -181,8 +181,7 @@ class Pages extends LitElement {
         this.sortKey = "date";
         this.sortDesc = true;
       }
-      const sorter =
-        this.renderRoot.querySelector<Sorter<URLResource>>("wr-sorter");
+      const sorter = this.renderRoot.querySelector<Sorter<Page>>("wr-sorter");
       if (sorter) {
         sorter.sortKey = this.sortKey;
         sorter.sortDesc = this.sortDesc;
@@ -236,7 +235,9 @@ class Pages extends LitElement {
 
     if (this.dynamicPagesQuery) {
       if (!this.query) {
-        const seedPages = this.collInfo!.pages.filter((x) => x.isSeed);
+        const seedPages = this.collInfo!.pages.filter(
+          (x) => x.isSeed || x.seed,
+        );
         this.filteredPages =
           this.showAllPages || !seedPages.length
             ? [...this.collInfo!.pages]
@@ -256,9 +257,6 @@ class Pages extends LitElement {
     // normalize the date
     for (const page of this.filteredPages) {
       const { timestamp, date } = getPageDateTS(page);
-      if (date == null) {
-        throw new Error("Page date is null");
-      }
       page.timestamp = timestamp;
       page.date = date;
     }
@@ -292,7 +290,7 @@ class Pages extends LitElement {
     const knownPages = new Set();
     this.filteredPages.forEach((x) => knownPages.add(x.id));
 
-    const newPages = [];
+    const newPages: Page[] = [];
 
     for (const {
       id,
@@ -304,6 +302,7 @@ class Pages extends LitElement {
       favIconUrl,
       waczhash,
       isSeed,
+      size,
     } of json.pages) {
       if (knownPages.has(id)) {
         continue;
@@ -313,16 +312,20 @@ class Pages extends LitElement {
         continue;
       }
 
-      let tsActual;
+      let tsActual: number;
+      let date: Date;
 
       if (typeof ts === "string") {
+        date = new Date(ts);
         tsActual = new Date(ts).getTime();
       } else {
         tsActual = ts;
+        date = new Date(tsActual);
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const newPage: any = {
+      const timestamp = getTS(date.toISOString());
+
+      const newPage: Page = {
         id,
         url,
         title,
@@ -331,6 +334,9 @@ class Pages extends LitElement {
         ts: tsActual,
         favIconUrl,
         waczhash,
+        timestamp,
+        size,
+        date,
       };
 
       newPages.push(newPage);

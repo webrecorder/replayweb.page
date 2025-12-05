@@ -1,4 +1,4 @@
-import type { URLResource } from "./types";
+import type { Page } from "./types";
 
 // ===========================================================================
 async function digestMessage(message: string, hashtype: AlgorithmIdentifier) {
@@ -50,16 +50,17 @@ function getDateFromTS(ts: string | number) {
 }
 
 // ===========================================================================
-function getPageDateTS(page: URLResource) {
+function getPageDateTS(page: Page) {
   let date: Date | null = null;
   try {
-    date = new Date(page.ts || page.date);
+    if (page.ts > 0) {
+      date = new Date(page.ts);
+    }
   } catch (e) {
-    // leave date unchanged in case of error
+    // ignore
   }
 
-  const timestamp =
-    date && date instanceof Date ? getTS(date.toISOString()) : "";
+  const timestamp = date ? getTS(date.toISOString()) : "";
   return { date, timestamp };
 }
 
@@ -83,6 +84,18 @@ function getReplayLink(
     params.set("waczhash", waczhash);
   }
   return "#" + params.toString();
+}
+
+// ===========================================================================
+function getDownloadLink(
+  replayPrefix: string,
+  url: string,
+  ts: string,
+  waczhash?: string,
+) {
+  return `${replayPrefix}/${waczhash ? `:${waczhash}/` : ""}${
+    ts || ""
+  }dl_/${url}`;
 }
 
 // ===========================================================================
@@ -137,6 +150,7 @@ export {
   getPageDateTS,
   getDateFromTS,
   getReplayLink,
+  getDownloadLink,
   sourceToId,
   parseURLSchemeHostPath,
 };

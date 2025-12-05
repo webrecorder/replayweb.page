@@ -1,9 +1,10 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { property } from "lit/decorators.js";
 
 import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
-import type { ItemType } from "./types";
+import type { ItemType, URLTsChange } from "./types";
 
 // ===========================================================================
 class Replay extends LitElement {
@@ -49,9 +50,14 @@ class Replay extends LitElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- requestPermission() type mismatch
   authFileHandle: any = null;
 
+  @property({ type: String })
+  downloadResUrl = "";
+
   private reauthWait: null | Promise<void> = null;
 
   private _loadPoll: null | number = null;
+
+  private hiliter: HoverHiliter | null = null;
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
@@ -143,9 +149,10 @@ class Replay extends LitElement {
       (this.replayUrl && changedProperties.has("replayUrl")) ||
       (this.replayTS && changedProperties.has("replayTS"))
     ) {
-      const data = {
+      const data: URLTsChange = {
         url: this.replayUrl,
         ts: this.replayTS,
+        waczhash: this.waczhash,
       };
 
       this.dispatchEvent(
@@ -203,7 +210,7 @@ class Replay extends LitElement {
         this.replayUrl = event.data.url;
         this.title = event.data.title || this.title;
         this.replayNotFoundError = event.data.wb_type === "archive-not-found";
-        this.clearLoading(iframe.contentWindow);
+        this.clearLoading(iframe);
 
         if (event.data.icons) {
           const icons = event.data.icons;
@@ -265,13 +272,12 @@ class Replay extends LitElement {
         (iframe.contentDocument.readyState === "complete" &&
           !(iframe.contentWindow as Window & { _WBWombat: unknown })._WBWombat)
       ) {
-        this.clearLoading(iframe?.contentWindow);
+        this.clearLoading(iframe);
       }
     }, 5000);
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'iframeWin' implicitly has an 'any' type.
-  clearLoading(iframeWin) {
+  clearLoading(iframe: HTMLIFrameElement | null) {
     this.dispatchEvent(
       new CustomEvent("replay-loading", { detail: { loading: false } }),
     );
@@ -280,6 +286,8 @@ class Replay extends LitElement {
       window.clearInterval(this._loadPoll);
       this._loadPoll = null;
     }
+
+    const iframeWin = iframe?.contentWindow;
 
     if (iframeWin) {
       try {
@@ -293,6 +301,7 @@ class Replay extends LitElement {
   }
 
   setLoading() {
+    this.clearHilite(true);
     this.dispatchEvent(
       new CustomEvent("replay-loading", { detail: { loading: true } }),
     );
@@ -367,6 +376,15 @@ class Replay extends LitElement {
         margin: 3em;
         background-color: white;
       }
+
+      .hilite-overlay {
+        display: none;
+        position: absolute;
+        z-index: 9999;
+        background-color: rgba(0, 0, 255, 0.5);
+        border: solid 10px blue;
+        cursor: crosshair;
+      }
     `);
   }
 
@@ -388,6 +406,16 @@ class Replay extends LitElement {
             </div>
           </div>`
         : html`
+            <a
+              href="${this.downloadResUrl}"
+              @click="${this.hiliteClicked}"
+              class="hilite-overlay"
+              download="${ifDefined(
+                this.downloadResUrl.startsWith("blob:")
+                  ? "image.svg"
+                  : undefined,
+              )}"
+            ></a>
             <div class="iframe-container">
               <iframe
                 class="iframe-main"
@@ -443,6 +471,254 @@ class Replay extends LitElement {
                 : ""}
             </div>
           `}`;
+  }
+
+  clearHilite(removeListeners = false) {
+    if (this.hiliter) {
+      this.hiliter.clearHilite(removeListeners);
+      this.hiliter = null;
+    }
+
+    if (removeListeners) {
+      this.removeEventListener(
+        "update-download-res-url",
+        this.onUpdateDownloadResUrl,
+      );
+      this.dispatchEvent(new CustomEvent("cancel-click-download"));
+    }
+  }
+
+  hiliteClicked() {
+    this.clearHilite(true);
+    return true;
+  }
+
+  onUpdateDownloadResUrl(e: Event) {
+    const { url } = (e as CustomEvent).detail;
+    this.downloadResUrl = url;
+  }
+
+  setClickToDownload() {
+    if (this.hiliter) {
+      return;
+    }
+
+    this.addEventListener(
+      "update-download-res-url",
+      this.onUpdateDownloadResUrl,
+    );
+
+    try {
+      this.hiliter = new HoverHiliter(this);
+    } catch (e) {
+      this.hiliter = null;
+    }
+  }
+}
+
+// ===========================================================================
+class HoverHiliter {
+  doc: Document;
+  replay: Replay;
+
+  hiliteElem: HTMLElement | null = null;
+  hiliteOverlay: HTMLElement;
+  iframe: HTMLIFrameElement;
+
+  onMove: (event: MouseEvent) => void;
+  onRecompute: () => void;
+
+  constructor(replay: Replay) {
+    this.replay = replay;
+
+    const iframe = this.replay.renderRoot.querySelector("iframe");
+    const hiliteOverlay =
+      this.replay.renderRoot.querySelector(".hilite-overlay");
+
+    if (!hiliteOverlay || !iframe?.contentDocument) {
+      throw new Error("missing elements");
+    }
+
+    this.iframe = iframe;
+    this.hiliteOverlay = hiliteOverlay as HTMLElement;
+
+    this.onMove = (event: MouseEvent) => this.hiliteOnMove(event);
+    this.onRecompute = () => this.hiliteRecompute();
+
+    const doc = iframe.contentDocument;
+
+    this.doc = doc;
+
+    doc.addEventListener("mousemove", this.onMove);
+
+    doc.addEventListener("scroll", this.onRecompute);
+
+    doc.defaultView?.addEventListener("resize", this.onRecompute);
+  }
+
+  clearHilite(removeListeners = false) {
+    if (removeListeners) {
+      this.doc.removeEventListener("mousemove", this.onMove);
+
+      this.doc.removeEventListener("scroll", this.onRecompute);
+
+      this.doc.defaultView?.removeEventListener("scroll", this.onRecompute);
+    }
+    this.hiliteElem = null;
+
+    this.hiliteOverlay.style.display = "none";
+  }
+
+  hiliteRecompute() {
+    if (!this.hiliteElem) {
+      return;
+    }
+    const iframeRect = this.iframe.getBoundingClientRect();
+    const elemRect = this.hiliteElem.getBoundingClientRect();
+
+    const offset = 10;
+
+    const leftX = iframeRect.left + window.scrollX + elemRect.left - offset;
+    const topY = iframeRect.top + window.scrollY + elemRect.top - offset;
+
+    const hilite = this.hiliteOverlay;
+
+    hilite.style.left = leftX + "px";
+    hilite.style.top = topY + "px";
+    hilite.style.width = elemRect.width + offset * 2 + "px";
+    hilite.style.height = elemRect.height + offset * 2 + "px";
+    hilite.style.display = "block";
+  }
+
+  hiliteOnMove(event: MouseEvent) {
+    const elem = this.hiliteFindBestElement(event.clientX, event.clientY);
+
+    if (elem && this.hiliteElem === elem) {
+      return;
+    }
+
+    const getSrc = (elem: HTMLElement | null): string => {
+      if (!elem) {
+        return "";
+      }
+
+      if ((elem as HTMLImageElement).currentSrc) {
+        return (elem as HTMLImageElement).currentSrc;
+      }
+
+      if (elem.tagName === "image") {
+        const href = elem.getAttribute("href");
+        if (href) {
+          return href;
+        }
+      }
+
+      if (elem.tagName === "svg") {
+        if (!elem.getAttribute("xmlns")) {
+          elem.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        }
+        const buff = new TextEncoder().encode(elem.outerHTML);
+        const blob = new Blob([buff], { type: "image/svg+xml" });
+        return URL.createObjectURL(blob);
+      }
+
+      const src = HTMLElement.prototype.getAttribute.call(elem, "src");
+      if (src) {
+        return src;
+      }
+
+      if (elem.style.backgroundImage) {
+        return elem.style.backgroundImage.replace(
+          /(url\s*\(\s*[\\"']*)([^)'"]+)([\\"']*\s*\)?)/i,
+          "$2",
+        );
+      }
+
+      return "";
+    };
+
+    const src = getSrc(elem);
+
+    if (src) {
+      const newSrc = src.replace(
+        /([\d]*)([\w][\w]_)(\/(https:|http:)?\/)/,
+        "$1dl_$3",
+      );
+      this.replay.dispatchEvent(
+        new CustomEvent("update-download-res-url", { detail: { url: newSrc } }),
+      );
+      this.hiliteElem = elem;
+      this.hiliteRecompute();
+    } else {
+      this.clearHilite();
+    }
+  }
+
+  hiliteFindBestElement(x: number, y: number): HTMLElement | null {
+    const elems = this.doc.elementsFromPoint(x, y) as HTMLElement[];
+
+    if (!elems.length) {
+      return null;
+    }
+
+    const firstElem = elems[0];
+
+    const containsRect = (rect: DOMRect) => {
+      return (
+        rect.x >= firstRect.x &&
+        rect.y >= firstRect.y &&
+        rect.width <= firstRect.width &&
+        rect.height <= firstRect.height
+      );
+    };
+
+    // allow other elements only if they're within same bounding rect
+    // as the deepest element
+    const firstRect = firstElem.getBoundingClientRect();
+    let isLast = false;
+    for (const elem of elems) {
+      const rect = elem.getBoundingClientRect();
+      if (elem === firstElem || containsRect(rect)) {
+        if (
+          (elem as HTMLImageElement).currentSrc ||
+          (elem.hasAttribute("src") && !(elem instanceof HTMLIFrameElement))
+        ) {
+          return elem;
+        }
+
+        if (elem.tagName === "image" && elem.hasAttribute("href")) {
+          return elem;
+        }
+
+        if (elem.tagName === "svg") {
+          return elem;
+        }
+      } else {
+        isLast = true;
+      }
+
+      const subelem =
+        elem.querySelector("[src]:not(script)") ||
+        elem.querySelector(`div[style*="background-image: url("]`);
+      if (subelem) {
+        const subRect = subelem.getBoundingClientRect();
+        if (
+          containsRect(subRect) &&
+          x >= subRect.left &&
+          y >= subRect.top &&
+          x < subRect.right &&
+          y <= subRect.bottom
+        ) {
+          return subelem as HTMLElement | null;
+        }
+      }
+
+      if (isLast) {
+        break;
+      }
+    }
+
+    return null;
   }
 }
 

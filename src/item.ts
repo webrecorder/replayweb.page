@@ -28,6 +28,7 @@ import fasTriangleExclamation from "@fortawesome/fontawesome-free/svgs/solid/exc
 import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 
 import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
+import fasFileDownload from "@fortawesome/fontawesome-free/svgs/regular/arrow-alt-circle-down.svg";
 
 import farListAlt from "@fortawesome/fontawesome-free/svgs/regular/list-alt.svg";
 import farResources from "@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg";
@@ -189,6 +190,9 @@ class Item extends LitElement {
 
   @property({ type: Array })
   multiTs?: string[] = [];
+
+  @property({ type: Boolean })
+  clickToDownloadMode = false;
 
   private splitter: Split.Instance | null = null;
 
@@ -743,8 +747,31 @@ class Item extends LitElement {
         line-height: 2;
       }
 
+      #click-download-msg {
+        position: absolute;
+        right: 0.5rem;
+        z-index: 10;
+        background: #09c1ff;
+        top: 5px;
+        bottom: 5px;
+        margin-right: -3px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        line-height: 2;
+      }
+
+      #hilite-sample {
+        width: 20px;
+        height: 20px;
+        background-color: rgba(0, 0, 255, 0.5);
+        border: solid 4px blue;
+        margin: 2px;
+        display: inline-flex;
+      }
+
       /* Gradient to indicate URL clipping */
-      #datetime:before {
+      .loc-overlay:before {
         content: "";
         position: absolute;
         top: 0;
@@ -988,6 +1015,8 @@ class Item extends LitElement {
                   id="replay"
                   @replay-loading="${this.onReplayLoading}"
                   @replay-favicons="${this.onFavIcons}"
+                  @cancel-click-download="${() =>
+                    (this.clickToDownloadMode = false)}"
                 >
                 </wr-coll-replay>
               `
@@ -1244,7 +1273,11 @@ class Item extends LitElement {
                 .value="${this.url}"
                 placeholder="Enter text to search or a URL to replay"
               />
-              ${isReplay ? this.renderTimestamp() : ""}
+              ${isReplay
+                ? this.clickToDownloadMode
+                  ? this.renderClickToDownloadNotify()
+                  : this.renderTimestamp()
+                : ""}
               ${showFavIcon
                 ? html` <span class="favicon icon is-small is-left">
                     <img src="${this.favIconUrl}" />
@@ -1256,6 +1289,23 @@ class Item extends LitElement {
         </div>
       </nav>
       <p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
+  }
+
+  protected renderClickToDownloadNotify() {
+    return html`<article
+      id="click-download-msg"
+      class="loc-overlay has-background-link-light is-size-7"
+    >
+      <div class="ml-4 is-flex">
+        Select image or media highlighted with 🟦 (blue box) on hover to
+        download.
+      </div>
+      <button
+        class="mx-4 delete"
+        aria-label="delete"
+        @click="${this.cancelClickToDownload}"
+      ></button>
+    </article>`;
   }
 
   protected renderToolbarRight() {
@@ -1367,6 +1417,25 @@ class Item extends LitElement {
                   <span>Purge Cache + Full Reload</span>
                 </a>`
             : html``}
+          ${isReplay
+            ? html`<hr class="dropdown-divider" />
+                <a
+                  @click="${this.clickToDownload}"
+                  role="button"
+                  class="dropdown-item"
+                  @keyup="${clickOnSpacebarPress}"
+                >
+                  <span class="icon is-small">
+                    <fa-icon
+                      size="1.0em"
+                      class="has-text-grey"
+                      aria-hidden="true"
+                      .svg="${fasFileDownload}"
+                    ></fa-icon>
+                  </span>
+                  <span>Select Media to Download</span>
+                </a>`
+            : html``}
           ${(!this.editable && this.downloadUrl?.startsWith("http://")) ||
           this.downloadUrl?.startsWith("https://")
             ? html` <hr class="dropdown-divider" />
@@ -1452,7 +1521,7 @@ class Item extends LitElement {
     const currDateStr = this.ts
       ? dateTimeFormatter.format(tsToDate(this.ts) as Date)
       : "";
-    return html`<div id="datetime" class="control is-hidden-mobile">
+    return html`<div id="datetime" class="control is-hidden-mobile loc-overlay">
       ${timestampStrs.length > 1
         ? html`
             <sl-dropdown placement="top-end" hoist>
@@ -1511,6 +1580,24 @@ class Item extends LitElement {
     if (replay) {
       replay.setDisablePointer(false);
     }
+  }
+
+  clickToDownload() {
+    const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
+    if (replay) {
+      this.clickToDownloadMode = true;
+      replay.setClickToDownload();
+    }
+    return false;
+  }
+
+  cancelClickToDownload() {
+    const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
+    if (replay) {
+      this.clickToDownloadMode = false;
+      replay.clearHilite(true);
+    }
+    return false;
   }
 
   renderItemInfo() {
