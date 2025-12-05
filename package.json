@@ -63,7 +63,6 @@
     "husky": "^8.0.0",
     "lint-staged": "^14.0.0",
     "mini-css-extract-plugin": "^2.3.0",
-    "playwright": "^1.52.0",
     "prettier": "^3.0.1",
     "raw-loader": "^4.0.2",
     "sass-embedded": "^1.70.0",
