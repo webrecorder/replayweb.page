@@ -57,6 +57,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import "./item-info";
 import { dateTimeFormatter } from "./utils/dateTimeFormatter";
+import type { EmbedReplayEvent, TabNavEvent } from "./events";
 
 const RWP_SCHEME = "search://";
 
@@ -90,22 +91,10 @@ export type EmbedReplayData = {
   waczhash?: string;
 };
 
-export type EmbedReplayEvent = EmbedReplayData & {
-  type: "urlchange";
-  replayNotFoundError: boolean;
-};
-
 export type TabData = EmbedReplayData & {
   currList?: number;
   urlSearchType?: string;
   currMime?: string;
-};
-
-export type TabDataUpdate = {
-  reload: boolean;
-  data: TabData;
-  replaceLoc: boolean;
-  replayNotFoundError: boolean;
 };
 
 /**
@@ -351,7 +340,7 @@ class Item extends LitElement {
             lastUpdate.query !== query ||
             lastUpdate.title !== title
           ) {
-            const newUpdate: EmbedReplayEvent = {
+            const newUpdate: EmbedReplayEvent["detail"] = {
               type: "urlchange",
               url,
               ts,
@@ -577,7 +566,7 @@ class Item extends LitElement {
     return false;
   }
 
-  onItemTabNav(event: CustomEvent<TabDataUpdate>) {
+  onItemTabNav(event: TabNavEvent) {
     if (event.detail.reload) {
       this.onRefresh(null, true);
       return;
@@ -587,7 +576,9 @@ class Item extends LitElement {
 
     const { data, replaceLoc, replayNotFoundError } = event.detail;
 
-    this.replayNotFoundError = replayNotFoundError;
+    if (replayNotFoundError !== undefined) {
+      this.replayNotFoundError = replayNotFoundError;
+    }
 
     if (
       targetId === this.tabData.view ||

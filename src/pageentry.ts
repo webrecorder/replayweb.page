@@ -14,6 +14,7 @@ import {
   dateTimeFormatter,
   timeFormatter,
 } from "./utils/dateTimeFormatter";
+import type { TabNavEvent } from "./events";
 
 // ===========================================================================
 class PageEntry extends LitElement {
@@ -384,10 +385,9 @@ class PageEntry extends LitElement {
     return this.onReplay(event, true);
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'data' implicitly has an 'any' type.
-  sendChangeEvent(data, reload: boolean) {
+  sendChangeEvent(data: URLTsChange, reload: boolean) {
     this.dispatchEvent(
-      new CustomEvent("coll-tab-nav", {
+      new CustomEvent<TabNavEvent["detail"]>("coll-tab-nav", {
         bubbles: true,
         composed: true,
         detail: { data, reload },

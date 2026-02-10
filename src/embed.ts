@@ -11,10 +11,11 @@ import { wrapCss, updateFaviconLinks, apiPrefix } from "./misc";
 import { SWManager } from "./swmanager";
 import { property, query } from "lit/decorators.js";
 import type { FavIconEventDetail } from "./types";
-import type { EmbedReplayData, EmbedReplayEvent } from "./item";
+import type { EmbedReplayData } from "./item";
+import type { EmbedReplayEvent } from "./events";
 
 type IframeMessage = MessageEvent<
-  | EmbedReplayEvent
+  | EmbedReplayEvent["detail"]
   | ({
       type: "favicons";
     } & FavIconEventDetail)
@@ -157,7 +158,7 @@ class Embed extends LitElement {
             this.handleUrlChangeMessage(event.data);
           }
           this.dispatchEvent(
-            new CustomEvent<EmbedReplayEvent>("rwp-url-change", {
+            new CustomEvent<EmbedReplayEvent["detail"]>("rwp-url-change", {
               detail: event.data,
             }),
           );

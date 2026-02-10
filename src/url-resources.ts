@@ -10,6 +10,7 @@ import "keyword-mark-element/lib/keyword-mark.js";
 import { type ItemType } from "./types";
 import { type URLResource } from "./types";
 import { dateTimeFormatter } from "./utils/dateTimeFormatter";
+import type { TabNavEvent } from "./events";
 
 // ===========================================================================
 /**
@@ -145,7 +146,9 @@ class URLResources extends LitElement {
         !changedProperties.has("currMime") &&
         !changedProperties.has("urlSearchType");
       this.dispatchEvent(
-        new CustomEvent("coll-tab-nav", { detail: { replaceLoc, data } }),
+        new CustomEvent<TabNavEvent["detail"]>("coll-tab-nav", {
+          detail: { replaceLoc, data },
+        }),
       );
     }
 
@@ -613,7 +616,11 @@ class URLResources extends LitElement {
       ts: event.currentTarget.getAttribute("data-ts"),
     };
 
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
+    this.dispatchEvent(
+      new CustomEvent<TabNavEvent["detail"]>("coll-tab-nav", {
+        detail: { data },
+      }),
+    );
     return false;
   }
 }

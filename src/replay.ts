@@ -5,6 +5,7 @@ import { property } from "lit/decorators.js";
 import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 import type { ItemType, URLTsChange } from "./types";
+import type { TabNavEvent } from "./events";
 
 /**
  * @fires update-title
@@ -157,14 +158,14 @@ class Replay extends LitElement {
       (this.replayUrl && changedProperties.has("replayUrl")) ||
       (this.replayTS && changedProperties.has("replayTS"))
     ) {
-      const data: URLTsChange = {
+      const data = {
         url: this.replayUrl,
         ts: this.replayTS,
         waczhash: this.waczhash,
       };
 
       this.dispatchEvent(
-        new CustomEvent("coll-tab-nav", {
+        new CustomEvent<TabNavEvent["detail"]>("coll-tab-nav", {
           detail: {
             replaceLoc: true,
             data,
