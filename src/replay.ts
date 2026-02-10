@@ -6,7 +6,15 @@ import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 import type { ItemType, URLTsChange } from "./types";
 
-// ===========================================================================
+/**
+ * @fires update-title
+ * @fires coll-tab-nav
+ * @fires update-title
+ * @fires replay-favicons
+ * @fires replay-loading
+ * @fires cancel-click-download
+ * @fires update-download-res-url
+ */
 class Replay extends LitElement {
   @property({ type: Object })
   collInfo: ItemType | Record<string, never> | null = null;

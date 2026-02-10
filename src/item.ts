@@ -108,7 +108,11 @@ export type TabDataUpdate = {
   replayNotFoundError: boolean;
 };
 
-// ===========================================================================
+/**
+ * @fires coll-loaded
+ * @fires update-title
+ * @fires about-show
+ */
 class Item extends LitElement {
   @property({ type: Boolean })
   inited = false;
