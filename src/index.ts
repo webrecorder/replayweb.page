@@ -58,7 +58,11 @@ export {
 
 export type { ItemType, URLResource } from "./types";
 
-export type { EmbedReplayEvent } from "./events";
+export type {
+  RwpUrlChangeEvent as EmbedReplayEvent,
+  RwpUrlChangeEvent,
+  RwpPageLoadingEvent,
+} from "./events";
 
 export * from "./misc";
 

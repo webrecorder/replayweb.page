@@ -4,15 +4,15 @@ import { property } from "lit/decorators.js";
 
 import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
-import type { ItemType, URLTsChange } from "./types";
-import type { TabNavEvent } from "./events";
+import type { ItemType } from "./types";
+import type { ReplayLoadingDetail, TabNavEvent } from "./events";
 
 /**
  * @fires update-title
  * @fires coll-tab-nav
  * @fires update-title
  * @fires replay-favicons
- * @fires replay-loading
+ * @fires replay-loading ReplayLoadingDetail
  * @fires cancel-click-download
  * @fires update-download-res-url
  */
@@ -288,7 +288,12 @@ class Replay extends LitElement {
 
   clearLoading(iframe: HTMLIFrameElement | null) {
     this.dispatchEvent(
-      new CustomEvent("replay-loading", { detail: { loading: false } }),
+      new CustomEvent<ReplayLoadingDetail>("replay-loading", {
+        detail: {
+          loading: false,
+          replayNotFoundError: this.replayNotFoundError,
+        },
+      }),
     );
 
     if (this._loadPoll) {
@@ -312,7 +317,9 @@ class Replay extends LitElement {
   setLoading() {
     this.clearHilite(true);
     this.dispatchEvent(
-      new CustomEvent("replay-loading", { detail: { loading: true } }),
+      new CustomEvent<ReplayLoadingDetail>("replay-loading", {
+        detail: { loading: true },
+      }),
     );
   }
 

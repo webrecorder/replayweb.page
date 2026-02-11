@@ -57,7 +57,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import "./item-info";
 import { dateTimeFormatter } from "./utils/dateTimeFormatter";
-import type { EmbedReplayEvent, TabNavEvent } from "./events";
+import type {
+  RwpPageLoadingEvent,
+  RwpUrlChangeEvent,
+  TabNavEvent,
+} from "./events";
 
 const RWP_SCHEME = "search://";
 
@@ -340,7 +344,7 @@ class Item extends LitElement {
             lastUpdate.query !== query ||
             lastUpdate.title !== title
           ) {
-            const newUpdate: EmbedReplayEvent["detail"] = {
+            const newUpdate: RwpUrlChangeEvent["detail"] = {
               type: "urlchange",
               url,
               ts,
@@ -1773,16 +1777,27 @@ class Item extends LitElement {
   }
 
   async onReplayLoading(
-    event: CustomEvent<{ loading: boolean; url: string; ts: string }>,
+    event: CustomEvent<{ loading: boolean; replayNotFoundError?: boolean }>,
   ) {
-    if (
-      this.embed &&
-      window.parent !== window &&
-      this.isLoading !== event.detail.loading
-    ) {
-      window.parent.postMessage({ type: "page-loading", ...event.detail }, "*");
+    const { loading, replayNotFoundError } = event.detail;
+    if (this.embed && window.parent !== window && this.isLoading !== loading) {
+      let msg: RwpPageLoadingEvent["detail"];
+
+      if (loading) {
+        msg = {
+          type: "page-loading",
+          loading,
+        };
+      } else {
+        msg = {
+          type: "page-loading",
+          loading,
+          replayNotFoundError: replayNotFoundError ?? false,
+        };
+      }
+      window.parent.postMessage(msg, "*");
     }
-    this.isLoading = event.detail.loading;
+    this.isLoading = loading;
   }
 
   async onFavIcons(event: CustomEvent<FavIconEventDetail>) {

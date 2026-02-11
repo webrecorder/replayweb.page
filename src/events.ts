@@ -7,9 +7,19 @@ export type TabNavEvent = CustomEvent<{
   replayNotFoundError?: boolean;
 }>;
 
-export type EmbedReplayEvent = CustomEvent<
+export type RwpUrlChangeEvent = CustomEvent<
   EmbedReplayData & {
     type: "urlchange";
     replayNotFoundError: boolean;
   }
+>;
+
+export type ReplayLoadingDetail =
+  | { loading: true }
+  | { loading: false; replayNotFoundError: boolean };
+
+export type RwpPageLoadingEvent = CustomEvent<
+  EmbedReplayData & {
+    type: "page-loading";
+  } & ReplayLoadingDetail
 >;
