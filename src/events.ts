@@ -19,7 +19,7 @@ export type ReplayLoadingDetail =
   | { loading: false; replayNotFoundError: boolean };
 
 export type RwpPageLoadingEvent = CustomEvent<
-  EmbedReplayData & {
+  Required<Pick<EmbedReplayData, "url" | "ts">> & {
     type: "page-loading";
   } & ReplayLoadingDetail
 >;

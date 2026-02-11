@@ -318,7 +318,9 @@ class Replay extends LitElement {
     this.clearHilite(true);
     this.dispatchEvent(
       new CustomEvent<ReplayLoadingDetail>("replay-loading", {
-        detail: { loading: true },
+        detail: {
+          loading: true,
+        },
       }),
     );
   }

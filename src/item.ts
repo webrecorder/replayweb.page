@@ -58,6 +58,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import "./item-info";
 import { dateTimeFormatter } from "./utils/dateTimeFormatter";
 import type {
+  ReplayLoadingDetail,
   RwpPageLoadingEvent,
   RwpUrlChangeEvent,
   TabNavEvent,
@@ -1781,20 +1782,25 @@ class Item extends LitElement {
   ) {
     const { loading, replayNotFoundError } = event.detail;
     if (this.embed && window.parent !== window && this.isLoading !== loading) {
-      let msg: RwpPageLoadingEvent["detail"];
+      let loadingDetail: ReplayLoadingDetail;
 
       if (loading) {
-        msg = {
-          type: "page-loading",
+        loadingDetail = {
           loading,
         };
       } else {
-        msg = {
-          type: "page-loading",
+        loadingDetail = {
           loading,
           replayNotFoundError: replayNotFoundError ?? false,
         };
       }
+      const msg = {
+        ...loadingDetail,
+        type: "page-loading",
+        url: this.tabData.url ?? "",
+        ts: this.tabData.ts ?? "",
+      } satisfies RwpPageLoadingEvent["detail"];
+
       window.parent.postMessage(msg, "*");
     }
     this.isLoading = loading;
