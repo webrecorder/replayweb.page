@@ -26,7 +26,7 @@ import { SWManager } from "./swmanager";
 import "./item";
 import "./item-index";
 import "./chooser";
-import { EmbedOpts, type LoadInfo } from "./item";
+import { type EmbedOpts, type LoadInfo } from "./item";
 import type { FavIconEventDetail } from "./types";
 
 // ===========================================================================
