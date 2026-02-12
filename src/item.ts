@@ -87,6 +87,10 @@ export type LoadInfo = {
   importCollId?: string;
 };
 
+export type EmbedOpts = {
+  noMediaDownloadUI?: boolean;
+};
+
 export type EmbedReplayData = {
   view?: "story" | "pages" | "resources";
   url?: string;
@@ -119,6 +123,9 @@ class Item extends LitElement {
 
   @property({ type: Object, attribute: false })
   loadInfo: LoadInfo | null = null;
+
+  @property({ type: Object })
+  embedOpts: EmbedOpts = {};
 
   @property({ type: Boolean })
   showSidebar: boolean | null = null;
@@ -1417,7 +1424,7 @@ class Item extends LitElement {
                   <span>Purge Cache + Full Reload</span>
                 </a>`
             : html``}
-          ${isReplay
+          ${isReplay && !this.embedOpts.noMediaDownloadUI
             ? html`<hr class="dropdown-divider" />
                 <a
                   @click="${this.clickToDownload}"
