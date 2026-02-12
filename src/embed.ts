@@ -66,6 +66,8 @@ class Embed extends LitElement {
   @property({ type: Boolean }) noCache = false;
   @property({ type: Boolean }) hideOffscreen: boolean | undefined;
 
+  @property({ type: Boolean }) noMediaDownload = false;
+
   @property({ type: Boolean }) useAdblock = false;
   @property({ type: String }) adblockRulesUrl = DEFAULT_ADBLOCK_FILE;
 
@@ -324,6 +326,7 @@ class Embed extends LitElement {
         swName?: string;
         ruffle?: "1";
         adblockUrl?: string;
+        noMediaDownload?: string;
       } = {
         source,
         customColl: this.coll,
@@ -363,6 +366,10 @@ class Embed extends LitElement {
 
       if (this.useAdblock && this.adblockRulesUrl) {
         params.adblockUrl = this.adblockRulesUrl;
+      }
+
+      if (this.noMediaDownload) {
+        params.noMediaDownload = "1";
       }
 
       this.paramString = new URLSearchParams(

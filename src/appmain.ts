@@ -26,7 +26,7 @@ import { SWManager } from "./swmanager";
 import "./item";
 import "./item-index";
 import "./chooser";
-import { type LoadInfo } from "./item";
+import { type EmbedOpts, type LoadInfo } from "./item";
 import type { FavIconEventDetail } from "./types";
 
 // ===========================================================================
@@ -58,6 +58,9 @@ export class ReplayWebApp extends LitElement {
 
   @property({ type: String })
   embed: string | null = null;
+
+  @property({ type: Object })
+  embedOpts: EmbedOpts = {};
 
   @property({ type: String })
   collPageUrl = "";
@@ -398,6 +401,7 @@ export class ReplayWebApp extends LitElement {
       .loadInfo="${this.loadInfo}"
       sourceUrl="${this.sourceUrl || ""}"
       embed="${ifDefined(this.embed === null ? undefined : this.embed)}"
+      .embedOpts="${this.embedOpts}"
       appName="${this.appName}"
       swName="${ifDefined(this.swName)}"
       @replay-favicons=${this.onFavIcons}
@@ -586,6 +590,10 @@ export class ReplayWebApp extends LitElement {
     if (this.pageParams.has("embed")) {
       if (!this.loadInfo) {
         this.loadInfo = {};
+      }
+
+      if (this.pageParams.has("noMediaDownload")) {
+        this.embedOpts = { ...this.embedOpts, noMediaDownloadUI: true };
       }
     }
 
