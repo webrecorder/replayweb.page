@@ -27,9 +27,10 @@ export type Page = {
 };
 
 export type URLTsChange = {
-  url: string;
-  ts: string;
+  url?: string;
+  ts?: string;
   waczhash?: string;
+  currList?: number;
 };
 
 export type ItemType = {

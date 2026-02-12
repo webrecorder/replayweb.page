@@ -57,6 +57,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import "./item-info";
 import { dateTimeFormatter } from "./utils/dateTimeFormatter";
+import type {
+  ReplayLoadingDetail,
+  RwpPageLoadingEvent,
+  RwpUrlChangeEvent,
+  TabNavEvent,
+} from "./events";
 
 const RWP_SCHEME = "search://";
 
@@ -90,25 +96,17 @@ export type EmbedReplayData = {
   waczhash?: string;
 };
 
-export type EmbedReplayEvent = EmbedReplayData & {
-  type: "urlchange";
-  replayNotFoundError: boolean;
-};
-
 export type TabData = EmbedReplayData & {
   currList?: number;
   urlSearchType?: string;
   currMime?: string;
 };
 
-export type TabDataUpdate = {
-  reload: boolean;
-  data: TabData;
-  replaceLoc: boolean;
-  replayNotFoundError: boolean;
-};
-
-// ===========================================================================
+/**
+ * @fires coll-loaded
+ * @fires update-title
+ * @fires about-show
+ */
 class Item extends LitElement {
   @property({ type: Boolean })
   inited = false;
@@ -347,7 +345,7 @@ class Item extends LitElement {
             lastUpdate.query !== query ||
             lastUpdate.title !== title
           ) {
-            const newUpdate: EmbedReplayEvent = {
+            const newUpdate: RwpUrlChangeEvent["detail"] = {
               type: "urlchange",
               url,
               ts,
@@ -573,7 +571,7 @@ class Item extends LitElement {
     return false;
   }
 
-  onItemTabNav(event: CustomEvent<TabDataUpdate>) {
+  onItemTabNav(event: TabNavEvent) {
     if (event.detail.reload) {
       this.onRefresh(null, true);
       return;
@@ -583,7 +581,9 @@ class Item extends LitElement {
 
     const { data, replaceLoc, replayNotFoundError } = event.detail;
 
-    this.replayNotFoundError = replayNotFoundError;
+    if (replayNotFoundError !== undefined) {
+      this.replayNotFoundError = replayNotFoundError;
+    }
 
     if (
       targetId === this.tabData.view ||
@@ -1778,16 +1778,32 @@ class Item extends LitElement {
   }
 
   async onReplayLoading(
-    event: CustomEvent<{ loading: boolean; url: string; ts: string }>,
+    event: CustomEvent<{ loading: boolean; replayNotFoundError?: boolean }>,
   ) {
-    if (
-      this.embed &&
-      window.parent !== window &&
-      this.isLoading !== event.detail.loading
-    ) {
-      window.parent.postMessage({ type: "page-loading", ...event.detail }, "*");
+    const { loading, replayNotFoundError } = event.detail;
+    if (this.embed && window.parent !== window && this.isLoading !== loading) {
+      let loadingDetail: ReplayLoadingDetail;
+
+      if (loading) {
+        loadingDetail = {
+          loading,
+        };
+      } else {
+        loadingDetail = {
+          loading,
+          replayNotFoundError: replayNotFoundError ?? false,
+        };
+      }
+      const msg = {
+        ...loadingDetail,
+        type: "page-loading",
+        url: this.tabData.url ?? "",
+        ts: this.tabData.ts ?? "",
+      } satisfies RwpPageLoadingEvent["detail"];
+
+      window.parent.postMessage(msg, "*");
     }
-    this.isLoading = event.detail.loading;
+    this.isLoading = loading;
   }
 
   async onFavIcons(event: CustomEvent<FavIconEventDetail>) {

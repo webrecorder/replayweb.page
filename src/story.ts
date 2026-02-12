@@ -8,9 +8,10 @@ import { marked } from "marked";
 import { getTS, getReplayLink } from "./pageutils";
 
 import Split from "split.js";
-import { type ItemType } from "./types";
+import type { URLTsChange, ItemType } from "./types";
 import { customElement, property } from "lit/decorators.js";
 import { dateTimeFormatter } from "./utils/dateTimeFormatter";
+import type { TabNavEvent } from "./events";
 
 // ===========================================================================
 @customElement("wr-coll-story")
@@ -375,16 +376,20 @@ class Story extends LitElement {
   onReplay(event: Event) {
     event.preventDefault();
     const data = {
-      url: (event.currentTarget as Element).getAttribute("data-url"),
-      ts: (event.currentTarget as Element).getAttribute("data-ts"),
+      url:
+        (event.currentTarget as Element).getAttribute("data-url") ?? undefined,
+      ts: (event.currentTarget as Element).getAttribute("data-ts") ?? undefined,
     };
     this.sendChangeEvent(data);
     return false;
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'data' implicitly has an 'any' type.
-  sendChangeEvent(data) {
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
+  sendChangeEvent(data: URLTsChange) {
+    this.dispatchEvent(
+      new CustomEvent<TabNavEvent["detail"]>("coll-tab-nav", {
+        detail: { data },
+      }),
+    );
   }
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.

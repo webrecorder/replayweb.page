@@ -18,7 +18,8 @@ import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
 import type { Sorter } from "./sorter";
 import type { PageEntry } from "./pageentry";
 import type { Id, Index } from "flexsearch";
-import type { ItemType, Page } from "./types";
+import type { ItemType, Page, URLTsChange } from "./types";
+import type { TabNavEvent } from "./events";
 
 const DYNAMIC_PAGE_SIZE = 25;
 
@@ -360,9 +361,12 @@ class Pages extends LitElement {
     this.filteredPages = curated;
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'data' implicitly has an 'any' type.
-  sendChangeEvent(data) {
-    this.dispatchEvent(new CustomEvent("coll-tab-nav", { detail: { data } }));
+  sendChangeEvent(data: URLTsChange) {
+    this.dispatchEvent(
+      new CustomEvent<TabNavEvent["detail"]>("coll-tab-nav", {
+        detail: { data },
+      }),
+    );
   }
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'pages' implicitly has an 'any' type.
