@@ -9,6 +9,10 @@ const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const package_json = require("./package.json");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const {
+  ReplaceOperation,
+  ModifySourcePlugin,
+} = require("modify-source-webpack-plugin");
 
 // helper proxy URL, run locally for app
 const HELPER_PROXY = "https://helper-proxy.webrecorder.workers.dev";
@@ -47,6 +51,10 @@ const tsConfig = {
           onlyCompileBundledFiles: true,
         },
       },
+      {
+        test: /\.node$/,
+        use: "node-loader",
+      },
     ],
   },
 };
@@ -76,6 +84,7 @@ const electronMainConfig = (/*env, argv*/) => {
       electron: "./src/electron-main.ts",
     },
     optimization,
+    module: { unknownContextCritical: false, exprContextCritical: false },
     output: {
       path: path.join(__dirname, "dist"),
       filename: "[name].js",
@@ -87,10 +96,41 @@ const electronMainConfig = (/*env, argv*/) => {
     plugins: [
       new webpack.DefinePlugin({
         __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
+        __VERSION__: JSON.stringify(package_json.version),
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
-      new CopyPlugin({
-        patterns: [{ from: "build/extra_prebuilds/", to: "prebuilds" }],
+      new ModifySourcePlugin({
+        rules: [
+          {
+            test: /lib\/binding\.js$/,
+            operations: [
+              new ReplaceOperation(
+                "once",
+                `require('node-gyp-build')(path.join(__dirname, '..'))`,
+                `require('node-gyp-build')(path.join(__dirname, "..", "node_modules", "utp-native"))`,
+              ),
+            ],
+          },
+          {
+            test: /node-datachannel\.(mjs|js|cjs)$/,
+            operations: [
+              new ReplaceOperation(
+                "once",
+                `\
+const __filename = cjsUrl.fileURLToPath(import.meta.url);
+const __dirname = cjsPath.dirname(__filename);
+const require = cjsModule.createRequire(import.meta.url);`,
+                ``,
+              ),
+
+              new ReplaceOperation(
+                "once",
+                `const nodeDataChannel = loadBinding();`,
+                `const nodeDataChannel = require(path.join(__dirname, "..", "node_modules", getPackageName()));`,
+              ),
+            ],
+          },
+        ],
       }),
     ],
   };
@@ -105,7 +145,6 @@ const electronPreloadConfig = (/*env, argv*/) => {
     entry: {
       preload: "./src/electron-preload.ts",
     },
-
     optimization,
     plugins: [new webpack.BannerPlugin(BANNER_TEXT)],
   };

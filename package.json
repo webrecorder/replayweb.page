@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "2.5.5",
+  "version": "2.6.0-beta.0",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -22,10 +22,13 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@shoelace-style/shoelace": "~2.15.1",
+    "@types/webtorrent": "^3.0.0",
     "@webrecorder/wabac": "^2.28.0",
     "bulma": "^0.9.3",
+    "create-torrent": "^6.1.0",
     "electron-log": "^4.4.1",
-    "electron-updater": "^6.8.9",
+    "electron-updater": "^7.0.0-alpha.13",
+    "fetch-ndjson": "^1.1.6",
     "flexsearch": "^0.7.31",
     "keyword-mark-element": "^0.2.0",
     "lit": "3.1.1",
@@ -34,12 +37,13 @@
     "micromark-extension-gfm-strikethrough": "^2.1.0",
     "mime-types": "^3.0.1",
     "minimist": "^1.2.5",
+    "node-datachannel": "^0.33.6",
     "pretty-bytes": "^5.6.0",
     "process": "^0.11.10",
     "register-service-worker": "^1.7.2",
     "split.js": "^1.6.4",
     "stream-browserify": "^3.0.0",
-    "tsconfig-paths-webpack-plugin": "^4.1.0"
+    "webtorrent": "^3.0.21"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",
@@ -54,7 +58,7 @@
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "electron": "^43.3.0",
-    "electron-builder": "^27.0.0-alpha.7",
+    "electron-builder": "^27.0.0-alpha.14",
     "electron-notarize": "^1.2.2",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
@@ -63,21 +67,29 @@
     "husky": "^8.0.0",
     "lint-staged": "^14.0.0",
     "mini-css-extract-plugin": "^2.3.0",
+    "modify-source-webpack-plugin": "^4.1.0",
+    "node-loader": "^2.1.0",
     "prettier": "^3.0.1",
     "sass-embedded": "^1.70.0",
     "sass-loader": "^13.3.2",
     "serve": "^14.2.4",
     "style-loader": "^3.2.1",
+    "terser-webpack-plugin": "^5.6.1",
     "ts-lit-plugin": "^2.0.0-pre.1",
     "ts-loader": "^9.4.4",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.2.2",
-    "webpack": "^5.91.0",
+    "webpack": "^5.99.9",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4",
     "webpack-merge": "^5.10.0"
   },
   "resolutions": {
-    "lit": "3.1.1"
+    "lit": "3.1.1",
+    "@thaunknown/simple-peer": "10.1.0",
+    "utf-8-validate": "^6.0.6",
+    "bittorrent-dht": "11.0.12",
+    "node-datachannel": "^0.33.6"
   },
   "files": [
     "/dist",
@@ -101,11 +113,11 @@
     "test-start-embed": "cp tests/embed/iframe-test.html mkdocs/_genhtml/; cd tests/embed; serve -l 8020",
     "test-start-sandbox": "cd tests/embed/sandbox; serve -l 8030",
     "update-ruffle": "./ruffle/download-latest-ruffle.sh",
-    "pack": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never",
-    "pack-signed": "electron-builder",
+    "pack": "electron-builder",
+    "pack-signed": "electron-builder --publish always",
     "dist": "yarn run build && yarn run pack",
     "dist-dev": "yarn run build-dev && yarn run pack",
-    "release": "yarn run build && electron-builder --publish always",
+    "release": "yarn run build && yarn run pack-signed",
     "lint": "eslint ./",
     "format": "prettier --write ./",
     "prepare": "husky install; yarn node scripts/build-if-not-git-repo.js"
@@ -118,17 +130,21 @@
     "extraMetadata": {
       "main": "dist/electron.js"
     },
-    "files": [
-      "!**/node_modules/**/*",
-      "dist/*.js",
-      "dist/prebuilds/${platform}-${arch}/*",
-      "dist/build/*",
-      "ui.js",
-      "sw.js",
-      "index.html",
-      "ruffle",
-      "webmanifest.json"
-    ],
+    "fileOptions": {
+      "files": [
+        "!**node_modules/**/*",
+        "dist/electron.js",
+        "dist/preload.js",
+        "dist/*.node",
+        "!dist/node_modules*.js",
+        "node_modules/utp-native/{*.js,lib/*.js,prebuilds/${platform}-*/**}",
+        "node_modules/@node-datachannel/${platform}-*/**/*",
+        "ui.js",
+        "sw.js",
+        "index.html",
+        "ruffle"
+      ]
+    },
     "dmg": {
       "title": "ReplayWeb.page"
     },
@@ -148,9 +164,6 @@
       "electronLanguages": [
         "en"
       ],
-      "extraResources": [
-        "plugins-mac"
-      ],
       "sign": {
         "entitlements": "build/entitlements.mac.plist",
         "entitlementsInherit": "build/entitlements.mac.plist",
@@ -158,7 +171,12 @@
         "gatekeeperAssess": false
       },
       "universal": {
-        "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**}"
+        "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**,node_modules/**/prebuilds/**,**/node_modules/@node-datachannel/darwin-*/**}"
+      },
+      "fileOptions": {
+        "extraResources": [
+          "plugins-mac"
+        ]
       }
     },
     "linux": {
@@ -166,16 +184,15 @@
       "target": [
         "AppImage"
       ],
-      "extraResources": [
-        "plugins-linux"
-      ]
+      "fileOptions": {
+        "extraResources": [
+          "plugins-linux"
+        ]
+      }
     },
     "win": {
       "target": [
         "nsis"
-      ],
-      "extraResources": [
-        "plugins-win"
       ],
       "sign": {
         "type": "azure",
@@ -183,6 +200,11 @@
         "codeSigningAccountName": "webrecorder",
         "certificateProfileName": "webrecorder",
         "publisherName": "CN=Webrecorder Software LLC"
+      },
+      "fileOptions": {
+        "extraResources": [
+          "plugins-win"
+        ]
       }
     },
     "directories": {

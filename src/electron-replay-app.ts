@@ -16,10 +16,16 @@ import fs from "fs";
 
 import { ArchiveRequest, ArchiveResponse, Rewriter } from "@webrecorder/wabac";
 
+import { announceList } from "create-torrent";
+
 import { Readable } from "stream";
 
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
+
+import WebTorrent, { type TorrentFile, type Torrent } from "webtorrent";
+
+import crypto from "crypto";
 
 import mime from "mime-types";
 import url from "url";
@@ -34,12 +40,37 @@ const STATIC_PREFIX = "http://localhost:5471/";
 const REPLAY_PREFIX = STATIC_PREFIX + "w/";
 
 const FILE_PROTO = "file2";
+const MAGNET_PROTO = "magnet";
 
 const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
+
+const VERSION = __VERSION__;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(globalThis as any).WEBTORRENT_ANNOUNCE = (announceList as string[][]).map(
+  (x) => x[0],
+);
+
+type RealTorrentFile = TorrentFile & {
+  stream: ({ start, end }: { start?: number; end?: number }) => ReadableStream;
+};
+
+enum PeerMode {
+  LEECH = 0,
+  PARTIAL_PEER = 1,
+  PERSISTENT_PARTIAL_PEER = 2,
+  FULL_PEER = 3,
+}
+
+const defaultPeerMode = PeerMode.PARTIAL_PEER;
 
 // ============================================================================
 class ElectronReplayApp {
   pluginPath = "";
+
+  torrentClient: WebTorrent | null = null;
+  torrentClientShutdown = false;
+  peerMode: PeerMode = defaultPeerMode;
 
   appPath = app.getAppPath();
 
@@ -61,7 +92,7 @@ class ElectronReplayApp {
 
   origUA: string | null = null;
 
-  hasAutoUpdate = false;
+  torrentDownloads = "";
 
   constructor({ staticPath = "./", profileName = "" } = {}) {
     this.staticContentPath = staticPath;
@@ -100,8 +131,8 @@ class ElectronReplayApp {
       });
     }
 
-    console.log("app path", this.appPath);
     console.log("dir name", __dirname);
+    console.log("app path", this.appPath);
     console.log("proj path", this.projPath);
 
     console.log("app data", app.getPath("appData"));
@@ -114,6 +145,8 @@ class ElectronReplayApp {
       app.commandLine.appendSwitch("--gtk-version", "3");
     }
 
+    app.commandLine.appendSwitch("log-level", "3");
+
     if (this.profileName) {
       app.setPath(
         "userData",
@@ -121,9 +154,23 @@ class ElectronReplayApp {
       );
     }
 
+    void this.loadConfig();
+
     protocol.registerSchemesAsPrivileged([
       {
         scheme: FILE_PROTO,
+        privileges: {
+          standard: false,
+          secure: true,
+          bypassCSP: true,
+          allowServiceWorkers: true,
+          supportFetchAPI: true,
+          corsEnabled: true,
+          stream: true,
+        },
+      },
+      {
+        scheme: MAGNET_PROTO,
         privileges: {
           standard: false,
           secure: true,
@@ -157,52 +204,70 @@ class ElectronReplayApp {
 
     // Quit when all windows are closed.
     app.on("window-all-closed", () => {
-      // On macOS it is common for applications and their menu bar
-      // to stay active until the user quits explicitly with Cmd + Q
-      //if (process.platform !== 'darwin')
       app.quit();
     });
 
-    let isUpdating = false;
-
     app.on("before-quit", (event: Event) => {
-      if (isUpdating) {
-        console.log("app before-quit: already installing update");
-        return;
-      }
-
-      //install the autoupdate and let autoUpdater exit
-      if (this.hasAutoUpdate) {
+      if (this.torrentClient) {
         event.preventDefault();
-        isUpdating = true;
 
-        console.log("app before-quit: install update and quit");
+        const torrentClient = this.torrentClient;
 
-        setImmediate(() => {
-          autoUpdater.quitAndInstall();
-        });
+        void (async () => {
+          console.log("starting torrent client shutdown");
+          this.torrentClientShutdown = true;
+
+          const err = await new Promise((resolve) => {
+            torrentClient.destroy((err: unknown) => {
+              resolve(err);
+            });
+          });
+
+          console.log("torrent client destroyed");
+          if (err) {
+            console.log(err);
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 200));
+
+          app.exit();
+        })();
       }
     });
+  }
+
+  async loadConfig() {
+    try {
+      const data = await fs.promises.readFile(
+        path.join(app.getPath("userData"), "config.json"),
+        { encoding: "utf-8" },
+      );
+      const config = JSON.parse(data);
+      if (config) {
+        this.peerMode = config["peerMode"] ?? defaultPeerMode;
+      }
+      console.log("Config file read", config);
+    } catch (e) {
+      console.log("Config file not found");
+    }
   }
 
   checkUpdates() {
     const version = app.getVersion();
     const isPrerelease = /-(alpha|beta|rc)/i.test(version);
 
-    console.log(`Current Version: ${version} - Prerelease? ${isPrerelease}`);
+    log.transports.file.level = "info";
+    autoUpdater.logger = log;
+
+    log.info(`Current Version: ${version} - Prerelease? ${isPrerelease}`);
 
     if (isPrerelease) {
       autoUpdater.allowPrerelease = true;
     }
+    autoUpdater.allowDowngrade = false;
 
-    autoUpdater.logger = log;
-    // @ts-expect-error - TS2339 - Property 'transports' does not exist on type 'Logger'.
-    autoUpdater.logger.transports.file.level = "info";
-    void autoUpdater.checkForUpdatesAndNotify();
-
-    autoUpdater.on("update-downloaded", () => {
-      console.log("autoupdater found update!");
-      this.hasAutoUpdate = true;
+    autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+      log.warn("Auto-update check failed:", err);
     });
   }
 
@@ -237,6 +302,10 @@ class ElectronReplayApp {
 
     protocol.handle(FILE_PROTO, async (request: Request) =>
       this.doHandleFile(request),
+    );
+
+    protocol.handle(MAGNET_PROTO, async (request: Request) =>
+      this.doHandleBT(request),
     );
 
     this.origUA = sesh.getUserAgent();
@@ -287,7 +356,7 @@ class ElectronReplayApp {
   }
 
   async doIntercept(request: Request): Promise<Response> {
-    console.log(`${request.method} ${request.url} from ${request.referrer}`);
+    //console.log(`${request.method} ${request.url} from ${request.referrer}`);
 
     // if local server
     if (request.url.startsWith(STATIC_PREFIX)) {
@@ -323,7 +392,7 @@ class ElectronReplayApp {
         if (mimeType) {
           const fullPath = path.join(this.staticContentPath, filename);
 
-          console.log("fullPath: " + fullPath);
+          //console.log("fullPath: " + fullPath);
 
           const data = fs.createReadStream(fullPath);
 
@@ -448,7 +517,7 @@ class ElectronReplayApp {
             }
           }
 
-          resolve(new Response(data, { status, headers }));
+          resolve(new Response(data as BodyInit, { status, headers }));
         } catch (e) {
           console.warn(e);
         }
@@ -477,17 +546,121 @@ class ElectronReplayApp {
       return { status };
     }
 
-    const m = range.match(/bytes=([\d]+)-([\d]*)/);
+    const m = range.match(/bytes=(-?[\d]+)(?:-([\d]+))?/);
     if (!m) {
       return { status };
     }
 
-    const start = Number(m[1]);
+    let start = Number(m[1]);
+    if (start < 0) {
+      start = size + start;
+    }
     const end = m[2] ? Number(m[2]) : size - 1;
     status = 206;
     headers.set("content-range", `bytes ${start}-${end}/${size}`);
     headers.set("content-length", `${end - start + 1}`);
     return { status, start, end };
+  }
+
+  async doHandleBT(request: Request) {
+    // special ping from wabac.js to ensure the scheme works
+    if (request.url === "magnet://localhost" && request.method === "HEAD") {
+      return new Response();
+    }
+
+    // shutting down, just return 500, may happen briefly during shutdown
+    if (this.torrentClientShutdown) {
+      return new Response("", { status: 500 });
+    }
+
+    const url = new URL(request.url);
+
+    const magnet = "magnet:" + url.search;
+
+    if (!url.search) {
+      return this.notFound("invalid 'magnet:' link");
+    }
+
+    if (!this.torrentClient) {
+      this.torrentDownloads = path.join(
+        app.getPath("downloads"),
+        "rwp-torrents",
+      );
+
+      const peerId = Buffer.from(
+        `-RW${VERSION.replace(/[^\d]/g, "").slice(0, 3)}0-` +
+          crypto.randomBytes(8).toString("base64"),
+      );
+
+      console.log(
+        `create torrent client, peerId: ${new TextDecoder().decode(peerId)}`,
+      );
+
+      console.log(`torrent downloads dir: ${this.torrentDownloads}`);
+      console.log(`torrent peer mode: ${this.peerMode}`);
+
+      this.torrentClient = new WebTorrent({
+        peerId,
+      });
+    }
+
+    const torrentClient = this.torrentClient;
+
+    let torrent = await torrentClient.get(magnet);
+    let isNew = false;
+
+    const opts = {
+      path: this.torrentDownloads,
+      uploadLimit: this.peerMode === PeerMode.LEECH ? 0 : -1,
+      destroyStoreOnDestroy: this.peerMode < PeerMode.PERSISTENT_PARTIAL_PEER,
+    };
+
+    if (!torrent) {
+      const p = new Promise<Torrent>((resolve) => {
+        torrentClient.add(magnet, opts, (torrent: Torrent) => {
+          resolve(torrent);
+        });
+      });
+      isNew = true;
+      torrent = await p;
+
+      console.log("Add Torrent", request.url);
+
+      // deselect all files and pieces
+      torrent.files.forEach((file) => file.deselect());
+      torrent.deselect(0, torrent.pieces.length - 1);
+    } else if (!torrent.ready) {
+      const p = new Promise<void>((resolve) => {
+        torrent!.on("ready", () => resolve());
+      });
+      isNew = true;
+      await p;
+    }
+
+    const waczs = torrent.files.filter((x: TorrentFile) =>
+      x.name.endsWith(".wacz"),
+    );
+    if (!waczs.length) {
+      return this.notFound("No WACZ found in torrent");
+    }
+    const wacz = waczs[0] as RealTorrentFile;
+    // enable this to download full WACZ in the background
+    if (isNew && this.peerMode === PeerMode.FULL_PEER) {
+      wacz.select();
+    }
+
+    const headers = new Headers({ "Content-Type": "application/octet-stream" });
+    const reqHeaders = new Headers(request.headers);
+
+    const { status, start, end } = this.parseRange(
+      reqHeaders,
+      headers,
+      wacz.length,
+    );
+
+    const data = request.method === "HEAD" ? null : wacz.stream({ start, end });
+
+    return new Response(data, { status, headers });
   }
 
   createMainWindow(argv: string[]) {
@@ -515,7 +688,7 @@ class ElectronReplayApp {
   getOpenUrl(argv: string[]) {
     const parsed = minimist(argv.slice(process.defaultApp ? 2 : 1));
 
-    const filename =
+    const filename: string =
       this.openNextFile ||
       parsed.filename ||
       parsed.f ||
@@ -527,7 +700,10 @@ class ElectronReplayApp {
 
     if (filename) {
       const sourceParams = new URLSearchParams();
-      sourceParams.set("source", "file://" + filename);
+      const source = filename.match(/^(https?:\/\/|file:\/\/|magnet:)/)
+        ? filename
+        : "file://" + filename;
+      sourceParams.set("source", source);
       sourceString = "?" + sourceParams.toString();
 
       const urlParams = new URLSearchParams();
