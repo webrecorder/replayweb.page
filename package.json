@@ -115,6 +115,7 @@
     "release": "yarn run build && electron-builder",
     "lint": "eslint ./",
     "format": "prettier --write ./",
+    "prebuild": "node build/get-node-datachannel.cjs && cp -r build/node-datachannel-prebuilds/ node_modules/node-datachannel-prebuilds/",
     "prepare": "husky install; node scripts/build-if-not-git-repo.js"
   },
   "build": {
@@ -139,7 +140,16 @@
       "ui.js",
       "sw.js",
       "index.html",
-      "ruffle"
+      "ruffle",
+      {
+        "from": "build/node-datachannel-prebuilds",
+        "to": "node_modules/node-datachannel-prebuilds",
+        "filter": [
+          "index.cjs",
+          "package.json",
+          "node-datachannel-${platform}-*"
+        ]
+      }
     ],
     "dmg": {
       "title": "ReplayWeb.page"
