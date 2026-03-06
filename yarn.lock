@@ -668,16 +668,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thaunknown/simple-peer@npm:^10.0.11, @thaunknown/simple-peer@npm:^10.0.8":
-  version: 10.1.2
-  resolution: "@thaunknown/simple-peer@npm:10.1.2"
+"@thaunknown/simple-peer@npm:10.1.0":
+  version: 10.1.0
+  resolution: "@thaunknown/simple-peer@npm:10.1.0"
   dependencies:
     debug: "npm:^4.4.3"
     err-code: "npm:^3.0.1"
-    streamx: "npm:^2.28.0"
-    uint8-util: "npm:^2.3.2"
-    webrtc-polyfill: "npm:^1.2.2"
-  checksum: 10c0/d025ccdd92bd5f2acd82a2844840bd96ca5210cb08da042c5af35b695f636e6bc0ea72abd4c6b5fd4934b86e53af878cec07e2a1d59e44e2fc290a6765cebc49
+    streamx: "npm:^2.23.0"
+    uint8-util: "npm:^2.2.6"
+    webrtc-polyfill: "npm:^1.2.0"
+  checksum: 10c0/9d06d5f37e2a8bc888f9ed6a31822978a3f9392a3ec5d2944358f619d8ae4fd8c59e23b895f9ea8e7d2cbf5503d650423681be81fc4532a66256c7929cf4a538
   languageName: node
   linkType: hard
 
@@ -2101,11 +2101,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bittorrent-dht@npm:^11.0.10, bittorrent-dht@npm:^11.0.12":
-  version: 11.0.12
-  resolution: "bittorrent-dht@npm:11.0.12"
+"bittorrent-dht@npm:11.0.11":
+  version: 11.0.11
+  resolution: "bittorrent-dht@npm:11.0.11"
   dependencies:
-    bencode: "npm:^4.0.1"
+    bencode: "npm:^4.0.0"
     debug: "npm:^4.4.3"
     k-bucket: "npm:^5.1.0"
     k-rpc: "npm:^5.1.0"
@@ -2113,7 +2113,7 @@ __metadata:
     lru: "npm:^3.1.0"
     randombytes: "npm:^2.1.0"
     record-cache: "npm:^1.2.0"
-  checksum: 10c0/2288526a5bc0bf0c9c637f9d9415c9eecc355f6727f22ddbf161258ae45eb68b4a909d03cbd0d979a5e06dff5812c10134ffaf29f7d191c3d93baf4c90b07d09
+  checksum: 10c0/772f92f20dd0f23a1b86ff59939a2463dcb584bb565d440b4812a9f967c61ceef59ee3008fbf416b00e1615d756d04e01f0357d4abd85bfe86c0411e8bdd3860
   languageName: node
   linkType: hard
 
@@ -6296,13 +6296,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-datachannel@npm:^0.32.3":
-  version: 0.32.3
-  resolution: "node-datachannel@npm:0.32.3"
+"node-datachannel@npm:0.32.1":
+  version: 0.32.1
+  resolution: "node-datachannel@npm:0.32.1"
   dependencies:
     node-gyp: "npm:latest"
     prebuild-install: "npm:^7.1.3"
-  checksum: 10c0/0fd97b926f9b28bf6a347ef52de4e2ac8902db02ab93774c32ae13b7d685ec98994b70c23b154071d538c4da8e27fac5d64e4e87a89acada5a47997903869a62
+  checksum: 10c0/773c455c67f3c8e28e392b494ab8fb276ef467958c948f24954ccc12412e0b10c2809731be8333e7a8d35e743e76428c181065f99e1e273d3099bb9fd7153da8
   languageName: node
   linkType: hard
 
@@ -6862,15 +6862,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.65.1":
-  version: 1.65.1
-  resolution: "playwright-core@npm:1.65.1"
-  bin:
-    playwright-core: cli.js
-  checksum: 10c0/4406d4f8eff668a93aaada8382d25fcce8da5f679e9f31311888178d631ed0270eb40c0288129e41e15709c957a31932cac9753fdb332547a19bc3541d317e44
-  languageName: node
-  linkType: hard
-
 "playwright@npm:1.57.0":
   version: 1.57.0
   resolution: "playwright@npm:1.57.0"
@@ -6883,17 +6874,6 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: 10c0/ab03c99a67b835bdea9059f516ad3b6e42c21025f9adaa161a4ef6bc7ca716dcba476d287140bb240d06126eb23f889a8933b8f5f1f1a56b80659d92d1358899
-  languageName: node
-  linkType: hard
-
-"playwright@npm:^1.52.0":
-  version: 1.65.1
-  resolution: "playwright@npm:1.65.1"
-  dependencies:
-    playwright-core: "npm:1.65.1"
-  bin:
-    playwright: cli.js
-  checksum: 10c0/30ce029c9fb2a6e88cf81b150b978fd60edb59b8af5a6460f5576f0fe6e2bb739454109f0ce4904eac63cb2cf10390518d7d71d335fd695b5897734a5af7250d
   languageName: node
   linkType: hard
 
@@ -7432,7 +7412,6 @@ __metadata:
     minimist: "npm:^1.2.5"
     modify-source-webpack-plugin: "npm:^4.1.0"
     node-loader: "npm:^2.1.0"
-    playwright: "npm:^1.52.0"
     prettier: "npm:^3.0.1"
     pretty-bytes: "npm:^5.6.0"
     process: "npm:^0.11.10"
@@ -8415,7 +8394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"streamx@npm:^2.10.3, streamx@npm:^2.12.5, streamx@npm:^2.22.1, streamx@npm:^2.25.0, streamx@npm:^2.28.0":
+"streamx@npm:^2.10.3, streamx@npm:^2.12.5, streamx@npm:^2.22.1, streamx@npm:^2.23.0, streamx@npm:^2.25.0, streamx@npm:^2.28.0":
   version: 2.28.1
   resolution: "streamx@npm:2.28.1"
   dependencies:
@@ -9039,7 +9018,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uint8-util@npm:^2.1.3, uint8-util@npm:^2.1.9, uint8-util@npm:^2.2.2, uint8-util@npm:^2.2.5, uint8-util@npm:^2.3.2":
+"uint8-util@npm:^2.1.3, uint8-util@npm:^2.1.9, uint8-util@npm:^2.2.2, uint8-util@npm:^2.2.5, uint8-util@npm:^2.2.6, uint8-util@npm:^2.3.2":
   version: 2.3.2
   resolution: "uint8-util@npm:2.3.2"
   checksum: 10c0/0e219fe683f663ae404aa58b47378622b3506cb236df6f384f6e60226c6131971a0e965f090cfdbbb336647ee08b9c6c36ee594895a56b5dcaa5e6a61f093ec9
@@ -9541,7 +9520,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webrtc-polyfill@npm:^1.2.2":
+"webrtc-polyfill@npm:^1.2.0":
   version: 1.2.2
   resolution: "webrtc-polyfill@npm:1.2.2"
   dependencies:
