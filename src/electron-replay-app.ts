@@ -187,23 +187,40 @@ class ElectronReplayApp {
     void app.whenReady().then(() => this.onAppReady());
 
     // Quit when all windows are closed.
-    app.on("window-all-closed", async () => {
-      if (this.client) {
-        console.log(
-          "wait upto 2 seconds for all torrent to close",
-          this.client.torrents.length,
-        );
-        await Promise.race([
-          new Promise((resolve) => setTimeout(resolve, 2000)),
-          new Promise<void>((resolve) => () => {
-            this.client!.destroy(() => {
-              //console.log("wt closed!");
-              resolve();
-            });
-          }),
-        ]);
-      }
+    app.on("window-all-closed", () => {
       app.quit();
+    });
+
+    app.on("before-quit", (event) => {
+      if (this.client) {
+        event.preventDefault();
+
+        const client = this.client;
+
+        void (async () => {
+          console.log("removing all torrents");
+          await Promise.allSettled(
+            client.torrents.map((torrent) =>
+              client.remove(torrent.infoHash, { destroyStore: true }),
+            ),
+          );
+          // console.log("torrents", client.torrents.length);
+          // await new Promise((resolve) => setTimeout(resolve, 200));
+          // await Promise.race([
+          //   new Promise((resolve) => setTimeout(resolve, 200)),
+          //   new Promise<void>((resolve) => () => {
+          //     this.client!.destroy(() => {
+          //       console.log("webtorrent client closed!");
+          //       resolve();
+          //     });
+          //   }),
+          // ]);
+
+          await new Promise((resolve) => setTimeout(resolve, 200));
+
+          app.exit();
+        })();
+      }
     });
   }
 
@@ -512,7 +529,7 @@ class ElectronReplayApp {
       this.client = new WebTorrent({
         peerId,
         //@ts-expect-error destoryStoreOnDestroy not in type
-        destroyStoreOnDestroy: true,
+        destroyStoreOnDestroy: false,
         path: downloads,
       });
     }

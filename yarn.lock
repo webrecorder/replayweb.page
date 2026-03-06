@@ -546,16 +546,16 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@thaunknown/simple-peer@^10.0.11", "@thaunknown/simple-peer@^10.0.8":
-  version "10.0.11"
-  resolved "https://registry.yarnpkg.com/@thaunknown/simple-peer/-/simple-peer-10.0.11.tgz#0b5ec1ed8b1c6aaddf846ce2274604d511c1648a"
-  integrity sha512-A5MdmtZ6HUzRa4gwPOS4jG+09HvpTv2rFo4kk7Vwveo2ELm+WmbO124ZrJrQnZc2D7z2Q3AWKSitjl9OKXO88g==
+"@thaunknown/simple-peer@10.1.0", "@thaunknown/simple-peer@^10.0.11", "@thaunknown/simple-peer@^10.0.8":
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/@thaunknown/simple-peer/-/simple-peer-10.1.0.tgz#65252a7f8ea3d6b6d2d9cda11a5ae9f0f5066d56"
+  integrity sha512-xNM49v0rBbjIKrS9XNwXW3FFuGvsPGadFRWbBdLAY87pEJeo7V0dxyX6GBHP8UVlefffRedCLsjYXb6i8W9Ofg==
   dependencies:
-    debug "^4.3.7"
+    debug "^4.4.3"
     err-code "^3.0.1"
-    streamx "^2.20.1"
-    uint8-util "^2.2.5"
-    webrtc-polyfill "^1.1.10"
+    streamx "^2.23.0"
+    uint8-util "^2.2.6"
+    webrtc-polyfill "^1.2.0"
 
 "@thaunknown/simple-websocket@^9.1.3":
   version "9.1.3"
@@ -1689,13 +1689,13 @@ bitfield@^4.0.0, bitfield@^4.2.0:
   resolved "https://registry.yarnpkg.com/bitfield/-/bitfield-4.2.0.tgz#fecb620bbe38e16526fbb62048f6c4af712ace91"
   integrity sha512-kUTatQb/mBd8uhvdLrUkouGDBUQiJaIOvPlptUwOWp6MFqih4d1MiVf0m3ATxfZSzu+LjW/awFeABltYa62uIA==
 
-bittorrent-dht@^11.0.10:
-  version "11.0.10"
-  resolved "https://registry.yarnpkg.com/bittorrent-dht/-/bittorrent-dht-11.0.10.tgz#72b904f549e85d6e2fd5e4d01fdd03e82292de52"
-  integrity sha512-/Xlruvh+nT5IZcDYiCjvDinJy2X5532zJ8vJpVYh4f52IPw29FnjqYAcLenLludupXmFHj/pxntu8KkP7jAbUg==
+bittorrent-dht@11.0.11, bittorrent-dht@^11.0.10:
+  version "11.0.11"
+  resolved "https://registry.yarnpkg.com/bittorrent-dht/-/bittorrent-dht-11.0.11.tgz#de3e1d304c6236aa925e304d6e17ec8f8d1566fe"
+  integrity sha512-5rWMoK/2XjcPSx9nfqiL6mHxsXLwohX+81aL4a3qUyGU1992mBqARQE/evZ+a6eWb5DeRjeDU+qFZm11rmPZnQ==
   dependencies:
     bencode "^4.0.0"
-    debug "^4.4.1"
+    debug "^4.4.3"
     k-bucket "^5.1.0"
     k-rpc "^5.1.0"
     last-one-wins "^1.0.4"
@@ -2520,7 +2520,7 @@ debug@^4.0.0:
   dependencies:
     ms "^2.1.3"
 
-debug@^4.2.0, debug@^4.3.3, debug@^4.3.5, debug@^4.3.7, debug@^4.4.0, debug@^4.4.1:
+debug@^4.2.0, debug@^4.3.3, debug@^4.3.5, debug@^4.4.0, debug@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.4.1.tgz#e5a8bc6cbc4c6cd3e64308b0693a3d4fa550189b"
   integrity sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==
@@ -4596,7 +4596,7 @@ load-ip-set@^3.0.1:
     queue-microtask "^1.2.3"
     split "^1.0.1"
 
-loader-runner@^4.3.1:
+loader-runner@^4.2.0:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-4.3.1.tgz#6c76ed29b0ccce9af379208299f07f876de737e3"
   integrity sha512-IWqP2SCPhyVFTBtRcgMHdzlf9ul25NwaFx4wCEH/KjAXuuHY4yNjvPXsBokp8jCB936PyWRaPKUNh8NvylLp2Q==
@@ -5332,23 +5332,17 @@ node-api-version@^0.2.0:
   dependencies:
     semver "^7.3.5"
 
-node-datachannel@^v0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/node-datachannel/-/node-datachannel-0.12.0.tgz#7700767bf178bc6d258560c78181b56abb800e44"
-  integrity sha512-pZ9FsVZpHdUKqyWynuCc9IBLkZPJMpDzpNk4YNPCizbIXHYifpYeWqSF35REHGIWi9JMCf11QzapsyQGo/Y4Ig==
+node-datachannel@0.32.1, node-datachannel@^0.32.0:
+  version "0.32.1"
+  resolved "https://registry.yarnpkg.com/node-datachannel/-/node-datachannel-0.32.1.tgz#57674f0f9b0eaef67e3e4b606e7f0a5e68380fcc"
+  integrity sha512-r4UdtA0lCsz6XrG84pJ6lntAyw/MHpmBOhEkg5UQcmWTEpANqCPkMos6rj/QZDdq3GBUsdI/wst5acwWUiibCA==
   dependencies:
-    node-domexception "^2.0.1"
-    prebuild-install "^7.0.1"
+    prebuild-install "^7.1.3"
 
 node-domexception@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/node-domexception/-/node-domexception-1.0.0.tgz#6888db46a1f71c0b76b3f7555016b63fe64766e5"
   integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
-
-node-domexception@^2.0.1:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/node-domexception/-/node-domexception-2.0.2.tgz#9ac29eb0b97ce65d4c647c1ebcd314d4c2859c4a"
-  integrity sha512-Qf9vHK9c5MGgUXj8SnucCIS4oEPuUstjRaMplLGeZpbWMfNV1rvEcXuwoXfN51dUfD1b4muPHPQtCx/5Dj/QAA==
 
 node-fetch@^3.3.0:
   version "3.3.2"
@@ -5814,7 +5808,7 @@ postcss@^8.2.15:
     nanoid "^3.1.23"
     source-map-js "^0.6.2"
 
-prebuild-install@^7.0.1:
+prebuild-install@^7.1.3:
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.1.3.tgz#d630abad2b147443f20a212917beae68b8092eec"
   integrity sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==
@@ -6869,7 +6863,7 @@ streamx@2.22.1:
   optionalDependencies:
     bare-events "^2.2.0"
 
-streamx@^2.10.3, streamx@^2.17.0, streamx@^2.20.1, streamx@^2.21.0:
+streamx@^2.10.3, streamx@^2.17.0, streamx@^2.21.0:
   version "2.22.0"
   resolved "https://registry.yarnpkg.com/streamx/-/streamx-2.22.0.tgz#cd7b5e57c95aaef0ff9b2aef7905afa62ec6e4a7"
   integrity sha512-sLh1evHOzBy/iWRiR6d1zRcLao4gGZr3C1kzNz4fopCOKJb6xD9ub8Mpi9Mr1R6id5o43S+d93fI48UC5uM9aw==
@@ -6879,7 +6873,7 @@ streamx@^2.10.3, streamx@^2.17.0, streamx@^2.20.1, streamx@^2.21.0:
   optionalDependencies:
     bare-events "^2.2.0"
 
-streamx@^2.22.1:
+streamx@^2.22.1, streamx@^2.23.0:
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/streamx/-/streamx-2.23.0.tgz#7d0f3d00d4a6c5de5728aecd6422b4008d66fd0b"
   integrity sha512-kn+e44esVfn2Fa/O0CPFcex27fjIL6MkVae0Mm6q+E6f0hWv578YCERbv+4m02cjxvDsPKLnmxral/rR6lBMAg==
@@ -7047,7 +7041,7 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-tapable@^2.1.1, tapable@^2.2.0:
+tapable@^2.1.1, tapable@^2.2.0, tapable@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-2.3.0.tgz#7e3ea6d5ca31ba8e078b560f0d83ce9a14aa8be6"
   integrity sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==
@@ -7370,6 +7364,13 @@ uint8-util@^2.1.3, uint8-util@^2.1.9, uint8-util@^2.2.2, uint8-util@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/uint8-util/-/uint8-util-2.2.5.tgz#f1a8ff800e4e10a3ac1c82ee3667c99245123896"
   integrity sha512-/QxVQD7CttWpVUKVPz9znO+3Dd4BdTSnFQ7pv/4drVhC9m4BaL2LFHTkJn6EsYoxT79VDq/2Gg8L0H22PrzyMw==
+  dependencies:
+    base64-arraybuffer "^1.0.2"
+
+uint8-util@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/uint8-util/-/uint8-util-2.2.6.tgz#1814297c44cdb6f2c906b1daa68679c487209314"
+  integrity sha512-r+ZjS8CzPhtPF771ROOadUoqC40OVdiMKBI8lTfJQWb4W7+73sMBwMYmai/uvNcmZ7tBJJyZSad03yMWIt3RQg==
   dependencies:
     base64-arraybuffer "^1.0.2"
 
@@ -7736,13 +7737,12 @@ webpack@^5.99.9:
     watchpack "^2.4.1"
     webpack-sources "^3.2.3"
 
-webrtc-polyfill@^1.1.10:
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/webrtc-polyfill/-/webrtc-polyfill-1.1.10.tgz#1a140c42afd9bcd041a63174810795b35be5e26d"
-  integrity sha512-sOn0bj3/noUdzQX7rvk0jFbBurqWDGGo2ipl+WfgoOe/x3cxbGLk/ZUY+WHCISSlLaIeBumi1X3wxQZnUESExQ==
+webrtc-polyfill@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/webrtc-polyfill/-/webrtc-polyfill-1.2.0.tgz#b5b8e1b82d095b2630c5fafbc439ed2f1dd24ed9"
+  integrity sha512-epaVJbKzWOY5Wf3k7DoZLNgHP/5IoALBvjvlZQgX+9vFnf9UfCHv+rc+r/vJ7jxQUwH3cIYx9blHfyWWxGbw1g==
   dependencies:
-    node-datachannel "^v0.12.0"
-    node-domexception "^1.0.0"
+    node-datachannel "^0.32.0"
 
 websocket-driver@>=0.5.1, websocket-driver@^0.7.4:
   version "0.7.4"

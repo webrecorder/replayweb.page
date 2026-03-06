@@ -69,7 +69,6 @@
     "mini-css-extract-plugin": "^2.3.0",
     "modify-source-webpack-plugin": "^4.1.0",
     "node-loader": "^2.1.0",
-    "playwright": "^1.52.0",
     "prettier": "^3.0.1",
     "raw-loader": "^4.0.2",
     "sass-embedded": "^1.70.0",
@@ -85,7 +84,10 @@
     "webpack-merge": "^5.10.0"
   },
   "resolutions": {
-    "**/lit": "3.1.1"
+    "**/lit": "3.1.1",
+    "@thaunknown/simple-peer": "10.1.0",
+    "node-datachannel": "0.32.1",
+    "bittorrent-dht": "11.0.11"
   },
   "files": [
     "/dist",
@@ -138,16 +140,7 @@
       "ui.js",
       "sw.js",
       "index.html",
-      "ruffle",
-      {
-        "from": "build/node-datachannel-prebuilds",
-        "to": "node_modules/node-datachannel-prebuilds",
-        "filter": [
-          "index.cjs",
-          "package.json",
-          "node-datachannel-${platform}-*"
-        ]
-      }
+      "ruffle"
     ],
     "dmg": {
       "title": "ReplayWeb.page"
