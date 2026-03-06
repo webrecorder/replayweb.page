@@ -441,6 +441,10 @@ class Pages extends LitElement {
         }
 
         line.id = ++count;
+
+        if (typeof line.ts === "string") {
+          line.ts = new Date(line.ts as string).getTime();
+        }
         lines.push(line);
       }
 
