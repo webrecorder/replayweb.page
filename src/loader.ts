@@ -1,4 +1,11 @@
-import { LitElement, html, css, type PropertyValues, nothing } from "lit";
+import {
+  LitElement,
+  html,
+  css,
+  type PropertyValues,
+  nothing,
+  type TemplateResult,
+} from "lit";
 import { IS_APP, wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 import rwpLogoAnimated from "~assets/brand/replaywebpage-icon-color-animated.svg";
@@ -47,7 +54,7 @@ class Loader extends LitElement {
   @property({ type: Number }) percent = 0;
   @property({ type: Number }) currentSize = 0;
   @property({ type: Number }) totalSize = 0;
-  @property({ type: String }) error?: string;
+  @property({ type: String }) error?: string | TemplateResult;
   @property({ type: Number }) total = 0;
   @property({ type: String }) status?: string;
   @property({ type: String }) coll = "";
@@ -228,6 +235,18 @@ class Loader extends LitElement {
               name: url.searchParams.get("dn") + ".wacz" || "torrent.wacz",
               loadUrl: `magnet://magnet${url.search}`,
             };
+          } else {
+            this.state = "errored";
+            this.error = html`Sorry, torrent magnet links are only supported in
+              the
+              <a
+                target="_blank"
+                href="https://github.com/webrecorder/replayweb.page/releases/latest"
+                >ReplayWeb.page Desktop App</a
+              >
+              at this time.`;
+            this.errorAllowRetry = false;
+            return;
           }
           break;
       }
@@ -385,6 +404,17 @@ class Loader extends LitElement {
 
       .extra-msg {
         font-size: 0.8rem;
+      }
+
+      .url-parent {
+        max-width: 100%;
+      }
+
+      .url {
+        word-break: break-all;
+        height: 100px;
+        overflow-y: scroll;
+        overflow-x: hidden;
       }
     `);
   }
