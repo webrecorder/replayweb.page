@@ -68,6 +68,7 @@ const electronMainConfig = (/*env, argv*/) => {
       electron: "./src/electron-main.ts",
     },
     optimization,
+    module: { unknownContextCritical: false, exprContextCritical: false },
     output: {
       path: path.join(__dirname, "dist"),
       filename: "[name].js",
@@ -146,7 +147,6 @@ const electronPreloadConfig = (/*env, argv*/) => {
     entry: {
       preload: "./src/electron-preload.ts",
     },
-
     optimization,
     plugins: [new webpack.BannerPlugin(BANNER_TEXT)],
   };
