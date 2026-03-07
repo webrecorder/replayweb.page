@@ -54,12 +54,20 @@ type RealTorrentFile = TorrentFile & {
   stream: ({ start, end }: { start?: number; end?: number }) => ReadableStream;
 };
 
+enum PeerMode {
+  LEECH = 0,
+  PARTIAL_PEER = 1,
+  PERSISTENT_PARTIAL_PEER = 2,
+  FULL_PEER = 3,
+}
+
 // ============================================================================
 class ElectronReplayApp {
   pluginPath = "";
 
   torrentClient: WebTorrent.Instance | null = null;
   torrentClientShutdown = false;
+  peerMode: PeerMode = PeerMode.PARTIAL_PEER;
 
   appPath = app.getAppPath();
 
@@ -133,6 +141,8 @@ class ElectronReplayApp {
     if (process.env.APPIMAGE) {
       app.commandLine.appendSwitch("--gtk-version", "3");
     }
+
+    app.commandLine.appendSwitch("log-level", "3");
 
     if (this.profileName) {
       app.setPath(
@@ -313,7 +323,7 @@ class ElectronReplayApp {
   }
 
   async doIntercept(request: Request): Promise<Response> {
-    console.log(`${request.method} ${request.url} from ${request.referrer}`);
+    //console.log(`${request.method} ${request.url} from ${request.referrer}`);
 
     // if local server
     if (request.url.startsWith(STATIC_PREFIX)) {
@@ -349,7 +359,7 @@ class ElectronReplayApp {
         if (mimeType) {
           const fullPath = path.join(this.staticContentPath, filename);
 
-          console.log("fullPath: " + fullPath);
+          //console.log("fullPath: " + fullPath);
 
           const data = fs.createReadStream(fullPath);
 
@@ -547,9 +557,9 @@ class ElectronReplayApp {
       return new Response();
     }
 
-    // shutting down, just return 404
+    // shutting down, just return 500, may happen briefly during shutdown
     if (this.torrentClientShutdown) {
-      return new Response("", { status: 404 });
+      return new Response("", { status: 500 });
     }
 
     const url = new URL(request.url);
@@ -566,8 +576,9 @@ class ElectronReplayApp {
     let isNew = false;
 
     const opts = {
-      destroyStoreOnDestroy: true,
       path: this.torrentDownloads,
+      uploadLimit: this.peerMode === PeerMode.LEECH ? 0 : -1,
+      destroyStoreOnDestroy: this.peerMode < PeerMode.PERSISTENT_PARTIAL_PEER,
     };
 
     if (!torrent) {
@@ -578,6 +589,8 @@ class ElectronReplayApp {
       });
       isNew = true;
       torrent = await p;
+
+      console.log("Add Torrent", request.url);
 
       // deselect all files and pieces
       torrent.files.forEach((file) => file.deselect());
@@ -598,7 +611,7 @@ class ElectronReplayApp {
     }
     const wacz = waczs[0] as RealTorrentFile;
     // enable this to download full WACZ in the background
-    if (isNew) {
+    if (isNew && this.peerMode === PeerMode.FULL_PEER) {
       wacz.select();
     }
 
