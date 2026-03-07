@@ -204,17 +204,6 @@ class ElectronReplayApp {
               client.remove(torrent.infoHash, { destroyStore: true }),
             ),
           );
-          // console.log("torrents", client.torrents.length);
-          // await new Promise((resolve) => setTimeout(resolve, 200));
-          // await Promise.race([
-          //   new Promise((resolve) => setTimeout(resolve, 200)),
-          //   new Promise<void>((resolve) => () => {
-          //     this.client!.destroy(() => {
-          //       console.log("webtorrent client closed!");
-          //       resolve();
-          //     });
-          //   }),
-          // ]);
 
           await new Promise((resolve) => setTimeout(resolve, 200));
 

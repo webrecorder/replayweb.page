@@ -2,9 +2,9 @@
 
 ## CHANGES
 
-*From release 2.4.0+, changes will now be listed in the release notes on GitHub.*
-*Please see [the list of releases](https://github.com/webrecorder/replayweb.page/releases) for an up-to-date
-list of changes for each release.*
+_From release 2.4.0+, changes will now be listed in the release notes on GitHub._
+_Please see [the list of releases](https://github.com/webrecorder/replayweb.page/releases) for an up-to-date
+list of changes for each release._
 
 ---
 

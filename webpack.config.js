@@ -118,16 +118,17 @@ const electronMainConfig = (/*env, argv*/) => {
             operations: [
               new ReplaceOperation(
                 "once",
-                `const nodeDataChannel = require("../../../build/Release/node_datachannel.node");`,
-                `const path = require("path"); const nodeDataChannel = require(path.join(__dirname, "..", "node_modules", "node-datachannel-prebuilds"));`,
-              ),
-              new ReplaceOperation(
-                "once", `\
+                `\
 const __filename = cjsUrl.fileURLToPath(import.meta.url);
 const __dirname = cjsPath.dirname(__filename);
 const require = cjsModule.createRequire(import.meta.url);`,
-                ``
-              )
+                ``,
+              ),
+              new ReplaceOperation(
+                "once",
+                `const nodeDataChannel = require("../../../build/Release/node_datachannel.node");`,
+                `const path = require("path"); const nodeDataChannel = require(path.join(__dirname, "..", "node_modules", "node-datachannel-prebuilds"));`,
+              ),
             ],
           },
         ],
