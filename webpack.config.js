@@ -80,6 +80,7 @@ const electronMainConfig = (/*env, argv*/) => {
     plugins: [
       new webpack.DefinePlugin({
         __HELPER_PROXY__: JSON.stringify(HELPER_PROXY),
+        __VERSION__: JSON.stringify(package_json.version),
       }),
       new webpack.BannerPlugin(BANNER_TEXT),
       new ModifySourcePlugin({

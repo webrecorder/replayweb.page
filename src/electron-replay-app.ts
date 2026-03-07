@@ -43,9 +43,7 @@ const MAGNET_PROTO = "magnet";
 
 const URL_RX = /([^/]+)\/([\d]+)(?:\w\w_)?\/(.*)$/;
 
-const peerId = Buffer.from(
-  "-RP2400-" + crypto.randomBytes(9).toString("base64"),
-);
+const VERSION = __VERSION__;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).WEBTORRENT_ANNOUNCE = (announceList as string[][]).map(
@@ -60,7 +58,8 @@ type RealTorrentFile = TorrentFile & {
 class ElectronReplayApp {
   pluginPath = "";
 
-  client: WebTorrent.Instance | null = null;
+  torrentClient: WebTorrent.Instance | null = null;
+  torrentClientShutdown = false;
 
   appPath = app.getAppPath();
 
@@ -81,6 +80,8 @@ class ElectronReplayApp {
   screenSize = { width: 1024, height: 768 };
 
   origUA: string | null = null;
+
+  torrentDownloads: string = "";
 
   constructor({ staticPath = "./", profileName = "" } = {}) {
     this.staticContentPath = staticPath;
@@ -192,18 +193,25 @@ class ElectronReplayApp {
     });
 
     app.on("before-quit", (event) => {
-      if (this.client) {
+      if (this.torrentClient) {
         event.preventDefault();
 
-        const client = this.client;
+        const torrentClient = this.torrentClient;
 
         void (async () => {
-          console.log("removing all torrents");
-          await Promise.allSettled(
-            client.torrents.map((torrent) =>
-              client.remove(torrent.infoHash, { destroyStore: true }),
-            ),
-          );
+          console.log("starting torrent client shutdown");
+          this.torrentClientShutdown = true;
+
+          const err = await new Promise((resolve) => {
+            torrentClient.destroy((err) => {
+              resolve(err);
+            });
+          });
+
+          console.log("torrent client destroyed");
+          if (err) {
+            console.log(err);
+          }
 
           await new Promise((resolve) => setTimeout(resolve, 200));
 
@@ -512,20 +520,36 @@ class ElectronReplayApp {
   }
 
   async doHandleBT(request: Request) {
-    if (!this.client) {
-      const downloads = path.join(app.getPath("downloads"), "rwp-torrents");
-      console.log("downloads", downloads);
-      this.client = new WebTorrent({
+    if (!this.torrentClient) {
+      this.torrentDownloads = path.join(
+        app.getPath("downloads"),
+        "rwp-torrents",
+      );
+
+      const peerId = Buffer.from(
+        `-RW${VERSION.replace(/[^\d]/g, "").slice(0, 3)}0-` +
+          crypto.randomBytes(8).toString("base64"),
+      );
+
+      console.log(
+        `create torrent client, peerId: ${new TextDecoder().decode(peerId)}`,
+      );
+
+      console.log(`torrent downloads dir: ${this.torrentDownloads}`);
+
+      this.torrentClient = new WebTorrent({
         peerId,
-        //@ts-expect-error destoryStoreOnDestroy not in type
-        destroyStoreOnDestroy: false,
-        path: downloads,
       });
     }
 
     // special ping from wabac.js to ensure the scheme works
     if (request.url === "magnet://localhost" && request.method === "HEAD") {
       return new Response();
+    }
+
+    // shutting down, just return 404
+    if (this.torrentClientShutdown) {
+      return new Response("", { status: 404 });
     }
 
     const url = new URL(request.url);
@@ -536,12 +560,19 @@ class ElectronReplayApp {
       return this.notFound("invalid magnet: link");
     }
 
-    let torrent = (await this.client.get(magnet)) as Torrent | null;
+    const torrentClient = this.torrentClient;
+
+    let torrent = (await torrentClient.get(magnet)) as Torrent | null;
     let isNew = false;
+
+    const opts = {
+      destroyStoreOnDestroy: true,
+      path: this.torrentDownloads,
+    };
 
     if (!torrent) {
       const p = new Promise<Torrent>((resolve) => {
-        this.client!.add(magnet, (torrent: Torrent) => {
+        torrentClient.add(magnet, opts, (torrent: Torrent) => {
           resolve(torrent);
         });
       });
