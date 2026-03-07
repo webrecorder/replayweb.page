@@ -62,13 +62,15 @@ enum PeerMode {
   FULL_PEER = 3,
 }
 
+const defaultPeerMode = PeerMode.PARTIAL_PEER;
+
 // ============================================================================
 class ElectronReplayApp {
   pluginPath = "";
 
   torrentClient: WebTorrent.Instance | null = null;
   torrentClientShutdown = false;
-  peerMode: PeerMode = PeerMode.PARTIAL_PEER;
+  peerMode: PeerMode = defaultPeerMode;
 
   appPath = app.getAppPath();
 
@@ -152,6 +154,8 @@ class ElectronReplayApp {
         path.join(app.getPath("appData"), this.profileName),
       );
     }
+
+    void this.loadConfig();
 
     protocol.registerSchemesAsPrivileged([
       {
@@ -249,6 +253,22 @@ class ElectronReplayApp {
         })();
       }
     });
+  }
+
+  async loadConfig() {
+    try {
+      const data = await fs.promises.readFile(
+        path.join(app.getPath("userData"), "config.json"),
+        { encoding: "utf-8" },
+      );
+      const config = JSON.parse(data);
+      if (config) {
+        this.peerMode = config["peerMode"] ?? defaultPeerMode;
+      }
+      console.log("Config file read", config);
+    } catch (e) {
+      console.log("Config file not found");
+    }
   }
 
   checkUpdates() {
@@ -598,6 +618,7 @@ class ElectronReplayApp {
       );
 
       console.log(`torrent downloads dir: ${this.torrentDownloads}`);
+      console.log(`torrent peer mode: ${this.peerMode}`);
 
       this.torrentClient = new WebTorrent({
         peerId,
@@ -641,7 +662,7 @@ class ElectronReplayApp {
       x.name.endsWith(".wacz"),
     );
     if (!waczs.length) {
-      return this.notFound("no WACZ found");
+      return this.notFound("No WACZ found in torrent");
     }
     const wacz = waczs[0] as RealTorrentFile;
     // enable this to download full WACZ in the background
