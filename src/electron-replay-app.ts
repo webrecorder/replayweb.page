@@ -530,6 +530,24 @@ class ElectronReplayApp {
   }
 
   async doHandleBT(request: Request) {
+    // special ping from wabac.js to ensure the scheme works
+    if (request.url === "magnet://localhost" && request.method === "HEAD") {
+      return new Response();
+    }
+
+    // shutting down, just return 500, may happen briefly during shutdown
+    if (this.torrentClientShutdown) {
+      return new Response("", { status: 500 });
+    }
+
+    const url = new URL(request.url);
+
+    const magnet = "magnet:" + url.search;
+
+    if (!url.search) {
+      return this.notFound("invalid 'magnet:' link");
+    }
+
     if (!this.torrentClient) {
       this.torrentDownloads = path.join(
         app.getPath("downloads"),
@@ -550,24 +568,6 @@ class ElectronReplayApp {
       this.torrentClient = new WebTorrent({
         peerId,
       });
-    }
-
-    // special ping from wabac.js to ensure the scheme works
-    if (request.url === "magnet://localhost" && request.method === "HEAD") {
-      return new Response();
-    }
-
-    // shutting down, just return 500, may happen briefly during shutdown
-    if (this.torrentClientShutdown) {
-      return new Response("", { status: 500 });
-    }
-
-    const url = new URL(request.url);
-
-    const magnet = "magnet:" + url.search;
-
-    if (!url.search) {
-      return this.notFound("invalid magnet: link");
     }
 
     const torrentClient = this.torrentClient;
