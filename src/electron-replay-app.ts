@@ -687,7 +687,10 @@ class ElectronReplayApp {
 
     if (filename) {
       const sourceParams = new URLSearchParams();
-      sourceParams.set("source", "file://" + filename);
+      const source = filename.match(/^(https?:\/\/|file:\/\/|magnet:)/)
+        ? filename
+        : "file://" + filename;
+      sourceParams.set("source", source);
       sourceString = "?" + sourceParams.toString();
 
       const urlParams = new URLSearchParams();
