@@ -127,7 +127,7 @@
     "extraMetadata": {
       "main": "dist/electron.js"
     },
-    "npmRebuild": true,
+    "npmRebuild": false,
     "files": [
       "!**node_modules/**/*",
       "dist/electron.js",
