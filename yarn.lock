@@ -4038,6 +4038,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fetch-ndjson@npm:^1.1.6":
+  version: 1.2.0
+  resolution: "fetch-ndjson@npm:1.2.0"
+  checksum: 10c0/cf6d9e5285a38eef54023ca6d08528e502d3697e6f9866121bc7ffbcc6a6ac7023c1e5aafe2e48c39ef726d72b0afb6de31dac1c3abb03906cc73d712fe3773a
+  languageName: node
+  linkType: hard
+
 "file-entry-cache@npm:^6.0.1":
   version: 6.0.1
   resolution: "file-entry-cache@npm:6.0.1"
@@ -7399,6 +7406,7 @@ __metadata:
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-lit: "npm:^1.11.0"
     eslint-plugin-wc: "npm:^2.0.4"
+    fetch-ndjson: "npm:^1.1.6"
     flexsearch: "npm:^0.7.31"
     husky: "npm:^8.0.0"
     keyword-mark-element: "npm:^0.2.0"
