@@ -474,7 +474,7 @@ class Loader extends LitElement {
       ${displayPercent
         ? html`
             <label class="progress-label" for="progress"
-              >${displayPercent}%</label
+              >${displayPercent.toFixed(2)}%</label
             >
           `
         : nothing}
