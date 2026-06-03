@@ -302,9 +302,14 @@ class Item extends LitElement {
         void this.getMultiTimestamps();
       }
     }
-  }
+    if (changedProperties.has("tabData") && this.itemInfo?.coll) {
+      if (!this.tabData.url) {
+        this.url =
+          RWP_SCHEME + decodeURIComponent(this._paramsToString(this.tabData));
+      }
 
-  updated(changedProperties: PropertyValues<this>) {
+      this._locUpdateNeeded = false;
+    }
     if (changedProperties.has("sourceUrl")) {
       void this.doUpdateInfo();
     }
@@ -313,18 +318,18 @@ class Item extends LitElement {
         this._autoUpdater = this.runUpdateLoop();
       }
     }
+  }
+
+  updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("tabData")) {
       if (!this.itemInfo?.coll) {
         return;
       }
+
       const newHash =
         "#" +
         new URLSearchParams(this.tabData as Record<string, string>).toString();
 
-      if (!this.tabData.url) {
-        this.url =
-          RWP_SCHEME + decodeURIComponent(this._paramsToString(this.tabData));
-      }
       if (newHash !== this._locationHash) {
         this._locationHash = newHash;
 
@@ -372,7 +377,6 @@ class Item extends LitElement {
           }
         }
       }
-      this._locUpdateNeeded = false;
     }
     if (changedProperties.has("showSidebar")) {
       if (!this.embed) {

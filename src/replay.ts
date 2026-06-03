@@ -68,6 +68,14 @@ class Replay extends LitElement {
 
   private hiliter: HoverHiliter | null = null;
 
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+
+    if (this._loadPoll) {
+      window.clearInterval(this._loadPoll);
+    }
+  }
+
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
     // TODO: Fix this the next time the file is edited.
@@ -121,7 +129,7 @@ class Replay extends LitElement {
         : "";
   }
 
-  updated(changedProperties: PropertyValues<this>) {
+  willUpdate(changedProperties: PropertyValues<this>) {
     if (
       changedProperties.has("sourceUrl") ||
       changedProperties.has("collInfo")
@@ -140,7 +148,9 @@ class Replay extends LitElement {
       this.reauthWait = null;
       this.doSetIframeUrl();
     }
+  }
 
+  updated(changedProperties: PropertyValues<this>) {
     if (this.iframeUrl && changedProperties.has("iframeUrl")) {
       this.waitForLoad();
 
