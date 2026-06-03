@@ -1,11 +1,12 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { property } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 
 import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 import type { ItemType } from "./types";
 import type { ReplayLoadingDetail, TabNavEvent } from "./events";
+import { keyed } from "lit/directives/keyed.js";
 
 /**
  * @fires update-title
@@ -61,6 +62,17 @@ class Replay extends LitElement {
 
   @property({ type: String })
   downloadResUrl = "";
+
+  @query("iframe")
+  readonly iframe?: HTMLIFrameElement | null;
+
+  /**
+   * Use key to force iframe to update even if `src` hasn't changed,
+   * for example, if the iframe window has navigated to a linked page
+   * and is being externally reset to a seed URL.
+   */
+  @state()
+  private iframeUrlUpdateKey?: number;
 
   private reauthWait: null | Promise<void> = null;
 
@@ -146,7 +158,13 @@ class Replay extends LitElement {
       this.replayTS = this.ts;
       this.showAuth = false;
       this.reauthWait = null;
+
+      const prevIframe = this.iframeUrl;
       this.doSetIframeUrl();
+
+      if (prevIframe === this.iframeUrl) {
+        this.iframeUrlUpdateKey = Date.now();
+      }
     }
   }
 
@@ -445,16 +463,18 @@ class Replay extends LitElement {
               )}"
             ></a>
             <div class="iframe-container">
-              <iframe
-                class="iframe-main"
-                name="___wb_replay_top_frame"
-                @message="${this.onReplayMessage}"
-                allow="autoplay 'self'; fullscreen"
-                allowfullscreen
-                src="${this.iframeUrl}"
-                title="${title}"
-              ></iframe>
-
+              ${keyed(
+                this.iframeUrlUpdateKey,
+                html`<iframe
+                  class="iframe-main"
+                  name="___wb_replay_top_frame"
+                  @message="${this.onReplayMessage}"
+                  allow="autoplay 'self'; fullscreen"
+                  allowfullscreen
+                  src="${this.iframeUrl}"
+                  title="${title}"
+                ></iframe>`,
+              )}
               ${this.showAuth
                 ? html`
                     <div class="iframe-main modal-bg">
