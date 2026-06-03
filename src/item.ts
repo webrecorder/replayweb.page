@@ -64,7 +64,7 @@ import type {
   TabNavEvent,
 } from "./events";
 
-const RWP_SCHEME = "search://";
+export const RWP_SCHEME = "search://";
 
 export type LoadInfo = {
   extraConfig?: {
@@ -91,8 +91,14 @@ export type EmbedOpts = {
   noMediaDownloadUI?: boolean;
 };
 
+export enum EmbedReplayDataView {
+  Story = "story",
+  Pages = "pages",
+  Resources = "resources",
+}
+
 export type EmbedReplayData = {
-  view?: "story" | "pages" | "resources";
+  view?: EmbedReplayDataView;
   url?: string;
   ts?: string;
   title?: string;
@@ -534,12 +540,12 @@ class Item extends LitElement {
       (!this.tabData.view || !this.tabNames.includes(this.tabData.view))
     ) {
       const view = this.hasStory
-        ? "story"
+        ? EmbedReplayDataView.Story
         : // TODO: Fix this the next time the file is edited.
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         this.editable || this.itemInfo.pages?.length
-        ? "pages"
-        : "resources";
+        ? EmbedReplayDataView.Pages
+        : EmbedReplayDataView.Resources;
 
       this.tabData = {
         ...this.tabData,
@@ -560,8 +566,8 @@ class Item extends LitElement {
       }
     }
 
-    if (!this.hasStory && this.tabData.view === "story") {
-      this.tabData.view = "pages";
+    if (!this.hasStory && this.tabData.view === EmbedReplayDataView.Story) {
+      this.tabData.view = EmbedReplayDataView.Pages;
     }
 
     if (this.tabData.url && this.tabData.query && this.browsable) {
@@ -1907,14 +1913,13 @@ class Item extends LitElement {
     this.updateTabData({ ts: item.value });
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'value' implicitly has an 'any' type.
-  navigateTo(value) {
+  navigateTo(value: string, { ts } = { ts: "" }) {
     let data: TabData;
 
     if (value.startsWith("http://") || value.startsWith("https://")) {
-      data = { url: value };
+      data = { url: value, ts };
 
-      if (value === this.tabData.url) {
+      if (value === this.tabData.url && (!ts || ts === this.tabData.ts)) {
         const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
         if (replay) {
           replay.refresh();
@@ -1923,18 +1928,16 @@ class Item extends LitElement {
       }
     } else {
       if (!value.startsWith(RWP_SCHEME)) {
-        data = { query: value, view: "pages" };
+        data = { query: value, view: EmbedReplayDataView.Pages };
       } else {
         data = this._stringToParams(value);
       }
     }
+
     this.updateTabData(data);
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'value' implicitly has an 'any' type.
-  _stringToParams(value) {
-    // TODO: Fix this the next time the file is edited.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  _stringToParams(value: string) {
     const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
     const data: Partial<URLResource> = {};
     data.url = "";
