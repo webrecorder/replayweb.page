@@ -261,20 +261,16 @@ class Embed extends LitElement {
     const qs = new URLSearchParams(window.location.hash.slice(1));
 
     if (qs.has("url")) {
-      // @ts-expect-error - TS2339 - Property 'url' does not exist on type 'Embed'.
-      this.url = qs.get("url");
+      this.url = qs.get("url") ?? "";
     }
     if (qs.has("ts")) {
-      // @ts-expect-error - TS2339 - Property 'ts' does not exist on type 'Embed'.
-      this.ts = qs.get("ts");
+      this.ts = qs.get("ts") ?? "";
     }
     if (qs.has("query")) {
-      // @ts-expect-error - TS2339 - Property 'query' does not exist on type 'Embed'.
-      this.query = qs.get("query");
+      this.query = qs.get("query") ?? "";
     }
     if (qs.has("view")) {
-      // @ts-expect-error - TS2339 - Property 'view' does not exist on type 'Embed'.
-      this.view = qs.get("view");
+      this.view = qs.get("view") ?? "";
     }
   }
 
