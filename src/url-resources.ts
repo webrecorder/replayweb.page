@@ -281,6 +281,7 @@ class URLResources extends LitElement {
         width: 100%;
         background-color: var(--sl-color-neutral-100);
         border-bottom: 1px solid var(--sl-panel-border-color);
+        font-size: var(--sl-font-size-small);
       }
 
       .main-search-bar {
@@ -291,14 +292,24 @@ class URLResources extends LitElement {
         padding: var(--sl-spacing-x-small);
       }
 
+      .search-bar .level-item {
+        gap: var(--sl-spacing-x-small);
+      }
+
+      .search-bar .input,
+      .search-bar .radio {
+        font-size: var(--sl-font-size-small);
+      }
+
       .all-results {
-        margin: 0 0 0 0.5em;
         display: flex;
         flex-direction: column;
         min-height: 0;
+        flex: 1 1 0;
       }
       .main-scroll {
-        flex-grow: 1;
+        flex: 1 1 0;
+        scrollbar-gutter: stable;
       }
       .minihead {
         font-size: 10px;
@@ -307,26 +318,42 @@ class URLResources extends LitElement {
       .columns {
         margin: 0px;
       }
-      thead {
-        margin-bottom: 24px;
-      }
+
       table th:not([align]) {
         text-align: left;
       }
       .result {
-        border-bottom: 1px #dbdbdb solid;
         min-height: fit-content;
+        font-size: var(--sl-font-size-small);
       }
+
+      .result:first-child {
+        margin-top: var(--sl-spacing-small);
+      }
+
+      .result:not(:last-child) {
+        margin-bottom: 0;
+        border-bottom: 1px solid var(--sl-panel-border-color);
+      }
+
       .results-head {
-        border-bottom: 2px #dbdbdb solid;
-        margin-right: 16px;
+        border-bottom: 1px solid var(--sl-panel-border-color);
         min-height: fit-content;
         display: block;
         width: 100%;
+        padding-right: 15px; // For scrollbar gutter
       }
-      .results-head a {
-        color: black;
+
+      .results-head .column {
+        background-color: var(--sl-panel-background-color);
+        position: relative;
+        z-index: 2;
       }
+
+      table .column {
+        padding: var(--sl-spacing-x-small);
+      }
+
       .all-results .column {
         word-break: break-word;
       }
@@ -341,6 +368,17 @@ class URLResources extends LitElement {
       .flex-auto {
         flex: auto;
       }
+
+      .sort-control-label {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sl-spacing-2x-small);
+        font-size: var(--sl-font-size-small);
+        font-weight: var(--sl-font-weight-semibold);
+        color: var(--sl-color-neutral-600);
+        padding-bottom: 0;
+      }
+
       .asc:after {
         content: "▼";
         font-size: 0.75em;
@@ -349,9 +387,12 @@ class URLResources extends LitElement {
         content: "▲";
         font-size: 0.75em;
       }
+
       .num-results {
-        margin-left: 1em;
-        font-style: italic;
+        font-size: var(--sl-font-size-small);
+        color: var(--sl-color-neutral-500);
+        line-height: 1;
+        margin-left: var(--sl-spacing-small);
       }
     `);
   }
@@ -380,7 +421,7 @@ class URLResources extends LitElement {
       >
         <div class="level-left flex-auto">
           <div class="level-item flex-auto">
-            <span class="is-hidden-mobile">Search:&nbsp;&nbsp;</span>
+            <span class="is-hidden-mobile">Search:</span>
             <div class="select">
               <select @change="${this.onChangeTypeSearch}">
                 ${URLResources.filters.map(
@@ -450,7 +491,9 @@ class URLResources extends LitElement {
               is-pulled-right
               aria-live="polite"
               aria-atomic="true"
-              >${this.filteredResults.length} Result(s)</span
+              >${this.filteredResults.length.toLocaleString()}
+              ${this.filteredResults.length === 1 ? "result" : "results"}
+              shown</span
             >
           </div>
         </div>
@@ -478,7 +521,7 @@ class URLResources extends LitElement {
       </div>
 
       <table class="all-results" aria-labelledby="results-heading num-results">
-        <thead>
+        <thead class="all-results-header">
           <tr class="columns results-head has-text-weight-bold">
             <th scope="col" class="column col-url is-6 is-hidden-mobile">
               <a
@@ -487,7 +530,7 @@ class URLResources extends LitElement {
                 @click="${this.onSort}"
                 @keyup="${clickOnSpacebarPress}"
                 data-key="url"
-                class="${this.sortKey === "url"
+                class="sort-control-label ${this.sortKey === "url"
                   ? this.sortDesc
                     ? "desc"
                     : "asc"
@@ -502,7 +545,7 @@ class URLResources extends LitElement {
                 @click="${this.onSort}"
                 @keyup="${clickOnSpacebarPress}"
                 data-key="ts"
-                class="${this.sortKey === "ts"
+                class="sort-control-label ${this.sortKey === "ts"
                   ? this.sortDesc
                     ? "desc"
                     : "asc"
@@ -517,7 +560,7 @@ class URLResources extends LitElement {
                 @click="${this.onSort}"
                 @keyup="${clickOnSpacebarPress}"
                 data-key="mime"
-                class="${this.sortKey === "mime"
+                class="sort-control-label ${this.sortKey === "mime"
                   ? this.sortDesc
                     ? "desc"
                     : "asc"
@@ -532,7 +575,7 @@ class URLResources extends LitElement {
                 @click="${this.onSort}"
                 @keyup="${clickOnSpacebarPress}"
                 data-key="status"
-                class="${this.sortKey === "status"
+                class="sort-control-label ${this.sortKey === "status"
                   ? this.sortDesc
                     ? "desc"
                     : "asc"
@@ -559,7 +602,6 @@ class URLResources extends LitElement {
                         )}"
                         ><fa-icon
                           size="1.0em"
-                          class="has-text-black"
                           aria-hidden="true"
                           title="Download Resource"
                           .svg="${fasDownload}"

@@ -726,6 +726,7 @@ class Pages extends LitElement {
         flex-direction: column;
         background-color: var(--sl-color-neutral-100);
         border-bottom: 1px solid var(--sl-panel-border-color);
+        font-size: var(--sl-font-size-small);
       }
 
       .main-search-bar {
@@ -734,6 +735,10 @@ class Pages extends LitElement {
 
       .sidebar-search-bar {
         padding: var(--sl-spacing-x-small);
+      }
+
+      .search-bar .input {
+        font-size: var(--sl-font-size-small);
       }
 
       .flex-auto {
