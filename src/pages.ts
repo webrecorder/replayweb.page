@@ -520,8 +520,7 @@ class Pages extends LitElement {
         border-right: 1px solid var(--sl-panel-border-color);
         background-color: var(--sl-color-neutral-100);
         position: relative;
-        padding: var(--sl-spacing-medium) 0 var(--sl-spacing-medium)
-          var(--sl-spacing-medium);
+        padding: 0;
       }
 
       .index-bar-label {
@@ -529,15 +528,25 @@ class Pages extends LitElement {
         font-size: var(--sl-font-size-x-small);
         font-weight: var(--sl-font-weight-semibold);
         color: var(--sl-color-neutral-500);
-        margin-bottom: var(--sl-spacing-2x-small);
+        margin-bottom: var(--sl-spacing-x-small);
+        padding: 0 var(--sl-spacing-small);
         line-height: 1;
+      }
+
+      .index-bar-label:first-child {
+        margin-top: var(--sl-spacing-medium);
       }
 
       .index-bar-title {
         font-size: var(--sl-font-size-small);
         font-weight: var(--sl-font-weight-semibold);
         margin-bottom: var(--sl-spacing-small);
+        padding: 0 var(--sl-spacing-small);
         word-break: break-word;
+      }
+
+      .index-bar-title + .index-bar-label {
+        margin-top: var(--sl-spacing-medium);
       }
 
       .index-bar-title:hover + .editIcon {
@@ -595,10 +604,13 @@ class Pages extends LitElement {
         display: flex;
         align-items: center;
         gap: var(--sl-spacing-x-small);
+        line-height: 1;
       }
 
       .index-bar .seed-pages-filter {
-        margin-bottom: var(--sl-spacing-small);
+        font-weight: var(--sl-font-weight-semibold);
+        margin-bottom: var(--sl-spacing-medium);
+        padding: var(--sl-spacing-small);
       }
 
       .sorter {
@@ -730,12 +742,10 @@ class Pages extends LitElement {
 
       .index-bar-description {
         font-size: var(--sl-font-size-small);
-        margin-top: var(--sl-spacing-medium);
-        margin-bottom: var(--sl-spacing-small);
         line-height: var(--sl-line-height-normal);
         flex: 1 1 auto;
         overflow: auto;
-        border-bottom: 1px solid var(--sl-panel-border-color);
+        padding: 0 var(--sl-spacing-small);
       }
     `);
   }
@@ -835,6 +845,7 @@ class Pages extends LitElement {
             ? "is-hidden-mobile"
             : ""}"
         >
+          ${this.renderSeedPagesFilter()}
           ${this.editable && this.editing
             ? html`
                 <form @submit="${this.onUpdateTitle}">
@@ -871,7 +882,6 @@ class Pages extends LitElement {
           ${this.editable
             ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`
             : html``}
-          ${this.renderSeedPagesFilter()}
           ${this.editable
             ? html` <div class="index-bar-actions">
                 ${this.renderDownloadMenu()}
