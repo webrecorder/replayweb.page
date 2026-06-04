@@ -648,12 +648,26 @@ class Item extends LitElement {
         line-height: 0.5em;
       }
 
-      li.is-active {
-        font-weight: bold;
+      .tab {
+        font-size: var(--sl-font-size-small);
+      }
+
+      .tab a {
+        border-color: transparent;
+        color: var(--sl-color-neutral-700);
+        border-width: 2px;
+        padding: var(--sl-spacing-x-small) 0;
+        margin-top: 1px;
+      }
+
+      .tab:hover a {
+        border-color: var(--sl-color-neutral-400);
       }
 
       .tab-label {
         display: inline;
+        font-weight: var(--sl-font-weight-semibold);
+        padding-right: var(--sl-spacing-x-small);
       }
 
       @media screen and (max-width: ${!IS_APP ? css`1053px` : css`1163px`}) {
@@ -677,21 +691,12 @@ class Item extends LitElement {
         position: relative;
       }
 
-      .main.tabs li {
-        line-height: 1.5;
-        padding: 6px 0 4px 0;
+      .main.tabs:not(.sidebar) ul {
+        gap: var(--sl-spacing-large);
       }
 
-      @media screen and (max-width: 319px) {
-        .main.tabs li a {
-          padding-right: 4px;
-          padding-left: 4px;
-        }
-      }
-
-      .sidebar.main.tabs li a {
-        padding-right: 6px;
-        padding-left: 6px;
+      .main.tabs.sidebar ul {
+        gap: var(--sl-spacing-small);
       }
 
       #contents {
@@ -1115,14 +1120,13 @@ class Item extends LitElement {
           : ""}
 
         <li
-          class="${this.tabData.view === EmbedReplayDataView.Pages
+          class="tab ${this.tabData.view === EmbedReplayDataView.Pages
             ? "is-active"
             : ""}"
         >
           <a
             @click="${this.onTabClick}"
             href="#pages"
-            class="is-size-6"
             aria-label="Pages"
             aria-current="${ifDefined(
               this.tabData.view === EmbedReplayDataView.Pages
@@ -1142,14 +1146,13 @@ class Item extends LitElement {
         </li>
 
         <li
-          class="${this.tabData.view === EmbedReplayDataView.Resources
+          class="tab ${this.tabData.view === EmbedReplayDataView.Resources
             ? "is-active"
             : ""}"
         >
           <a
             @click="${this.onTabClick}"
             href="#resources"
-            class="is-size-6"
             aria-label="URLs"
             aria-current="${ifDefined(
               this.tabData.view === EmbedReplayDataView.Resources
