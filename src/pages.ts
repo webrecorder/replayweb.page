@@ -511,24 +511,25 @@ class Pages extends LitElement {
         display: flex;
         flex-direction: column;
         border-right: 3px solid rgb(237, 237, 237);
-        background-color: whitesmoke;
-        padding-right: 0px;
+        background-color: var(--sl-color-neutral-100);
         position: relative;
+        padding: var(--sl-spacing-medium) 0 var(--sl-spacing-medium)
+          var(--sl-spacing-medium);
       }
 
       .index-bar-label {
         text-transform: uppercase;
-        font-size: var(--sl-font-size-x-small);
+        font-size: var(--sl-font-size-2x-small);
         font-weight: var(--sl-font-weight-semibold);
         color: var(--sl-color-neutral-500);
-        margin-bottom: var(--sl-spacing-2x-small);
+        margin-bottom: var(--sl-spacing-x-small);
         line-height: 1;
       }
 
       .index-bar-title {
-        font-size: var(--sl-font-size-large);
+        font-size: var(--sl-font-size-small);
         font-weight: var(--sl-font-weight-semibold);
-        margin-bottom: var(--sl-spacing-large);
+        margin-bottom: var(--sl-spacing-medium);
         word-break: break-word;
       }
 
@@ -559,9 +560,9 @@ class Pages extends LitElement {
       }
 
       .num-results {
-        font-style: italic;
         font-weight: normal;
-        line-height: 2.5;
+        font-size: var(--sl-font-size-small);
+        line-height: 1;
       }
 
       .asc:after {
@@ -650,6 +651,9 @@ class Pages extends LitElement {
         width: auto;
         display: flex;
         flex-direction: column;
+        padding: var(--sl-spacing-medium);
+        background-color: var(--sl-color-neutral-100);
+        border-bottom: 1px solid var(--sl-panel-border-color);
       }
 
       .flex-auto {
@@ -657,7 +661,8 @@ class Pages extends LitElement {
       }
 
       .index-bar-description {
-        margin-bottom: var(--sl-spacing-x-small);
+        font-size: var(--sl-font-size-small);
+        margin-bottom: var(--sl-spacing-small);
         line-height: var(--sl-line-height-normal);
         flex: 1 1 auto;
         overflow: auto;
@@ -731,7 +736,7 @@ class Pages extends LitElement {
       >
         Pages in ${this.collInfo!.title}
       </div>
-      <div class="search-bar notification is-marginless">
+      <div class="search-bar is-marginless">
         ${this.isSidebar
           ? html`<h3 class="is-sr-only">Search and Filter Pages</h3>`
           : ""}
@@ -769,11 +774,7 @@ class Pages extends LitElement {
                   />
                 </form>
               `
-            : html` <div
-                  class="index-bar-label ${this.collInfo!.description
-                    ? "is-hidden-mobile"
-                    : "is-sr-only"}"
-                >
+            : html` <div class="index-bar-label is-hidden-mobile">
                   Collection Name
                 </div>
                 <div
@@ -1312,11 +1313,15 @@ class Pages extends LitElement {
     const total = collTotal || filteredTotal;
     const shown = this.sortedPages.length;
 
+    const totalStr = `${total.toLocaleString()} ${
+      total === 1 ? "Page" : "Pages"
+    }`;
+
     if (total === shown) {
-      return `${total} ${total === 1 ? "Page" : "Pages"}`;
+      return totalStr;
     }
 
-    return `${shown} of ${total} Pages Shown`;
+    return `${shown.toLocaleString()} of ${totalStr}`;
   }
 
   getNoResultsMessage() {
