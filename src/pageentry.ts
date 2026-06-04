@@ -5,6 +5,8 @@ import { property, state } from "lit/decorators.js";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
+import faFileImage from "@fortawesome/fontawesome-free/svgs/solid/file-image.svg";
+
 import { getPageDateTS, getReplayLink } from "./pageutils";
 
 import { wrapCss } from "./misc";
@@ -92,6 +94,37 @@ class PageEntry extends LitElement {
         margin-bottom: calc(-0.75rem + 2px);
       }
 
+      .thumbnail {
+        background-color: var(--sl-color-neutral-100);
+        border: 1px solid var(--sl-color-neutral-200);
+        border-radius: var(--sl-border-radius-large);
+      }
+
+      .thumbnail-placeholder {
+        position: relative;
+      }
+
+      .thumbnail-placeholder-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: clip;
+      }
+
+      .thumbnail-placeholder-content .icon {
+        margin: var(--sl-spacing-2x-small) 0;
+        color: var(--sl-color-neutral-300);
+      }
+
+      .thumbnail-placeholder-label {
+        font-size: var(--sl-font-size-x-small);
+        color: var(--sl-color-neutral-500);
+        line-height: 1;
+      }
+
       .favicon {
         display: inline-block;
         vertical-align: text-bottom;
@@ -143,12 +176,10 @@ class PageEntry extends LitElement {
 
       .current a {
         background-color: rgb(207, 243, 255);
-        font-style: italic;
         display: block;
       }
 
       .current .curr-page {
-        font-style: italic;
         font-size: 9px;
         color: black;
       }
@@ -163,6 +194,14 @@ class PageEntry extends LitElement {
 
       .col-date {
         font-variant-numeric: tabular-nums;
+      }
+
+      .date-time {
+        font-size: var(--sl-font-size-small);
+      }
+
+      .url {
+        font-size: var(--sl-font-size-small);
       }
     `);
   }
@@ -185,7 +224,7 @@ class PageEntry extends LitElement {
       }
       ${prefix} .is-inline-date {
         display: initial !important;
-        font-style: italic;
+        font-size: var(--sl-font-size-small);
       }
       ${prefix} .media-left {
         padding-left: 0.75rem;
@@ -229,7 +268,7 @@ class PageEntry extends LitElement {
           : ""}
         <div class="column col-date is-2">
           <div>${date ? dateFormatter.format(date) : ""}</div>
-          <div>${date ? timeFormatter.format(date) : ""}</div>
+          <div class="date-time">${date ? timeFormatter.format(date) : ""}</div>
         </div>
         <div class="column">
           <div class="media">
@@ -247,14 +286,15 @@ class PageEntry extends LitElement {
                   )}"
                 >
                   <p class="is-size-6 has-text-weight-bold has-text-link text">
+                    ${this.renderFavicon()}
                     <keyword-mark keywords="${this.query}"
                       >${p.title || p.url}</keyword-mark
                     >
                   </p>
-                  <p class="has-text-dark text">
+                  <p class="url has-text-dark text">
                     <keyword-mark keywords="${this.query}"
                       >${p.url}</keyword-mark
-                    >${this.thumbnailValid ? this.renderFavicon() : ""}
+                    >
                   </p>
                   <p class="has-text-grey-dark text is-inline-date">
                     ${date ? dateTimeFormatter.format(date) : ""}
@@ -301,7 +341,14 @@ class PageEntry extends LitElement {
 
   private renderPageIcon() {
     if (!this.thumbnailValid) {
-      return this.renderFavicon();
+      return html`<div class="thumbnail thumbnail-placeholder image is-16by9">
+        <div class="thumbnail-placeholder-content">
+          <span class="icon is-small">
+            <fa-icon .svg="${faFileImage}" aria-hidden="true"></fa-icon>
+          </span>
+          <span class="thumbnail-placeholder-label">No image</span>
+        </div>
+      </div>`;
     }
     return html`<img
       class="thumbnail"
