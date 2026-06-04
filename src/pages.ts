@@ -522,14 +522,14 @@ class Pages extends LitElement {
         font-size: var(--sl-font-size-2x-small);
         font-weight: var(--sl-font-weight-semibold);
         color: var(--sl-color-neutral-500);
-        margin-bottom: var(--sl-spacing-x-small);
+        margin-bottom: var(--sl-spacing-2x-small);
         line-height: 1;
       }
 
       .index-bar-title {
         font-size: var(--sl-font-size-small);
         font-weight: var(--sl-font-weight-semibold);
-        margin-bottom: var(--sl-spacing-medium);
+        margin-bottom: var(--sl-spacing-small);
         word-break: break-word;
       }
 
@@ -563,6 +563,39 @@ class Pages extends LitElement {
         font-weight: normal;
         font-size: var(--sl-font-size-small);
         line-height: 1;
+      }
+
+      .seed-pages-filter {
+        font-size: var(--sl-font-size-small);
+      }
+
+      .seed-pages-filter .checkbox {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sl-spacing-x-small);
+      }
+
+      .index-bar .seed-pages-filter {
+        margin-bottom: var(--sl-spacing-small);
+      }
+
+      .sorter {
+        gap: var(--sl-spacing-x-small);
+        align-items: center;
+      }
+
+      .sorter .num-results {
+        width: 100%;
+      }
+
+      .sorter wr-sorter {
+        flex-grow: 1;
+      }
+
+      .sorter .seed-pages-filter {
+        flex-shrink: 0;
+        font-weight: normal;
+        font-size: var(--sl-font-size-x-small);
       }
 
       .asc:after {
@@ -643,15 +676,11 @@ class Pages extends LitElement {
         border-bottom: 3px solid rgb(237, 237, 237);
       }
 
-      .check-select {
-        padding: 0 1em 0 0.5em;
-      }
-
       .search-bar {
         width: auto;
         display: flex;
         flex-direction: column;
-        padding: var(--sl-spacing-medium);
+        padding: var(--sl-spacing-small);
         background-color: var(--sl-color-neutral-100);
         border-bottom: 1px solid var(--sl-panel-border-color);
       }
@@ -662,6 +691,7 @@ class Pages extends LitElement {
 
       .index-bar-description {
         font-size: var(--sl-font-size-small);
+        margin-top: var(--sl-spacing-medium);
         margin-bottom: var(--sl-spacing-small);
         line-height: var(--sl-line-height-normal);
         flex: 1 1 auto;
@@ -799,27 +829,13 @@ class Pages extends LitElement {
           ${this.editable
             ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`
             : html``}
-          ${this.hasExtraPages
-            ? html` <span class="check-select">
-                <label class="checkbox">
-                  <input
-                    @change=${(e: Event) =>
-                      (this.showAllPages = (
-                        e.currentTarget as HTMLInputElement
-                      ).checked)}
-                    type="checkbox"
-                    .checked="${this.showAllPages}"
-                  />
-                  Show Non-Seed Pages
-                </label>
-              </span>`
-            : ""}
+          ${this.renderSeedPagesFilter()}
 
           <span
             class="num-results is-hidden-mobile"
             aria-live="polite"
             aria-atomic="true"
-            >${this.formatResults()}</span
+            >${this.renderPageCounts()}</span
           >
           ${this.editable
             ? html` <div class="index-bar-actions">
@@ -1003,10 +1019,11 @@ class Pages extends LitElement {
         >
       </div>
 
-      <div class="is-hidden-tablet mobile-header">
+      <div class="sorter is-hidden-tablet mobile-header">
         <div class="num-results" aria-live="polite" aria-atomic="true">
-          ${this.formatResults()}
+          ${this.renderPageCounts()}
         </div>
+
         <wr-sorter
           id="pages"
           .sortKey="${this.sortKey}"
@@ -1020,6 +1037,8 @@ class Pages extends LitElement {
           class="${this.filteredPages.length ? "" : "is-hidden"}"
         >
         </wr-sorter>
+
+        ${this.renderSeedPagesFilter()}
       </div>
     `;
   }
@@ -1307,7 +1326,7 @@ class Pages extends LitElement {
     this.requestUpdate();
   }
 
-  formatResults() {
+  renderPageCounts() {
     const collTotal = this.dynamicPagesQuery && this.collInfo?.pageCount;
     const filteredTotal = this.filteredPagesTotal;
     const total = collTotal || filteredTotal;
@@ -1322,6 +1341,22 @@ class Pages extends LitElement {
     }
 
     return `${shown.toLocaleString()} of ${totalStr}`;
+  }
+
+  renderSeedPagesFilter() {
+    if (!this.hasExtraPages) return;
+
+    return html`<div class="seed-pages-filter check-select">
+      <label class="checkbox">
+        <input
+          @change=${(e: Event) =>
+            (this.showAllPages = (e.currentTarget as HTMLInputElement).checked)}
+          type="checkbox"
+          .checked="${this.showAllPages}"
+        />
+        Show Non-Seed Pages
+      </label>
+    </div>`;
   }
 
   getNoResultsMessage() {
