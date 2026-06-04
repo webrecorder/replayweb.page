@@ -1,7 +1,7 @@
 "use strict";
 
 import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
 import ndjson from "fetch-ndjson";
@@ -110,13 +110,13 @@ class Pages extends LitElement {
   dynamicPagesQuery = false;
 
   @property({ type: Number })
-  totalPages = 0;
-
-  @property({ type: Number })
   dynamicPageCount = 1;
 
   @property({ type: Boolean })
   skipScrollMore = false;
+
+  @state()
+  private filteredPagesTotal = 0;
 
   private _ival: number | undefined;
 
@@ -222,7 +222,10 @@ class Pages extends LitElement {
     }
     this.loading = true;
     if (this.flex && this.query && this.textPages) {
-      const results = await this.flex.searchAsync(this.query, 25);
+      const results = await this.flex.searchAsync(
+        this.query,
+        DYNAMIC_PAGE_SIZE,
+      );
       this.filteredPages = results.map(
         (inx: Id) => this.textPages![inx as number],
       );
@@ -232,7 +235,7 @@ class Pages extends LitElement {
       this.filteredPages = [...this.collInfo!.pages];
     }
 
-    this.totalPages = this.filteredPages.length;
+    this.filteredPagesTotal = this.filteredPages.length;
 
     if (this.dynamicPagesQuery) {
       if (!this.query) {
@@ -347,7 +350,7 @@ class Pages extends LitElement {
       this.filteredPages = [...this.filteredPages, ...newPages];
     }
 
-    this.totalPages = this.filteredPages.length;
+    this.filteredPagesTotal = this.filteredPages.length;
   }
 
   async filterCurated() {
@@ -369,10 +372,7 @@ class Pages extends LitElement {
     );
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'pages' implicitly has an 'any' type.
-  // TODO: Fix this the next time the file is edited.
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
-  addPages(pages) {
+  async addPages(pages: Page[]) {
     const flex = new FlexIndex();
 
     this.flex = flex;
@@ -380,8 +380,7 @@ class Pages extends LitElement {
 
     if (!this.dynamicPagesQuery) {
       this.hasExtraPages = Boolean(
-        this.textPages &&
-          this.collInfo?.pages &&
+        this.collInfo?.pages &&
           this.textPages.length > this.collInfo.pages.length,
       );
     }
@@ -391,10 +390,7 @@ class Pages extends LitElement {
     }
 
     return Promise.all(
-      // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'page' implicitly has an 'any' type. | TS7006 - Parameter 'index' implicitly has an 'any' type.
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line @typescript-eslint/promise-function-async
-      pages.map((page, index) => {
+      pages.map(async (page, index) => {
         let text = page.url;
         if (page.title) {
           text += " " + page.title;
@@ -402,8 +398,6 @@ class Pages extends LitElement {
         if (page.text) {
           text += " " + page.text;
         }
-        // TODO: Fix this the next time the file is edited.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         return flex.addAsync(index, text);
       }),
     );
@@ -433,7 +427,7 @@ class Pages extends LitElement {
         }
       }
 
-      const lines: unknown[] = [];
+      const lines: Page[] = [];
 
       for await (const line of ndjson(resp.body!.getReader())) {
         if (!line.url) {
@@ -445,7 +439,7 @@ class Pages extends LitElement {
         if (typeof line.ts === "string") {
           line.ts = new Date(line.ts as string).getTime();
         }
-        lines.push(line);
+        lines.push(line as unknown as Page);
       }
 
       await this.addPages(lines);
@@ -1018,7 +1012,9 @@ class Pages extends LitElement {
           .sortDesc="${this.sortDesc}"
           .sortKeys="${Pages.sortKeys}"
           .data="${this.filteredPages}"
-          .pageResults="${this.dynamicPagesQuery ? this.totalPages : 100}"
+          .pageResults="${this.dynamicPagesQuery
+            ? this.filteredPagesTotal
+            : 100}"
           @sort-changed="${this.onSortChanged}"
           class="${this.filteredPages.length ? "" : "is-hidden"}"
         >
@@ -1311,12 +1307,16 @@ class Pages extends LitElement {
   }
 
   formatResults() {
-    const length = this.totalPages;
-    if (length === this.sortedPages.length) {
-      return `${length} Page${length !== 1 ? "s" : ""}`;
-    } else {
-      return `${this.sortedPages.length} of ${length} Pages Shown`;
+    const collTotal = this.dynamicPagesQuery && this.collInfo?.pageCount;
+    const filteredTotal = this.filteredPagesTotal;
+    const total = collTotal || filteredTotal;
+    const shown = this.sortedPages.length;
+
+    if (total === shown) {
+      return `${total} ${total === 1 ? "Page" : "Pages"}`;
     }
+
+    return `${shown} of ${total} Pages Shown`;
   }
 
   getNoResultsMessage() {
