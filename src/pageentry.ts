@@ -17,6 +17,7 @@ import {
   timeFormatter,
 } from "./utils/dateTimeFormatter";
 import type { TabNavEvent } from "./events";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 // ===========================================================================
 class PageEntry extends LitElement {
@@ -72,6 +73,18 @@ class PageEntry extends LitElement {
         width: unset !important;
       }
 
+      :host(.sidebar) .page-title {
+        font-size: var(--sl-font-size-small);
+      }
+
+      :host(.sidebar) .page-link:not(.current):hover {
+        background-color: var(--sl-color-neutral-50);
+      }
+
+      :host(.sidebar) .current {
+        background-color: var(--sl-color-blue-100);
+      }
+
       :host(.sidebar) {
         width: 100%;
       }
@@ -125,9 +138,23 @@ class PageEntry extends LitElement {
         line-height: 1;
       }
 
+      .page-link {
+        transition: background-color var(--sl-transition-x-fast);
+      }
+
+      .page-link:hover .page-title {
+        color: var(--sl-color-blue-700);
+      }
+
+      .page-title {
+        font-weight: var(--sl-font-weight-bold);
+        color: var(--sl-color-blue-600);
+        transition: color var(--sl-transition-x-fast);
+      }
+
       .favicon {
         display: inline-block;
-        vertical-align: text-bottom;
+        vertical-align: -0.25rem;
       }
 
       .media-left .favicon {
@@ -174,16 +201,6 @@ class PageEntry extends LitElement {
 
       ${PageEntry.sidebarStyles(unsafeCSS`:host(.sidebar)`)}
 
-      .current a {
-        background-color: rgb(207, 243, 255);
-        display: block;
-      }
-
-      .current .curr-page {
-        font-size: 9px;
-        color: black;
-      }
-
       .is-inline-date {
         display: none;
       }
@@ -196,11 +213,13 @@ class PageEntry extends LitElement {
         font-variant-numeric: tabular-nums;
       }
 
-      .date-time {
+      .date-time,
+      .is-inline-date {
         font-size: var(--sl-font-size-small);
+        color: var(--sl-color-neutral-700);
       }
 
-      .url {
+      .page-url {
         font-size: var(--sl-font-size-small);
       }
     `);
@@ -224,10 +243,6 @@ class PageEntry extends LitElement {
       }
       ${prefix} .is-inline-date {
         display: initial !important;
-        font-size: var(--sl-font-size-small);
-      }
-      ${prefix} .media-left {
-        padding-left: 0.75rem;
       }
     `;
   }
@@ -270,10 +285,13 @@ class PageEntry extends LitElement {
           <div>${date ? dateFormatter.format(date) : ""}</div>
           <div class="date-time">${date ? timeFormatter.format(date) : ""}</div>
         </div>
-        <div class="column">
+        <div
+          class="page-link column ${this.isCurrent ? "current" : ""}"
+          aria-current=${ifDefined(this.isCurrent ? "location" : undefined)}
+        >
           <div class="media">
             <figure class="media-left">${this.renderPageIcon()}</figure>
-            <div class="media-content ${this.isCurrent ? "current" : ""}">
+            <div class="media-content">
               <div role="heading" aria-level="${this.isSidebar ? "4" : "3"}">
                 <a
                   @dblclick="${this.onReload}"
@@ -285,18 +303,18 @@ class PageEntry extends LitElement {
                     this.page!.waczhash,
                   )}"
                 >
-                  <p class="is-size-6 has-text-weight-bold has-text-link text">
+                  <p class="page-title text">
                     ${this.renderFavicon()}
                     <keyword-mark keywords="${this.query}"
                       >${p.title || p.url}</keyword-mark
                     >
                   </p>
-                  <p class="url has-text-dark text">
+                  <p class="page-url has-text-dark text">
                     <keyword-mark keywords="${this.query}"
                       >${p.url}</keyword-mark
                     >
                   </p>
-                  <p class="has-text-grey-dark text is-inline-date">
+                  <p class="text is-inline-date">
                     ${date ? dateTimeFormatter.format(date) : ""}
                   </p>
                 </a>

@@ -700,6 +700,7 @@ class Pages extends LitElement {
 
       .page-entry {
         padding-bottom: 1.5rem;
+        margin-right: -1.5rem;
       }
 
       .selected {
