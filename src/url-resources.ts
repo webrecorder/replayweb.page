@@ -277,9 +277,20 @@ class URLResources extends LitElement {
         width: 100% !important;
       }
 
-      .notification {
+      .search-bar {
         width: 100%;
+        background-color: var(--sl-color-neutral-100);
+        border-bottom: 1px solid var(--sl-panel-border-color);
       }
+
+      .main-search-bar {
+        padding: var(--sl-spacing-small);
+      }
+
+      .sidebar-search-bar {
+        padding: var(--sl-spacing-x-small);
+      }
+
       .all-results {
         margin: 0 0 0 0.5em;
         display: flex;
@@ -362,7 +373,11 @@ class URLResources extends LitElement {
       >
         Search and Filter
       </div>
-      <div class="notification level is-marginless">
+      <div
+        class="search-bar level is-marginless ${this.isSidebar
+          ? "sidebar-search-bar"
+          : "main-search-bar"}"
+      >
         <div class="level-left flex-auto">
           <div class="level-item flex-auto">
             <span class="is-hidden-mobile">Search:&nbsp;&nbsp;</span>
