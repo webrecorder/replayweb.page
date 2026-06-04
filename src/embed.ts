@@ -460,8 +460,6 @@ class Embed extends LitElement {
       this.reloadCount <= 2
     ) {
       this.reloadCount++;
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       setTimeout(() => win.location.reload(), 100);
       return;
     }

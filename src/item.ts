@@ -1655,9 +1655,10 @@ class Item extends LitElement {
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'isSidebar' implicitly has an 'any' type.
   renderItemTabs(isSidebar) {
-    const isStory = this.hasStory && this.tabData.view === "story";
-    const isPages = this.tabData.view === "pages";
-    const isResources = this.tabData.view === "resources";
+    const isStory =
+      this.hasStory && this.tabData.view === EmbedReplayDataView.Story;
+    const isPages = this.tabData.view === EmbedReplayDataView.Pages;
+    const isResources = this.tabData.view === EmbedReplayDataView.Resources;
 
     return html`
       ${isStory
