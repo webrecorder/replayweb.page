@@ -603,7 +603,7 @@ class Item extends LitElement {
     }
 
     if (
-      targetId === this.tabData.view ||
+      targetId === (this.tabData.view as string) ||
       (targetId === "replay" && this.tabData.url) ||
       (this.showSidebar && this.tabData.url)
     ) {
@@ -1077,7 +1077,9 @@ class Item extends LitElement {
           : ""}
         ${this.hasStory
           ? html` <li
-              class="${this.tabData.view === "story" ? "is-active" : ""}"
+              class="${this.tabData.view === EmbedReplayDataView.Story
+                ? "is-active"
+                : ""}"
             >
               <a
                 @click="${this.onTabClick}"
@@ -1085,7 +1087,9 @@ class Item extends LitElement {
                 class="is-size-6"
                 aria-label="Story"
                 aria-current="${ifDefined(
-                  this.tabData.view === "story" ? "location" : undefined,
+                  this.tabData.view === EmbedReplayDataView.Story
+                    ? "location"
+                    : undefined,
                 )}"
               >
                 <span class="icon"
@@ -1104,14 +1108,20 @@ class Item extends LitElement {
             </li>`
           : ""}
 
-        <li class="${this.tabData.view === "pages" ? "is-active" : ""}">
+        <li
+          class="${this.tabData.view === EmbedReplayDataView.Pages
+            ? "is-active"
+            : ""}"
+        >
           <a
             @click="${this.onTabClick}"
             href="#pages"
             class="is-size-6"
             aria-label="Pages"
             aria-current="${ifDefined(
-              this.tabData.view === "pages" ? "location" : undefined,
+              this.tabData.view === EmbedReplayDataView.Pages
+                ? "location"
+                : undefined,
             )}"
           >
             <span class="icon"
@@ -1125,14 +1135,20 @@ class Item extends LitElement {
           </a>
         </li>
 
-        <li class="${this.tabData.view === "resources" ? "is-active" : ""}">
+        <li
+          class="${this.tabData.view === EmbedReplayDataView.Resources
+            ? "is-active"
+            : ""}"
+        >
           <a
             @click="${this.onTabClick}"
             href="#resources"
             class="is-size-6"
             aria-label="URLs"
             aria-current="${ifDefined(
-              this.tabData.view === "resources" ? "location" : undefined,
+              this.tabData.view === EmbedReplayDataView.Resources
+                ? "location"
+                : undefined,
             )}"
           >
             <span class="icon"
