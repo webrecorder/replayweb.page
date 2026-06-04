@@ -1,6 +1,13 @@
 "use strict";
 
-import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
+import {
+  LitElement,
+  html,
+  css,
+  unsafeCSS,
+  type PropertyValues,
+  nothing,
+} from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
@@ -13,6 +20,7 @@ import { getTS, getPageDateTS } from "./pageutils";
 
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 import fasAngleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-down.svg";
+import faArrowDown from "@fortawesome/fontawesome-free/svgs/solid/arrow-down.svg";
 import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
 
 import type { Sorter } from "./sorter";
@@ -483,6 +491,7 @@ class Pages extends LitElement {
       .header.columns {
         width: 100%;
         margin-bottom: 0px;
+        padding: var(--sl-spacing-x-small) var(--sl-spacing-small);
       }
       .header a {
         color: black;
@@ -497,8 +506,6 @@ class Pages extends LitElement {
         display: flex;
         flex-direction: column;
         padding: 0px;
-        margin-top: 0.5em;
-        margin-left: 0.75em;
       }
 
       .thumbnail {
@@ -510,7 +517,7 @@ class Pages extends LitElement {
       .index-bar {
         display: flex;
         flex-direction: column;
-        border-right: 3px solid rgb(237, 237, 237);
+        border-right: 1px solid var(--sl-panel-border-color);
         background-color: var(--sl-color-neutral-100);
         position: relative;
         padding: var(--sl-spacing-medium) 0 var(--sl-spacing-medium)
@@ -519,7 +526,7 @@ class Pages extends LitElement {
 
       .index-bar-label {
         text-transform: uppercase;
-        font-size: var(--sl-font-size-2x-small);
+        font-size: var(--sl-font-size-x-small);
         font-weight: var(--sl-font-weight-semibold);
         color: var(--sl-color-neutral-500);
         margin-bottom: var(--sl-spacing-2x-small);
@@ -560,9 +567,24 @@ class Pages extends LitElement {
       }
 
       .num-results {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--sl-spacing-small);
+        justify-content: space-between;
         font-weight: normal;
         font-size: var(--sl-font-size-small);
+        color: var(--sl-color-neutral-700);
         line-height: 1;
+        border-top: 1px solid var(--sl-panel-border-color);
+      }
+
+      .main-num-results {
+        padding: var(--sl-spacing-x-small) var(--sl-spacing-small);
+      }
+
+      .sidebar-num-results {
+        padding: var(--sl-spacing-x-small);
       }
 
       .seed-pages-filter {
@@ -584,18 +606,23 @@ class Pages extends LitElement {
         align-items: center;
       }
 
-      .sorter .num-results {
-        width: 100%;
-      }
-
       .sorter wr-sorter {
         flex-grow: 1;
       }
 
       .sorter .seed-pages-filter {
         flex-shrink: 0;
-        font-weight: normal;
         font-size: var(--sl-font-size-x-small);
+      }
+
+      .sort-control-label {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sl-spacing-2x-small);
+        font-size: var(--sl-font-size-small);
+        font-weight: var(--sl-font-weight-semibold);
+        color: var(--sl-color-neutral-600);
+        padding-bottom: 0;
       }
 
       .asc:after {
@@ -647,9 +674,16 @@ class Pages extends LitElement {
         display: flex;
         flex-direction: column;
         flex: auto;
-
-        padding-bottom: 1em;
+        padding: var(--sl-spacing-small);
         min-height: 0px;
+      }
+
+      .scroller-help-text {
+        color: var(--sl-color-neutral-500);
+      }
+
+      .scroller-help-text .icon {
+        font-size: 10px;
       }
 
       .page-entry {
@@ -671,18 +705,23 @@ class Pages extends LitElement {
         align-items: baseline;
         width: 100%;
         min-height: fit-content;
-
-        margin-bottom: 1em;
-        border-bottom: 3px solid rgb(237, 237, 237);
+        border-bottom: 1px solid var(--sl-panel-border-color);
       }
 
       .search-bar {
         width: auto;
         display: flex;
         flex-direction: column;
-        padding: var(--sl-spacing-small);
         background-color: var(--sl-color-neutral-100);
         border-bottom: 1px solid var(--sl-panel-border-color);
+      }
+
+      .main-search-bar {
+        padding: var(--sl-spacing-small);
+      }
+
+      .sidebar-search-bar {
+        padding: var(--sl-spacing-x-small);
       }
 
       .flex-auto {
@@ -727,8 +766,7 @@ class Pages extends LitElement {
       }
 
       ${prefix} .mobile-header {
-        margin: 0.5rem;
-        margin-left: 1rem;
+        margin: var(--sl-spacing-x-small);
         align-items: center;
         display: flex;
         justify-content: space-between;
@@ -766,7 +804,11 @@ class Pages extends LitElement {
       >
         Pages in ${this.collInfo!.title}
       </div>
-      <div class="search-bar is-marginless">
+      <div
+        class="search-bar is-marginless ${this.isSidebar
+          ? "sidebar-search-bar"
+          : "main-search-bar"}"
+      >
         ${this.isSidebar
           ? html`<h3 class="is-sr-only">Search and Filter Pages</h3>`
           : ""}
@@ -830,13 +872,6 @@ class Pages extends LitElement {
             ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`
             : html``}
           ${this.renderSeedPagesFilter()}
-
-          <span
-            class="num-results is-hidden-mobile"
-            aria-live="polite"
-            aria-atomic="true"
-            >${this.renderPageCounts()}</span
-          >
           ${this.editable
             ? html` <div class="index-bar-actions">
                 ${this.renderDownloadMenu()}
@@ -978,7 +1013,7 @@ class Pages extends LitElement {
               @click="${this.onSort}"
               @keyup="${clickOnSpacebarPress}"
               data-key=""
-              class="column is-1 ${this.sortKey === ""
+              class="sort-control-label column is-1 ${this.sortKey === ""
                 ? this.sortDesc
                   ? "desc"
                   : "asc"
@@ -993,7 +1028,7 @@ class Pages extends LitElement {
           @click="${this.onSort}"
           @keyup="${clickOnSpacebarPress}"
           data-key="date"
-          class="column is-2 ${this.sortKey === "date"
+          class="sort-control-label column is-2 ${this.sortKey === "date"
             ? this.sortDesc
               ? "desc"
               : "asc"
@@ -1009,8 +1044,9 @@ class Pages extends LitElement {
           @click="${this.onSort}"
           @keyup="${clickOnSpacebarPress}"
           data-key="title"
-          class="column is-6 pagetitle ${this.query ? "is-5" : "is-6"} ${this
-            .sortKey === "title"
+          class="sort-control-label column is-6 pagetitle ${this.query
+            ? "is-5"
+            : "is-6"} ${this.sortKey === "title"
             ? this.sortDesc
               ? "desc"
               : "asc"
@@ -1020,10 +1056,6 @@ class Pages extends LitElement {
       </div>
 
       <div class="sorter is-hidden-tablet mobile-header">
-        <div class="num-results" aria-live="polite" aria-atomic="true">
-          ${this.renderPageCounts()}
-        </div>
-
         <wr-sorter
           id="pages"
           .sortKey="${this.sortKey}"
@@ -1108,9 +1140,7 @@ class Pages extends LitElement {
   renderPages() {
     //const name = this.currList === 0 ? "All Pages" : this.collInfo.lists[this.currList - 1].title;
     return html`
-      <div class="page-header has-text-weight-bold">
-        ${this.renderPageHeader()}
-      </div>
+      <div class="page-header">${this.renderPageHeader()}</div>
       <ul class="scroller" @scroll="${this.onScroll}">
         ${this.sortedPages.length
           ? html` ${this.sortedPages.map((p, i) => {
@@ -1136,6 +1166,15 @@ class Pages extends LitElement {
             })}`
           : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
       </ul>
+      <div
+        class="num-results ${this.isSidebar
+          ? "sidebar-num-results"
+          : "main-num-results"}"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        ${this.renderPaginationResults()}
+      </div>
     `;
   }
 
@@ -1326,21 +1365,29 @@ class Pages extends LitElement {
     this.requestUpdate();
   }
 
-  renderPageCounts() {
+  renderPaginationResults() {
     const collTotal = this.dynamicPagesQuery && this.collInfo?.pageCount;
     const filteredTotal = this.filteredPagesTotal;
     const total = collTotal || filteredTotal;
     const shown = this.sortedPages.length;
 
     const totalStr = `${total.toLocaleString()} ${
-      total === 1 ? "Page" : "Pages"
+      total === 1 ? "page" : "pages"
     }`;
+    const allShown = total === shown;
+    const countMsg = allShown
+      ? totalStr
+      : `${shown.toLocaleString()} of ${totalStr}`;
 
-    if (total === shown) {
-      return totalStr;
-    }
-
-    return `${shown.toLocaleString()} of ${totalStr}`;
+    return html`<span>${countMsg}</span>
+      ${allShown
+        ? nothing
+        : html`<span class="scroller-help-text">
+            Scroll for more
+            <span class="icon is-small">
+              <fa-icon .svg="${faArrowDown}" aria-hidden="true"></fa-icon>
+            </span>
+          </span>`} `;
   }
 
   renderSeedPagesFilter() {
@@ -1385,9 +1432,8 @@ class Pages extends LitElement {
     return "No Pages Found";
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  async onScroll(event) {
-    const element = event.currentTarget;
+  async onScroll(event: Event) {
+    const element = event.currentTarget as HTMLUListElement;
     const diff =
       element.scrollHeight - element.scrollTop - element.clientHeight;
     if (diff < 40 && !this.skipScrollMore) {
