@@ -592,7 +592,7 @@ class Pages extends LitElement {
       }
 
       .seed-pages-filter .checkbox {
-        display: inline-flex;
+        display: flex;
         align-items: center;
         gap: var(--sl-spacing-x-small);
       }
