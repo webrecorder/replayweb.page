@@ -1,6 +1,13 @@
 import prettyBytes from "pretty-bytes";
 
-import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
+import {
+  LitElement,
+  html,
+  css,
+  unsafeCSS,
+  type PropertyValues,
+  nothing,
+} from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "keyword-mark-element/lib/keyword-mark.js";
@@ -50,6 +57,9 @@ class PageEntry extends LitElement {
 
   @property({ type: Boolean })
   isSidebar = false;
+
+  @property({ type: Boolean })
+  useFaviconFallback = false;
 
   @state()
   thumbnailValid = true;
@@ -124,7 +134,8 @@ class PageEntry extends LitElement {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        overflow: clip;
+        overflow: hidden;
+        padding: var(--sl-spacing-2x-small);
       }
 
       .thumbnail-placeholder-content .icon {
@@ -133,7 +144,7 @@ class PageEntry extends LitElement {
       }
 
       .thumbnail-placeholder-label {
-        font-size: var(--sl-font-size-x-small);
+        font-size: var(--sl-font-size-2x-small);
         color: var(--sl-color-neutral-500);
         line-height: 1;
       }
@@ -152,23 +163,16 @@ class PageEntry extends LitElement {
         transition: color var(--sl-transition-x-fast);
       }
 
-      .favicon {
-        display: inline-block;
-        vertical-align: -0.25rem;
-      }
-
       .media-left .favicon {
-        width: 2rem;
-        height: 2rem;
-      }
-      .media-left img.favicon {
-        filter: drop-shadow(1px 1px 2px grey);
+        object-fit: contain;
       }
 
       .media-content .favicon {
         width: 1.15rem;
         height: 1.15rem;
         margin: 0 0.25rem;
+        display: inline-block;
+        vertical-align: -0.25rem;
       }
 
       .media-left {
@@ -304,7 +308,7 @@ class PageEntry extends LitElement {
                   )}"
                 >
                   <p class="page-title text">
-                    ${this.renderFavicon()}
+                    ${this.thumbnailValid ? this.renderFavicon() : nothing}
                     <keyword-mark keywords="${this.query}"
                       >${p.title || p.url}</keyword-mark
                     >
@@ -359,21 +363,30 @@ class PageEntry extends LitElement {
 
   private renderPageIcon() {
     if (!this.thumbnailValid) {
-      return html`<div class="thumbnail thumbnail-placeholder image is-16by9">
+      return html`<div
+        class="thumbnail-placeholder image is-16by9 ${this.useFaviconFallback
+          ? "favicon-fallback"
+          : "thumbnail"}"
+      >
         <div class="thumbnail-placeholder-content">
-          <span class="icon is-small">
-            <fa-icon .svg="${faFileImage}" aria-hidden="true"></fa-icon>
-          </span>
-          <span class="thumbnail-placeholder-label">No image</span>
+          ${this.useFaviconFallback
+            ? this.renderFavicon()
+            : html`<span class="icon is-small">
+                  <fa-icon .svg="${faFileImage}" aria-hidden="true"></fa-icon>
+                </span>
+                <span class="thumbnail-placeholder-label">No image</span>`}
         </div>
       </div>`;
     }
-    return html`<img
-      class="thumbnail"
-      @error=${() => (this.thumbnailValid = false)}
-      src=${`${this.getReplayPrefix()}/urn:thumbnail:${this.page!.url}`}
-      loading="lazy"
-    />`;
+
+    return html`<div class="image is-16by9">
+      <img
+        class="thumbnail"
+        @error=${() => (this.thumbnailValid = false)}
+        src=${`${this.getReplayPrefix()}/urn:thumbnail:${this.page!.url}`}
+        loading="lazy"
+      />
+    </div>`;
   }
 
   private renderFavicon() {

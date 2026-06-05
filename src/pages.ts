@@ -1169,6 +1169,7 @@ class Pages extends LitElement {
                   ?selected="${selected}"
                   ?isCurrent="${this.isCurrPage(p)}"
                   ?isSidebar="${this.isSidebar}"
+                  useFaviconFallback
                   .page="${p}"
                   pid="${p.id}"
                   @sel-page="${this.onSelectToggle}"
