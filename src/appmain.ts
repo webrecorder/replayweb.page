@@ -452,6 +452,15 @@ export class ReplayWebApp extends LitElement {
       @coll-loaded=${this.onCollLoaded}
       @coll-load-cancel=${this.onCollLoadCancel}
       @about-show=${() => (this.showAbout = true)}
+      exportparts="
+       replay-bar:wr-item__replay-bar,
+       replay-bar-container:wr-item__replay-bar-container,
+       replay-bar-input:wr-item__replay-bar-input,
+       replay-content:wr-item__replay-content,
+       replay-tabs-nav:wr-item__replay-tabs-nav,
+       replay-tabs-panel:wr-item__replay-tabs-panel,
+       replay-main:wr-item__replay-main,
+     "
     ></wr-item>`;
   }
 

@@ -115,6 +115,10 @@ export type TabData = EmbedReplayData & {
  * @cssPart replay-bar
  * @cssPart replay-bar-container
  * @cssPart replay-bar-input
+ * @cssPart replay-content
+ * @cssPart replay-tabs-nav
+ * @cssPart replay-tabs-panel
+ * @cssPart replay-main
  * @cssProperty rwp-bar-background-color
  * @cssProperty rwp-bar-text-color
  * @cssProperty rwp-bar-button-color
@@ -688,10 +692,12 @@ class Item extends LitElement {
         flex-direction: row;
         margin-bottom: 0px;
         overflow: unset;
+        border-bottom: 1px solid var(--sl-panel-border-color);
       }
 
       .main.tabs ul {
         position: relative;
+        border-bottom: 0;
       }
 
       .main.tabs:not(.sidebar) ul {
@@ -1060,7 +1066,7 @@ class Item extends LitElement {
             >Close</sl-button
           >
         </sl-dialog>
-        <div id="tabContents">
+        <div id="tabContents" part="replay-content">
           <div
             id="contents"
             class="is-light ${isSidebar
@@ -1078,6 +1084,7 @@ class Item extends LitElement {
           ${isReplay && this.isVisible
             ? html`
                 <wr-coll-replay
+                  part="replay-main"
                   role="main"
                   .collInfo="${this.itemInfo}"
                   sourceUrl="${this.sourceUrl || ""}"
@@ -1090,6 +1097,11 @@ class Item extends LitElement {
                   @replay-favicons="${this.onFavIcons}"
                   @cancel-click-download="${() =>
                     (this.clickToDownloadMode = false)}"
+                  exportparts="
+                    iframe:wr-coll-replay__iframe,
+                    iframe-container:wr-coll-replay__iframe-container,
+                    iframe-page-not-found:wr-coll-replay__iframe-page-not-found,
+                  "
                 >
                 </wr-coll-replay>
               `
@@ -1108,6 +1120,7 @@ class Item extends LitElement {
     // }
 
     return html` <nav
+      part="replay-tabs-nav"
       class="main tabs is-centered ${isSidebar ? "sidebar" : ""}"
       aria-label="tabs"
     >
@@ -1689,6 +1702,7 @@ class Item extends LitElement {
     return html`
       ${isStory
         ? html` <wr-coll-story
+            part="replay-tabs-panel"
             .collInfo="${this.itemInfo || {}}"
             .active="${isStory}"
             currList="${this.tabData.currList || 0}"
@@ -1706,6 +1720,7 @@ class Item extends LitElement {
         : ""}
       ${isResources
         ? html` <wr-coll-resources
+            part="replay-tabs-panel"
             .collInfo="${this.itemInfo || {}}"
             .active="${isResources}"
             query="${this.tabData.query || ""}"
@@ -1725,6 +1740,7 @@ class Item extends LitElement {
         : ""}
       ${isPages
         ? html` <wr-page-view
+            part="replay-tabs-panel"
             .collInfo="${this.itemInfo}"
             .active="${isPages}"
             .editable="${this.editable}"

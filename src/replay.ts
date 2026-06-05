@@ -9,6 +9,9 @@ import type { ReplayLoadingDetail, TabNavEvent } from "./events";
 import { keyed } from "lit/directives/keyed.js";
 
 /**
+ * @cssPart iframe
+ * @cssPart iframe-container
+ * @cssPart iframe-page-not-found
  * @fires update-title
  * @fires coll-tab-nav
  * @fires update-title
@@ -462,10 +465,13 @@ class Replay extends LitElement {
                   : undefined,
               )}"
             ></a>
-            <div class="iframe-container">
+            <div part="iframe-container" class="iframe-container">
               ${keyed(
                 this.iframeUrlUpdateKey,
                 html`<iframe
+                  part="iframe ${this.replayNotFoundError
+                    ? "iframe-page-not-found"
+                    : ""}"
                   class="iframe-main"
                   name="___wb_replay_top_frame"
                   @message="${this.onReplayMessage}"
