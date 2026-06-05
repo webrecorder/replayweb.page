@@ -1,5 +1,5 @@
-import { LitElement, html, css, type PropertyValues } from "lit";
-import { property } from "lit/decorators.js";
+import { LitElement, html, css, type PropertyValues, nothing } from "lit";
+import { property, state } from "lit/decorators.js";
 import { ref, createRef, type Ref } from "lit/directives/ref.js";
 import type {
   SlDialog,
@@ -35,9 +35,10 @@ import farPages from "@fortawesome/fontawesome-free/svgs/regular/file-image.svg"
 import fasInfoIcon from "@fortawesome/fontawesome-free/svgs/solid/info-circle.svg";
 import fasSync from "@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg";
 
-import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.svg";
-import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
+import faExpandAlt from "@fortawesome/fontawesome-free/svgs/solid/expand-alt.svg";
+import faCompressAlt from "@fortawesome/fontawesome-free/svgs/solid/compress-alt.svg";
 import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
+import faThList from "@fortawesome/fontawesome-free/svgs/solid/th-list.svg";
 
 import iconArrowClockwise from "~icons/arrow-clockwise.svg";
 import iconArrowLeft from "~icons/arrow-left.svg";
@@ -219,6 +220,9 @@ class Item extends LitElement {
 
   @property({ type: Boolean })
   clickToDownloadMode = false;
+
+  @state()
+  private tabDataBeforeFullView?: TabData;
 
   private splitter: Split.Instance | null = null;
 
@@ -1148,25 +1152,6 @@ class Item extends LitElement {
       aria-label="tabs"
     >
       <ul>
-        ${isSidebar
-          ? html` <li class="sidebar-nav left">
-              <a
-                role="button"
-                href="#"
-                @click="${this.onHideSidebar}"
-                @keyup="${clickOnSpacebarPress}"
-                class="is-marginless is-size-6 is-paddingless"
-              >
-                <fa-icon
-                  title="Hide"
-                  .svg="${fasAngleLeft}"
-                  aria-hidden="true"
-                ></fa-icon>
-                <span class="nav-hover" aria-hidden="true">Hide</span>
-                <span class="is-sr-only">Hide Sidebar</span>
-              </a>
-            </li>`
-          : ""}
         ${this.hasStory
           ? html` <li
               class="${this.tabData.view === EmbedReplayDataView.Story
@@ -1253,7 +1238,7 @@ class Item extends LitElement {
         </li>
 
         ${isSidebar
-          ? html` <li class="sidebar-nav right">
+          ? html`<li class="sidebar-nav right">
               <a
                 role="button"
                 href="#"
@@ -1261,16 +1246,32 @@ class Item extends LitElement {
                 @keyup="${clickOnSpacebarPress}"
                 class="is-marginless is-size-6 is-paddingless"
               >
-                <span class="nav-hover" aria-hidden="true">Expand</span>
                 <span class="is-sr-only">Expand Sidebar to Full View</span>
                 <fa-icon
                   title="Expand"
-                  .svg="${fasAngleRight}"
+                  .svg="${faExpandAlt}"
                   aria-hidden="true"
                 ></fa-icon>
               </a>
             </li>`
-          : ""}
+          : this.tabDataBeforeFullView
+          ? html` <li class="sidebar-nav right">
+              <a
+                role="button"
+                href="#"
+                @click="${this.onSplitView}"
+                @keyup="${clickOnSpacebarPress}"
+                class="is-marginless is-size-6 is-paddingless"
+              >
+                <span class="is-sr-only">Go Back to Split View</span>
+                <fa-icon
+                  title="Contract"
+                  .svg="${faCompressAlt}"
+                  aria-hidden="true"
+                ></fa-icon>
+              </a>
+            </li>`
+          : nothing}
       </ul>
     </nav>`;
   }
@@ -1288,8 +1289,8 @@ class Item extends LitElement {
             @click="${this.onShowPages}"
             @keyup="${clickOnSpacebarPress}"
             ?disabled="${!isReplay}"
-            title="Browse Contents"
-            aria-label="Browse Contents"
+            title="Toggle Browse Contents"
+            aria-label="Toggle Browse Contents"
             aria-controls="contents"
           >
             <span class="icon is-small">
@@ -1865,14 +1866,23 @@ class Item extends LitElement {
     }
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onFullPageView(event) {
+  onFullPageView(event: MouseEvent) {
     event.preventDefault();
+
+    this.tabDataBeforeFullView = this.tabData;
     this.updateTabData({ url: "", ts: "" });
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onHideSidebar(event) {
+  onSplitView(event: MouseEvent) {
+    event.preventDefault();
+
+    if (this.tabDataBeforeFullView) {
+      this.updateTabData(this.tabDataBeforeFullView);
+      this.tabDataBeforeFullView = undefined;
+    }
+  }
+
+  onHideSidebar(event: MouseEvent) {
     event.preventDefault();
     this.showSidebar = false;
   }
