@@ -30,23 +30,22 @@ import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
 import fasFileDownload from "@fortawesome/fontawesome-free/svgs/regular/arrow-alt-circle-down.svg";
 
-import farListAlt from "@fortawesome/fontawesome-free/svgs/regular/list-alt.svg";
 import farResources from "@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg";
 import farPages from "@fortawesome/fontawesome-free/svgs/regular/file-image.svg";
 import fasInfoIcon from "@fortawesome/fontawesome-free/svgs/solid/info-circle.svg";
 import fasSync from "@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg";
 
-import fasRefresh from "@fortawesome/fontawesome-free/svgs/solid/redo-alt.svg";
-import fasFullscreen from "@fortawesome/fontawesome-free/svgs/solid/desktop.svg";
-import fasUnfullscreen from "@fortawesome/fontawesome-free/svgs/solid/compress-arrows-alt.svg";
-
-import fasLeft from "@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg";
-import fasRight from "@fortawesome/fontawesome-free/svgs/solid/arrow-right.svg";
-import fasMenuV from "@fortawesome/fontawesome-free/svgs/solid/ellipsis-v.svg";
-
 import fasAngleLeft from "@fortawesome/fontawesome-free/svgs/solid/angle-left.svg";
 import fasAngleRight from "@fortawesome/fontawesome-free/svgs/solid/angle-right.svg";
 import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
+
+import iconArrowClockwise from "~icons/arrow-clockwise.svg";
+import iconArrowLeft from "~icons/arrow-left.svg";
+import iconArrowRight from "~icons/arrow-right.svg";
+import iconArrowsFullscreen from "~icons/arrows-fullscreen.svg";
+import iconExitFullscreen from "~icons/fullscreen-exit.svg";
+import iconLayoutSidebar from "~icons/layout-sidebar.svg";
+import iconThreeDotsVertical from "~icons/three-dots-vertical.svg";
 
 import { RWPEmbedReceipt } from "./embed-receipt";
 import Split from "split.js";
@@ -731,6 +730,10 @@ class Item extends LitElement {
         background-color: white;
       }
 
+      .replay-bar .icon {
+        font-size: 1.125rem;
+      }
+
       input#url {
         border-radius: 4px;
       }
@@ -1177,12 +1180,11 @@ class Item extends LitElement {
             aria-controls="contents"
           >
             <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
+              <wr-icon
                 class="has-text-grey"
                 aria-hidden="true"
-                .svg="${farListAlt}"
-              ></fa-icon>
+                .svg="${iconLayoutSidebar}"
+              ></wr-icon>
             </span>
           </a>`
         : ""}
@@ -1196,12 +1198,11 @@ class Item extends LitElement {
         aria-label="Back"
       >
         <span class="icon is-small">
-          <fa-icon
-            size="1.0em"
+          <wr-icon
             class="has-text-grey"
             aria-hidden="true"
-            .svg="${fasLeft}"
-          ></fa-icon>
+            .svg="${iconArrowLeft}"
+          ></wr-icon>
         </span>
       </a>
       <a
@@ -1214,12 +1215,11 @@ class Item extends LitElement {
         aria-label="Forward"
       >
         <span class="icon is-small">
-          <fa-icon
-            size="1.0em"
+          <wr-icon
             class="has-text-grey"
             aria-hidden="true"
-            .svg="${fasRight}"
-          ></fa-icon>
+            .svg="${iconArrowRight}"
+          ></wr-icon>
         </span>
       </a>
       <a
@@ -1237,12 +1237,11 @@ class Item extends LitElement {
         <span class="icon is-small">
           ${!this.isLoading
             ? html`
-                <fa-icon
-                  size="1.0em"
+                <wr-icon
                   class="has-text-grey"
                   aria-hidden="true"
-                  .svg="${fasRefresh}"
-                ></fa-icon>
+                  .svg="${iconArrowClockwise}"
+                ></wr-icon>
               `
             : ""}
         </span>
@@ -1337,12 +1336,13 @@ class Item extends LitElement {
         aria-label="${this.isFullscreen ? "Exit Fullscreen" : "Fullscreen"}"
       >
         <span class="icon is-small">
-          <fa-icon
-            size="1.0em"
+          <wr-icon
             class="has-text-grey"
             aria-hidden="true"
-            .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"
-          ></fa-icon>
+            .svg="${this.isFullscreen
+              ? iconExitFullscreen
+              : iconArrowsFullscreen}"
+          ></wr-icon>
         </span>
       </a>
       <div class="dropdown-trigger">
@@ -1355,12 +1355,11 @@ class Item extends LitElement {
           aria-label="more replay controls"
         >
           <span class="icon is-small">
-            <fa-icon
-              size="1.0em"
+            <wr-icon
               class="has-text-grey"
               aria-hidden="true"
-              .svg="${fasMenuV}"
-            ></fa-icon>
+              .svg="${iconThreeDotsVertical}"
+            ></wr-icon>
           </span>
         </button>
       </div>
@@ -1374,12 +1373,13 @@ class Item extends LitElement {
             @keyup="${clickOnSpacebarPress}"
           >
             <span class="icon is-small">
-              <fa-icon
-                size="1.0em"
+              <wr-icon
                 class="has-text-grey"
                 aria-hidden="true"
-                .svg="${this.isFullscreen ? fasUnfullscreen : fasFullscreen}"
-              ></fa-icon>
+                .svg="${this.isFullscreen
+                  ? iconExitFullscreen
+                  : iconArrowsFullscreen}"
+              ></wr-icon>
             </span>
             <span>Full Screen</span>
           </a>
@@ -1394,12 +1394,11 @@ class Item extends LitElement {
                 @keyup="${clickOnSpacebarPress}"
               >
                 <span class="icon is-small">
-                  <fa-icon
-                    size="1.0em"
+                  <wr-icon
                     class="has-text-grey"
                     aria-hidden="true"
-                    .svg="${farListAlt}"
-                  ></fa-icon>
+                    .svg="${iconLayoutSidebar}"
+                  ></wr-icon>
                 </span>
                 <span>Browse Contents</span>
               </a>`

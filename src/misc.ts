@@ -57,6 +57,9 @@ export function updateFaviconLinks(data: FavIconEventDetail) {
 }
 
 // ===========================================================================
+/**
+ * @deprecated Use `<wr-icon>`
+ */
 class FaIcon extends LitElement {
   constructor() {
     super();
