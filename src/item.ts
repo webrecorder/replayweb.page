@@ -651,6 +651,10 @@ class Item extends LitElement {
         min-width: 0px;
       }
 
+      .input {
+        transition: all var(--sl-transition-fast);
+      }
+
       .icon {
         vertical-align: text-top;
       }
@@ -794,20 +798,17 @@ class Item extends LitElement {
         color: var(--internal-bar-button-color);
       }
 
-      .replay-bar .input {
+      .replay-bar-form {
+        margin: 0 var(--sl-spacing-small);
+      }
+
+      .replay-bar-input {
         background-color: var(--internal-bar-input-background-color);
         border-color: var(--internal-bar-input-border-color);
+        border-radius: var(--sl-border-radius-medium);
         box-shadow: var(--sl-shadow-small);
         color: var(--internal-bar-input-text-color);
         font-size: var(--sl-font-size-small);
-      }
-
-      .replay-bar .icon {
-        font-size: 1.125rem;
-      }
-
-      input#url {
-        border-radius: var(--sl-border-radius-medium);
       }
 
       .favicon img {
@@ -819,7 +820,7 @@ class Item extends LitElement {
 
       #datetime {
         position: absolute;
-        right: 0.5rem;
+        right: var(--sl-spacing-small);
         z-index: 10;
         background: var(--internal-bar-input-background-color);
         top: 1px;
@@ -827,6 +828,7 @@ class Item extends LitElement {
         display: flex;
         align-items: center;
         line-height: 2;
+        font-size: var(--sl-font-size-small);
       }
 
       #click-download-msg {
@@ -1344,7 +1346,7 @@ class Item extends LitElement {
         <nav class="replay-bar" aria-label="replay" part="replay-bar">
           <div class="field has-addons">
             ${this.renderToolbarLeft()}
-            <form @submit="${this.onSubmit}">
+            <form class="replay-bar-form" @submit="${this.onSubmit}">
               <div
                 class="control is-expanded ${showFavIcon
                   ? "has-icons-left"
@@ -1353,7 +1355,7 @@ class Item extends LitElement {
                 <input
                   part="replay-bar-input"
                   id="url"
-                  class="input"
+                  class="input replay-bar-input"
                   type="text"
                   @keydown="${this.onKeyDown}"
                   @blur="${this.onLostFocus}"
