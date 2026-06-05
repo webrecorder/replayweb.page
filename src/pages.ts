@@ -518,7 +518,7 @@ class Pages extends LitElement {
         display: flex;
         flex-direction: column;
         border-right: 1px solid var(--sl-panel-border-color);
-        background-color: var(--sl-color-neutral-100);
+        background-color: var(--sl-color-neutral-50);
         position: relative;
         padding: 0;
       }

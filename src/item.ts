@@ -112,6 +112,15 @@ export type TabData = EmbedReplayData & {
 };
 
 /**
+ * @cssPart replay-bar
+ * @cssPart replay-bar-container
+ * @cssPart replay-bar-input
+ * @cssProperty rwp-bar-background-color
+ * @cssProperty rwp-bar-text-color
+ * @cssProperty rwp-bar-button-color
+ * @cssProperty rwp-bar-input-background-color
+ * @cssProperty rwp-bar-input-border-color
+ * @cssProperty rwp-bar-input-text-color
  * @fires coll-loaded
  * @fires update-title
  * @fires about-show
@@ -642,12 +651,6 @@ class Item extends LitElement {
         vertical-align: text-top;
       }
 
-      .back fa-icon {
-        width: 1.5em;
-        vertical-align: bottom;
-        line-height: 0.5em;
-      }
-
       .tab {
         font-size: var(--sl-font-size-small);
       }
@@ -740,12 +743,57 @@ class Item extends LitElement {
         padding: 0.5em;
       }
 
+      .replay-bar-container {
+        --internal-bar-background-color: var(
+          --rwp-bar-background-color,
+          var(--sl-panel-background-color)
+        );
+        --internal-bar-text-color: var(
+          --rwp-bar-text-color,
+          var(--sl-color-neutral-700)
+        );
+        --internal-bar-button-color: var(
+          --rwp-bar-button-color,
+          var(--sl-color-neutral-500)
+        );
+        --internal-bar-input-background-color: var(
+          --rwp-bar-input-background-color,
+          var(--sl-panel-background-color)
+        );
+        --internal-bar-input-border-color: var(
+          --rwp-bar-input-border-color,
+          var(--sl-color-neutral-300)
+        );
+        --internal-bar-input-text-color: var(
+          --rwp-bar-input-text-color,
+          var(--sl-color-neutral-900)
+        );
+      }
+
       .replay-bar {
-        padding: 0.5em;
+        padding: var(--sl-spacing-x-small);
         max-width: none;
-        border-bottom: solid 0.1rem #97989a;
+        border-bottom: 1px solid var(--sl-panel-border-color);
         width: 100%;
-        background-color: white;
+        background-color: var(--internal-bar-background-color);
+        color: var(--internal-bar-text-color);
+      }
+
+      .replay-bar .field {
+        align-items: center;
+      }
+
+      .replay-bar .button {
+        background-color: transparent;
+        color: var(--internal-bar-button-color);
+      }
+
+      .replay-bar .input {
+        background-color: var(--internal-bar-input-background-color);
+        border-color: var(--internal-bar-input-border-color);
+        box-shadow: var(--sl-shadow-small);
+        color: var(--internal-bar-input-text-color);
+        font-size: var(--sl-font-size-small);
       }
 
       .replay-bar .icon {
@@ -753,7 +801,7 @@ class Item extends LitElement {
       }
 
       input#url {
-        border-radius: 4px;
+        border-radius: var(--sl-border-radius-medium);
       }
 
       .favicon img {
@@ -767,7 +815,7 @@ class Item extends LitElement {
         position: absolute;
         right: 0.5rem;
         z-index: 10;
-        background: #fff;
+        background: var(--internal-bar-input-background-color);
         top: 1px;
         bottom: 1px;
         display: flex;
@@ -809,8 +857,8 @@ class Item extends LitElement {
         background: linear-gradient(
           90deg,
           rgba(255, 255, 255, 0),
-          #fff 50%,
-          #fff
+          var(--internal-bar-input-background-color) 50%,
+          var(--internal-bar-input-background-color)
         );
         pointer-events: none;
       }
@@ -822,12 +870,9 @@ class Item extends LitElement {
         gap: var(--sl-spacing-x-small);
         align-items: center;
         transition: background-color var(--sl-transition-fast);
-        color: var(--sl-color-neutral-600);
+        background-color: var(--internal-bar-input-background-color);
         font-variant-numeric: tabular-nums;
-      }
-
-      .timestamp-dropdown-btn:hover {
-        color: var(--sl-color-neutral-900);
+        font-size: var(--sl-font-size-small);
       }
 
       .timestamp-dropdown-btn:hover .timestamp-count-badge {
@@ -1212,11 +1257,7 @@ class Item extends LitElement {
             aria-controls="contents"
           >
             <span class="icon is-small">
-              <wr-icon
-                class="has-text-grey"
-                aria-hidden="true"
-                .svg="${iconLayoutSidebar}"
-              ></wr-icon>
+              <wr-icon aria-hidden="true" .svg="${iconLayoutSidebar}"></wr-icon>
             </span>
           </a>`
         : ""}
@@ -1230,11 +1271,7 @@ class Item extends LitElement {
         aria-label="Back"
       >
         <span class="icon is-small">
-          <wr-icon
-            class="has-text-grey"
-            aria-hidden="true"
-            .svg="${iconArrowLeft}"
-          ></wr-icon>
+          <wr-icon aria-hidden="true" .svg="${iconArrowLeft}"></wr-icon>
         </span>
       </a>
       <a
@@ -1247,11 +1284,7 @@ class Item extends LitElement {
         aria-label="Forward"
       >
         <span class="icon is-small">
-          <wr-icon
-            class="has-text-grey"
-            aria-hidden="true"
-            .svg="${iconArrowRight}"
-          ></wr-icon>
+          <wr-icon aria-hidden="true" .svg="${iconArrowRight}"></wr-icon>
         </span>
       </a>
       <a
@@ -1270,7 +1303,6 @@ class Item extends LitElement {
           ${!this.isLoading
             ? html`
                 <wr-icon
-                  class="has-text-grey"
                   aria-hidden="true"
                   .svg="${iconArrowClockwise}"
                 ></wr-icon>
@@ -1295,37 +1327,42 @@ class Item extends LitElement {
         @click="${this.skipMenu}"
         >Skip replay navigation</a
       >
-      <nav class="replay-bar" aria-label="replay">
-        <div class="field has-addons">
-          ${this.renderToolbarLeft()}
-          <form @submit="${this.onSubmit}">
-            <div
-              class="control is-expanded ${showFavIcon ? "has-icons-left" : ""}"
-            >
-              <input
-                id="url"
-                class="input"
-                type="text"
-                @keydown="${this.onKeyDown}"
-                @blur="${this.onLostFocus}"
-                .value="${this.url}"
-                placeholder="Enter text to search or a URL to replay"
-              />
-              ${isReplay
-                ? this.clickToDownloadMode
-                  ? this.renderClickToDownloadNotify()
-                  : this.renderTimestamp()
-                : ""}
-              ${showFavIcon
-                ? html` <span class="favicon icon is-small is-left">
-                    <img src="${this.favIconUrl}" />
-                  </span>`
-                : html``}
-            </div>
-          </form>
-          ${this.renderToolbarRight()}
-        </div>
-      </nav>
+      <div class="replay-bar-container" part="replay-bar-container">
+        <nav class="replay-bar" aria-label="replay" part="replay-bar">
+          <div class="field has-addons">
+            ${this.renderToolbarLeft()}
+            <form @submit="${this.onSubmit}">
+              <div
+                class="control is-expanded ${showFavIcon
+                  ? "has-icons-left"
+                  : ""}"
+              >
+                <input
+                  part="replay-bar-input"
+                  id="url"
+                  class="input"
+                  type="text"
+                  @keydown="${this.onKeyDown}"
+                  @blur="${this.onLostFocus}"
+                  .value="${this.url}"
+                  placeholder="Enter text to search or a URL to replay"
+                />
+                ${isReplay
+                  ? this.clickToDownloadMode
+                    ? this.renderClickToDownloadNotify()
+                    : this.renderTimestamp()
+                  : ""}
+                ${showFavIcon
+                  ? html` <span class="favicon icon is-small is-left">
+                      <img src="${this.favIconUrl}" />
+                    </span>`
+                  : html``}
+              </div>
+            </form>
+            ${this.renderToolbarRight()}
+          </div>
+        </nav>
+      </div>
       <p id="skip-replay-target" tabindex="-1" class="is-sr-only">Skipped</p>`;
   }
 
@@ -1334,7 +1371,7 @@ class Item extends LitElement {
       id="click-download-msg"
       class="loc-overlay has-background-link-light is-size-7"
     >
-      <div class="ml-4 is-flex">
+      <div class="ml-x is-flex">
         Select image or media highlighted with 🟦 (blue box) on hover to
         download.
       </div>
@@ -1369,7 +1406,6 @@ class Item extends LitElement {
       >
         <span class="icon is-small">
           <wr-icon
-            class="has-text-grey"
             aria-hidden="true"
             .svg="${this.isFullscreen
               ? iconExitFullscreen
@@ -1388,7 +1424,6 @@ class Item extends LitElement {
         >
           <span class="icon is-small">
             <wr-icon
-              class="has-text-grey"
               aria-hidden="true"
               .svg="${iconThreeDotsVertical}"
             ></wr-icon>
@@ -1406,7 +1441,6 @@ class Item extends LitElement {
           >
             <span class="icon is-small">
               <wr-icon
-                class="has-text-grey"
                 aria-hidden="true"
                 .svg="${this.isFullscreen
                   ? iconExitFullscreen
@@ -1427,7 +1461,6 @@ class Item extends LitElement {
               >
                 <span class="icon is-small">
                   <wr-icon
-                    class="has-text-grey"
                     aria-hidden="true"
                     .svg="${iconLayoutSidebar}"
                   ></wr-icon>
@@ -1447,7 +1480,6 @@ class Item extends LitElement {
                   <span class="icon is-small">
                     <fa-icon
                       size="1.0em"
-                      class="has-text-grey"
                       aria-hidden="true"
                       .svg="${fasSync}"
                     ></fa-icon>
@@ -1466,7 +1498,6 @@ class Item extends LitElement {
                   <span class="icon is-small">
                     <fa-icon
                       size="1.0em"
-                      class="has-text-grey"
                       aria-hidden="true"
                       .svg="${fasFileDownload}"
                     ></fa-icon>
@@ -1486,7 +1517,6 @@ class Item extends LitElement {
                   <span class="icon is-small">
                     <fa-icon
                       size="1.0em"
-                      class="has-text-grey"
                       aria-hidden="true"
                       .svg="${fasDownload}"
                     ></fa-icon>
@@ -1509,11 +1539,7 @@ class Item extends LitElement {
                 @click="${this.onShowInfoDialog}"
               >
                 <span class="icon is-small">
-                  <fa-icon
-                    class="has-text-grey"
-                    aria-hidden="true"
-                    .svg="${fasInfoIcon}"
-                  ></fa-icon>
+                  <fa-icon aria-hidden="true" .svg="${fasInfoIcon}"></fa-icon>
                 </span>
                 <span>Archive Info</span>
               </a>`
@@ -1525,12 +1551,7 @@ class Item extends LitElement {
             class="dropdown-item"
             @click="${this.onAbout}"
           >
-            <fa-icon
-              class="has-text-grey"
-              size="1.0rem"
-              aria-hidden="true"
-              .svg=${rwpIcon}
-            ></fa-icon>
+            <fa-icon size="1.0rem" aria-hidden="true" .svg=${rwpIcon}></fa-icon>
             <span>&nbsp;About ${this.appName}</span>
             <span class="menu-version">(${this.appVersion})</span>
           </a>
