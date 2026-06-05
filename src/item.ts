@@ -38,7 +38,6 @@ import fasSync from "@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg";
 import faExpandAlt from "@fortawesome/fontawesome-free/svgs/solid/expand-alt.svg";
 import faCompressAlt from "@fortawesome/fontawesome-free/svgs/solid/compress-alt.svg";
 import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
-import faThList from "@fortawesome/fontawesome-free/svgs/solid/th-list.svg";
 
 import iconArrowClockwise from "~icons/arrow-clockwise.svg";
 import iconArrowLeft from "~icons/arrow-left.svg";
