@@ -418,7 +418,7 @@ class Item extends LitElement {
 
           minSize: [300, 300],
 
-          gutterSize: 4,
+          gutterSize: 14,
 
           onDragStart() {
             replay.setDisablePointer(true);
@@ -952,10 +952,31 @@ class Item extends LitElement {
         margin: 0 0 0 0.5em;
       }
 
+      .gutter {
+        --internal-gutter-background-color: var(
+          --rwp-gutter-background-color,
+          var(--sl-color-neutral-0)
+        );
+        --internal-gutter-border: var(
+          --rwp-gutter-border,
+          1px solid var(--sl-panel-border-color)
+        );
+        --internal-gutter-handle: var(
+          --rwp-gutter-handle,
+          url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==")
+        );
+
+        background-repeat: no-repeat;
+        background-position: 50%;
+        background-color: var(--internal-gutter-background-color);
+      }
+
       .gutter.gutter-horizontal {
+        background-image: var(--internal-gutter-handle);
         cursor: col-resize;
         float: left;
-        background-color: rgb(151, 152, 154);
+        border-left: var(--internal-gutter-border);
+        border-right: var(--internal-gutter-border);
       }
 
       .gutter.gutter-horizontal:hover {
