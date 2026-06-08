@@ -3,8 +3,7 @@ import { wrapCss, clickOnSpacebarPress } from "./misc";
 
 import { getReplayLink, getDownloadLink } from "./pageutils";
 
-import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
-
+import iconDownload from "~icons/download.svg";
 import iconSearch from "~icons/search.svg";
 
 import "keyword-mark-element/lib/keyword-mark.js";
@@ -351,9 +350,19 @@ class URLResources extends LitElement {
       .all-results .column {
         word-break: break-word;
       }
-      .dl-button {
-        padding: 4px;
+
+      tbody .col-url a {
+        word-break: break-all;
       }
+
+      .dl-button {
+        display: inline-block;
+        font-size: 1.125rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        padding: var(--sl-spacing-3x-small);
+      }
+
       div.sort-header {
         padding: 10px;
         margin-bottom: 0px !important;
@@ -543,7 +552,7 @@ class URLResources extends LitElement {
                 >Date</a
               >
             </th>
-            <th scope="col" class="column col-mime is-3 is-hidden-mobile">
+            <th scope="col" class="column col-mime is-2 is-hidden-mobile">
               <a
                 role="button"
                 href="#"
@@ -573,6 +582,9 @@ class URLResources extends LitElement {
                 >Status</a
               >
             </th>
+            <th scope="col" class="column col-actions is-1 is-hidden-mobile">
+              <span class="sr-only">Actions</span>
+            </th>
           </tr>
         </thead>
 
@@ -583,20 +595,6 @@ class URLResources extends LitElement {
                   <tr class="columns result">
                     <td class="column col-url is-6">
                       <p class="minihead is-hidden-tablet">URL</p>
-                      <a
-                        class="dl-button"
-                        href="${getDownloadLink(
-                          this.collInfo!.replayPrefix,
-                          result.url,
-                          result.ts,
-                        )}"
-                        ><fa-icon
-                          size="1.0em"
-                          aria-hidden="true"
-                          title="Download Resource"
-                          .svg="${fasDownload}"
-                        ></fa-icon>
-                      </a>
                       <a
                         @click="${this.onReplay}"
                         data-url="${result.url}"
@@ -616,13 +614,28 @@ class URLResources extends LitElement {
                       <p class="minihead is-hidden-tablet">Date</p>
                       ${dateTimeFormatter.format(new Date(result.date))}
                     </td>
-                    <td class="column col-mime is-3">
+                    <td class="column col-mime is-2">
                       <p class="minihead is-hidden-tablet">Media Type</p>
                       ${result.mime}
                     </td>
                     <td class="column col-status is-1">
                       <p class="minihead is-hidden-tablet">Status</p>
                       ${result.status}
+                    </td>
+                    <td class="column col-actions is-1">
+                      <a
+                        class="dl-button"
+                        href="${getDownloadLink(
+                          this.collInfo!.replayPrefix,
+                          result.url,
+                          result.ts,
+                        )}"
+                        download
+                        ><wr-icon
+                          title="Download Resource"
+                          .svg="${iconDownload}"
+                        ></wr-icon>
+                      </a>
                     </td>
                   </tr>
                 `,
