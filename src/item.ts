@@ -27,22 +27,20 @@ import {
 import fasTriangleExclamation from "@fortawesome/fontawesome-free/svgs/solid/exclamation-triangle.svg";
 import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
 
-import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
-import fasFileDownload from "@fortawesome/fontawesome-free/svgs/regular/arrow-alt-circle-down.svg";
-
 import farResources from "@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg";
 import farPages from "@fortawesome/fontawesome-free/svgs/regular/file-image.svg";
-import fasInfoIcon from "@fortawesome/fontawesome-free/svgs/solid/info-circle.svg";
-import fasSync from "@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg";
 
 import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
 
 import iconArrowClockwise from "~icons/arrow-clockwise.svg";
 import iconArrowLeft from "~icons/arrow-left.svg";
 import iconArrowRight from "~icons/arrow-right.svg";
+import iconArrowRepeat from "~icons/arrow-repeat.svg";
 import iconArrowsExpandVertical from "~icons/arrows-expand-vertical.svg";
 import iconArrowBarLeft from "~icons/arrow-bar-left.svg";
 import iconArrowsFullscreen from "~icons/arrows-fullscreen.svg";
+import iconInfoSquare from "~icons/info-square.svg";
+import iconDownload from "~icons/download.svg";
 import iconExitFullscreen from "~icons/fullscreen-exit.svg";
 import iconLayoutSidebar from "~icons/layout-sidebar.svg";
 import iconThreeDotsVertical from "~icons/three-dots-vertical.svg";
@@ -125,6 +123,7 @@ export type TabData = EmbedReplayData & {
  * @cssProperty rwp-bar-input-background-color
  * @cssProperty rwp-bar-input-border-color
  * @cssProperty rwp-bar-input-text-color
+ * @cssProperty rwp-bar-active-text-color
  * @fires coll-loaded
  * @fires update-title
  * @fires about-show
@@ -174,9 +173,6 @@ class Item extends LitElement {
 
   @property({ type: Boolean })
   isFullscreen: boolean | null = null;
-
-  @property({ type: Boolean })
-  menuActive = false;
 
   @property({ type: String })
   embed: string | null = null;
@@ -781,6 +777,10 @@ class Item extends LitElement {
           --rwp-bar-input-text-color,
           var(--sl-color-neutral-900)
         );
+        --internal-bar-active-text-color: var(
+          --rwp-bar-active-text-color,
+          var(--sl-color-blue-500)
+        );
       }
 
       .replay-bar {
@@ -794,6 +794,10 @@ class Item extends LitElement {
 
       .replay-bar .field {
         align-items: center;
+      }
+
+      .replay-bar .icon {
+        font-size: 1.125rem;
       }
 
       .replay-bar .button {
@@ -814,8 +818,8 @@ class Item extends LitElement {
         font-size: var(--sl-font-size-small);
       }
 
-      .replay-bar .icon {
-        font-size: 1.125rem;
+      .replay-bar-overflow-actions sl-menu-item::part(label) {
+        font-size: var(--sl-font-size-small);
       }
 
       .favicon img {
@@ -919,18 +923,15 @@ class Item extends LitElement {
       }
 
       .menu-head {
-        font-size: 10px;
-        font-weight: bold;
+        font-size: var(--sl-font-size-2x-small);
+        font-weight: var(--sl-font-weight-bold);
         display: block;
       }
       .menu-logo {
         vertical-align: middle;
       }
       .menu-version {
-        font-size: 10px;
-      }
-      .dropdown-item.info {
-        font-style: italic;
+        font-size: var(--sl-font-size-x-small);
       }
 
       input:focus + #datetime {
@@ -1021,7 +1022,7 @@ class Item extends LitElement {
       .sidebar-nav:hover span.nav-hover,
       .sidebar-nav:focus-within span.nav-hover {
         display: initial;
-        color: rgb(72, 118, 255);
+        color: var(--internal-bar-active-text-color);
       }
 
       .sidebar-nav.left {
@@ -1032,6 +1033,10 @@ class Item extends LitElement {
         right: 8px;
       }
 
+      .sidebar-nav-toggle[aria-selected="true"] {
+        color: var(--internal-bar-active-text-color);
+      }
+
       /* Since the replay sometimes programmatically receives keyboard focus,
        and that is visually unexpected for mouse-users, and since this won't
        particularly trip up keyboard users, just remove the focus style. */
@@ -1040,7 +1045,7 @@ class Item extends LitElement {
       }
       /* Some keyboard-users may see this replacement style */
       wr-coll-replay:focus-visible {
-        outline: 1px solid rgb(72, 118, 255);
+        outline: 1px solid var(--internal-bar-active-text-color);
       }
     `;
   }
@@ -1278,7 +1283,7 @@ class Item extends LitElement {
         ? html` <a
             href="#"
             role="button"
-            class="button narrow is-borderless is-hidden-mobile ${!isReplay
+            class="sidebar-nav-toggle button narrow is-borderless is-hidden-mobile ${!isReplay
               ? "grey-disabled"
               : ""}"
             @click="${this.onShowPages}"
@@ -1287,6 +1292,7 @@ class Item extends LitElement {
             title="Toggle Browse Contents"
             aria-label="Toggle Browse Contents"
             aria-controls="contents"
+            aria-selected=${this.showSidebar === true}
           >
             <span class="icon is-small">
               <wr-icon aria-hidden="true" .svg="${iconLayoutSidebar}"></wr-icon>
@@ -1422,10 +1428,7 @@ class Item extends LitElement {
       ? dateTimeFormatter.format(tsToDate(this.ts) as Date)
       : "";
 
-    return html` <div
-      class="dropdown is-right ${this.menuActive ? "is-active" : ""}"
-      @click="${() => (this.menuActive = false)}"
-    >
+    return html` <div class="is-right">
       <a
         href="#"
         role="button"
@@ -1445,13 +1448,10 @@ class Item extends LitElement {
           ></wr-icon>
         </span>
       </a>
-      <div class="dropdown-trigger">
+      <sl-dropdown class="replay-bar-overflow-actions">
         <button
+          slot="trigger"
           class="button is-borderless"
-          aria-haspopup="true"
-          aria-controls="menu-dropdown"
-          aria-expanded="${this.menuActive}"
-          @click="${this.onMenu}"
           aria-label="more replay controls"
         >
           <span class="icon is-small">
@@ -1461,134 +1461,104 @@ class Item extends LitElement {
             ></wr-icon>
           </span>
         </button>
-      </div>
-      <div class="dropdown-menu" id="menu-dropdown">
-        <div class="dropdown-content">
-          <a
-            href="#"
-            role="button"
-            class="dropdown-item is-hidden-desktop"
+
+        <sl-menu>
+          <sl-menu-item
+            class="is-hidden-desktop"
             @click="${this.onFullscreenToggle}"
-            @keyup="${clickOnSpacebarPress}"
           >
-            <span class="icon is-small">
-              <wr-icon
-                aria-hidden="true"
-                .svg="${this.isFullscreen
-                  ? iconExitFullscreen
-                  : iconArrowsFullscreen}"
-              ></wr-icon>
-            </span>
-            <span>Full Screen</span>
-          </a>
+            <wr-icon
+              slot="prefix"
+              aria-hidden="true"
+              .svg=${this.isFullscreen
+                ? iconExitFullscreen
+                : iconArrowsFullscreen}
+            ></wr-icon>
+            Full Screen
+          </sl-menu-item>
           ${this.browsable
-            ? html` <a
-                href="#"
-                role="button"
-                class="dropdown-item is-hidden-tablet ${!isReplay
-                  ? "grey-disabled"
-                  : ""}"
+            ? html`<sl-menu-item
+                class="is-hidden-tablet"
+                ?disabled=${!isReplay}
                 @click="${this.onShowPages}"
-                @keyup="${clickOnSpacebarPress}"
               >
-                <span class="icon is-small">
-                  <wr-icon
-                    aria-hidden="true"
-                    .svg="${iconLayoutSidebar}"
-                  ></wr-icon>
-                </span>
-                <span>Browse Contents</span>
-              </a>`
-            : ""}
+                <wr-icon
+                  slot="prefix"
+                  aria-hidden="true"
+                  .svg=${iconLayoutSidebar}
+                ></wr-icon>
+                Browse Contents
+              </sl-menu-item>`
+            : nothing}
           ${this.clearable
-            ? html` <hr class="dropdown-divider is-hidden-desktop" />
-                <a
-                  href="#"
-                  role="button"
-                  class="dropdown-item"
-                  @click="${this.onPurgeCache}"
-                  @keyup="${clickOnSpacebarPress}"
-                >
-                  <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      aria-hidden="true"
-                      .svg="${fasSync}"
-                    ></fa-icon>
-                  </span>
-                  <span>Purge Cache + Full Reload</span>
-                </a>`
-            : html``}
+            ? html` <sl-divider class="is-hidden-desktop"></sl-divider>
+                <sl-menu-item @click="${this.onPurgeCache}">
+                  <wr-icon
+                    slot="prefix"
+                    aria-hidden="true"
+                    .svg=${iconArrowRepeat}
+                  ></wr-icon>
+                  Purge Cache + Full Reload
+                </sl-menu-item>`
+            : nothing}
           ${isReplay && !this.embedOpts.noMediaDownloadUI
-            ? html`<hr class="dropdown-divider" />
-                <a
-                  @click="${this.clickToDownload}"
-                  role="button"
-                  class="dropdown-item"
-                  @keyup="${clickOnSpacebarPress}"
-                >
-                  <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      aria-hidden="true"
-                      .svg="${fasFileDownload}"
-                    ></fa-icon>
-                  </span>
-                  <span>Select Media to Download</span>
-                </a>`
-            : html``}
+            ? html`<sl-menu-item @click="${this.clickToDownload}">
+                <wr-icon
+                  slot="prefix"
+                  aria-hidden="true"
+                  .svg=${iconDownload}
+                ></wr-icon>
+                Select Media to Download
+              </sl-menu-item>`
+            : nothing}
           ${(!this.editable && this.downloadUrl?.startsWith("http://")) ||
           this.downloadUrl?.startsWith("https://")
-            ? html` <hr class="dropdown-divider" />
-                <a
-                  href="${this.downloadUrl}"
-                  role="button"
-                  class="dropdown-item"
-                  @keyup="${clickOnSpacebarPress}"
-                >
-                  <span class="icon is-small">
-                    <fa-icon
-                      size="1.0em"
-                      aria-hidden="true"
-                      .svg="${fasDownload}"
-                    ></fa-icon>
-                  </span>
-                  <span>Download Archive</span>
-                </a>`
-            : html``}
+            ? html`<sl-menu-item
+                @click="${(e: MouseEvent) =>
+                  (e.target as LitElement).querySelector("a")?.click()}"
+              >
+                <wr-icon
+                  slot="prefix"
+                  aria-hidden="true"
+                  .svg=${iconDownload}
+                ></wr-icon>
+                Download Archive
+                <a href=${this.downloadUrl} aria-hidden="true"></a>
+              </sl-menu-item>`
+            : nothing}
           ${dateStr
-            ? html` <hr class="dropdown-divider is-hidden-desktop" />
-                <div class="dropdown-item info is-hidden-tablet">
-                  <span class="menu-head">Capture Date</span>${dateStr}
-                </div>`
-            : ""}
+            ? html`<sl-divider class="is-hidden-tablet"></sl-divider>
+                <sl-menu-label class="is-hidden-tablet">
+                  <div>
+                    <span class="menu-head">Capture Date</span>
+                    ${dateStr}
+                  </div>
+                </sl-menu-label>`
+            : nothing}
           ${!this.editable &&
           (this.downloadUrl === this.sourceUrl || !this.embed)
-            ? html` <a
-                href="#"
-                role="button"
-                class="dropdown-item"
-                @click="${this.onShowInfoDialog}"
-              >
-                <span class="icon is-small">
-                  <fa-icon aria-hidden="true" .svg="${fasInfoIcon}"></fa-icon>
-                </span>
-                <span>Archive Info</span>
-              </a>`
-            : ``}
-          <hr class="dropdown-divider" />
-          <a
-            href="#"
-            role="button"
-            class="dropdown-item"
-            @click="${this.onAbout}"
-          >
-            <fa-icon size="1.0rem" aria-hidden="true" .svg=${rwpIcon}></fa-icon>
-            <span>&nbsp;About ${this.appName}</span>
-            <span class="menu-version">(${this.appVersion})</span>
-          </a>
-        </div>
-      </div>
+            ? html`<sl-menu-item @click="${this.onShowInfoDialog}">
+                <wr-icon
+                  slot="prefix"
+                  aria-hidden="true"
+                  .svg=${iconInfoSquare}
+                ></wr-icon>
+                Archive Info
+              </sl-menu-item>`
+            : nothing}
+          <sl-divider></sl-divider>
+          <sl-menu-item @click="${this.onAbout}">
+            <fa-icon
+              slot="prefix"
+              size="1.0rem"
+              aria-hidden="true"
+              .svg=${rwpIcon}
+            ></fa-icon>
+            About ${this.appName}
+            <span slot="suffix" class="menu-version">${this.appVersion}</span>
+          </sl-menu-item>
+        </sl-menu>
+      </sl-dropdown>
     </div>`;
   }
 
@@ -1801,25 +1771,9 @@ class Item extends LitElement {
   }
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onMenu(event) {
-    event.stopPropagation();
-    this.menuActive = !this.menuActive;
-
-    if (this.menuActive) {
-      document.addEventListener(
-        "click",
-        () => {
-          this.menuActive = false;
-        },
-        { once: true },
-      );
-    }
-  }
-
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
   onFullscreenToggle(event) {
     event.preventDefault();
-    this.menuActive = false;
+
     if (!this.isFullscreen) {
       // TODO: Fix this the next time the file is edited.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -1831,22 +1785,19 @@ class Item extends LitElement {
     }
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onGoBack(event) {
+  onGoBack(event: Event) {
     event.preventDefault();
-    this.menuActive = false;
+
     window.history.back();
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onGoForward(event) {
+  onGoForward(event: Event) {
     event.preventDefault();
-    this.menuActive = false;
+
     window.history.forward();
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onShowPages(event) {
+  onShowPages(event: Event) {
     event.preventDefault();
     // show sidebar for tablet or wider, or hide sidebar
     if (this.showSidebar || document.documentElement.clientWidth >= 769) {
@@ -2073,8 +2024,6 @@ class Item extends LitElement {
     if (event) {
       event.preventDefault();
     }
-
-    this.menuActive = false;
 
     if (this.tabData.url) {
       const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");

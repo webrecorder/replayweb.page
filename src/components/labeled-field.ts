@@ -6,21 +6,6 @@ import faClone from "@fortawesome/fontawesome-free/svgs/regular/clone.svg";
 import faCheck from "@fortawesome/fontawesome-free/svgs/solid/check.svg";
 import faX from "@fortawesome/fontawesome-free/svgs/solid/times.svg";
 
-import { registerIconLibrary } from "@shoelace-style/shoelace/dist/utilities/icon-library.js";
-
-import systemLibrary from "@shoelace-style/shoelace/dist/components/icon/library.system.js";
-
-// disable system library to prevent loading of unused data: URLs
-// allow only "x-lg" as it is needed for sl-dialog
-registerIconLibrary("system", {
-  resolver: (name) => {
-    if (name === "x-lg") {
-      return systemLibrary.resolver(name);
-    }
-    return "";
-  },
-});
-
 @customElement("wr-labeled-field")
 class LabeledField extends LitElement {
   @property({ type: String })
