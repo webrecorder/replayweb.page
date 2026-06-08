@@ -1100,6 +1100,7 @@ class Item extends LitElement {
           <sl-button
             slot="footer"
             variant="primary"
+            size="small"
             @click="${this.onHideInfoDialog}"
             >Close</sl-button
           >
