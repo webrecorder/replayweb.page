@@ -118,6 +118,10 @@ class Sorter<T = unknown> extends LitElement {
       button.button.is-small {
         border-radius: 4px;
       }
+
+      .is-small {
+        font-size: var(--sl-font-size-x-small);
+      }
     `);
   }
 
