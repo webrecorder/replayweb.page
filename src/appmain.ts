@@ -54,7 +54,7 @@ export class ReplayWebApp extends LitElement {
   showAbout = false;
 
   @property({ type: Boolean })
-  hideNonSeedPages = false;
+  showAllPages = false;
 
   @property({ type: Boolean })
   showFileDropOverlay = false;
@@ -446,7 +446,7 @@ export class ReplayWebApp extends LitElement {
       .embedOpts="${this.embedOpts}"
       appName="${this.appName}"
       swName="${ifDefined(this.swName)}"
-      ?showAllPages=${!this.hideNonSeedPages}
+      ?showAllPages=${this.showAllPages}
       @replay-favicons=${this.onFavIcons}
       @update-title=${this.onTitle}
       @coll-loaded=${this.onCollLoaded}
