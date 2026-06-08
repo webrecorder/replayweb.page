@@ -1428,7 +1428,7 @@ class Item extends LitElement {
       ? dateTimeFormatter.format(tsToDate(this.ts) as Date)
       : "";
 
-    return html` <div class="is-right">
+    return html`
       <a
         href="#"
         role="button"
@@ -1559,7 +1559,7 @@ class Item extends LitElement {
           </sl-menu-item>
         </sl-menu>
       </sl-dropdown>
-    </div>`;
+    `;
   }
 
   private renderTimestamp() {
