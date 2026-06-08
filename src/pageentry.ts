@@ -87,6 +87,14 @@ class PageEntry extends LitElement {
         font-size: var(--sl-font-size-small);
       }
 
+      :host(.sidebar) .page-title,
+      :host(.sidebar) .page-url {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
+
       :host(.sidebar) .page-link:not(.current):hover {
         background-color: var(--sl-color-neutral-50);
       }
@@ -309,12 +317,14 @@ class PageEntry extends LitElement {
                 >
                   <p class="page-title text">
                     ${this.thumbnailValid ? this.renderFavicon() : nothing}
-                    <keyword-mark keywords="${this.query}"
+                    <keyword-mark
+                      keywords="${this.query}"
+                      title="${p.title || p.url}"
                       >${p.title || p.url}</keyword-mark
                     >
                   </p>
                   <p class="page-url has-text-dark text">
-                    <keyword-mark keywords="${this.query}"
+                    <keyword-mark keywords="${this.query}" title="${p.url}"
                       >${p.url}</keyword-mark
                     >
                   </p>
@@ -331,9 +341,7 @@ class PageEntry extends LitElement {
                   : html``}
               </div>
               ${hasSize
-                ? html` <div class="media-right" style="margin-right: 2em">
-                    ${prettyBytes(p.size)}
-                  </div>`
+                ? html` <div class="text">${prettyBytes(p.size)}</div>`
                 : ""}
             </div>
           </div>
