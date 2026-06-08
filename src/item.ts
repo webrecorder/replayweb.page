@@ -822,16 +822,20 @@ class Item extends LitElement {
         font-size: var(--sl-font-size-small);
       }
 
+      .favicon.icon {
+        margin-top: var(--sl-spacing-x-small);
+        margin-left: var(--sl-spacing-x-small);
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+      }
+
       .favicon img {
-        width: 20px;
-        height: 20px;
-        margin: 8px;
-        /*filter: drop-shadow(1px 1px 2px grey);*/
+        object-fit: contain;
       }
 
       #datetime {
         position: absolute;
-        right: var(--sl-spacing-small);
+        right: var(--sl-spacing-x-small);
         z-index: 10;
         background: var(--internal-bar-input-background-color);
         top: 1px;
