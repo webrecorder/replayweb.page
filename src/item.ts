@@ -64,7 +64,7 @@ import type {
   TabNavEvent,
 } from "./events";
 
-const RWP_SCHEME = "search://";
+export const RWP_SCHEME = "search://";
 
 export type LoadInfo = {
   extraConfig?: {
@@ -91,8 +91,14 @@ export type EmbedOpts = {
   noMediaDownloadUI?: boolean;
 };
 
+export enum EmbedReplayDataView {
+  Story = "story",
+  Pages = "pages",
+  Resources = "resources",
+}
+
 export type EmbedReplayData = {
-  view?: "story" | "pages" | "resources";
+  view?: EmbedReplayDataView;
   url?: string;
   ts?: string;
   title?: string;
@@ -296,9 +302,14 @@ class Item extends LitElement {
         void this.getMultiTimestamps();
       }
     }
-  }
+    if (changedProperties.has("tabData") && this.itemInfo?.coll) {
+      if (!this.tabData.url) {
+        this.url =
+          RWP_SCHEME + decodeURIComponent(this._paramsToString(this.tabData));
+      }
 
-  updated(changedProperties: PropertyValues<this>) {
+      this._locUpdateNeeded = false;
+    }
     if (changedProperties.has("sourceUrl")) {
       void this.doUpdateInfo();
     }
@@ -307,18 +318,18 @@ class Item extends LitElement {
         this._autoUpdater = this.runUpdateLoop();
       }
     }
+  }
+
+  updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("tabData")) {
       if (!this.itemInfo?.coll) {
         return;
       }
+
       const newHash =
         "#" +
         new URLSearchParams(this.tabData as Record<string, string>).toString();
 
-      if (!this.tabData.url) {
-        this.url =
-          RWP_SCHEME + decodeURIComponent(this._paramsToString(this.tabData));
-      }
       if (newHash !== this._locationHash) {
         this._locationHash = newHash;
 
@@ -366,7 +377,6 @@ class Item extends LitElement {
           }
         }
       }
-      this._locUpdateNeeded = false;
     }
     if (changedProperties.has("showSidebar")) {
       if (!this.embed) {
@@ -534,12 +544,12 @@ class Item extends LitElement {
       (!this.tabData.view || !this.tabNames.includes(this.tabData.view))
     ) {
       const view = this.hasStory
-        ? "story"
+        ? EmbedReplayDataView.Story
         : // TODO: Fix this the next time the file is edited.
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         this.editable || this.itemInfo.pages?.length
-        ? "pages"
-        : "resources";
+        ? EmbedReplayDataView.Pages
+        : EmbedReplayDataView.Resources;
 
       this.tabData = {
         ...this.tabData,
@@ -560,8 +570,8 @@ class Item extends LitElement {
       }
     }
 
-    if (!this.hasStory && this.tabData.view === "story") {
-      this.tabData.view = "pages";
+    if (!this.hasStory && this.tabData.view === EmbedReplayDataView.Story) {
+      this.tabData.view = EmbedReplayDataView.Pages;
     }
 
     if (this.tabData.url && this.tabData.query && this.browsable) {
@@ -593,7 +603,7 @@ class Item extends LitElement {
     }
 
     if (
-      targetId === this.tabData.view ||
+      targetId === (this.tabData.view as string) ||
       (targetId === "replay" && this.tabData.url) ||
       (this.showSidebar && this.tabData.url)
     ) {
@@ -1067,7 +1077,9 @@ class Item extends LitElement {
           : ""}
         ${this.hasStory
           ? html` <li
-              class="${this.tabData.view === "story" ? "is-active" : ""}"
+              class="${this.tabData.view === EmbedReplayDataView.Story
+                ? "is-active"
+                : ""}"
             >
               <a
                 @click="${this.onTabClick}"
@@ -1075,7 +1087,9 @@ class Item extends LitElement {
                 class="is-size-6"
                 aria-label="Story"
                 aria-current="${ifDefined(
-                  this.tabData.view === "story" ? "location" : undefined,
+                  this.tabData.view === EmbedReplayDataView.Story
+                    ? "location"
+                    : undefined,
                 )}"
               >
                 <span class="icon"
@@ -1094,14 +1108,20 @@ class Item extends LitElement {
             </li>`
           : ""}
 
-        <li class="${this.tabData.view === "pages" ? "is-active" : ""}">
+        <li
+          class="${this.tabData.view === EmbedReplayDataView.Pages
+            ? "is-active"
+            : ""}"
+        >
           <a
             @click="${this.onTabClick}"
             href="#pages"
             class="is-size-6"
             aria-label="Pages"
             aria-current="${ifDefined(
-              this.tabData.view === "pages" ? "location" : undefined,
+              this.tabData.view === EmbedReplayDataView.Pages
+                ? "location"
+                : undefined,
             )}"
           >
             <span class="icon"
@@ -1115,14 +1135,20 @@ class Item extends LitElement {
           </a>
         </li>
 
-        <li class="${this.tabData.view === "resources" ? "is-active" : ""}">
+        <li
+          class="${this.tabData.view === EmbedReplayDataView.Resources
+            ? "is-active"
+            : ""}"
+        >
           <a
             @click="${this.onTabClick}"
             href="#resources"
             class="is-size-6"
             aria-label="URLs"
             aria-current="${ifDefined(
-              this.tabData.view === "resources" ? "location" : undefined,
+              this.tabData.view === EmbedReplayDataView.Resources
+                ? "location"
+                : undefined,
             )}"
           >
             <span class="icon"
@@ -1629,9 +1655,10 @@ class Item extends LitElement {
 
   // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'isSidebar' implicitly has an 'any' type.
   renderItemTabs(isSidebar) {
-    const isStory = this.hasStory && this.tabData.view === "story";
-    const isPages = this.tabData.view === "pages";
-    const isResources = this.tabData.view === "resources";
+    const isStory =
+      this.hasStory && this.tabData.view === EmbedReplayDataView.Story;
+    const isPages = this.tabData.view === EmbedReplayDataView.Pages;
+    const isResources = this.tabData.view === EmbedReplayDataView.Resources;
 
     return html`
       ${isStory
@@ -1907,14 +1934,13 @@ class Item extends LitElement {
     this.updateTabData({ ts: item.value });
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'value' implicitly has an 'any' type.
-  navigateTo(value) {
+  navigateTo(value: string, { ts } = { ts: "" }) {
     let data: TabData;
 
     if (value.startsWith("http://") || value.startsWith("https://")) {
-      data = { url: value };
+      data = { url: value, ts };
 
-      if (value === this.tabData.url) {
+      if (value === this.tabData.url && (!ts || ts === this.tabData.ts)) {
         const replay = this.renderRoot.querySelector<Replay>("wr-coll-replay");
         if (replay) {
           replay.refresh();
@@ -1923,18 +1949,16 @@ class Item extends LitElement {
       }
     } else {
       if (!value.startsWith(RWP_SCHEME)) {
-        data = { query: value, view: "pages" };
+        data = { query: value, view: EmbedReplayDataView.Pages };
       } else {
         data = this._stringToParams(value);
       }
     }
+
     this.updateTabData(data);
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'value' implicitly has an 'any' type.
-  _stringToParams(value) {
-    // TODO: Fix this the next time the file is edited.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  _stringToParams(value: string) {
     const q = new URLSearchParams(value.slice(RWP_SCHEME.length));
     const data: Partial<URLResource> = {};
     data.url = "";

@@ -6,7 +6,7 @@ import {
   type TemplateResult,
   type PropertyValues,
 } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
@@ -26,7 +26,13 @@ import { SWManager } from "./swmanager";
 import "./item";
 import "./item-index";
 import "./chooser";
-import { type EmbedOpts, type LoadInfo } from "./item";
+import {
+  type Item,
+  type EmbedOpts,
+  type LoadInfo,
+  RWP_SCHEME,
+  EmbedReplayDataView,
+} from "./item";
 import type { FavIconEventDetail } from "./types";
 
 // ===========================================================================
@@ -80,7 +86,40 @@ export class ReplayWebApp extends LitElement {
   @property({ type: String })
   swErrorMsg: TemplateResult<1> | string | null = null;
 
-  protected swName?: string;
+  @query("wr-item")
+  private readonly item?: Item | null;
+
+  /**
+   * Navigate to a view in replay.
+   *
+   * @param {string} urlOrView - The page URL or view to navigate to.
+   * @param {Object|undefined} data - Optional view data.
+   */
+  public navigateReplayTo(
+    urlOrView: EmbedReplayDataView | string,
+    data?: { ts: string },
+  ) {
+    if (!this.item) {
+      console.debug("missing `this.item`");
+      return;
+    }
+
+    let value = urlOrView;
+
+    if (
+      Object.values(EmbedReplayDataView).some(
+        (view) => (view as string) === urlOrView,
+      )
+    ) {
+      value = `${RWP_SCHEME}view=${value}${
+        data ? `?${new URLSearchParams(data).toString()}` : ""
+      }`;
+    }
+
+    this.item.navigateTo(value, data);
+  }
+
+  swName?: string;
   protected swmanager: SWManager | null;
   private useRuffle = false;
 
