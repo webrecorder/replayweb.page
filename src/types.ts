@@ -69,6 +69,7 @@ export type ItemType = {
   totalSize?: unknown;
   size?: number | string;
   canQueryPages?: boolean;
+  pageCount?: number;
 };
 
 export type FavIconEventDetail = {

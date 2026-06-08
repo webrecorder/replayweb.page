@@ -136,6 +136,9 @@ class Item extends LitElement {
   @property({ type: Boolean })
   showSidebar: boolean | null = null;
 
+  @property({ type: Boolean })
+  showAllPages = false;
+
   @property({ type: Object, attribute: false })
   itemInfo: ItemType | Record<string, never> | null = null;
 
@@ -1707,6 +1710,7 @@ class Item extends LitElement {
             query="${this.tabData.query || ""}"
             .url="${this.tabData.url || ""}"
             .ts="${this.tabData.ts || ""}"
+            ?showAllPages=${this.showAllPages}
             @coll-tab-nav="${this.onItemTabNav}"
             id="pages"
             @coll-update="${this.onItemUpdate}"
