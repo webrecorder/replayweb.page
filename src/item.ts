@@ -24,14 +24,6 @@ import {
   getDateFromTS,
 } from "./pageutils";
 
-import fasTriangleExclamation from "@fortawesome/fontawesome-free/svgs/solid/exclamation-triangle.svg";
-import fasBook from "@fortawesome/fontawesome-free/svgs/solid/book.svg";
-
-import farResources from "@fortawesome/fontawesome-free/svgs/solid/puzzle-piece.svg";
-import farPages from "@fortawesome/fontawesome-free/svgs/regular/file-image.svg";
-
-import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
-
 import iconArrowClockwise from "~icons/arrow-clockwise.svg";
 import iconArrowLeft from "~icons/arrow-left.svg";
 import iconArrowRight from "~icons/arrow-right.svg";
@@ -39,10 +31,15 @@ import iconArrowRepeat from "~icons/arrow-repeat.svg";
 import iconArrowsExpandVertical from "~icons/arrows-expand-vertical.svg";
 import iconArrowBarLeft from "~icons/arrow-bar-left.svg";
 import iconArrowsFullscreen from "~icons/arrows-fullscreen.svg";
+import iconBook from "~icons/book.svg";
+import iconChevronDown from "~icons/chevron-down.svg";
+import iconExclamationTriangle from "~icons/exclamation-triangle.svg";
 import iconInfoSquare from "~icons/info-square.svg";
 import iconDownload from "~icons/download.svg";
 import iconExitFullscreen from "~icons/fullscreen-exit.svg";
+import iconFileRichtextFill from "~icons/file-richtext-fill.svg";
 import iconLayoutSidebar from "~icons/layout-sidebar.svg";
+import iconPuzzleFill from "~icons/puzzle-fill.svg";
 import iconThreeDotsVertical from "~icons/three-dots-vertical.svg";
 
 import { RWPEmbedReceipt } from "./embed-receipt";
@@ -674,6 +671,10 @@ class Item extends LitElement {
         border-color: var(--sl-color-neutral-400);
       }
 
+      .tab .icon {
+        font-size: var(--sl-font-size-medium);
+      }
+
       .tab-label {
         display: inline;
         font-weight: var(--sl-font-weight-semibold);
@@ -904,6 +905,7 @@ class Item extends LitElement {
 
       .timestamp-count-badge {
         display: inline-flex;
+        align-items: center;
         gap: var(--sl-spacing-2x-small);
         background-color: var(--sl-color-blue-500);
         color: var(--sl-color-neutral-0);
@@ -911,15 +913,20 @@ class Item extends LitElement {
         padding: var(--sl-spacing-3x-small) var(--sl-spacing-x-small);
         border-radius: var(--sl-border-radius-small);
         transition: background-color var(--sl-transition-fast);
+        height: 1rem;
+        font-size: var(--sl-font-size-x-small);
       }
 
       .timestamp-count {
         font-weight: 600;
-        transform: translateY(0.075em);
       }
 
       .timestamp-menu-item {
         font-variant-numeric: tabular-nums;
+      }
+
+      .timestamp-menu-item::part(label) {
+        font-size: var(--sl-font-size-small);
       }
 
       .timestamp-menu-item[aria-selected="true"]::part(label) {
@@ -1037,7 +1044,7 @@ class Item extends LitElement {
         right: 8px;
       }
 
-      .sidebar-nav-toggle[aria-selected="true"] {
+      .sidebar-nav-toggle:not([disabled])[aria-selected="true"] {
         color: var(--internal-bar-active-text-color);
       }
 
@@ -1174,11 +1181,7 @@ class Item extends LitElement {
                 )}"
               >
                 <span class="icon"
-                  ><fa-icon
-                    .svg="${fasBook}"
-                    aria-hidden="true"
-                    title="Story"
-                  ></fa-icon
+                  ><wr-icon .svg="${iconBook}" title="Story"></wr-icon
                 ></span>
                 <span
                   class="tab-label ${isSidebar ? "is-hidden" : ""}"
@@ -1205,11 +1208,7 @@ class Item extends LitElement {
             )}"
           >
             <span class="icon"
-              ><fa-icon
-                .svg="${farPages}"
-                aria-hidden="true"
-                title="Pages"
-              ></fa-icon
+              ><wr-icon .svg="${iconFileRichtextFill}" title="Pages"></wr-icon
             ></span>
             <span class="tab-label" title="Pages">Pages</span>
           </a>
@@ -1231,11 +1230,7 @@ class Item extends LitElement {
             )}"
           >
             <span class="icon"
-              ><fa-icon
-                .svg="${farResources}"
-                aria-hidden="true"
-                title="Resources"
-              ></fa-icon
+              ><wr-icon .svg="${iconPuzzleFill}" title="Resources"></wr-icon
             ></span>
             <span class="tab-label" title="Resources">Resources</span>
           </a>
@@ -1552,12 +1547,7 @@ class Item extends LitElement {
             : nothing}
           <sl-divider></sl-divider>
           <sl-menu-item @click="${this.onAbout}">
-            <fa-icon
-              slot="prefix"
-              size="1.0rem"
-              aria-hidden="true"
-              .svg=${rwpIcon}
-            ></fa-icon>
+            <wr-icon slot="prefix" .svg=${rwpIcon}></wr-icon>
             About ${this.appName}
             <span slot="suffix" class="menu-version">${this.appVersion}</span>
           </sl-menu-item>
@@ -1599,7 +1589,7 @@ class Item extends LitElement {
                 <div>${currDateStr}</div>
                 <div class="timestamp-count-badge">
                   <div class="timestamp-count">${timestampStrs.length}</div>
-                  <fa-icon .svg="${fasCaretDown}" aria-hidden="true"></fa-icon>
+                  <wr-icon .svg="${iconChevronDown}"></wr-icon>
                 </div>
               </button>
               <sl-menu @sl-select=${this.onSelectTimestamp}>
@@ -1668,11 +1658,7 @@ class Item extends LitElement {
   renderItemInfo() {
     if (!this.itemInfo)
       return html`<sl-alert open variant="warning">
-        <fa-icon
-          slot="icon"
-          .svg=${fasTriangleExclamation}
-          aria-hidden="true"
-        ></fa-icon>
+        <wr-icon slot="icon" .svg=${iconExclamationTriangle}></wr-icon>
         <strong>Archive info is not available</strong><br />
         Please reload and try again.
       </sl-alert>`;

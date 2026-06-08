@@ -18,10 +18,10 @@ import prettyBytes from "pretty-bytes";
 
 import { getTS, getPageDateTS } from "./pageutils";
 
-import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
-import fasAngleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-down.svg";
-import faArrowDown from "@fortawesome/fontawesome-free/svgs/solid/arrow-down.svg";
-import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
+import iconArrowDown from "~icons/arrow-down.svg";
+import iconChevronDown from "~icons/chevron-down.svg";
+import iconPencil from "~icons/pencil.svg";
+import iconSearch from "~icons/search.svg";
 
 import type { Sorter } from "./sorter";
 import type { PageEntry } from "./pageentry";
@@ -691,11 +691,14 @@ class Pages extends LitElement {
       }
 
       .scroller-help-text {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sl-spacing-2x-small);
         color: var(--sl-color-neutral-500);
       }
 
-      .scroller-help-text .icon {
-        font-size: 10px;
+      .scroller-help-text wr-icon {
+        font-size: var(--sl-font-size-medium);
       }
 
       .page-entry {
@@ -728,13 +731,6 @@ class Pages extends LitElement {
         background-color: var(--sl-color-neutral-100);
         border-bottom: 1px solid var(--sl-panel-border-color);
         font-size: var(--sl-font-size-small);
-      }
-
-      .main-search-bar {
-        padding: var(--sl-spacing-small);
-      }
-
-      .sidebar-search-bar {
         padding: var(--sl-spacing-x-small);
       }
 
@@ -820,11 +816,7 @@ class Pages extends LitElement {
       >
         Pages in ${this.collInfo!.title}
       </div>
-      <div
-        class="search-bar is-marginless ${this.isSidebar
-          ? "sidebar-search-bar"
-          : "main-search-bar"}"
-      >
+      <div class="search-bar is-marginless">
         ${this.isSidebar
           ? html`<h3 class="is-sr-only">Search and Filter Pages</h3>`
           : ""}
@@ -839,8 +831,8 @@ class Pages extends LitElement {
               type="text"
               placeholder="Search by Page URL, Title, or Text"
             />
-            <span class="icon is-left"
-              ><fa-icon .svg="${fasSearch}" aria-hidden="true"></fa-icon
+            <span class="icon is-left is-small"
+              ><wr-icon .svg="${iconSearch}"></wr-icon
             ></span>
           </div>
         </div>
@@ -886,7 +878,7 @@ class Pages extends LitElement {
                       </div>`
                   : html``}`}
           ${this.editable
-            ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`
+            ? html`<wr-icon class="editIcon" .svg="${iconPencil}"></wr-icon>`
             : html``}
           ${this.editable
             ? html` <div class="index-bar-actions">
@@ -951,7 +943,7 @@ class Pages extends LitElement {
         >
           <span>Download</span>
           <span class="icon is-small">
-            <fa-icon .svg="${fasAngleDown}" aria-hidden="true"></fa-icon>
+            <wr-icon .svg="${iconChevronDown}"></wr-icon>
           </span>
         </button>
       </div>
@@ -1401,9 +1393,7 @@ class Pages extends LitElement {
         ? nothing
         : html`<span class="scroller-help-text">
             Scroll for more
-            <span class="icon is-small">
-              <fa-icon .svg="${faArrowDown}" aria-hidden="true"></fa-icon>
-            </span>
+            <wr-icon .svg="${iconArrowDown}"></wr-icon>
           </span>`} `;
   }
 

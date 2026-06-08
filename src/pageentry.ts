@@ -12,7 +12,7 @@ import { property, state } from "lit/decorators.js";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 
-import faFileImage from "@fortawesome/fontawesome-free/svgs/solid/file-image.svg";
+import iconImageAlt from "~icons/image-alt.svg";
 
 import { getPageDateTS, getReplayLink } from "./pageutils";
 
@@ -372,7 +372,7 @@ class PageEntry extends LitElement {
           ${this.useFaviconFallback
             ? this.renderFavicon()
             : html`<span class="icon is-small">
-                  <fa-icon .svg="${faFileImage}" aria-hidden="true"></fa-icon>
+                  <wr-icon .svg="${iconImageAlt}" aria-hidden="true"></wr-icon>
                 </span>
                 <span class="thumbnail-placeholder-label">No image</span>`}
         </div>

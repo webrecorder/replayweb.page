@@ -3,8 +3,9 @@ import { wrapCss, clickOnSpacebarPress } from "./misc";
 
 import { getReplayLink, getDownloadLink } from "./pageutils";
 
-import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
+
+import iconSearch from "~icons/search.svg";
 
 import "keyword-mark-element/lib/keyword-mark.js";
 import { type ItemType } from "./types";
@@ -282,13 +283,6 @@ class URLResources extends LitElement {
         background-color: var(--sl-color-neutral-100);
         border-bottom: 1px solid var(--sl-panel-border-color);
         font-size: var(--sl-font-size-small);
-      }
-
-      .main-search-bar {
-        padding: var(--sl-spacing-small);
-      }
-
-      .sidebar-search-bar {
         padding: var(--sl-spacing-x-small);
       }
 
@@ -414,11 +408,7 @@ class URLResources extends LitElement {
       >
         Search and Filter
       </div>
-      <div
-        class="search-bar level is-marginless ${this.isSidebar
-          ? "sidebar-search-bar"
-          : "main-search-bar"}"
-      >
+      <div class="search-bar level is-marginless">
         <div class="level-left flex-auto">
           <div class="level-item flex-auto">
             <span class="is-hidden-mobile">Search:</span>
@@ -449,8 +439,8 @@ class URLResources extends LitElement {
                   .value="${this.query}"
                   placeholder="Enter URL to Search"
                 />
-                <span class="icon is-left"
-                  ><fa-icon .svg="${fasSearch}"></fa-icon
+                <span class="icon is-left is-small"
+                  ><wr-icon .svg="${iconSearch}"></wr-icon
                 ></span>
               </div>
             </div>

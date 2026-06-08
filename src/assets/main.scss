@@ -151,3 +151,11 @@ a:focus {
   white-space: nowrap;
   border-width: 0;
 }
+
+.control.has-icons-left .icon.is-small, .control.has-icons-right .icon.is-small {
+  margin-top: 1px;
+  margin-left: 1px;
+  width: 2rem;
+  height: 2rem;
+  font-size: var(--sl-font-size-medium);
+}
