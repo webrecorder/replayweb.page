@@ -51,6 +51,22 @@ const tsConfig = {
   },
 };
 
+/** @type {import("webpack").Configuration.module.rules} */
+const commonModuleRules = [
+  {
+    test: /\.svg$/,
+    type: "asset/source",
+  },
+  {
+    test: /main.scss$/,
+    use: ["css-loader", "sass-loader"],
+  },
+  {
+    test: /wombat.js|wombatWorkers.js|index.html$/i,
+    type: "asset/source",
+  },
+];
+
 const electronMainConfig = (/*env, argv*/) => {
   /** @type {import('webpack').Configuration} */
   const config = {
@@ -165,20 +181,7 @@ const libConfig = (env, argv) => {
     ],
 
     module: {
-      rules: [
-        {
-          test: /\.svg$/,
-          use: ["raw-loader"],
-        },
-        {
-          test: /main.scss$/,
-          use: ["css-loader", "sass-loader"],
-        },
-        {
-          test: /wombat.js|wombatWorkers.js|index.html$/i,
-          use: ["raw-loader"],
-        },
-      ],
+      rules: [...commonModuleRules],
     },
   };
   return merge(tsConfig, config);
@@ -258,20 +261,7 @@ const browserConfig = (/*env, argv*/) => {
     ],
 
     module: {
-      rules: [
-        {
-          test: /\.svg$/,
-          use: ["raw-loader"],
-        },
-        {
-          test: /main.scss$/,
-          use: ["css-loader", "sass-loader"],
-        },
-        {
-          test: /wombat.js|wombatWorkers.js|index.html$/i,
-          use: ["raw-loader"],
-        },
-      ],
+      rules: [...commonModuleRules],
     },
   };
   return merge(tsConfig, config);
