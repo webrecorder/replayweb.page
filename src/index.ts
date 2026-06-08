@@ -15,6 +15,7 @@ import { URLResources } from "./url-resources";
 import { Embed } from "./embed";
 import "./coll-description";
 import "./shoelace";
+import "./components/icon";
 
 import rwpIcon from "~assets/icons/replaywebpage.svg";
 import rwpLogoAnimated from "~assets/brand/replaywebpage-icon-color-animated.svg";
