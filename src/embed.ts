@@ -13,6 +13,7 @@ import { property, query } from "lit/decorators.js";
 import type { FavIconEventDetail } from "./types";
 import type { EmbedReplayData } from "./item";
 import type { RwpPageLoadingEvent, RwpUrlChangeEvent } from "./events";
+import type { ReplayWebApp } from "./appmain";
 
 type IframeMessage = MessageEvent<
   | RwpUrlChangeEvent["detail"]
@@ -87,6 +88,8 @@ class Embed extends LitElement {
 
   @query("iframe")
   private readonly iframe?: HTMLIFrameElement | null;
+
+  mainElement?: ReplayWebApp | null;
 
   replayfile = defaultReplayFile;
   mainElementName = "replay-app-main";
@@ -267,20 +270,16 @@ class Embed extends LitElement {
     const qs = new URLSearchParams(window.location.hash.slice(1));
 
     if (qs.has("url")) {
-      // @ts-expect-error - TS2339 - Property 'url' does not exist on type 'Embed'.
-      this.url = qs.get("url");
+      this.url = qs.get("url") ?? "";
     }
     if (qs.has("ts")) {
-      // @ts-expect-error - TS2339 - Property 'ts' does not exist on type 'Embed'.
-      this.ts = qs.get("ts");
+      this.ts = qs.get("ts") ?? "";
     }
     if (qs.has("query")) {
-      // @ts-expect-error - TS2339 - Property 'query' does not exist on type 'Embed'.
-      this.query = qs.get("query");
+      this.query = qs.get("query") ?? "";
     }
     if (qs.has("view")) {
-      // @ts-expect-error - TS2339 - Property 'view' does not exist on type 'Embed'.
-      this.view = qs.get("view");
+      this.view = qs.get("view") ?? "";
     }
   }
 
@@ -452,30 +451,39 @@ class Embed extends LitElement {
     `;
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  onLoad(event) {
+  onLoad(event: Event) {
     if (this.isCrossOrigin) {
       return;
     }
 
-    const win = event.target.contentWindow;
-    const doc = event.target.contentDocument;
+    const target = event.target as HTMLIFrameElement;
+    const win = target.contentWindow;
+    const doc = target.contentDocument;
 
     if (
-      win.navigator.serviceWorker &&
+      win?.navigator.serviceWorker &&
       !win.navigator.serviceWorker.controller &&
       this.reloadCount <= 2
     ) {
       this.reloadCount++;
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       setTimeout(() => win.location.reload(), 100);
       return;
     }
 
     this.reloadCount = 0;
 
-    if (win.customElements.get(this.mainElementName)) {
+    if (win?.customElements.get(this.mainElementName)) {
+      this.mainElement = doc?.querySelector(this.mainElementName);
+      return;
+    }
+
+    if (!doc) {
+      console.debug("missing `event.target.contentDocument`");
+      return;
+    }
+
+    if (!scriptSrc) {
+      console.debug("missing `scriptSrc`");
       return;
     }
 
