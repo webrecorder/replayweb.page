@@ -1,7 +1,14 @@
 "use strict";
 
-import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
-import { property } from "lit/decorators.js";
+import {
+  LitElement,
+  html,
+  css,
+  unsafeCSS,
+  type PropertyValues,
+  nothing,
+} from "lit";
+import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
 import ndjson from "fetch-ndjson";
@@ -13,6 +20,7 @@ import { getTS, getPageDateTS } from "./pageutils";
 
 import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
 import fasAngleDown from "@fortawesome/fontawesome-free/svgs/solid/angle-down.svg";
+import faArrowDown from "@fortawesome/fontawesome-free/svgs/solid/arrow-down.svg";
 import fasEdit from "@fortawesome/fontawesome-free/svgs/solid/edit.svg";
 
 import type { Sorter } from "./sorter";
@@ -110,13 +118,13 @@ class Pages extends LitElement {
   dynamicPagesQuery = false;
 
   @property({ type: Number })
-  totalPages = 0;
-
-  @property({ type: Number })
   dynamicPageCount = 1;
 
   @property({ type: Boolean })
   skipScrollMore = false;
+
+  @state()
+  private filteredPagesTotal = 0;
 
   private _ival: number | undefined;
 
@@ -222,7 +230,10 @@ class Pages extends LitElement {
     }
     this.loading = true;
     if (this.flex && this.query && this.textPages) {
-      const results = await this.flex.searchAsync(this.query, 25);
+      const results = await this.flex.searchAsync(
+        this.query,
+        DYNAMIC_PAGE_SIZE,
+      );
       this.filteredPages = results.map(
         (inx: Id) => this.textPages![inx as number],
       );
@@ -232,7 +243,7 @@ class Pages extends LitElement {
       this.filteredPages = [...this.collInfo!.pages];
     }
 
-    this.totalPages = this.filteredPages.length;
+    this.filteredPagesTotal = this.filteredPages.length;
 
     if (this.dynamicPagesQuery) {
       if (!this.query) {
@@ -347,7 +358,7 @@ class Pages extends LitElement {
       this.filteredPages = [...this.filteredPages, ...newPages];
     }
 
-    this.totalPages = this.filteredPages.length;
+    this.filteredPagesTotal = this.filteredPages.length;
   }
 
   async filterCurated() {
@@ -369,10 +380,7 @@ class Pages extends LitElement {
     );
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'pages' implicitly has an 'any' type.
-  // TODO: Fix this the next time the file is edited.
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
-  addPages(pages) {
+  async addPages(pages: Page[]) {
     const flex = new FlexIndex();
 
     this.flex = flex;
@@ -380,8 +388,7 @@ class Pages extends LitElement {
 
     if (!this.dynamicPagesQuery) {
       this.hasExtraPages = Boolean(
-        this.textPages &&
-          this.collInfo?.pages &&
+        this.collInfo?.pages &&
           this.textPages.length > this.collInfo.pages.length,
       );
     }
@@ -391,10 +398,7 @@ class Pages extends LitElement {
     }
 
     return Promise.all(
-      // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'page' implicitly has an 'any' type. | TS7006 - Parameter 'index' implicitly has an 'any' type.
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line @typescript-eslint/promise-function-async
-      pages.map((page, index) => {
+      pages.map(async (page, index) => {
         let text = page.url;
         if (page.title) {
           text += " " + page.title;
@@ -402,8 +406,6 @@ class Pages extends LitElement {
         if (page.text) {
           text += " " + page.text;
         }
-        // TODO: Fix this the next time the file is edited.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         return flex.addAsync(index, text);
       }),
     );
@@ -433,7 +435,7 @@ class Pages extends LitElement {
         }
       }
 
-      const lines: unknown[] = [];
+      const lines: Page[] = [];
 
       for await (const line of ndjson(resp.body!.getReader())) {
         if (!line.url) {
@@ -445,7 +447,7 @@ class Pages extends LitElement {
         if (typeof line.ts === "string") {
           line.ts = new Date(line.ts as string).getTime();
         }
-        lines.push(line);
+        lines.push(line as unknown as Page);
       }
 
       await this.addPages(lines);
@@ -489,6 +491,7 @@ class Pages extends LitElement {
       .header.columns {
         width: 100%;
         margin-bottom: 0px;
+        padding: var(--sl-spacing-x-small) var(--sl-spacing-small);
       }
       .header a {
         color: black;
@@ -503,8 +506,6 @@ class Pages extends LitElement {
         display: flex;
         flex-direction: column;
         padding: 0px;
-        margin-top: 0.5em;
-        margin-left: 0.75em;
       }
 
       .thumbnail {
@@ -516,10 +517,10 @@ class Pages extends LitElement {
       .index-bar {
         display: flex;
         flex-direction: column;
-        border-right: 3px solid rgb(237, 237, 237);
-        background-color: whitesmoke;
-        padding-right: 0px;
+        border-right: 1px solid var(--sl-panel-border-color);
+        background-color: var(--sl-color-neutral-100);
         position: relative;
+        padding: 0;
       }
 
       .index-bar-label {
@@ -527,15 +528,25 @@ class Pages extends LitElement {
         font-size: var(--sl-font-size-x-small);
         font-weight: var(--sl-font-weight-semibold);
         color: var(--sl-color-neutral-500);
-        margin-bottom: var(--sl-spacing-2x-small);
+        margin-bottom: var(--sl-spacing-x-small);
+        padding: 0 var(--sl-spacing-small);
         line-height: 1;
       }
 
+      .index-bar-label:first-child {
+        margin-top: var(--sl-spacing-medium);
+      }
+
       .index-bar-title {
-        font-size: var(--sl-font-size-large);
+        font-size: var(--sl-font-size-small);
         font-weight: var(--sl-font-weight-semibold);
-        margin-bottom: var(--sl-spacing-large);
+        margin-bottom: var(--sl-spacing-small);
+        padding: 0 var(--sl-spacing-small);
         word-break: break-word;
+      }
+
+      .index-bar-title + .index-bar-label {
+        margin-top: var(--sl-spacing-medium);
       }
 
       .index-bar-title:hover + .editIcon {
@@ -565,9 +576,65 @@ class Pages extends LitElement {
       }
 
       .num-results {
-        font-style: italic;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--sl-spacing-small);
+        justify-content: space-between;
         font-weight: normal;
-        line-height: 2.5;
+        font-size: var(--sl-font-size-small);
+        color: var(--sl-color-neutral-700);
+        line-height: 1;
+        border-top: 1px solid var(--sl-panel-border-color);
+      }
+
+      .main-num-results {
+        padding: var(--sl-spacing-x-small) var(--sl-spacing-small);
+      }
+
+      .sidebar-num-results {
+        padding: var(--sl-spacing-x-small);
+      }
+
+      .seed-pages-filter {
+        font-size: var(--sl-font-size-small);
+      }
+
+      .seed-pages-filter .checkbox {
+        display: flex;
+        align-items: center;
+        gap: var(--sl-spacing-x-small);
+        line-height: 1;
+      }
+
+      .index-bar .seed-pages-filter {
+        font-weight: var(--sl-font-weight-semibold);
+        margin-bottom: var(--sl-spacing-medium);
+        padding: var(--sl-spacing-small);
+      }
+
+      .sorter {
+        gap: var(--sl-spacing-x-small);
+        align-items: center;
+      }
+
+      .sorter wr-sorter {
+        flex-grow: 1;
+      }
+
+      .sorter .seed-pages-filter {
+        flex-shrink: 0;
+        font-size: var(--sl-font-size-x-small);
+      }
+
+      .sort-control-label {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sl-spacing-2x-small);
+        font-size: var(--sl-font-size-small);
+        font-weight: var(--sl-font-weight-semibold);
+        color: var(--sl-color-neutral-600);
+        padding-bottom: 0;
       }
 
       .asc:after {
@@ -619,9 +686,16 @@ class Pages extends LitElement {
         display: flex;
         flex-direction: column;
         flex: auto;
-
-        padding-bottom: 1em;
+        padding: var(--sl-spacing-small);
         min-height: 0px;
+      }
+
+      .scroller-help-text {
+        color: var(--sl-color-neutral-500);
+      }
+
+      .scroller-help-text .icon {
+        font-size: 10px;
       }
 
       .page-entry {
@@ -643,19 +717,23 @@ class Pages extends LitElement {
         align-items: baseline;
         width: 100%;
         min-height: fit-content;
-
-        margin-bottom: 1em;
-        border-bottom: 3px solid rgb(237, 237, 237);
-      }
-
-      .check-select {
-        padding: 0 1em 0 0.5em;
+        border-bottom: 1px solid var(--sl-panel-border-color);
       }
 
       .search-bar {
         width: auto;
         display: flex;
         flex-direction: column;
+        background-color: var(--sl-color-neutral-100);
+        border-bottom: 1px solid var(--sl-panel-border-color);
+      }
+
+      .main-search-bar {
+        padding: var(--sl-spacing-small);
+      }
+
+      .sidebar-search-bar {
+        padding: var(--sl-spacing-x-small);
       }
 
       .flex-auto {
@@ -663,11 +741,11 @@ class Pages extends LitElement {
       }
 
       .index-bar-description {
-        margin-bottom: var(--sl-spacing-x-small);
+        font-size: var(--sl-font-size-small);
         line-height: var(--sl-line-height-normal);
         flex: 1 1 auto;
         overflow: auto;
-        border-bottom: 1px solid var(--sl-panel-border-color);
+        padding: 0 var(--sl-spacing-small);
       }
     `);
   }
@@ -698,8 +776,7 @@ class Pages extends LitElement {
       }
 
       ${prefix} .mobile-header {
-        margin: 0.5rem;
-        margin-left: 1rem;
+        margin: var(--sl-spacing-x-small);
         align-items: center;
         display: flex;
         justify-content: space-between;
@@ -737,7 +814,11 @@ class Pages extends LitElement {
       >
         Pages in ${this.collInfo!.title}
       </div>
-      <div class="search-bar notification is-marginless">
+      <div
+        class="search-bar is-marginless ${this.isSidebar
+          ? "sidebar-search-bar"
+          : "main-search-bar"}"
+      >
         ${this.isSidebar
           ? html`<h3 class="is-sr-only">Search and Filter Pages</h3>`
           : ""}
@@ -764,6 +845,7 @@ class Pages extends LitElement {
             ? "is-hidden-mobile"
             : ""}"
         >
+          ${this.renderSeedPagesFilter()}
           ${this.editable && this.editing
             ? html`
                 <form @submit="${this.onUpdateTitle}">
@@ -775,11 +857,7 @@ class Pages extends LitElement {
                   />
                 </form>
               `
-            : html` <div
-                  class="index-bar-label ${this.collInfo!.description
-                    ? "is-hidden-mobile"
-                    : "is-sr-only"}"
-                >
+            : html` <div class="index-bar-label is-hidden-mobile">
                   Collection Name
                 </div>
                 <div
@@ -804,28 +882,6 @@ class Pages extends LitElement {
           ${this.editable
             ? html`<fa-icon class="editIcon" .svg="${fasEdit}"></fa-icon>`
             : html``}
-          ${this.hasExtraPages
-            ? html` <span class="check-select">
-                <label class="checkbox">
-                  <input
-                    @change=${(e: Event) =>
-                      (this.showAllPages = (
-                        e.currentTarget as HTMLInputElement
-                      ).checked)}
-                    type="checkbox"
-                    .checked="${this.showAllPages}"
-                  />
-                  Show Non-Seed Pages
-                </label>
-              </span>`
-            : ""}
-
-          <span
-            class="num-results is-hidden-mobile"
-            aria-live="polite"
-            aria-atomic="true"
-            >${this.formatResults()}</span
-          >
           ${this.editable
             ? html` <div class="index-bar-actions">
                 ${this.renderDownloadMenu()}
@@ -967,7 +1023,7 @@ class Pages extends LitElement {
               @click="${this.onSort}"
               @keyup="${clickOnSpacebarPress}"
               data-key=""
-              class="column is-1 ${this.sortKey === ""
+              class="sort-control-label column is-1 ${this.sortKey === ""
                 ? this.sortDesc
                   ? "desc"
                   : "asc"
@@ -982,7 +1038,7 @@ class Pages extends LitElement {
           @click="${this.onSort}"
           @keyup="${clickOnSpacebarPress}"
           data-key="date"
-          class="column is-2 ${this.sortKey === "date"
+          class="sort-control-label column is-2 ${this.sortKey === "date"
             ? this.sortDesc
               ? "desc"
               : "asc"
@@ -998,8 +1054,9 @@ class Pages extends LitElement {
           @click="${this.onSort}"
           @keyup="${clickOnSpacebarPress}"
           data-key="title"
-          class="column is-6 pagetitle ${this.query ? "is-5" : "is-6"} ${this
-            .sortKey === "title"
+          class="sort-control-label column is-6 pagetitle ${this.query
+            ? "is-5"
+            : "is-6"} ${this.sortKey === "title"
             ? this.sortDesc
               ? "desc"
               : "asc"
@@ -1008,21 +1065,22 @@ class Pages extends LitElement {
         >
       </div>
 
-      <div class="is-hidden-tablet mobile-header">
-        <div class="num-results" aria-live="polite" aria-atomic="true">
-          ${this.formatResults()}
-        </div>
+      <div class="sorter is-hidden-tablet mobile-header">
         <wr-sorter
           id="pages"
           .sortKey="${this.sortKey}"
           .sortDesc="${this.sortDesc}"
           .sortKeys="${Pages.sortKeys}"
           .data="${this.filteredPages}"
-          .pageResults="${this.dynamicPagesQuery ? this.totalPages : 100}"
+          .pageResults="${this.dynamicPagesQuery
+            ? this.filteredPagesTotal
+            : 100}"
           @sort-changed="${this.onSortChanged}"
           class="${this.filteredPages.length ? "" : "is-hidden"}"
         >
         </wr-sorter>
+
+        ${this.renderSeedPagesFilter()}
       </div>
     `;
   }
@@ -1092,9 +1150,7 @@ class Pages extends LitElement {
   renderPages() {
     //const name = this.currList === 0 ? "All Pages" : this.collInfo.lists[this.currList - 1].title;
     return html`
-      <div class="page-header has-text-weight-bold">
-        ${this.renderPageHeader()}
-      </div>
+      <div class="page-header">${this.renderPageHeader()}</div>
       <ul class="scroller" @scroll="${this.onScroll}">
         ${this.sortedPages.length
           ? html` ${this.sortedPages.map((p, i) => {
@@ -1120,6 +1176,15 @@ class Pages extends LitElement {
             })}`
           : html`<p class="mobile-header">${this.getNoResultsMessage()}</p>`}
       </ul>
+      <div
+        class="num-results ${this.isSidebar
+          ? "sidebar-num-results"
+          : "main-num-results"}"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        ${this.renderPaginationResults()}
+      </div>
     `;
   }
 
@@ -1310,13 +1375,45 @@ class Pages extends LitElement {
     this.requestUpdate();
   }
 
-  formatResults() {
-    const length = this.totalPages;
-    if (length === this.sortedPages.length) {
-      return `${length} Page${length !== 1 ? "s" : ""}`;
-    } else {
-      return `${this.sortedPages.length} of ${length} Pages Shown`;
-    }
+  renderPaginationResults() {
+    const collTotal = this.dynamicPagesQuery && this.collInfo?.pageCount;
+    const filteredTotal = this.filteredPagesTotal;
+    const total = collTotal || filteredTotal;
+    const shown = this.sortedPages.length;
+
+    const totalStr = `${total.toLocaleString()} ${
+      total === 1 ? "page" : "pages"
+    }`;
+    const allShown = total === shown;
+    const countMsg = allShown
+      ? totalStr
+      : `${shown.toLocaleString()} of ${totalStr}`;
+
+    return html`<span>${countMsg}</span>
+      ${allShown
+        ? nothing
+        : html`<span class="scroller-help-text">
+            Scroll for more
+            <span class="icon is-small">
+              <fa-icon .svg="${faArrowDown}" aria-hidden="true"></fa-icon>
+            </span>
+          </span>`} `;
+  }
+
+  renderSeedPagesFilter() {
+    if (!this.hasExtraPages) return;
+
+    return html`<div class="seed-pages-filter check-select">
+      <label class="checkbox">
+        <input
+          @change=${(e: Event) =>
+            (this.showAllPages = (e.currentTarget as HTMLInputElement).checked)}
+          type="checkbox"
+          .checked="${this.showAllPages}"
+        />
+        Show Non-Seed Pages
+      </label>
+    </div>`;
   }
 
   getNoResultsMessage() {
@@ -1345,9 +1442,8 @@ class Pages extends LitElement {
     return "No Pages Found";
   }
 
-  // @ts-expect-error [// TODO: Fix this the next time the file is edited.] - TS7006 - Parameter 'event' implicitly has an 'any' type.
-  async onScroll(event) {
-    const element = event.currentTarget;
+  async onScroll(event: Event) {
+    const element = event.currentTarget as HTMLUListElement;
     const diff =
       element.scrollHeight - element.scrollTop - element.clientHeight;
     if (diff < 40 && !this.skipScrollMore) {
