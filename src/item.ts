@@ -35,13 +35,13 @@ import farPages from "@fortawesome/fontawesome-free/svgs/regular/file-image.svg"
 import fasInfoIcon from "@fortawesome/fontawesome-free/svgs/solid/info-circle.svg";
 import fasSync from "@fortawesome/fontawesome-free/svgs/solid/sync-alt.svg";
 
-import faExpandAlt from "@fortawesome/fontawesome-free/svgs/solid/expand-alt.svg";
-import faCompressAlt from "@fortawesome/fontawesome-free/svgs/solid/compress-alt.svg";
 import fasCaretDown from "@fortawesome/fontawesome-free/svgs/solid/caret-down.svg";
 
 import iconArrowClockwise from "~icons/arrow-clockwise.svg";
 import iconArrowLeft from "~icons/arrow-left.svg";
 import iconArrowRight from "~icons/arrow-right.svg";
+import iconArrowsExpandVertical from "~icons/arrows-expand-vertical.svg";
+import iconArrowBarLeft from "~icons/arrow-bar-left.svg";
 import iconArrowsFullscreen from "~icons/arrows-fullscreen.svg";
 import iconExitFullscreen from "~icons/fullscreen-exit.svg";
 import iconLayoutSidebar from "~icons/layout-sidebar.svg";
@@ -814,6 +814,10 @@ class Item extends LitElement {
         font-size: var(--sl-font-size-small);
       }
 
+      .replay-bar .icon {
+        font-size: 1.125rem;
+      }
+
       .favicon img {
         width: 20px;
         height: 20px;
@@ -1017,14 +1021,6 @@ class Item extends LitElement {
       .sidebar-nav:hover span.nav-hover,
       .sidebar-nav:focus-within span.nav-hover {
         display: initial;
-        color: rgb(72, 118, 255);
-      }
-
-      .sidebar-nav fa-icon {
-        vertical-align: bottom;
-      }
-
-      .sidebar-nav:hover fa-icon {
         color: rgb(72, 118, 255);
       }
 
@@ -1246,11 +1242,11 @@ class Item extends LitElement {
                 class="is-marginless is-size-6 is-paddingless"
               >
                 <span class="is-sr-only">Expand Sidebar to Full View</span>
-                <fa-icon
+                <wr-icon
                   title="Expand"
-                  .svg="${faExpandAlt}"
+                  .svg="${iconArrowsExpandVertical}"
                   aria-hidden="true"
-                ></fa-icon>
+                ></wr-icon>
               </a>
             </li>`
           : this.tabDataBeforeFullView
@@ -1263,11 +1259,11 @@ class Item extends LitElement {
                 class="is-marginless is-size-6 is-paddingless"
               >
                 <span class="is-sr-only">Go Back to Split View</span>
-                <fa-icon
+                <wr-icon
                   title="Contract"
-                  .svg="${faCompressAlt}"
+                  .svg="${iconArrowBarLeft}"
                   aria-hidden="true"
-                ></fa-icon>
+                ></wr-icon>
               </a>
             </li>`
           : nothing}
