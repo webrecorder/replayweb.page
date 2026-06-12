@@ -109,6 +109,9 @@ class Pages extends LitElement {
   collInfo: ItemType | Record<string, never> | null = null;
 
   @property({ type: Boolean })
+  hideCollectionMetadata = false;
+
+  @property({ type: Boolean })
   allSelected = false;
 
   @property({ type: String })
@@ -855,7 +858,9 @@ class Pages extends LitElement {
                   />
                 </form>
               `
-            : html` <div class="index-bar-label is-hidden-mobile">
+            : this.hideCollectionMetadata
+            ? nothing
+            : html`<div class="index-bar-label is-hidden-mobile">
                   Collection Name
                 </div>
                 <div
