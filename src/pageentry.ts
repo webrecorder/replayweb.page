@@ -1,9 +1,18 @@
 import prettyBytes from "pretty-bytes";
 
-import { LitElement, html, css, unsafeCSS, type PropertyValues } from "lit";
+import {
+  LitElement,
+  html,
+  css,
+  unsafeCSS,
+  type PropertyValues,
+  nothing,
+} from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "keyword-mark-element/lib/keyword-mark.js";
+
+import iconImageAlt from "~icons/image-alt.svg";
 
 import { getPageDateTS, getReplayLink } from "./pageutils";
 
@@ -15,6 +24,7 @@ import {
   timeFormatter,
 } from "./utils/dateTimeFormatter";
 import type { TabNavEvent } from "./events";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 // ===========================================================================
 class PageEntry extends LitElement {
@@ -48,6 +58,9 @@ class PageEntry extends LitElement {
   @property({ type: Boolean })
   isSidebar = false;
 
+  @property({ type: Boolean })
+  useFaviconFallback = false;
+
   @state()
   thumbnailValid = true;
 
@@ -68,6 +81,26 @@ class PageEntry extends LitElement {
 
       :host(.sidebar) .column {
         width: unset !important;
+      }
+
+      :host(.sidebar) .page-title {
+        font-size: var(--sl-font-size-small);
+      }
+
+      :host(.sidebar) .page-title,
+      :host(.sidebar) .page-url {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
+
+      :host(.sidebar) .page-link:not(.current):hover {
+        background-color: var(--sl-color-neutral-50);
+      }
+
+      :host(.sidebar) .current {
+        background-color: var(--sl-color-blue-100);
       }
 
       :host(.sidebar) {
@@ -92,23 +125,62 @@ class PageEntry extends LitElement {
         margin-bottom: calc(-0.75rem + 2px);
       }
 
-      .favicon {
-        display: inline-block;
-        vertical-align: text-bottom;
+      .thumbnail {
+        background-color: var(--sl-color-neutral-100);
+        border: 1px solid var(--sl-color-neutral-200);
+        border-radius: var(--sl-border-radius-large);
+      }
+
+      .thumbnail-placeholder {
+        position: relative;
+      }
+
+      .thumbnail-placeholder-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: var(--sl-spacing-2x-small);
+      }
+
+      .thumbnail-placeholder-content .icon {
+        margin: var(--sl-spacing-2x-small) 0;
+        color: var(--sl-color-neutral-300);
+      }
+
+      .thumbnail-placeholder-label {
+        font-size: var(--sl-font-size-2x-small);
+        color: var(--sl-color-neutral-500);
+        line-height: 1;
+      }
+
+      .page-link {
+        transition: background-color var(--sl-transition-x-fast);
+      }
+
+      .page-link:hover .page-title {
+        color: var(--sl-color-blue-700);
+      }
+
+      .page-title {
+        font-weight: var(--sl-font-weight-bold);
+        color: var(--sl-color-blue-600);
+        transition: color var(--sl-transition-x-fast);
       }
 
       .media-left .favicon {
-        width: 2rem;
-        height: 2rem;
-      }
-      .media-left img.favicon {
-        filter: drop-shadow(1px 1px 2px grey);
+        object-fit: contain;
       }
 
       .media-content .favicon {
         width: 1.15rem;
         height: 1.15rem;
         margin: 0 0.25rem;
+        display: inline-block;
+        vertical-align: -0.25rem;
       }
 
       .media-left {
@@ -141,18 +213,6 @@ class PageEntry extends LitElement {
 
       ${PageEntry.sidebarStyles(unsafeCSS`:host(.sidebar)`)}
 
-      .current a {
-        background-color: rgb(207, 243, 255);
-        font-style: italic;
-        display: block;
-      }
-
-      .current .curr-page {
-        font-style: italic;
-        font-size: 9px;
-        color: black;
-      }
-
       .is-inline-date {
         display: none;
       }
@@ -163,6 +223,16 @@ class PageEntry extends LitElement {
 
       .col-date {
         font-variant-numeric: tabular-nums;
+      }
+
+      .date-time,
+      .is-inline-date {
+        font-size: var(--sl-font-size-small);
+        color: var(--sl-color-neutral-700);
+      }
+
+      .page-url {
+        font-size: var(--sl-font-size-small);
       }
     `);
   }
@@ -185,10 +255,6 @@ class PageEntry extends LitElement {
       }
       ${prefix} .is-inline-date {
         display: initial !important;
-        font-style: italic;
-      }
-      ${prefix} .media-left {
-        padding-left: 0.75rem;
       }
     `;
   }
@@ -229,12 +295,15 @@ class PageEntry extends LitElement {
           : ""}
         <div class="column col-date is-2">
           <div>${date ? dateFormatter.format(date) : ""}</div>
-          <div>${date ? timeFormatter.format(date) : ""}</div>
+          <div class="date-time">${date ? timeFormatter.format(date) : ""}</div>
         </div>
-        <div class="column">
+        <div
+          class="page-link column ${this.isCurrent ? "current" : ""}"
+          aria-current=${ifDefined(this.isCurrent ? "location" : undefined)}
+        >
           <div class="media">
             <figure class="media-left">${this.renderPageIcon()}</figure>
-            <div class="media-content ${this.isCurrent ? "current" : ""}">
+            <div class="media-content">
               <div role="heading" aria-level="${this.isSidebar ? "4" : "3"}">
                 <a
                   @dblclick="${this.onReload}"
@@ -246,17 +315,20 @@ class PageEntry extends LitElement {
                     this.page!.waczhash,
                   )}"
                 >
-                  <p class="is-size-6 has-text-weight-bold has-text-link text">
-                    <keyword-mark keywords="${this.query}"
+                  <p class="page-title text">
+                    ${this.thumbnailValid ? this.renderFavicon() : nothing}
+                    <keyword-mark
+                      keywords="${this.query}"
+                      title="${p.title || p.url}"
                       >${p.title || p.url}</keyword-mark
                     >
                   </p>
-                  <p class="has-text-dark text">
-                    <keyword-mark keywords="${this.query}"
+                  <p class="page-url has-text-dark text">
+                    <keyword-mark keywords="${this.query}" title="${p.url}"
                       >${p.url}</keyword-mark
-                    >${this.thumbnailValid ? this.renderFavicon() : ""}
+                    >
                   </p>
-                  <p class="has-text-grey-dark text is-inline-date">
+                  <p class="text is-inline-date">
                     ${date ? dateTimeFormatter.format(date) : ""}
                   </p>
                 </a>
@@ -269,9 +341,7 @@ class PageEntry extends LitElement {
                   : html``}
               </div>
               ${hasSize
-                ? html` <div class="media-right" style="margin-right: 2em">
-                    ${prettyBytes(p.size)}
-                  </div>`
+                ? html` <div class="text">${prettyBytes(p.size)}</div>`
                 : ""}
             </div>
           </div>
@@ -301,14 +371,30 @@ class PageEntry extends LitElement {
 
   private renderPageIcon() {
     if (!this.thumbnailValid) {
-      return this.renderFavicon();
+      return html`<div
+        class="thumbnail-placeholder image is-16by9 ${this.useFaviconFallback
+          ? "favicon-fallback"
+          : "thumbnail"}"
+      >
+        <div class="thumbnail-placeholder-content">
+          ${this.useFaviconFallback
+            ? this.renderFavicon()
+            : html`<span class="icon is-small">
+                  <wr-icon .svg="${iconImageAlt}" aria-hidden="true"></wr-icon>
+                </span>
+                <span class="thumbnail-placeholder-label">No image</span>`}
+        </div>
+      </div>`;
     }
-    return html`<img
-      class="thumbnail"
-      @error=${() => (this.thumbnailValid = false)}
-      src=${`${this.getReplayPrefix()}/urn:thumbnail:${this.page!.url}`}
-      loading="lazy"
-    />`;
+
+    return html`<div class="image is-16by9">
+      <img
+        class="thumbnail"
+        @error=${() => (this.thumbnailValid = false)}
+        src=${`${this.getReplayPrefix()}/urn:thumbnail:${this.page!.url}`}
+        loading="lazy"
+      />
+    </div>`;
   }
 
   private renderFavicon() {
