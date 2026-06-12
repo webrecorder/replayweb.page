@@ -68,6 +68,7 @@ class Embed extends LitElement {
   @property({ type: Boolean }) hideOffscreen: boolean | undefined;
 
   @property({ type: Boolean }) noMediaDownload = false;
+  @property({ type: Boolean }) hideCollectionMetadata = false;
 
   @property({ type: Boolean }) useAdblock = false;
   @property({ type: String }) adblockRulesUrl = DEFAULT_ADBLOCK_FILE;
@@ -326,6 +327,7 @@ class Embed extends LitElement {
         ruffle?: "1";
         adblockUrl?: string;
         noMediaDownload?: string;
+        hideCollectionMetadata?: string;
       } = {
         source,
         customColl: this.coll,
@@ -369,6 +371,10 @@ class Embed extends LitElement {
 
       if (this.noMediaDownload) {
         params.noMediaDownload = "1";
+      }
+
+      if (this.hideCollectionMetadata) {
+        params.hideCollectionMetadata = "1";
       }
 
       this.paramString = new URLSearchParams(
