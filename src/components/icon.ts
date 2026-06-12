@@ -28,6 +28,9 @@ export class Icon extends LitElement {
   @property({ type: String })
   svg?: string;
 
+  @property({ type: String, reflect: true })
+  ariaHidden = "true";
+
   render() {
     if (!this.svg) {
       return;
