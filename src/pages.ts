@@ -109,6 +109,9 @@ class Pages extends LitElement {
   collInfo: ItemType | Record<string, never> | null = null;
 
   @property({ type: Boolean })
+  hideMetadataSidebar = false;
+
+  @property({ type: Boolean })
   allSelected = false;
 
   @property({ type: String })
@@ -605,12 +608,7 @@ class Pages extends LitElement {
         align-items: center;
         gap: var(--sl-spacing-x-small);
         line-height: 1;
-      }
-
-      .index-bar .seed-pages-filter {
-        font-weight: var(--sl-font-weight-semibold);
-        margin-bottom: var(--sl-spacing-medium);
-        padding: var(--sl-spacing-small);
+        padding-inline-end: var(--sl-spacing-x-small);
       }
 
       .sorter {
@@ -620,11 +618,6 @@ class Pages extends LitElement {
 
       .sorter wr-sorter {
         flex-grow: 1;
-      }
-
-      .sorter .seed-pages-filter {
-        flex-shrink: 0;
-        font-size: var(--sl-font-size-x-small);
       }
 
       .sort-control-label {
@@ -680,6 +673,11 @@ class Pages extends LitElement {
         display: flex !important;
       }
 
+      :host(.sidebar) .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
       .scroller {
         overflow-y: auto;
         overflow-x: hidden;
@@ -727,7 +725,8 @@ class Pages extends LitElement {
       .search-bar {
         width: auto;
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        gap: var(--sl-spacing-small);
         background-color: var(--sl-color-neutral-100);
         border-bottom: 1px solid var(--sl-panel-border-color);
         font-size: var(--sl-font-size-small);
@@ -807,6 +806,9 @@ class Pages extends LitElement {
 
   render() {
     const currList = this.currList;
+    const collList = this.collInfo?.lists.length;
+    const hideSideCol =
+      this.hideMetadataSidebar && !this.editable && !this.editing && !collList;
 
     return html`
       <div
@@ -820,7 +822,7 @@ class Pages extends LitElement {
         ${this.isSidebar
           ? html`<h3 class="is-sr-only">Search and Filter Pages</h3>`
           : ""}
-        <div class="field flex-auto">
+        <div class="flex-auto">
           <div
             class="control has-icons-left ${this.loading ? "is-loading" : ""}"
           >
@@ -836,14 +838,16 @@ class Pages extends LitElement {
             ></span>
           </div>
         </div>
+        ${this.renderSeedPagesFilter()}
       </div>
       <div class="main columns">
         <div
           class="column index-bar is-one-fifth ${this.isSidebar
             ? "is-hidden-mobile"
+            : hideSideCol
+            ? "is-hidden"
             : ""}"
         >
-          ${this.renderSeedPagesFilter()}
           ${this.editable && this.editing
             ? html`
                 <form @submit="${this.onUpdateTitle}">
@@ -855,7 +859,9 @@ class Pages extends LitElement {
                   />
                 </form>
               `
-            : html` <div class="index-bar-label is-hidden-mobile">
+            : this.hideMetadataSidebar
+            ? nothing
+            : html`<div class="index-bar-label is-hidden-mobile">
                   Collection Name
                 </div>
                 <div
@@ -885,7 +891,7 @@ class Pages extends LitElement {
                 ${this.renderDownloadMenu()}
               </div>`
             : ""}
-          ${this.collInfo!.lists.length
+          ${collList
             ? html`
                 <p id="filter-label" class="menu-label">Filter By List:</p>
                 <div class="index-bar-menu menu">
@@ -1077,8 +1083,6 @@ class Pages extends LitElement {
           class="${this.filteredPages.length ? "" : "is-hidden"}"
         >
         </wr-sorter>
-
-        ${this.renderSeedPagesFilter()}
       </div>
     `;
   }

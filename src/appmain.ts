@@ -665,6 +665,10 @@ export class ReplayWebApp extends LitElement {
       if (this.pageParams.has("noMediaDownload")) {
         this.embedOpts = { ...this.embedOpts, noMediaDownloadUI: true };
       }
+
+      if (this.pageParams.has("hideMetadataSidebar")) {
+        this.embedOpts = { ...this.embedOpts, hideMetadataSidebar: true };
+      }
     }
 
     if (this.pageParams.get("config")) {

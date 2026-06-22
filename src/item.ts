@@ -83,6 +83,7 @@ export type LoadInfo = {
 
 export type EmbedOpts = {
   noMediaDownloadUI?: boolean;
+  hideMetadataSidebar?: boolean;
 };
 
 export enum EmbedReplayDataView {
@@ -1730,6 +1731,7 @@ class Item extends LitElement {
             .url="${this.tabData.url || ""}"
             .ts="${this.tabData.ts || ""}"
             ?showAllPages=${this.showAllPages}
+            ?hideMetadataSidebar=${this.embedOpts.hideMetadataSidebar}
             @coll-tab-nav="${this.onItemTabNav}"
             id="pages"
             @coll-update="${this.onItemUpdate}"
