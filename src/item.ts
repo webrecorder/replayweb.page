@@ -824,11 +824,18 @@ class Item extends LitElement {
         font-size: var(--sl-font-size-small);
       }
 
-      .favicon.icon {
+      .control .favicon.icon {
         margin-top: var(--sl-spacing-x-small);
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+
+      .control.has-icons-left .favicon.icon {
         margin-left: var(--sl-spacing-x-small);
-        width: 1.25rem !important;
-        height: 1.25rem !important;
+      }
+
+      .control.has-icons-right .favicon.icon {
+        margin-right: var(--sl-spacing-x-small);
       }
 
       .favicon img {
@@ -1392,7 +1399,7 @@ class Item extends LitElement {
                     : this.renderTimestamp()
                   : ""}
                 ${showFavIcon
-                  ? html` <span class="favicon icon is-small is-left">
+                  ? html` <span class="favicon icon is-left">
                       <img src="${this.favIconUrl}" />
                     </span>`
                   : html``}
