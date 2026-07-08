@@ -268,6 +268,10 @@ class URLResources extends LitElement {
         display: block !important;
       }
 
+      :host(.sidebar) .level-left {
+        margin-bottom: var(--sl-spacing-x-small);
+      }
+
       :host(.sidebar) .columns {
         display: flex !important;
         flex-direction: column;
@@ -278,6 +282,7 @@ class URLResources extends LitElement {
       }
 
       .search-bar {
+        gap: var(--sl-spacing-small);
         width: 100%;
         background-color: var(--sl-color-neutral-100);
         border-bottom: 1px solid var(--sl-panel-border-color);
@@ -456,7 +461,7 @@ class URLResources extends LitElement {
           </div>
         </div>
         <div class="control level-right">
-          <div style="margin-left: 1em" class="control">
+          <div class="control">
             <label class="radio has-text-left"
               ><input
                 type="radio"

@@ -607,8 +607,12 @@ class Pages extends LitElement {
         display: flex;
         align-items: center;
         gap: var(--sl-spacing-x-small);
-        line-height: 1;
+        line-height: 1.5;
         padding-inline-end: var(--sl-spacing-x-small);
+      }
+
+      .seed-pages-filter .checkbox span {
+        margin-top: -0.0875rem;
       }
 
       .sorter {
@@ -1415,7 +1419,7 @@ class Pages extends LitElement {
           type="checkbox"
           .checked="${this.showAllPages}"
         />
-        Include Non-Seed Pages
+        <span>Include Non-Seed Pages</span>
       </label>
     </div>`;
   }
