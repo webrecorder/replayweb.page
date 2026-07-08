@@ -699,10 +699,6 @@ class Pages extends LitElement {
         color: var(--sl-color-neutral-500);
       }
 
-      .scroller-help-text wr-icon {
-        font-size: var(--sl-font-size-medium);
-      }
-
       .page-entry {
         padding-bottom: 1.5rem;
         margin-right: -1.5rem;
@@ -1386,9 +1382,7 @@ class Pages extends LitElement {
   }
 
   renderPaginationResults() {
-    const collTotal = this.dynamicPagesQuery && this.collInfo?.pageCount;
-    const filteredTotal = this.filteredPagesTotal;
-    const total = collTotal || filteredTotal;
+    const total = this.filteredPagesTotal;
     const shown = this.sortedPages.length;
 
     const totalStr = `${total.toLocaleString()} ${
