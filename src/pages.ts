@@ -241,7 +241,7 @@ class Pages extends LitElement {
         (inx: Id) => this.textPages![inx as number],
       );
     } else if (this.showAllPages && this.hasExtraPages) {
-      this.filteredPages = [...this.textPages!];
+      this.filteredPages = [...this.textPages!, ...this.collInfo!.pages];
     } else if (!this.dynamicPagesQuery) {
       this.filteredPages = [...this.collInfo!.pages];
     }
@@ -1415,7 +1415,7 @@ class Pages extends LitElement {
           type="checkbox"
           .checked="${this.showAllPages}"
         />
-        Show Non-Seed Pages
+        Include Non-Seed Pages
       </label>
     </div>`;
   }
