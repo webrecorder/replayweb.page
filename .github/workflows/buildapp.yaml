@@ -18,11 +18,13 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
+      - name: Set up corepack
+        run: corepack enable yarn
+
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: 'yarn'
 
       - name: Cache Dirs
         uses: actions/cache@v4
@@ -36,7 +38,7 @@ jobs:
       - name: Update Ruffle
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn run update-ruffle
+        run: node --run update-ruffle
 
       - name: Run Build
         env:
@@ -58,9 +60,9 @@ jobs:
               #fi
 
               if [ "$GITHUB_REF" == "refs/heads/main" ] || [ -f ./force_release ]; then
-                export YARN_BUILD_CMD="release"
+                export BUILD_CMD="release"
               else
-                export YARN_BUILD_CMD="dist"
+                export BUILD_CMD="dist"
               fi
 
               if [ "$RUNNER_OS" == "Linux" ]; then
@@ -73,12 +75,12 @@ jobs:
                   docker run --rm \
                     -e CI=${CI} \
                     -e GH_TOKEN=${GH_TOKEN} \
-                    -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
+                    -e BUILD_CMD=${BUILD_CMD} \
                     -v ${PWD}:/project \
                     -v ~/.cache/electron:/root/.cache/electron \
                     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-                    electronuserland/builder:22-wine \
-                    /bin/bash -c "yarn --link-duplicates --pure-lockfile --ignore-engines install && yarn run $YARN_BUILD_CMD --linux --x64"
+                    electronuserland/builder:22-wine
+                    /bin/bash -c "corepack enable yarn && yarn install --immutable && yarn run $BUILD_CMD --linux --x64"
                 else
                   #mkdir -p plugins-win;
                   #pushd plugins-win;
@@ -91,12 +93,12 @@ jobs:
                     -e GH_TOKEN=${GH_TOKEN} \
                     -e WIN_CSC_LINK=${WIN_CSC_LINK} \
                     -e WIN_CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD} \
-                    -e YARN_BUILD_CMD=${YARN_BUILD_CMD} \
+                    -e BUILD_CMD=${BUILD_CMD} \
                     -v ${PWD}:/project \
                     -v ~/.cache/electron:/root/.cache/electron \
                     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
                     electronuserland/builder:22-wine \
-                    /bin/bash -c "yarn --link-duplicates --pure-lockfile --ignore-engines install && yarn run $YARN_BUILD_CMD --win --x64 --ia32"
+                    /bin/bash -c "corepack enable yarn && yarn install --immutable && yarn run $BUILD_CMD --win --x64 --ia32"
                 fi
               else
                 #mkdir -p plugins-mac;
@@ -105,7 +107,7 @@ jobs:
                 #unzip PepperFlashPlayer.plugin.zip;
                 #rm PepperFlashPlayer.plugin.zip;
                 #popd;
-                yarn --link-duplicates --pure-lockfile --ignore-engines install
-                yarn run $YARN_BUILD_CMD
+                yarn install --immutable
+                yarn run $BUILD_CMD
               fi
 
