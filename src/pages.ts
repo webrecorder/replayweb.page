@@ -241,7 +241,7 @@ class Pages extends LitElement {
         (inx: Id) => this.textPages![inx as number],
       );
     } else if (this.showAllPages && this.hasExtraPages) {
-      this.filteredPages = [...this.textPages!];
+      this.filteredPages = [...this.textPages!, ...this.collInfo!.pages];
     } else if (!this.dynamicPagesQuery) {
       this.filteredPages = [...this.collInfo!.pages];
     }
@@ -607,8 +607,12 @@ class Pages extends LitElement {
         display: flex;
         align-items: center;
         gap: var(--sl-spacing-x-small);
-        line-height: 1;
+        line-height: 1.5;
         padding-inline-end: var(--sl-spacing-x-small);
+      }
+
+      .seed-pages-filter .checkbox span {
+        margin-top: -0.0875rem;
       }
 
       .sorter {
@@ -693,10 +697,6 @@ class Pages extends LitElement {
         align-items: center;
         gap: var(--sl-spacing-2x-small);
         color: var(--sl-color-neutral-500);
-      }
-
-      .scroller-help-text wr-icon {
-        font-size: var(--sl-font-size-medium);
       }
 
       .page-entry {
@@ -1379,9 +1379,7 @@ class Pages extends LitElement {
   }
 
   renderPaginationResults() {
-    const collTotal = this.dynamicPagesQuery && this.collInfo?.pageCount;
-    const filteredTotal = this.filteredPagesTotal;
-    const total = collTotal || filteredTotal;
+    const total = this.filteredPagesTotal;
     const shown = this.sortedPages.length;
 
     const totalStr = `${total.toLocaleString()} ${
@@ -1412,7 +1410,7 @@ class Pages extends LitElement {
           type="checkbox"
           .checked="${this.showAllPages}"
         />
-        Show Non-Seed Pages
+        <span>Include Non-Seed Pages</span>
       </label>
     </div>`;
   }
