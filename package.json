@@ -204,6 +204,9 @@
       }
     ]
   },
+  "engines": {
+    "node": ">=22 <25"
+  },
   "lint-staged": {
     "*.ts": "prettier --write"
   },
