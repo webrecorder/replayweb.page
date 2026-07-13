@@ -79,7 +79,7 @@ jobs:
                     -v ${PWD}:/project \
                     -v ~/.cache/electron:/root/.cache/electron \
                     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-                    electronuserland/builder:22-wine
+                    electronuserland/builder:22-wine \
                     /bin/bash -c "corepack enable yarn && yarn install --immutable && yarn run $BUILD_CMD --linux --x64"
                 else
                   #mkdir -p plugins-win;
