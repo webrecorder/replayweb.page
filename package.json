@@ -76,6 +76,9 @@
     "webpack-dev-server": "^5.0.4",
     "webpack-merge": "^5.10.0"
   },
+  "resolutions": {
+    "lit": "3.1.1"
+  },
   "files": [
     "/dist",
     "/src",
@@ -105,7 +108,7 @@
     "release": "yarn run build && electron-builder",
     "lint": "eslint ./",
     "format": "prettier --write ./",
-    "prepare": "husky install; node scripts/build-if-not-git-repo.js"
+    "prepare": "husky install; yarn node scripts/build-if-not-git-repo.js"
   },
   "build": {
     "afterSign": "build/notarize.js",
@@ -209,5 +212,6 @@
   },
   "prettier": {
     "trailingComma": "all"
-  }
+  },
+  "packageManager": "yarn@4.17.1"
 }
