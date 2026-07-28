@@ -64,6 +64,14 @@ The package provides various commands that can be used with yarn/npm. Some usefu
 
 - `yarn dist` - to build production assets + Electron app (in dist/)
 
+#### Testing with a local wabac.js
+
+The easiest way to test changes from a local checkout of wabac.js is to use the static site (see below) and overwrite the generated `sw.js` with a copy you've built from your local copy of wabac.js:
+
+1. In your checkout of wabac.js, run `yarn build-dev`.
+2. Overwrite this repository's copy of `sw.js` with the copy from wabac.js; for example: `cp ../dist/sw.js .`
+3. Serve the static site using any HTTP server; for example: `http-server -p 9990` or `python3 -m http.server 9990`
+
 ### Static Site
 
 The static assets are placed in the root `index.html`, `sw.js`, and `ui.js`, and can be used with any HTTP server. This provides the core ReplayWeb.page functionality.
