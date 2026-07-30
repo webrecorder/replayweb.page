@@ -66,7 +66,7 @@ The package provides various commands that can be used with yarn/npm. Some usefu
 
 #### Testing with a local wabac.js
 
-The easiest way to test changes from a local checkout of wabac.js is to use the static site (see below) and overwrite the generated `sw.js` with a copy you've built from your local copy of wabac.js:
+The easiest way to test changes from a local checkout of [wabac.js](https://github.com/webrecorder/wabac.js) is to use the static site (see below) and overwrite the generated `sw.js` with a copy you've built from your local copy of wabac.js:
 
 1. In your checkout of wabac.js, run `yarn build-dev`.
 2. Overwrite this repository's copy of `sw.js` with the copy from wabac.js; for example: `cp ../dist/sw.js .`
