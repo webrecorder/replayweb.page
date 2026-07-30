@@ -112,7 +112,13 @@ class Embed extends LitElement {
       return;
     }
 
-    const name = this.swName + "?serveIndex=1";
+    const swParams = new URLSearchParams();
+    swParams.set("serveIndex", "1");
+    if (this.useRuffle) {
+      swParams.set("injectScripts", "ruffle/ruffle.js");
+      swParams.set("allowProxyPaths", "ruffle/");
+    }
+    const name = this.swName + "?" + swParams.toString();
     const appName = this.appName;
     const scope = this.replaybase;
     const requireSubdomainIframe = this.requireSubdomainIframe;
