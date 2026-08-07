@@ -3,7 +3,8 @@ import webrecorderLockupColor from "~assets/brand/webrecorder-lockup-color.svg";
 import btAngleDoubleDown from "~assets/icons/chevron-double-down.svg";
 import btAngleDoubleUp from "~assets/icons/chevron-double-up.svg";
 import fabGithub from "@fortawesome/fontawesome-free/svgs/brands/github.svg";
-import fasDownload from "@fortawesome/fontawesome-free/svgs/solid/download.svg";
+
+import iconDownload from "~icons/download.svg";
 
 import { clickOnSpacebarPress } from "./misc";
 
@@ -246,11 +247,7 @@ export class RWPEmbedReceipt extends LitElement {
                     @keyup="${clickOnSpacebarPress}"
                   >
                     <span class="icon is-small">
-                      <fa-icon
-                        size="1.0em"
-                        aria-hidden="true"
-                        .svg="${fasDownload}"
-                      ></fa-icon>
+                      <wr-icon .svg="${iconDownload}"></wr-icon>
                     </span>
                     <span>Download Archive</span>
                   </a>

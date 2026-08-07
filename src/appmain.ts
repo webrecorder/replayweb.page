@@ -6,7 +6,7 @@ import {
   type TemplateResult,
   type PropertyValues,
 } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
   wrapCss,
@@ -26,7 +26,13 @@ import { SWManager } from "./swmanager";
 import "./item";
 import "./item-index";
 import "./chooser";
-import { type EmbedOpts, type LoadInfo } from "./item";
+import {
+  type Item,
+  type EmbedOpts,
+  type LoadInfo,
+  RWP_SCHEME,
+  EmbedReplayDataView,
+} from "./item";
 import type { FavIconEventDetail } from "./types";
 
 // ===========================================================================
@@ -46,6 +52,9 @@ export class ReplayWebApp extends LitElement {
 
   @property({ type: Boolean })
   showAbout = false;
+
+  @property({ type: Boolean })
+  showAllPages = false;
 
   @property({ type: Boolean })
   showFileDropOverlay = false;
@@ -80,7 +89,40 @@ export class ReplayWebApp extends LitElement {
   @property({ type: String })
   swErrorMsg: TemplateResult<1> | string | null = null;
 
-  protected swName?: string;
+  @query("wr-item")
+  private readonly item?: Item | null;
+
+  /**
+   * Navigate to a view in replay.
+   *
+   * @param {string} urlOrView - The page URL or view to navigate to.
+   * @param {Object|undefined} data - Optional view data.
+   */
+  public navigateReplayTo(
+    urlOrView: EmbedReplayDataView | string,
+    data?: { ts: string },
+  ) {
+    if (!this.item) {
+      console.debug("missing `this.item`");
+      return;
+    }
+
+    let value = urlOrView;
+
+    if (
+      Object.values(EmbedReplayDataView).some(
+        (view) => (view as string) === urlOrView,
+      )
+    ) {
+      value = `${RWP_SCHEME}view=${value}${
+        data ? `?${new URLSearchParams(data).toString()}` : ""
+      }`;
+    }
+
+    this.item.navigateTo(value, data);
+  }
+
+  swName?: string;
   protected swmanager: SWManager | null;
   private useRuffle = false;
 
@@ -217,6 +259,24 @@ export class ReplayWebApp extends LitElement {
         inset: 0;
         border: 5px dashed #aaa;
         margin: 15px;
+      }
+
+      .about-dialog-header {
+        display: flex;
+      }
+
+      .about-dialog h3,
+      h4 {
+        font-weight: var(--sl-font-weight-bold);
+        margin-bottom: var(--sl-spacing-x-small);
+      }
+
+      .about-dialog p + p {
+        margin-top: 1em;
+      }
+
+      .about-dialog details p {
+        font-size: var(--sl-font-size-x-small);
       }
 
       @media screen and (min-width: 840px) {
@@ -404,11 +464,21 @@ export class ReplayWebApp extends LitElement {
       .embedOpts="${this.embedOpts}"
       appName="${this.appName}"
       swName="${ifDefined(this.swName)}"
+      ?showAllPages=${this.showAllPages}
       @replay-favicons=${this.onFavIcons}
       @update-title=${this.onTitle}
       @coll-loaded=${this.onCollLoaded}
       @coll-load-cancel=${this.onCollLoadCancel}
       @about-show=${() => (this.showAbout = true)}
+      exportparts="
+       replay-bar:wr-item__replay-bar,
+       replay-bar-container:wr-item__replay-bar-container,
+       replay-bar-input:wr-item__replay-bar-input,
+       replay-content:wr-item__replay-content,
+       replay-tabs-nav:wr-item__replay-tabs-nav,
+       replay-tabs-panel:wr-item__replay-tabs-panel,
+       replay-main:wr-item__replay-main,
+     "
     ></wr-item>`;
   }
 
@@ -450,7 +520,7 @@ export class ReplayWebApp extends LitElement {
     return html`
       ${!this.embed || this.embed === "full" ? this.renderNavBar() : ""}
       ${this.sourceUrl ? this.renderColl() : this.renderHomeIndex()}
-      ${this.showAbout ? this.renderAbout() : ""}
+      ${this.renderAbout()}
       ${this.showFileDropOverlay ? this.renderDropFileOverlay() : ""}
     `;
   }
@@ -595,6 +665,10 @@ export class ReplayWebApp extends LitElement {
       if (this.pageParams.has("noMediaDownload")) {
         this.embedOpts = { ...this.embedOpts, noMediaDownloadUI: true };
       }
+
+      if (this.pageParams.has("hideMetadataSidebar")) {
+        this.embedOpts = { ...this.embedOpts, hideMetadataSidebar: true };
+      }
     }
 
     if (this.pageParams.get("config")) {
@@ -733,91 +807,95 @@ export class ReplayWebApp extends LitElement {
   }
 
   renderAbout() {
-    return html`
-      <div class="modal is-active">
-        <div class="modal-background" @click="${this.onAboutClose}"></div>
-          <div class="modal-card">
-            <header class="modal-card-head">
-              <p class="modal-card-title">About ReplayWeb.page ${
-                IS_APP ? "App" : ""
-              }</p>
-              <button class="delete" aria-label="close" @click="${
-                this.onAboutClose
-              }"></button>
-            </header>
-            <section class="modal-card-body">
-              <div class="container">
-                <div class="content">
-                  <div style="display: flex">
-                    <div class="has-text-centered" style="width: 220px">
-                      <fa-icon
-                        size="3rem"
-                        .svg=${rwpLogo}
-                        aria-label="ReplayWeb.page Logo"
-                        role="img"
-                      ></fa-icon>
-                      <div style="font-size: smaller; margin-bottom: 1em">${
-                        IS_APP ? "App" : ""
-                      } v${VERSION}</div>
-                    </div>
-
-                    ${
-                      IS_APP
-                        ? html`
-                            <p>
-                              ReplayWeb.page App is a standalone app for Mac,
-                              Windows and Linux that loads web archive files
-                              provided by the user and renders them for replay.
-                            </p>
-                          `
-                        : html` <p>
-                            <a href="https://replayweb.page" target="_blank"
-                              >ReplayWeb.page</a
-                            >
-                            is a browser-based viewer that loads web archive
-                            files provided by the user and renders them for
-                            replay in the browser.
-                          </p>`
-                    }
-                  </div>
-
-                  <p>Full source code is available 
-                    <a href="https://github.com/webrecorder/replayweb.page" target="_blank">on GitHub</a>.
-                  </p>
-
-                  <p>See the <a target="_blank" href="./docs">documentation</a> for more info on how it works.</p>
-
-                  <p>ReplayWeb.page is developed by <a href="https://webrecorder.net/" target="_blank">Webrecorder</a>.</p>
-
-                  <h3>Privacy</h3>
-                  <p><b>No data is uploaded anywhere and no information is collected.</b></p>
-                  <p>All content rendered stays directly in your browser.<br/>When loading an archive from Google Drive,
-                  the site may ask for account authorization to download the specified file only.</p>
-
-                  <h4>Disclaimer of Warranties</h4>
-                  <p>The application is provided "as is" without any guarantees.</p>
-                  <details>
-                    <summary>Legalese:</summary>
-                    <p style="font-size: 0.8rem">DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS SOFTWARE TO YOU "AS AVAILABLE"
-                    AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
-                    INCLUDING WITHOUT LIMITATION ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</p>
-                  </details>
-                  <div class="has-text-centered">
-                    <a class="button is-warning" href="#" @click="${
-                      this.onAboutClose
-                    }">Close</a>
-                  </div>
-                </div>
-              </div>
-            </section>
+    return html` <sl-dialog
+      class="about-dialog"
+      label=${`About ReplayWeb.page ${IS_APP ? "App" : ""}`}
+      ?open=${this.showAbout}
+      @sl-after-hide=${this.onAboutClose}
+    >
+      <div class="about-dialog-header">
+        <div class="has-text-centered" style="width: 220px">
+          <fa-icon
+            size="3rem"
+            .svg=${rwpLogo}
+            aria-label="ReplayWeb.page Logo"
+            role="img"
+          ></fa-icon>
+          <div style="font-size: smaller; margin-bottom: 1em">
+            ${IS_APP ? "App" : ""} v${VERSION}
           </div>
         </div>
-      </div>`;
+
+        ${IS_APP
+          ? html`
+              <p>
+                ReplayWeb.page App is a standalone app for Mac, Windows and
+                Linux that loads web archive files provided by the user and
+                renders them for replay.
+              </p>
+            `
+          : html` <p>
+              <a href="https://replayweb.page" target="_blank"
+                >ReplayWeb.page</a
+              >
+              is a browser-based viewer that loads web archive files provided by
+              the user and renders them for replay in the browser.
+            </p>`}
+      </div>
+
+      <p>
+        Full source code is available
+        <a href="https://github.com/webrecorder/replayweb.page" target="_blank"
+          >on GitHub</a
+        >.
+      </p>
+
+      <p>
+        See the <a target="_blank" href="./docs">documentation</a> for more info
+        on how it works.
+      </p>
+
+      <p>
+        ReplayWeb.page is developed by
+        <a href="https://webrecorder.net/" target="_blank">Webrecorder</a>.
+      </p>
+
+      <sl-divider></sl-divider>
+      <h3>Privacy</h3>
+      <p>No data is uploaded anywhere and no information is collected.</p>
+      <details>
+        <summary>More info</summary>
+        <p>
+          All content rendered stays directly in your browser.<br />When loading
+          an archive from Google Drive, the site may ask for account
+          authorization to download the specified file only.
+        </p>
+      </details>
+      <sl-divider></sl-divider>
+      <h4>Disclaimer of Warranties</h4>
+      <p>The application is provided "as is" without any guarantees.</p>
+      <details>
+        <summary>Legal</summary>
+        <p>
+          DISCLAIMER OF SOFTWARE WARRANTY. WEBRECORDER SOFTWARE PROVIDES THIS
+          SOFTWARE TO YOU "AS AVAILABLE" AND WITHOUT WARRANTY OF ANY KIND,
+          EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION ANY
+          WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+        </p>
+      </details>
+      <sl-button
+        slot="footer"
+        variant="primary"
+        size="small"
+        @click="${this.onAboutClose}"
+        >Close</sl-button
+      >
+    </sl-dialog>`;
   }
 
-  onAboutClose() {
+  readonly onAboutClose = () => {
     this.showAbout = false;
-  }
+  };
 
   renderDropFileOverlay() {
     return html`

@@ -5,7 +5,7 @@ import { wrapCss, apiPrefix } from "./misc";
 import fasArrowUp from "@fortawesome/fontawesome-free/svgs/solid/angle-double-up.svg";
 import fasArrowDown from "@fortawesome/fontawesome-free/svgs/solid/angle-double-down.svg";
 
-import fasSearch from "@fortawesome/fontawesome-free/svgs/solid/search.svg";
+import iconSearch from "~icons/search.svg";
 
 import type { ItemType } from "./types";
 
@@ -306,7 +306,7 @@ class ItemIndex extends LitElement {
                       placeholder="Search by Archive Title or Source"
                     />
                     <span class="icon is-left is-small">
-                      <fa-icon .svg="${fasSearch}"></fa-icon>
+                      <wr-icon .svg="${iconSearch}"></wr-icon>
                     </span>
                   </div>
                   <wr-sorter

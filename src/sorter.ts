@@ -3,8 +3,8 @@ import { customElement, property } from "lit/decorators.js";
 
 import { wrapCss } from "./misc";
 
-import fasSortDown from "@fortawesome/fontawesome-free/svgs/solid/sort-down.svg";
-import fasSortUp from "@fortawesome/fontawesome-free/svgs/solid/sort-up.svg";
+import iconSortDown from "~icons/sort-down.svg";
+import iconSortUp from "~icons/sort-up.svg";
 
 // ===========================================================================
 @customElement("wr-sorter")
@@ -118,34 +118,44 @@ class Sorter<T = unknown> extends LitElement {
       button.button.is-small {
         border-radius: 4px;
       }
+
+      .is-small {
+        font-size: var(--sl-font-size-x-small);
+      }
     `);
   }
 
   render() {
-    return html`
-    <div class="select is-small">
-      <select id="sort-select" @change=${(e: Event) =>
-        (this.sortKey = (e.currentTarget as HTMLSelectElement).value)}>
-
-      ${this.sortKeys?.map(
-        (sort) => html`
-          <option value="${sort.key}" ?selected="${sort.key === this.sortKey}">
-            Sort By: ${sort.name}
-          </option>
-        `,
-      )}
-      </select>
-    </div>
-    <button @click=${() =>
-      (this.sortDesc = !this.sortDesc)} class="button is-small">
-      <span>Order:</span>
-      <span class="is-sr-only">${
-        this.sortDesc ? "Ascending" : "Descending"
-      }</span>
-      <span class="icon"><fa-icon aria-hidden="true" .svg=${
-        this.sortDesc ? fasSortUp : fasSortDown
-      }></span>
-    </button>`;
+    return html` <div class="select is-small">
+        <select
+          id="sort-select"
+          @change=${(e: Event) =>
+            (this.sortKey = (e.currentTarget as HTMLSelectElement).value)}
+        >
+          ${this.sortKeys?.map(
+            (sort) => html`
+              <option
+                value="${sort.key}"
+                ?selected="${sort.key === this.sortKey}"
+              >
+                Sort By: ${sort.name}
+              </option>
+            `,
+          )}
+        </select>
+      </div>
+      <button
+        @click=${() => (this.sortDesc = !this.sortDesc)}
+        class="button is-small"
+      >
+        <span>Order:</span>
+        <span class="is-sr-only"
+          >${this.sortDesc ? "Ascending" : "Descending"}</span
+        >
+        <span class="icon"
+          ><wr-icon .svg=${this.sortDesc ? iconSortDown : iconSortUp}></wr-icon
+        ></span>
+      </button>`;
   }
 }
 

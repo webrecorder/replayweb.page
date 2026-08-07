@@ -1,7 +1,7 @@
 {
   "name": "replaywebpage",
   "productName": "ReplayWeb.page",
-  "version": "2.4.7",
+  "version": "2.5.0-rc.2",
   "description": "Serverless Web Archive Replay",
   "repository": "https://github.com/webrecorder/replayweb.page",
   "homepage": "https://replayweb.page/",
@@ -64,7 +64,6 @@
     "lint-staged": "^14.0.0",
     "mini-css-extract-plugin": "^2.3.0",
     "prettier": "^3.0.1",
-    "raw-loader": "^4.0.2",
     "sass-embedded": "^1.70.0",
     "sass-loader": "^13.3.2",
     "serve": "^14.2.4",
@@ -78,7 +77,7 @@
     "webpack-merge": "^5.10.0"
   },
   "resolutions": {
-    "**/lit": "3.1.1"
+    "lit": "3.1.1"
   },
   "files": [
     "/dist",
@@ -109,7 +108,7 @@
     "release": "yarn run build && electron-builder",
     "lint": "eslint ./",
     "format": "prettier --write ./",
-    "prepare": "husky install; node scripts/build-if-not-git-repo.js"
+    "prepare": "husky install; yarn node scripts/build-if-not-git-repo.js"
   },
   "build": {
     "afterSign": "build/notarize.js",
@@ -205,10 +204,14 @@
       }
     ]
   },
+  "engines": {
+    "node": ">=22 <25"
+  },
   "lint-staged": {
     "*.ts": "prettier --write"
   },
   "prettier": {
     "trailingComma": "all"
-  }
+  },
+  "packageManager": "yarn@4.17.1"
 }

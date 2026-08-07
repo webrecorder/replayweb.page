@@ -1,13 +1,17 @@
 import { LitElement, html, css, type PropertyValues } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { property } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 
 import { wrapCss } from "./misc";
 import rwpLogo from "~assets/brand/replaywebpage-icon-color.svg";
 import type { ItemType } from "./types";
 import type { ReplayLoadingDetail, TabNavEvent } from "./events";
+import { keyed } from "lit/directives/keyed.js";
 
 /**
+ * @cssPart iframe
+ * @cssPart iframe-container
+ * @cssPart iframe-page-not-found
  * @fires update-title
  * @fires coll-tab-nav
  * @fires update-title
@@ -62,11 +66,30 @@ class Replay extends LitElement {
   @property({ type: String })
   downloadResUrl = "";
 
+  @query("iframe")
+  readonly iframe?: HTMLIFrameElement | null;
+
+  /**
+   * Use key to force iframe to update even if `src` hasn't changed,
+   * for example, if the iframe window has navigated to a linked page
+   * and is being externally reset to a seed URL.
+   */
+  @state()
+  private iframeUrlUpdateKey?: number;
+
   private reauthWait: null | Promise<void> = null;
 
   private _loadPoll: null | number = null;
 
   private hiliter: HoverHiliter | null = null;
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+
+    if (this._loadPoll) {
+      window.clearInterval(this._loadPoll);
+    }
+  }
 
   firstUpdated() {
     window.addEventListener("message", (event) => this.onReplayMessage(event));
@@ -121,7 +144,7 @@ class Replay extends LitElement {
         : "";
   }
 
-  updated(changedProperties: PropertyValues<this>) {
+  willUpdate(changedProperties: PropertyValues<this>) {
     if (
       changedProperties.has("sourceUrl") ||
       changedProperties.has("collInfo")
@@ -138,9 +161,17 @@ class Replay extends LitElement {
       this.replayTS = this.ts;
       this.showAuth = false;
       this.reauthWait = null;
-      this.doSetIframeUrl();
-    }
 
+      const prevIframe = this.iframeUrl;
+      this.doSetIframeUrl();
+
+      if (prevIframe === this.iframeUrl) {
+        this.iframeUrlUpdateKey = Date.now();
+      }
+    }
+  }
+
+  updated(changedProperties: PropertyValues<this>) {
     if (this.iframeUrl && changedProperties.has("iframeUrl")) {
       this.waitForLoad();
 
@@ -434,17 +465,22 @@ class Replay extends LitElement {
                   : undefined,
               )}"
             ></a>
-            <div class="iframe-container">
-              <iframe
-                class="iframe-main"
-                name="___wb_replay_top_frame"
-                @message="${this.onReplayMessage}"
-                allow="autoplay 'self'; fullscreen"
-                allowfullscreen
-                src="${this.iframeUrl}"
-                title="${title}"
-              ></iframe>
-
+            <div part="iframe-container" class="iframe-container">
+              ${keyed(
+                this.iframeUrlUpdateKey,
+                html`<iframe
+                  part="iframe ${this.replayNotFoundError
+                    ? "iframe-page-not-found"
+                    : ""}"
+                  class="iframe-main"
+                  name="___wb_replay_top_frame"
+                  @message="${this.onReplayMessage}"
+                  allow="autoplay 'self'; fullscreen"
+                  allowfullscreen
+                  src="${this.iframeUrl}"
+                  title="${title}"
+                ></iframe>`,
+              )}
               ${this.showAuth
                 ? html`
                     <div class="iframe-main modal-bg">

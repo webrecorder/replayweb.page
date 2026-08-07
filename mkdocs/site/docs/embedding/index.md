@@ -147,6 +147,7 @@ The `#!html <replay-web-page>` tag is a web component that supports a number of 
 | `noWebWorker`| If set, will not use Web Worker for loading, only Service Worker. May be useful for certain loading edge cases. |
 | `noCache`    | If set, will not cache any loaded content HTTP responses locally, always loading from original source. |
 | `hideOffscreen` | If set, will unload the embed when it is not visible and reload when scrolled into view. Useful if multiple embeds per-page to avoid loading all at once. |
+| `hideMetadataSidebar` | If set, will hide the sidebar shown on the page list. May be useful for embeds that show metadata elsewhere |
 | `newWindowBase` | set base replay URL loaded when a page opens a new window, defaults to `https://replayweb.page/` if `deepLink` not enabled, otherwise, to current page with new link. |
 | `requireSubdomainIframe` | If set, will only load embed in an iframe loaded from a subdomain, for increased origin isolation. |
 | `loading="eager"` | If set, will load the entire WACZ file at once (regardless of size), and not attempt on-demand range request loading. |

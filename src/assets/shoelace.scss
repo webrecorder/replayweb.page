@@ -1,0 +1,23 @@
+sl-dialog {
+  --header-spacing: var(--sl-spacing-small);
+  --body-spacing: var(--sl-spacing-small);
+  --footer-spacing: var(--sl-spacing-small);
+  --width: 40rem;
+}
+
+sl-dialog::part(header) {
+  border-bottom: 1px solid var(--sl-panel-border-color);
+}
+
+sl-dialog::part(title) {
+  font-size: var(--sl-font-size-medium);
+  font-weight: var(--sl-font-weight-bold);
+}
+
+sl-dialog::part(body) {
+  font-size: var(--sl-font-size-small);
+}
+
+sl-dialog::part(footer) {
+  border-top: 1px solid var(--sl-panel-border-color);
+}

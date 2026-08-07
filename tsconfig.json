@@ -2,7 +2,11 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "module": "esnext",
-    "lib": ["esnext", "dom", "dom.iterable"],
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
     "target": "es6",
     "moduleResolution": "Bundler",
     "allowJs": true,
@@ -29,9 +33,21 @@
     ],
     "incremental": true,
     "paths": {
-      "flexsearch": ["./node_modules/@types/flexsearch"],
-      "~assets/*": ["./src/assets/*"]
+      "flexsearch": [
+        "./node_modules/@types/flexsearch"
+      ],
+      "~assets/*": [
+        "./src/assets/*"
+      ],
+      "~icons/*": [
+        "./node_modules/@shoelace-style/shoelace/dist/assets/icons/*",
+        "./node_modules/@fortawesome/fontawesome-free/svgs/*",
+      ],
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.d.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.d.ts"
+  ]
 }

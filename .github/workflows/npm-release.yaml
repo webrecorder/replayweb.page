@@ -12,14 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - name: Set up corepack
+        run: corepack enable yarn
+
+      - uses: actions/setup-node@v6
         with:
           node-version: "24.x"
           registry-url: "https://registry.npmjs.org"
           cache: "yarn"
 
       - name: Yarn Install
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Yarn Run Build
         run: yarn run build
