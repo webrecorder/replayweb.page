@@ -466,11 +466,12 @@ class Embed extends LitElement {
     const win = target.contentWindow;
     const doc = target.contentDocument;
 
-    if (
-      win?.navigator.serviceWorker &&
-      !win.navigator.serviceWorker.controller &&
-      this.reloadCount <= 2
-    ) {
+    if (!win) {
+      console.debug("missing `event.target.contentWindow`");
+      return;
+    }
+
+    if (!win.navigator.serviceWorker.controller && this.reloadCount <= 2) {
       this.reloadCount++;
       setTimeout(() => win.location.reload(), 100);
       return;
@@ -478,13 +479,13 @@ class Embed extends LitElement {
 
     this.reloadCount = 0;
 
-    if (win?.customElements.get(this.mainElementName)) {
-      this.mainElement = doc?.querySelector(this.mainElementName);
+    if (!doc) {
+      console.debug("missing `event.target.contentDocument`");
       return;
     }
 
-    if (!doc) {
-      console.debug("missing `event.target.contentDocument`");
+    if (win?.customElements.get(this.mainElementName)) {
+      this.mainElement = doc.querySelector(this.mainElementName);
       return;
     }
 
