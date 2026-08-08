@@ -113,7 +113,6 @@
   "build": {
     "afterSign": "build/notarize.js",
     "productName": "ReplayWeb.page",
-    "asar": true,
     "appId": "net.webrecorder.replaywebpage",
     "artifactName": "${productName}-${version}.${ext}",
     "extraMetadata": {
@@ -146,21 +145,21 @@
         }
       ],
       "notarize": false,
-      "universal": {
-        "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**}"
-      },
+      "electronLanguages": [
+        "en"
+      ],
+      "extraResources": [
+        "plugins-mac"
+      ],
       "sign": {
         "entitlements": "build/entitlements.mac.plist",
         "entitlementsInherit": "build/entitlements.mac.plist",
         "hardenedRuntime": true,
         "gatekeeperAssess": false
       },
-      "electronLanguages": [
-        "en"
-      ],
-      "extraResources": [
-        "plugins-mac"
-      ]
+      "universal": {
+        "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**}"
+      }
     },
     "linux": {
       "category": "Archiving;Utility;",
