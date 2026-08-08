@@ -59,6 +59,5 @@ jobs:
             export BUILD_CMD="dist"
           fi
 
-          echo "$BUILD_CMD"
           yarn install --immutable
           yarn run $BUILD_CMD

@@ -105,7 +105,7 @@
     "pack-signed": "electron-builder",
     "dist": "yarn run build && yarn run pack",
     "dist-dev": "yarn run build-dev && yarn run pack",
-    "release": "yarn run build && electron-builder",
+    "release": "yarn run build && electron-builder --publish always",
     "lint": "eslint ./",
     "format": "prettier --write ./",
     "prepare": "husky install; yarn node scripts/build-if-not-git-repo.js"
