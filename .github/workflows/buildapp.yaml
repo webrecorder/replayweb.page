@@ -6,10 +6,6 @@ jobs:
   release:
     runs-on: ${{ matrix.os }}
 
-    defaults:
-      run:
-        shell: bash
-
     strategy:
       matrix:
         os: [macos-14, ubuntu-latest, windows-latest]
@@ -18,15 +14,13 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - name: Set up corepack
-        run: corepack enable yarn
-        env:
-          MSYS_NO_PATHCONV: 1
-
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v6
         with:
           node-version: 22
+
+      - name: Set up corepack
+        run: corepack enable yarn
 
       - name: Cache Dirs
         uses: actions/cache@v4
@@ -54,6 +48,8 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           PLATFORM: ${{ matrix.platform }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        shell: bash
 
         run: |
           if [ "$GITHUB_REF" == "refs/heads/main" ] || [ -f ./force_release ]; then
