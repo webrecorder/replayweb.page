@@ -6,6 +6,10 @@ jobs:
   release:
     runs-on: ${{ matrix.os }}
 
+    defaults:
+      run:
+        shell: bash
+
     strategy:
       matrix:
         os: [macos-14, ubuntu-latest, windows-latest]
