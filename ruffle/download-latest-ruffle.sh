@@ -15,10 +15,6 @@ curl -L -o "$RUFFLE_DIR/ruffle.zip" "$SELFHOST_URL"
 
 rm -f "$RUFFLE_DIR"/*.js "$RUFFLE_DIR"/*.wasm
 
-cd "$RUFFLE_DIR" || exit 1
+unzip -o "$RUFFLE_DIR/ruffle.zip" "*.js" "*.wasm"
 
-unzip -o ruffle.zip "*.js" "*.wasm"
-
-rm -f ruffle.zip
-
-cd ..
+rm "$RUFFLE_DIR/ruffle.zip"
