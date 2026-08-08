@@ -5,7 +5,7 @@
 *.warc.gz
 **/node_modules
 yarn-error.log
-/.yarn/install-state.gz
+.yarn/install-state.gz
 coverage/
 **/local-examples/
 **/.DS_Store
