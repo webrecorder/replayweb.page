@@ -54,7 +54,7 @@
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "electron": "^43.3.0",
-    "electron-builder": "^26.0.12",
+    "electron-builder": "26.15.3",
     "electron-notarize": "^1.2.2",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
@@ -171,7 +171,14 @@
       "target": "nsis",
       "extraResources": [
         "plugins-win"
-      ]
+      ],
+      "sign": "azure",
+      "azureSignOptions": {
+        "endpoint": "https://wus2.codesigning.azure.net/",
+        "codeSigningAccountName": "webrecorder",
+        "certificateProfileName": "webrecorder",
+        "publisherName": "CN=Webrecorer Software LLC"
+      }
     },
     "directories": {
       "buildResources": "build",

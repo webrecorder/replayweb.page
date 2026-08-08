@@ -47,8 +47,9 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
-          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           PLATFORM: ${{ matrix.platform }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -91,8 +92,9 @@ jobs:
                   docker run --rm \
                     -e CI=${CI} \
                     -e GH_TOKEN=${GH_TOKEN} \
-                    -e WIN_CSC_LINK=${WIN_CSC_LINK} \
-                    -e WIN_CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD} \
+                    -e AZURE_TENANT_ID=${AZURE_TENANT_ID} \
+                    -e AZURE_CLIENT_ID=${AZURE_CLIENT_ID} \
+                    -e AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET} \
                     -e BUILD_CMD=${BUILD_CMD} \
                     -v ${PWD}:/project \
                     -v ~/.cache/electron:/root/.cache/electron \
