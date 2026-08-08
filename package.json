@@ -171,7 +171,8 @@
       "target": "nsis",
       "extraResources": [
         "plugins-win"
-      ]
+      ],
+      "publisherName": "Webrecorder Software LLC"
     },
     "directories": {
       "buildResources": "build",
