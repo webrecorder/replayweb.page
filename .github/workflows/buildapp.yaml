@@ -31,11 +31,11 @@ jobs:
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
-      - name: Update Ruffle
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node --run update-ruffle
-        shell: bash
+#      - name: Update Ruffle
+#        env:
+#            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        run: node --run update-ruffle
+#        shell: bash
 
       - name: Run Build
         env:
