@@ -8,11 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-14, ubuntu-latest]
-        platform: [windows, linux]
-        exclude:
-          - os: macos-14
-            platform: windows
+        os: [macos-14, ubuntu-latest, windows-latest]
 
     steps:
       - name: Check out Git repository
@@ -54,62 +50,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         run: |
+          if [ "$GITHUB_REF" == "refs/heads/main" ] || [ -f ./force_release ]; then
+            export BUILD_CMD="release"
+          else
+            export BUILD_CMD="dist"
+          fi
 
-              #if [ "$RUNNER_OS" != "Linux" ]; then
-              #  sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-              #  sudo xcode-select -s "/Applications/Xcode_12.3.app"
-              #fi
-
-              if [ "$GITHUB_REF" == "refs/heads/main" ] || [ -f ./force_release ]; then
-                export BUILD_CMD="release"
-              else
-                export BUILD_CMD="dist"
-              fi
-
-              if [ "$RUNNER_OS" == "Linux" ]; then
-                if [ "$PLATFORM" == "linux" ]; then
-                  #mkdir -p plugins-linux;
-                  #pushd plugins-linux;
-                  #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/libpepflashplayer.so";
-                  #popd;
-
-                  docker run --rm \
-                    -e CI=${CI} \
-                    -e GH_TOKEN=${GH_TOKEN} \
-                    -e BUILD_CMD=${BUILD_CMD} \
-                    -v ${PWD}:/project \
-                    -v ~/.cache/electron:/root/.cache/electron \
-                    -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-                    electronuserland/builder:22-wine \
-                    /bin/bash -c "corepack enable yarn && yarn install --immutable && yarn run $BUILD_CMD --linux --x64"
-                else
-                  #mkdir -p plugins-win;
-                  #pushd plugins-win;
-                  #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86_64.dll";
-                  #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/pepflashplayer-x86.dll";
-                  #popd;
-
-                  docker run --rm \
-                    -e CI=${CI} \
-                    -e GH_TOKEN=${GH_TOKEN} \
-                    -e AZURE_TENANT_ID=${AZURE_TENANT_ID} \
-                    -e AZURE_CLIENT_ID=${AZURE_CLIENT_ID} \
-                    -e AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET} \
-                    -e BUILD_CMD=${BUILD_CMD} \
-                    -v ${PWD}:/project \
-                    -v ~/.cache/electron:/root/.cache/electron \
-                    -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-                    electronuserland/builder:22-wine \
-                    /bin/bash -c "corepack enable yarn && yarn install --immutable && yarn run $BUILD_CMD --win --x64 --ia32"
-                fi
-              else
-                #mkdir -p plugins-mac;
-                #pushd plugins-mac;
-                #wget "https://s3.amazonaws.com/webrecorder-builds/flashplugin/PepperFlashPlayer.plugin.zip";
-                #unzip PepperFlashPlayer.plugin.zip;
-                #rm PepperFlashPlayer.plugin.zip;
-                #popd;
-                yarn install --immutable
-                yarn run $BUILD_CMD
-              fi
-
+          yarn install --immutable
+          yarn run $BUILD_CMD
