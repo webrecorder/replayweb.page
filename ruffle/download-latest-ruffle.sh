@@ -20,3 +20,5 @@ cd "$RUFFLE_DIR" || exit 1
 unzip -o ruffle.zip "*.js" "*.wasm"
 
 rm -f ruffle.zip
+
+cd ..
