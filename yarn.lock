@@ -3371,13 +3371,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fetch-ndjson@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "fetch-ndjson@npm:1.1.6"
-  checksum: 10c0/d05b1df13295cf18560e90c028d105f01936a66019a5789b83c3c7f5437870e7f09ad65430cc8f9a84af788e5d3406190e0ab03a4f651bf1e4aa840c18ce5927
-  languageName: node
-  linkType: hard
-
 "file-entry-cache@npm:^6.0.1":
   version: 6.0.1
   resolution: "file-entry-cache@npm:6.0.1"
@@ -6206,7 +6199,6 @@ __metadata:
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-lit: "npm:^1.11.0"
     eslint-plugin-wc: "npm:^2.0.4"
-    fetch-ndjson: "npm:^1.1.6"
     flexsearch: "npm:^0.7.31"
     husky: "npm:^8.0.0"
     keyword-mark-element: "npm:^0.2.0"
