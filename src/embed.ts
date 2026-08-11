@@ -484,7 +484,7 @@ class Embed extends LitElement {
       return;
     }
 
-    if (win?.customElements.get(this.mainElementName)) {
+    if (win.customElements.get(this.mainElementName)) {
       this.mainElement = doc.querySelector(this.mainElementName);
       return;
     }

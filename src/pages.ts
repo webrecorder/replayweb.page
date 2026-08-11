@@ -424,6 +424,7 @@ class Pages extends LitElement {
     let buf = "";
 
     let next = reader.read();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Expected true
     while (true) {
       const { done, value } = await next;
 
