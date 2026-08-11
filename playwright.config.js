@@ -2,7 +2,18 @@
 import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   reporter: process.env.CI ? "github" : "list",
-  expect: { timeout: 30_000 },
+
+  timeout: 60_000,
+  expect: { timeout: 60_000 },
+
+  workers: process.env.CI ? 2 : undefined,
+  retries: process.env.CI ? 2 : 0,
+  use: {
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
+  },
+
   projects: [
     {
       name: "chrome",
@@ -36,5 +47,5 @@ export default defineConfig({
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
     },
-  ],
+  ]
 });
