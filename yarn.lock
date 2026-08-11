@@ -1291,9 +1291,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@webrecorder/wabac@npm:^2.27.0":
-  version: 2.27.0
-  resolution: "@webrecorder/wabac@npm:2.27.0"
+"@webrecorder/wabac@npm:^2.27.1":
+  version: 2.27.1
+  resolution: "@webrecorder/wabac@npm:2.27.1"
   dependencies:
     "@peculiar/asn1-ecc": "npm:^2.3.4"
     "@peculiar/asn1-schema": "npm:^2.3.3"
@@ -1319,7 +1319,7 @@ __metadata:
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     warcio: "npm:^2.4.11"
-  checksum: 10c0/874f4b9adbb4d3ece502b8ec79b076ac93dbf7d1a0486a07f89f46152490c4eb7e016dab44340ff9303a2809265ff216b8bb2bc1446f98603d3f77c4f95c5f7f
+  checksum: 10c0/76c997fe9622baec11a715116e07368a4e8c13900659d48feaa46c8951ba4e1bce31e6c2d903b1adec2efd1082eda870eb6b2ea5c68314820b929b696c2bb2a7
   languageName: node
   linkType: hard
 
@@ -6193,7 +6193,7 @@ __metadata:
     "@types/node": "npm:^22.15.18"
     "@typescript-eslint/eslint-plugin": "npm:^6.12.0"
     "@typescript-eslint/parser": "npm:^6.12.0"
-    "@webrecorder/wabac": "npm:^2.27.0"
+    "@webrecorder/wabac": "npm:^2.27.1"
     bulma: "npm:^0.9.3"
     copy-webpack-plugin: "npm:^9.0.1"
     css-loader: "npm:^6.2.0"
