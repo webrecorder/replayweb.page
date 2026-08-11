@@ -37,4 +37,15 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
     },
   ],
+
+  timeout: 60000, 
+  expect: { timeout: 10000 },
+
+  workers: process.env.CI ? 2 : undefined,
+  retries: process.env.CI ? 2 : 0,
+  use: {
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+  },
 });
