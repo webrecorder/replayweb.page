@@ -11,7 +11,6 @@ import {
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { wrapCss, clickOnSpacebarPress } from "./misc";
-import ndjson from "fetch-ndjson";
 
 import { Index as FlexIndex } from "flexsearch";
 import prettyBytes from "pretty-bytes";
@@ -414,6 +413,51 @@ class Pages extends LitElement {
     );
   }
 
+  // Adapted from: https://github.com/mash/fetch-ndjson but with try/catch to ignore invalid JSON lines
+  // Commit: https://github.com/mash/fetch-ndjson/commit/c82586bfa51492edd88cc4104c9e00c5a568e307, MIT License
+  async *ndjson(
+    reader: ReadableStreamDefaultReader<Uint8Array>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): AsyncGenerator<any, void> {
+    const matcher = /\r?\n/;
+    const decoder = new TextDecoder();
+    let buf = "";
+
+    let next = reader.read();
+    while (true) {
+      const { done, value } = await next;
+
+      if (done) {
+        if (buf.length > 0) {
+          try {
+            yield JSON.parse(buf);
+          } catch (e) {
+            console.warn("Ignoring page with invalid JSON", buf);
+          }
+        }
+        return;
+      }
+
+      const chunk = decoder.decode(value, { stream: true });
+      // debug(`chunk=${chunk}`);
+      buf += chunk;
+
+      const parts = buf.split(matcher);
+      buf = parts.pop()!;
+      for (const i of parts) {
+        if (!i.match(/^\s*$/)) {
+          try {
+            yield JSON.parse(i);
+          } catch (e) {
+            console.warn("Ignoring page with invalid JSON", buf);
+          }
+        }
+      }
+
+      next = reader.read();
+    }
+  }
+
   async updateTextSearch() {
     if (this.updatingSearch) {
       return;
@@ -440,7 +484,7 @@ class Pages extends LitElement {
 
       const lines: Page[] = [];
 
-      for await (const line of ndjson(resp.body!.getReader())) {
+      for await (const line of this.ndjson(resp.body!.getReader())) {
         if (!line.url) {
           continue;
         }

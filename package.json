@@ -26,7 +26,6 @@
     "bulma": "^0.9.3",
     "electron-log": "^4.4.1",
     "electron-updater": "^6.8.9",
-    "fetch-ndjson": "^1.1.6",
     "flexsearch": "^0.7.31",
     "keyword-mark-element": "^0.2.0",
     "lit": "3.1.1",
