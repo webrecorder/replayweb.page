@@ -414,6 +414,7 @@ class Pages extends LitElement {
   }
 
   // Adapted from: https://github.com/mash/fetch-ndjson but with try/catch to ignore invalid JSON lines
+  // Commit: https://github.com/mash/fetch-ndjson/commit/c82586bfa51492edd88cc4104c9e00c5a568e307
   async *ndjson(
     reader: ReadableStreamDefaultReader<Uint8Array>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
