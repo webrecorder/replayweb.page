@@ -1291,15 +1291,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@webrecorder/wabac@npm:^2.27.1":
-  version: 2.27.1
-  resolution: "@webrecorder/wabac@npm:2.27.1"
+"@webrecorder/wabac@npm:^2.27.2":
+  version: 2.27.2
+  resolution: "@webrecorder/wabac@npm:2.27.2"
   dependencies:
     "@peculiar/asn1-ecc": "npm:^2.3.4"
     "@peculiar/asn1-schema": "npm:^2.3.3"
     "@peculiar/x509": "npm:^1.9.2"
     "@types/js-levenshtein": "npm:^1.1.3"
-    "@webrecorder/wombat": "npm:^3.10.7"
+    "@webrecorder/wombat": "npm:^3.10.8"
     acorn: "npm:^8.15.0"
     auto-js-ipfs: "npm:^2.1.1"
     base64-js: "npm:^1.5.1"
@@ -1319,16 +1319,16 @@ __metadata:
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     warcio: "npm:^2.4.11"
-  checksum: 10c0/76c997fe9622baec11a715116e07368a4e8c13900659d48feaa46c8951ba4e1bce31e6c2d903b1adec2efd1082eda870eb6b2ea5c68314820b929b696c2bb2a7
+  checksum: 10c0/9c11b0ce5c05c4a8862c31b0469ea6437f657b1b740a50f78710085c7382ac21898a36684db7d3626c59f708d7d8f8ca08fa3c0b1270e048469b4112a5ef4348
   languageName: node
   linkType: hard
 
-"@webrecorder/wombat@npm:^3.10.7":
-  version: 3.10.7
-  resolution: "@webrecorder/wombat@npm:3.10.7"
+"@webrecorder/wombat@npm:^3.10.8":
+  version: 3.10.8
+  resolution: "@webrecorder/wombat@npm:3.10.8"
   dependencies:
-    warcio: "npm:^2.4.10"
-  checksum: 10c0/4b78baf1065a697352c83568d8bf0640304177e089af7fdba73c9686a4d04240ee2d59036d18f4b491977903d30931c401fad1ee5a1abbb750e2a56583738493
+    warcio: "npm:^2.4.11"
+  checksum: 10c0/33ad5dec07f9691162cfe0b38dc3626377497a82125acc4465f4af1ab27d2f7faf9bae36dd50c80f2370a7094dafda4a09be9d5ca4bd7eb95ba769ad31cdc9af
   languageName: node
   linkType: hard
 
@@ -6186,7 +6186,7 @@ __metadata:
     "@types/node": "npm:^22.15.18"
     "@typescript-eslint/eslint-plugin": "npm:^6.12.0"
     "@typescript-eslint/parser": "npm:^6.12.0"
-    "@webrecorder/wabac": "npm:^2.27.1"
+    "@webrecorder/wabac": "npm:^2.27.2"
     bulma: "npm:^0.9.3"
     copy-webpack-plugin: "npm:^9.0.1"
     css-loader: "npm:^6.2.0"
@@ -7797,24 +7797,6 @@ __metadata:
   version: 2.1.2
   resolution: "vscode-uri@npm:2.1.2"
   checksum: 10c0/4ed01e79f8caee5518d7dce567280001a00c87ff75c29421ac3693c735834f17950e79f818981c591e58c6efe681e13928470037b6ae75c948bec9b398e4c8db
-  languageName: node
-  linkType: hard
-
-"warcio@npm:^2.4.10":
-  version: 2.4.10
-  resolution: "warcio@npm:2.4.10"
-  dependencies:
-    "@types/pako": "npm:^1.0.7"
-    "@types/stream-buffers": "npm:^3.0.7"
-    base32-encode: "npm:^2.0.0"
-    hash-wasm: "npm:^4.9.0"
-    pako: "npm:^1.0.11"
-    tempy: "npm:^3.1.0"
-    uuid-random: "npm:^1.3.2"
-    yargs: "npm:^17.7.2"
-  bin:
-    warcio: dist/cli.js
-  checksum: 10c0/24107b5ee082d2fcbda0d50990b0ef0cdaa8c0eef9ba8b4e5e709e59761b0d9f2053cd7f209bfc9ae4663bd48073e69b02b3b7c8e40def92b4bf1ee620b9699e
   languageName: node
   linkType: hard
 
