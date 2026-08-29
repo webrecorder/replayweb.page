@@ -189,7 +189,7 @@ class ElectronReplayApp {
     const version = app.getVersion();
     const isPrerelease = /-(alpha|beta|rc)/i.test(version);
 
-    console.log(`Current Version: ${version}\n  Prerelease? ${isPrerelease}`);
+    console.log(`Current Version: ${version} - Prerelease? ${isPrerelease}`);
 
     if (isPrerelease) {
       autoUpdater.allowPrerelease = true;
