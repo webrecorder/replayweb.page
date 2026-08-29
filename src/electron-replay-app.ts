@@ -4,6 +4,7 @@ import {
   app,
   session,
   BrowserWindow,
+  type Event,
   ipcMain,
   protocol,
   screen,
@@ -59,6 +60,8 @@ class ElectronReplayApp {
   screenSize = { width: 1024, height: 768 };
 
   origUA: string | null = null;
+
+  hasAutoUpdate = false;
 
   constructor({ staticPath = "./", profileName = "" } = {}) {
     this.staticContentPath = staticPath;
@@ -153,19 +156,54 @@ class ElectronReplayApp {
     void app.whenReady().then(() => this.onAppReady());
 
     // Quit when all windows are closed.
-    app.on("window-all-closed", function () {
+    app.on("window-all-closed", () => {
       // On macOS it is common for applications and their menu bar
       // to stay active until the user quits explicitly with Cmd + Q
       //if (process.platform !== 'darwin')
       app.quit();
     });
+
+    let isUpdating = false;
+
+    app.on("before-quit", (event: Event) => {
+      if (isUpdating) {
+        console.log("app before-quit: already installing update");
+        return;
+      }
+
+      //install the autoupdate and let autoUpdater exit
+      if (this.hasAutoUpdate) {
+        event.preventDefault();
+        isUpdating = true;
+
+        console.log("app before-quit: install update and quit");
+
+        setImmediate(() => {
+          autoUpdater.quitAndInstall();
+        });
+      }
+    });
   }
 
   checkUpdates() {
+    const version = app.getVersion();
+    const isPrerelease = /-(alpha|beta|rc)/i.test(version);
+
+    console.log(`Current Version: ${version}\n  Prerelease? ${isPrerelease}`);
+
+    if (isPrerelease) {
+      autoUpdater.allowPrerelease = true;
+    }
+
     autoUpdater.logger = log;
     // @ts-expect-error - TS2339 - Property 'transports' does not exist on type 'Logger'.
     autoUpdater.logger.transports.file.level = "info";
     void autoUpdater.checkForUpdatesAndNotify();
+
+    autoUpdater.on("update-downloaded", () => {
+      console.log("autoupdater found update!");
+      this.hasAutoUpdate = true;
+    });
   }
 
   onAppReady() {
