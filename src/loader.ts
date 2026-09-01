@@ -33,6 +33,12 @@ declare let window: Window & {
   };
 };
 
+/**
+ * @cssPart base
+ * @cssPart spinner
+ * @cssPart spinner-label
+ * @cssPart content
+ */
 class Loader extends LitElement {
   @property({ type: String }) sourceUrl?: string;
   @property({ type: Object }) loadInfo: LoadInfo | null = null;
@@ -375,7 +381,7 @@ class Loader extends LitElement {
 
   render() {
     return html`
-      <section class="container">
+      <section class="container" part="base">
         <div class="is-justify-content-center is-flex">
           <fa-icon
             size="5rem"
@@ -385,15 +391,18 @@ class Loader extends LitElement {
               : rwpLogoAnimated}
             aria-label="ReplayWeb.page Logo"
             role="img"
+            part="spinner"
           ></fa-icon>
         </div>
         ${!this.embed
           ? html` <div class="level">
-              <p class="level-item">Loading&nbsp;<b>${this.sourceUrl}</b>...</p>
+              <p class="level-item" part="spinner-label">
+                Loading&nbsp;<b>${this.sourceUrl}</b>...
+              </p>
             </div>`
           : ""}
         <div class="level">
-          <div class="level-item has-text-centered">
+          <div class="level-item has-text-centered" part="content">
             ${this.renderContent()}
           </div>
         </div>

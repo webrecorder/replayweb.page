@@ -115,6 +115,7 @@ export type TabData = EmbedReplayData & {
  * @cssPart replay-tabs-nav
  * @cssPart replay-tabs-panel
  * @cssPart replay-main
+ * @cssPart loader
  * @cssProperty rwp-bar-background-color
  * @cssProperty rwp-bar-text-color
  * @cssProperty rwp-bar-button-color
@@ -1093,12 +1094,19 @@ class Item extends LitElement {
 
     if (this.itemInfo && !this.itemInfo.coll) {
       return html` <wr-loader
+        part="loader"
         .loadInfo="${this.loadInfo}"
         embed="${this.embed || ""}"
         swName="${ifDefined(this.swName === null ? undefined : this.swName)}"
         .coll="${this.item}"
         sourceUrl="${this.sourceUrl || ""}"
         @coll-loaded=${this.onItemLoaded}
+        exportparts="
+          base:wr-loader__base,
+          spinner:wr-loader__spinner,
+          spinner-label:wr-loader__spinner-label,
+          content:wr-loader__content,
+        "
       ></wr-loader>`;
     } else if (this.itemInfo) {
       return html`
