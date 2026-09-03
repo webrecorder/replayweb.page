@@ -478,6 +478,7 @@ export class ReplayWebApp extends LitElement {
        replay-tabs-nav:wr-item__replay-tabs-nav,
        replay-tabs-panel:wr-item__replay-tabs-panel,
        replay-main:wr-item__replay-main,
+       loader:wr-item__loader,
      "
     ></wr-item>`;
   }
