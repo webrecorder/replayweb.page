@@ -1,0 +1,16 @@
+{
+  "name": "ReplayWeb.page",
+  "short_name": "ReplayWeb.page",
+  "description": "A tool to explore and replay interactive archived web pages directly in the browser",
+  "icons": [
+    {
+      "src": "/favicons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    { "src": "/favicons/icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff"
+}
