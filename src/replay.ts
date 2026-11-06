@@ -378,7 +378,7 @@ class Replay extends LitElement {
         display: flex;
         flex-direction: column;
         height: 100%;
-        color-scheme: var(--rwp-theme, light dark);
+        color-scheme: var(--rwp-replay-theme, light dark);
       }
 
       .iframe-container {
