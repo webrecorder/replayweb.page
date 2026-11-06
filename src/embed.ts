@@ -426,7 +426,7 @@ class Embed extends LitElement {
         width: 100%;
         height: 100%;
         display: block;
-        color-scheme: light dark;
+        color-scheme: var(--rwp-replay-theme, light dark);
       }
     `);
   }
