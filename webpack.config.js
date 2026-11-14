@@ -121,34 +121,6 @@ const electronMainConfig = (/*env, argv*/) => {
               ),
             ],
           },
-          {
-            test: /utf-8-validate\/index\.js$/,
-            operations: [
-              new ReplaceOperation(
-                "once",
-                `module.exports = require('node-gyp-build')(__dirname)`,
-                `const path = require("path"); module.exports = require('node-gyp-build')(path.join(__dirname, "node_modules", "utf-8-validate"))`,
-              ),
-            ],
-          },
-          {
-            test: /lib\/node-datachannel.mjs$/,
-            operations: [
-              new ReplaceOperation(
-                "once",
-                `\
-const __filename = cjsUrl.fileURLToPath(import.meta.url);
-const __dirname = cjsPath.dirname(__filename);
-const require = cjsModule.createRequire(import.meta.url);`,
-                ``,
-              ),
-              new ReplaceOperation(
-                "once",
-                `const nodeDataChannel = require("../../../build/Release/node_datachannel.node");`,
-                `const path = require("path"); const nodeDataChannel = require(path.join(__dirname, "..", "node_modules", "node-datachannel-prebuilds"));`,
-              ),
-            ],
-          },
         ],
       }),
     ],

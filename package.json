@@ -37,12 +37,12 @@
     "micromark-extension-gfm-strikethrough": "^2.1.0",
     "mime-types": "^3.0.1",
     "minimist": "^1.2.5",
+    "node-datachannel": "^0.33.6",
     "pretty-bytes": "^5.6.0",
     "process": "^0.11.10",
     "register-service-worker": "^1.7.2",
     "split.js": "^1.6.4",
     "stream-browserify": "^3.0.0",
-    "tsconfig-paths-webpack-plugin": "^4.1.0",
     "webtorrent": "^3.0.21"
   },
   "devDependencies": {
@@ -78,6 +78,7 @@
     "terser-webpack-plugin": "^5.6.1",
     "ts-lit-plugin": "^2.0.0-pre.1",
     "ts-loader": "^9.4.4",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.2.2",
     "webpack": "^5.99.9",
     "webpack-cli": "^5.1.4",
@@ -87,7 +88,7 @@
   "resolutions": {
     "lit": "3.1.1",
     "@thaunknown/simple-peer": "10.1.0",
-    "node-datachannel": "0.32.1",
+    "utf-8-validate": "^6.0.6",
     "bittorrent-dht": "11.0.11"
   },
   "files": [
@@ -119,8 +120,7 @@
     "release": "yarn run build && electron-builder --publish always",
     "lint": "eslint ./",
     "format": "prettier --write ./",
-    "prepare": "husky install; yarn node scripts/build-if-not-git-repo.js",
-    "prebuild": "node build/get-node-datachannel.cjs && cp -r build/node-datachannel-prebuilds/ node_modules/node-datachannel-prebuilds/"
+    "prepare": "husky install; yarn node scripts/build-if-not-git-repo.js"
   },
   "build": {
     "afterSign": "build/notarize.js",
@@ -130,7 +130,6 @@
     "extraMetadata": {
       "main": "dist/electron.js"
     },
-    "npmRebuild": false,
     "files": [
       "!**node_modules/**/*",
       "dist/electron.js",
@@ -143,16 +142,7 @@
       "ui.js",
       "sw.js",
       "index.html",
-      "ruffle",
-      {
-        "from": "build/node-datachannel-prebuilds",
-        "to": "node_modules/node-datachannel-prebuilds",
-        "filter": [
-          "index.cjs",
-          "package.json",
-          "node-datachannel-${platform}-*"
-        ]
-      }
+      "ruffle"
     ],
     "dmg": {
       "title": "ReplayWeb.page"
@@ -183,7 +173,7 @@
         "gatekeeperAssess": false
       },
       "universal": {
-        "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**,node_modules/**/prebuilds/**}"
+        "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**,node_modules/**/prebuilds/**,**/node_modules/@node-datachannel/darwin-*/**}"
       }
     },
     "linux": {
