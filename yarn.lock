@@ -861,12 +861,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/magnet-uri@npm:^5":
-  version: 5.1.5
-  resolution: "@types/magnet-uri@npm:5.1.5"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 10c0/047d1352d5e49dd2e2ba7dc0aa67770b3eb60d762d1b1bbca9c5bd4bedc766d1473910c1b3c7d49acdc42346c6d7cdf90ed599cfcb20694ee5640e13cd2e6359
+"@types/magnet-uri@npm:*":
+  version: 7.0.0
+  resolution: "@types/magnet-uri@npm:7.0.0"
+  checksum: 10c0/804d24d4ab6a29d3cd53d031effb8d4312a9ca50fb1eef50f890214fbc0feb16d2196b4b31f55a98918ab9606c4d01227a570819519a29847c97e0da43088d4a
   languageName: node
   linkType: hard
 
@@ -932,23 +930,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/parse-torrent-file@npm:*":
-  version: 4.0.6
-  resolution: "@types/parse-torrent-file@npm:4.0.6"
+"@types/parse-torrent@npm:^11":
+  version: 11.0.1
+  resolution: "@types/parse-torrent@npm:11.0.1"
   dependencies:
+    "@types/magnet-uri": "npm:*"
     "@types/node": "npm:*"
-  checksum: 10c0/19b71c88ab6fb1ca467e7ddeaba82f79353f54c5109d9d318a36e2b811ff291dac353740f099b7aaa84ae09f8c7a87a19bde4367c491db5f8359e32d7e96ca25
-  languageName: node
-  linkType: hard
-
-"@types/parse-torrent@npm:^5":
-  version: 5.8.9
-  resolution: "@types/parse-torrent@npm:5.8.9"
-  dependencies:
-    "@types/magnet-uri": "npm:^5"
-    "@types/node": "npm:*"
-    "@types/parse-torrent-file": "npm:*"
-  checksum: 10c0/453776db68568a83cc55cd274efe4e96abd5ab9568fb656178400a89244d4c7ddff6e8dc3a460d6d351ec86cfb34a18050d7640bbec1a0945cb5a98b1a089721
+  checksum: 10c0/c729456c659877ca009fbaae58c6c88276a1b989c4d2bc991707106a0bfc8bc42c7efe12a98037f2b9dc293aed12ae916ee4b38a03612eb31c195e45e6a52360
   languageName: node
   linkType: hard
 
@@ -1053,15 +1041,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webtorrent@npm:^0.110.1":
-  version: 0.110.2
-  resolution: "@types/webtorrent@npm:0.110.2"
+"@types/webtorrent@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/webtorrent@npm:3.0.0"
   dependencies:
     "@types/bittorrent-protocol": "npm:*"
     "@types/node": "npm:*"
-    "@types/parse-torrent": "npm:^5"
+    "@types/parse-torrent": "npm:^11"
     "@types/simple-peer": "npm:*"
-  checksum: 10c0/19e99c1780d4d26d40e49e7b98022f4d4b039d65d671ec1f6f556f74f42f2fac90069bf950c7cac973a2fda1dc12c35e61d808702fec6b9016c99a8fda32754d
+  checksum: 10c0/7901e92ed1b253dc82c892db33c1e59c64f78be24a6ffb31edd80798b8a56ae0876fe680ca8e708cde229a0df0b95467cc83d9f64b193e4cd5741601c7d07da9
   languageName: node
   linkType: hard
 
@@ -2094,10 +2082,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitfield@npm:^4.0.0, bitfield@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "bitfield@npm:4.2.0"
-  checksum: 10c0/a154bbd2a2ab3255aefc79d750352ec309eb33fb17970321c97beab1cd47898722ff72c8d8974a86e866ca0aca5ffbb321b837b7d889bcd55ed16c1792046be3
+"bitfield@npm:^5.0.0, bitfield@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "bitfield@npm:5.0.1"
+  checksum: 10c0/ac312b9f9a0ab2064665ba2024b9f28080136403863e4b292d9a89d5985c3f6b0bd1a330e4108c01f6c0a154329cbeb7f6d48fe95c23bf0243c0adc82bf5cac5
   languageName: node
   linkType: hard
 
@@ -2134,19 +2122,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bittorrent-protocol@npm:^4.1.20":
-  version: 4.1.21
-  resolution: "bittorrent-protocol@npm:4.1.21"
+"bittorrent-protocol@npm:^5.0.9":
+  version: 5.0.9
+  resolution: "bittorrent-protocol@npm:5.0.9"
   dependencies:
-    bencode: "npm:^4.0.0"
-    bitfield: "npm:^4.2.0"
+    bencode: "npm:^4.0.1"
+    bitfield: "npm:^5.0.1"
     debug: "npm:^4.4.3"
-    rc4: "npm:^0.1.5"
-    streamx: "npm:^2.22.1"
+    streamx: "npm:^2.28.0"
     throughput: "npm:^1.0.2"
-    uint8-util: "npm:^2.2.5"
+    uint8-util: "npm:^2.3.2"
     unordered-array-remove: "npm:^1.0.2"
-  checksum: 10c0/9443a55e85e3ea7903a0937a2f4b640cbeb808b4bb0654e07d74f1f78aeaf591fd06e8ffbcdc3410f93e3867a5a02710c830e526e7e0f9c92925b987ea9f0008
+  checksum: 10c0/a199843aeaea4dc90bac28933e5bd6a72ed9f88a742e933a9280b16c3908099eebe36e1c353978a36c8d7c4d6bd5276f3fc6fe9c338cf02c8a623259dd141479
   languageName: node
   linkType: hard
 
@@ -2921,7 +2908,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-torrent@npm:^6.1.0":
+"create-torrent@npm:^6.1.0, create-torrent@npm:^6.1.3":
   version: 6.1.3
   resolution: "create-torrent@npm:6.1.3"
   dependencies:
@@ -3071,7 +3058,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:^4.2.0, debug@npm:^4.4.0, debug@npm:^4.4.1, debug@npm:^4.4.3":
+"debug@npm:^4.2.0, debug@npm:^4.4.0, debug@npm:^4.4.3":
   version: 4.4.3
   resolution: "debug@npm:4.4.3"
   dependencies:
@@ -4200,7 +4187,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-chunk-store@npm:^5.0.0":
+"fs-chunk-store@npm:^5.0.1":
   version: 5.0.1
   resolution: "fs-chunk-store@npm:5.0.1"
   dependencies:
@@ -5453,7 +5440,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"load-ip-set@npm:^3.0.1":
+"load-ip-set@npm:^3.0.2":
   version: 3.0.2
   resolution: "load-ip-set@npm:3.0.2"
   dependencies:
@@ -5569,7 +5556,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lt_donthave@npm:^2.0.5":
+"lt_donthave@npm:^2.0.7":
   version: 2.0.7
   resolution: "lt_donthave@npm:2.0.7"
   dependencies:
@@ -6614,7 +6601,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-torrent@npm:^11.0.18":
+"parse-torrent@npm:^11.0.24":
   version: 11.0.24
   resolution: "parse-torrent@npm:11.0.24"
   dependencies:
@@ -7078,7 +7065,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pump@npm:^3.0.0, pump@npm:^3.0.2":
+"pump@npm:^3.0.0, pump@npm:^3.0.4":
   version: 3.0.4
   resolution: "pump@npm:3.0.4"
   dependencies:
@@ -7212,6 +7199,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"range-parser@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "range-parser@npm:1.3.0"
+  checksum: 10c0/295494bb6685f9ab50f41a5f4fa5ce445aeeb9673b491bf178460fcc3a812dcf0d164cf1c83074f13a71a87d91ead5e097afd53e0630bc49a5101ed60f2a7529
+  languageName: node
+  linkType: hard
+
 "raw-body@npm:2.5.2":
   version: 2.5.2
   resolution: "raw-body@npm:2.5.2"
@@ -7221,13 +7215,6 @@ __metadata:
     iconv-lite: "npm:0.4.24"
     unpipe: "npm:1.0.0"
   checksum: 10c0/b201c4b66049369a60e766318caff5cb3cc5a900efd89bdac431463822d976ad0670912c931fdbdcf5543207daf6f6833bca57aa116e1661d2ea91e12ca692c4
-  languageName: node
-  linkType: hard
-
-"rc4@npm:^0.1.5":
-  version: 0.1.5
-  resolution: "rc4@npm:0.1.5"
-  checksum: 10c0/2dd7a7667b21d9bfb63e79ab3f870e59112807bb2a49035c2ae844c6ccde32e6c53fe2377045cd6eec24ea42839c2a72a3c24aa452b34fef6974e285d92f7b42
   languageName: node
   linkType: hard
 
@@ -7388,7 +7375,7 @@ __metadata:
     "@types/minimist": "npm:^1.2.5"
     "@types/node": "npm:^22.15.18"
     "@types/react": "npm:^19.2.18"
-    "@types/webtorrent": "npm:^0.110.1"
+    "@types/webtorrent": "npm:^3.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^6.12.0"
     "@typescript-eslint/parser": "npm:^6.12.0"
     "@webrecorder/wabac": "npm:^2.27.4"
@@ -7439,7 +7426,7 @@ __metadata:
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^5.0.4"
     webpack-merge: "npm:^5.10.0"
-    webtorrent: "npm:^2.8.5"
+    webtorrent: "npm:^3.0.21"
   languageName: unknown
   linkType: soft
 
@@ -8389,21 +8376,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"streamx@npm:2.22.1":
-  version: 2.22.1
-  resolution: "streamx@npm:2.22.1"
+"streamx@npm:2.28.0":
+  version: 2.28.0
+  resolution: "streamx@npm:2.28.0"
   dependencies:
-    bare-events: "npm:^2.2.0"
+    events-universal: "npm:^1.0.0"
     fast-fifo: "npm:^1.3.2"
     text-decoder: "npm:^1.1.0"
-  dependenciesMeta:
-    bare-events:
-      optional: true
-  checksum: 10c0/b5e489cca78ff23b910e7d58c3e0059e692f93ec401a5974689f2c50c33c9d94f64246a305566ad52cdb818ee583e02e4257b9066fd654cb9f576a9692fdb976
+  checksum: 10c0/1cd5647c4dbdaadf4623b48183bab1d71bdc251e24c8f3baddf9fb9fa75096a7d446aba2c58a4f71964eeb5753f514b59e97bfdf94a60ce2c1b33594410b0342
   languageName: node
   linkType: hard
 
-"streamx@npm:^2.10.3, streamx@npm:^2.12.5, streamx@npm:^2.22.1, streamx@npm:^2.23.0, streamx@npm:^2.25.0, streamx@npm:^2.28.0":
+"streamx@npm:^2.10.3, streamx@npm:^2.12.5, streamx@npm:^2.23.0, streamx@npm:^2.25.0, streamx@npm:^2.28.0":
   version: 2.28.1
   resolution: "streamx@npm:2.28.1"
   dependencies:
@@ -8454,7 +8438,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string2compact@npm:^2.0.1":
+"string2compact@npm:^2.0.1, string2compact@npm:^2.0.2":
   version: 2.0.2
   resolution: "string2compact@npm:2.0.2"
   dependencies:
@@ -8859,7 +8843,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"torrent-discovery@npm:^11.0.17":
+"torrent-discovery@npm:^11.0.21":
   version: 11.0.21
   resolution: "torrent-discovery@npm:11.0.21"
   dependencies:
@@ -8872,12 +8856,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"torrent-piece@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "torrent-piece@npm:3.0.2"
+"torrent-piece@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "torrent-piece@npm:4.0.1"
   dependencies:
     uint8-util: "npm:^2.1.9"
-  checksum: 10c0/6f091665530fa161b6113c9a862706c87683beced082425e780597fdf8a644fd6efd9d29aa263dd9b74426a1c989f275e711bdea937b771723bbc5f7cd7af234
+  checksum: 10c0/d652268af9662c2532b55979a398e7a5743ce000ef0472b21cf5f8248084c9cd9e32935287effc9c7f43275a44db7f37dcb3644eb58cfd4271b3493fee2e500d
   languageName: node
   linkType: hard
 
@@ -9191,26 +9175,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ut_metadata@npm:^4.0.3":
-  version: 4.0.3
-  resolution: "ut_metadata@npm:4.0.3"
+"ut_metadata@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "ut_metadata@npm:5.0.1"
   dependencies:
     bencode: "npm:^4.0.0"
-    bitfield: "npm:^4.0.0"
+    bitfield: "npm:^5.0.0"
     debug: "npm:^4.2.0"
     uint8-util: "npm:^2.1.3"
-  checksum: 10c0/34c6eef7e83b9c9eba18400be8e6f626e6bc8d9556a5aaefa1818dfda63dfd6a7f03c745ddffef87c6875cc7d70a98ed8101888db81c1a826dd268031990c218
+  checksum: 10c0/e79824938df16fb00d220c9aaec1523f021dada65cf1d03d792523fd435b936836ab733ba788390287d97fb3fb1d7a4775851a76f03ae3b284302b135d74c3d7
   languageName: node
   linkType: hard
 
-"ut_pex@npm:^4.0.4":
-  version: 4.0.4
-  resolution: "ut_pex@npm:4.0.4"
+"ut_pex@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "ut_pex@npm:5.0.2"
   dependencies:
-    bencode: "npm:^4.0.0"
+    bencode: "npm:^4.0.1"
     compact2string: "npm:^1.4.1"
-    string2compact: "npm:^2.0.1"
-  checksum: 10c0/6d204c4c796a564effc84845f2ac6f38a375c92666f1c171860c2725f74ed49ac9d272be947fdd685d618ac8d89a972989bc7b643130a7cdd49891e12ac35757
+    string2compact: "npm:^2.0.2"
+  checksum: 10c0/93c113ebb5ba5ee1addad60bccd9a3ddd7561090110d49cc757bc14fda0436f11a6ae959e10036664d2b86b00abcea8e1ee1609cc38716d9a64487db14107309
   languageName: node
   linkType: hard
 
@@ -9595,54 +9579,54 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webtorrent@npm:^2.8.5":
-  version: 2.8.5
-  resolution: "webtorrent@npm:2.8.5"
+"webtorrent@npm:^3.0.21":
+  version: 3.0.21
+  resolution: "webtorrent@npm:3.0.21"
   dependencies:
     "@silentbot1/nat-api": "npm:^0.4.9"
-    "@thaunknown/simple-peer": "npm:^10.0.11"
+    "@thaunknown/simple-peer": "npm:^10.1.2"
     "@webtorrent/http-node": "npm:^1.3.0"
     addr-to-ip-port: "npm:^2.0.0"
-    bitfield: "npm:^4.2.0"
-    bittorrent-dht: "npm:^11.0.10"
-    bittorrent-protocol: "npm:^4.1.20"
+    bitfield: "npm:^5.0.1"
+    bittorrent-dht: "npm:^11.0.12"
+    bittorrent-protocol: "npm:^5.0.9"
     cache-chunk-store: "npm:^3.2.2"
     chunk-store-iterator: "npm:^1.0.4"
     cpus: "npm:^1.0.3"
-    create-torrent: "npm:^6.1.0"
+    create-torrent: "npm:^6.1.3"
     cross-fetch-ponyfill: "npm:^1.0.3"
-    debug: "npm:^4.4.1"
+    debug: "npm:^4.4.3"
     escape-html: "npm:^1.0.3"
-    fs-chunk-store: "npm:^5.0.0"
+    fs-chunk-store: "npm:^5.0.1"
     fsa-chunk-store: "npm:^1.3.0"
     immediate-chunk-store: "npm:^2.2.0"
     join-async-iterator: "npm:^1.1.1"
-    load-ip-set: "npm:^3.0.1"
-    lt_donthave: "npm:^2.0.5"
+    load-ip-set: "npm:^3.0.2"
+    lt_donthave: "npm:^2.0.7"
     memory-chunk-store: "npm:^1.3.5"
     mime: "npm:^3.0.0"
     once: "npm:^1.4.0"
-    parse-torrent: "npm:^11.0.18"
-    pump: "npm:^3.0.2"
+    parse-torrent: "npm:^11.0.24"
+    pump: "npm:^3.0.4"
     queue-microtask: "npm:^1.2.3"
     random-iterate: "npm:^1.0.1"
-    range-parser: "npm:^1.2.1"
+    range-parser: "npm:^1.3.0"
     run-parallel: "npm:^1.2.0"
     run-parallel-limit: "npm:^1.1.0"
     speed-limiter: "npm:^1.0.2"
-    streamx: "npm:2.22.1"
+    streamx: "npm:2.28.0"
     throughput: "npm:^1.0.2"
-    torrent-discovery: "npm:^11.0.17"
-    torrent-piece: "npm:^3.0.2"
-    uint8-util: "npm:^2.2.5"
+    torrent-discovery: "npm:^11.0.21"
+    torrent-piece: "npm:^4.0.1"
+    uint8-util: "npm:^2.3.2"
     unordered-array-remove: "npm:^1.0.2"
-    ut_metadata: "npm:^4.0.3"
-    ut_pex: "npm:^4.0.4"
+    ut_metadata: "npm:^5.0.1"
+    ut_pex: "npm:^5.0.2"
     utp-native: "npm:^2.5.3"
   dependenciesMeta:
     utp-native:
       optional: true
-  checksum: 10c0/e0916283ab896e4497e2a2617c2a532fa9213c5f0ea4171a4ad5ba683ee71e0fe02e3e485e4a6cb1f7b9269df729e1d15ba76f33bbe6c7da9ce0a4c1001513b6
+  checksum: 10c0/27df28be9db83b0d99fcadb2667b20d88003868707da7b2a7dfeb12439e1feb1a6bf8f4c8939319c89d5428e65e748d1011639f5b31dace762becbe749390539
   languageName: node
   linkType: hard
 

@@ -22,7 +22,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@shoelace-style/shoelace": "~2.15.1",
-    "@types/webtorrent": "^0.110.1",
+    "@types/webtorrent": "^3.0.0",
     "@webrecorder/wabac": "^2.27.4",
     "bulma": "^0.9.3",
     "create-torrent": "^6.1.0",
@@ -43,7 +43,7 @@
     "split.js": "^1.6.4",
     "stream-browserify": "^3.0.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
-    "webtorrent": "^2.8.5"
+    "webtorrent": "^3.0.21"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",

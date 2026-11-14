@@ -68,7 +68,7 @@ const defaultPeerMode = PeerMode.PARTIAL_PEER;
 class ElectronReplayApp {
   pluginPath = "";
 
-  torrentClient: WebTorrent.Instance | null = null;
+  torrentClient: WebTorrent | null = null;
   torrentClientShutdown = false;
   peerMode: PeerMode = defaultPeerMode;
 
@@ -93,7 +93,7 @@ class ElectronReplayApp {
   origUA: string | null = null;
 
   hasAutoUpdate = false;
-  torrentDownloads: string = "";
+  torrentDownloads = "";
 
   constructor({ staticPath = "./", profileName = "" } = {}) {
     this.staticContentPath = staticPath;
@@ -238,7 +238,7 @@ class ElectronReplayApp {
           this.torrentClientShutdown = true;
 
           const err = await new Promise((resolve) => {
-            torrentClient.destroy((err) => {
+            torrentClient.destroy((err: unknown) => {
               resolve(err);
             });
           });
@@ -628,7 +628,7 @@ class ElectronReplayApp {
 
     const torrentClient = this.torrentClient;
 
-    let torrent = (await torrentClient.get(magnet)) as Torrent | null;
+    let torrent = await torrentClient.get(magnet);
     let isNew = false;
 
     const opts = {
@@ -638,6 +638,7 @@ class ElectronReplayApp {
     };
 
     if (!torrent) {
+      console.log("Start Loading");
       const p = new Promise<Torrent>((resolve) => {
         torrentClient.add(magnet, opts, (torrent: Torrent) => {
           resolve(torrent);
@@ -650,7 +651,7 @@ class ElectronReplayApp {
 
       // deselect all files and pieces
       torrent.files.forEach((file) => file.deselect());
-      torrent.deselect(0, torrent.pieces.length - 1, 1000);
+      torrent.deselect(0, torrent.pieces.length - 1);
     } else if (!torrent.ready) {
       const p = new Promise<void>((resolve) => {
         torrent!.on("ready", () => resolve());
@@ -710,7 +711,7 @@ class ElectronReplayApp {
   getOpenUrl(argv: string[]) {
     const parsed = minimist(argv.slice(process.defaultApp ? 2 : 1));
 
-    const filename =
+    const filename: string =
       this.openNextFile ||
       parsed.filename ||
       parsed.f ||
