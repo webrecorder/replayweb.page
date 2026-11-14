@@ -84,7 +84,7 @@ const electronMainConfig = (/*env, argv*/) => {
       electron: "./src/electron-main.ts",
     },
     externals: [
-      /^@node-datachannel\/.*/,
+      "commonjs2 node-datachannel"
     ],
     optimization,
     module: { unknownContextCritical: false, exprContextCritical: false },
