@@ -92,7 +92,6 @@ class ElectronReplayApp {
 
   origUA: string | null = null;
 
-  hasAutoUpdate = false;
   torrentDownloads = "";
 
   constructor({ staticPath = "./", profileName = "" } = {}) {
@@ -208,26 +207,7 @@ class ElectronReplayApp {
       app.quit();
     });
 
-    let isUpdating = false;
-
     app.on("before-quit", (event: Event) => {
-      if (isUpdating) {
-        console.log("app before-quit: already installing update");
-        return;
-      }
-
-      //install the autoupdate and let autoUpdater exit
-      if (this.hasAutoUpdate) {
-        event.preventDefault();
-        isUpdating = true;
-
-        console.log("app before-quit: install update and quit");
-
-        setImmediate(() => {
-          autoUpdater.quitAndInstall();
-        });
-      }
-
       if (this.torrentClient) {
         event.preventDefault();
 
@@ -276,20 +256,17 @@ class ElectronReplayApp {
     const version = app.getVersion();
     const isPrerelease = /-(alpha|beta|rc)/i.test(version);
 
-    console.log(`Current Version: ${version} - Prerelease? ${isPrerelease}`);
+    log.transports.file.level = "info";
+    autoUpdater.logger = log;
+
+    log.info(`Current Version: ${version} - Prerelease? ${isPrerelease}`);
 
     if (isPrerelease) {
       autoUpdater.allowPrerelease = true;
     }
 
-    autoUpdater.logger = log;
-    // @ts-expect-error - TS2339 - Property 'transports' does not exist on type 'Logger'.
-    autoUpdater.logger.transports.file.level = "info";
-    void autoUpdater.checkForUpdatesAndNotify();
-
-    autoUpdater.on("update-downloaded", () => {
-      console.log("autoupdater found update!");
-      this.hasAutoUpdate = true;
+    autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+      log.warn("Auto-update check failed:", err);
     });
   }
 
@@ -638,7 +615,6 @@ class ElectronReplayApp {
     };
 
     if (!torrent) {
-      console.log("Start Loading");
       const p = new Promise<Torrent>((resolve) => {
         torrentClient.add(magnet, opts, (torrent: Torrent) => {
           resolve(torrent);

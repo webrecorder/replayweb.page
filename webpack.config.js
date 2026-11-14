@@ -111,16 +111,6 @@ const electronMainConfig = (/*env, argv*/) => {
               ),
             ],
           },
-          {
-            test: /bufferutil\/index\.js$/,
-            operations: [
-              new ReplaceOperation(
-                "once",
-                `module.exports = require('node-gyp-build')(__dirname)`,
-                `const path = require("path"); module.exports = require('node-gyp-build')(path.join(__dirname, "node_modules", "bufferutil"))`,
-              ),
-            ],
-          },
         ],
       }),
     ],

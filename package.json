@@ -27,7 +27,7 @@
     "bulma": "^0.9.3",
     "create-torrent": "^6.1.0",
     "electron-log": "^4.4.1",
-    "electron-updater": "^6.8.9",
+    "electron-updater": "^7.0.0-alpha.13",
     "fetch-ndjson": "^1.1.6",
     "flexsearch": "^0.7.31",
     "keyword-mark-element": "^0.2.0",
@@ -59,7 +59,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.2.0",
     "electron": "^43.3.0",
-    "electron-builder": "^27.0.0-alpha.7",
+    "electron-builder": "^27.0.0-alpha.14",
     "electron-notarize": "^1.2.2",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
@@ -89,7 +89,7 @@
     "lit": "3.1.1",
     "@thaunknown/simple-peer": "10.1.0",
     "utf-8-validate": "^6.0.6",
-    "bittorrent-dht": "11.0.11"
+    "bittorrent-dht": "11.0.12"
   },
   "files": [
     "/dist",
@@ -130,20 +130,20 @@
     "extraMetadata": {
       "main": "dist/electron.js"
     },
-    "files": [
-      "!**node_modules/**/*",
-      "dist/electron.js",
-      "dist/preload.js",
-      "dist/*.node",
-      "!dist/node_modules*.js",
-      "node_modules/utp-native/{*.js,lib/*.js,prebuilds/${platform}-*/**}",
-      "node_modules/bufferutil/{*.js,prebuilds/${platform}-*/**}",
-      "node_modules/utf-8-validate/{*.js,prebuilds/${platform}-*/**}",
-      "ui.js",
-      "sw.js",
-      "index.html",
-      "ruffle"
-    ],
+    "fileOptions": {
+      "files": [
+        "!**node_modules/**/*",
+        "dist/electron.js",
+        "dist/preload.js",
+        "dist/*.node",
+        "!dist/node_modules*.js",
+        "node_modules/utp-native/{*.js,lib/*.js,prebuilds/${platform}-*/**}",
+        "ui.js",
+        "sw.js",
+        "index.html",
+        "ruffle"
+      ]
+    },
     "dmg": {
       "title": "ReplayWeb.page"
     },
@@ -163,9 +163,6 @@
       "electronLanguages": [
         "en"
       ],
-      "extraResources": [
-        "plugins-mac"
-      ],
       "sign": {
         "entitlements": "build/entitlements.mac.plist",
         "entitlementsInherit": "build/entitlements.mac.plist",
@@ -174,6 +171,11 @@
       },
       "universal": {
         "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**,node_modules/**/prebuilds/**,**/node_modules/@node-datachannel/darwin-*/**}"
+      },
+      "fileOptions": {
+        "extraResources": [
+          "plugins-mac"
+        ]
       }
     },
     "linux": {
@@ -181,16 +183,15 @@
       "target": [
         "AppImage"
       ],
-      "extraResources": [
-        "plugins-linux"
-      ]
+      "fileOptions": {
+        "extraResources": [
+          "plugins-linux"
+        ]
+      }
     },
     "win": {
       "target": [
         "nsis"
-      ],
-      "extraResources": [
-        "plugins-win"
       ],
       "sign": {
         "type": "azure",
@@ -198,6 +199,11 @@
         "codeSigningAccountName": "webrecorder",
         "certificateProfileName": "webrecorder",
         "publisherName": "CN=Webrecorer Software LLC"
+      },
+      "fileOptions": {
+        "extraResources": [
+          "plugins-win"
+        ]
       }
     },
     "directories": {
