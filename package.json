@@ -89,7 +89,8 @@
     "lit": "3.1.1",
     "@thaunknown/simple-peer": "10.1.0",
     "utf-8-validate": "^6.0.6",
-    "bittorrent-dht": "11.0.12"
+    "bittorrent-dht": "11.0.12",
+    "node-datachannel": "^0.33.6"
   },
   "files": [
     "/dist",
@@ -138,6 +139,7 @@
         "dist/*.node",
         "!dist/node_modules*.js",
         "node_modules/utp-native/{*.js,lib/*.js,prebuilds/${platform}-*/**}",
+        "node_modules/@node-datachannel/**/*",
         "ui.js",
         "sw.js",
         "index.html",
