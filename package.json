@@ -175,7 +175,6 @@
       "extraResources": [
         "plugins-mac"
       ],
-<<<<<<< HEAD
       "sign": {
         "entitlements": "build/entitlements.mac.plist",
         "entitlementsInherit": "build/entitlements.mac.plist",
@@ -185,9 +184,6 @@
       "universal": {
         "singleArchFiles": "{dist/prebuilds,dist/prebuilds/**,node_modules/**/prebuilds/**}"
       }
-=======
-      "x64ArchFiles": "**/node_modules/**/prebuilds/**"
->>>>>>> ad56bb7 (fix mac build?)
     },
     "linux": {
       "category": "Archiving;Utility;",
