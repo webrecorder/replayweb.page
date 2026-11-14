@@ -226,6 +226,7 @@ class ElectronReplayApp {
         setImmediate(() => {
           autoUpdater.quitAndInstall();
         });
+      }
 
       if (this.torrentClient) {
         event.preventDefault();
@@ -538,7 +539,7 @@ class ElectronReplayApp {
             }
           }
 
-          resolve(new Response(data, { status, headers }));
+          resolve(new Response(data as BodyInit, { status, headers }));
         } catch (e) {
           console.warn(e);
         }
