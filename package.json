@@ -200,7 +200,7 @@
         "endpoint": "https://wus2.codesigning.azure.net/",
         "codeSigningAccountName": "webrecorder",
         "certificateProfileName": "webrecorder",
-        "publisherName": "CN=Webrecorer Software LLC"
+        "publisherName": "CN=Webrecorder Software LLC"
       },
       "fileOptions": {
         "extraResources": [
