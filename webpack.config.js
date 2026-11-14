@@ -83,9 +83,6 @@ const electronMainConfig = (/*env, argv*/) => {
     entry: {
       electron: "./src/electron-main.ts",
     },
-    externals: [
-      "commonjs2 node-datachannel"
-    ],
     optimization,
     module: { unknownContextCritical: false, exprContextCritical: false },
     output: {
@@ -111,6 +108,25 @@ const electronMainConfig = (/*env, argv*/) => {
                 "once",
                 `require('node-gyp-build')(path.join(__dirname, '..'))`,
                 `require('node-gyp-build')(path.join(__dirname, "..", "node_modules", "utp-native"))`,
+              ),
+            ],
+          },
+          {
+            test: /node-datachannel\.(mjs|js|cjs)$/,
+            operations: [
+              new ReplaceOperation(
+                "once",
+                `\
+const __filename = cjsUrl.fileURLToPath(import.meta.url);
+const __dirname = cjsPath.dirname(__filename);
+const require = cjsModule.createRequire(import.meta.url);`,
+                ``,
+              ),
+
+              new ReplaceOperation(
+                "once",
+                `const nodeDataChannel = loadBinding();`,
+                `const nodeDataChannel = require(path.join(__dirname, "..", "node_modules", getPackageName()));`,
               ),
             ],
           },

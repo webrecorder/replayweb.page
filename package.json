@@ -139,7 +139,6 @@
         "dist/*.node",
         "!dist/node_modules*.js",
         "node_modules/utp-native/{*.js,lib/*.js,prebuilds/${platform}-*/**}",
-        "node_modules/node-datachannel/**/*",
         "node_modules/@node-datachannel/${platform}-*/**/*",
         "ui.js",
         "sw.js",
