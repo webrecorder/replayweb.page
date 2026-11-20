@@ -637,13 +637,18 @@ class ElectronReplayApp {
       await p;
     }
 
+    const filename = url.searchParams.get("dn");
+
+    // filter for exact filename match, or first WACZ
     const waczs = torrent.files.filter((x: TorrentFile) =>
-      x.name.endsWith(".wacz"),
+      filename ? x.path === filename : x.path.endsWith(".wacz"),
     );
+
     if (!waczs.length) {
       return this.notFound("No WACZ found in torrent");
     }
     const wacz = waczs[0] as RealTorrentFile;
+
     // enable this to download full WACZ in the background
     if (isNew && this.peerMode === PeerMode.FULL_PEER) {
       wacz.select();
