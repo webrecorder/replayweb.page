@@ -582,18 +582,19 @@ class ElectronReplayApp {
     }
 
     const matchWACZ = (files: TorrentFile[], filename: string | null) => {
-      for (const file of files) {
-        if (filename) {
-          if (file.path === filename) {
-            return file as RealTorrentFile;
-          } else if (file.path.endsWith(".wacz")) {
+      if (!filename) {
+        for (const file of files) {
+          if (file.path.endsWith(".wacz")) {
             return file as RealTorrentFile;
           }
         }
+        return null;
       }
 
-      if (!filename) {
-        return null;
+      for (const file of files) {
+        if (file.path === filename) {
+          return file as RealTorrentFile;
+        }
       }
 
       // try one more time ending in just the name
