@@ -581,6 +581,78 @@ class ElectronReplayApp {
       return this.notFound("invalid 'magnet:' link");
     }
 
+    const matchWACZ = (files: TorrentFile[], filename: string | null) => {
+      for (const file of files) {
+        if (filename) {
+          if (file.path === filename) {
+            return file as RealTorrentFile;
+          } else if (file.path.endsWith(".wacz")) {
+            return file as RealTorrentFile;
+          }
+        }
+      }
+
+      if (!filename) {
+        return null;
+      }
+
+      // try one more time ending in just the name
+      for (const file of files) {
+        if (file.path.endsWith("/" + filename)) {
+          return file as RealTorrentFile;
+        }
+      }
+
+      return null;
+    };
+
+    const awaitTorrent = async (
+      torrentClient: WebTorrent,
+      magnetUrl: string,
+      timeout: number,
+    ): Promise<{ torrent: Torrent; isNew: boolean }> => {
+      let torrent = await torrentClient.get(magnetUrl);
+
+      const opts = {
+        path: this.torrentDownloads,
+        uploadLimit: this.peerMode === PeerMode.LEECH ? 0 : -1,
+        destroyStoreOnDestroy: this.peerMode < PeerMode.PERSISTENT_PARTIAL_PEER,
+        deselect: true,
+      };
+
+      if (!torrent) {
+        torrent = torrentClient.add(magnetUrl, opts);
+      }
+
+      if (torrent.ready) {
+        return { torrent, isNew: false };
+      }
+
+      await new Promise<void>((resolve, reject) => {
+        const cancel = setTimeout(() => {
+          torrent!.destroy({ destroyStore: true });
+          reject("timedout");
+        }, timeout);
+
+        torrent!.on("error", () => {
+          clearTimeout(cancel);
+          torrent!.destroy({ destroyStore: true });
+          reject("errored");
+        });
+
+        torrent!.on("ready", () => {
+          clearTimeout(cancel);
+        });
+
+        torrent!.on("ready", () => {
+          resolve();
+        });
+      });
+
+      console.log("Add Torrent", request.url);
+      return { torrent, isNew: true };
+    };
+
     if (!this.torrentClient) {
       this.torrentDownloads = path.join(
         app.getPath("downloads"),
@@ -604,68 +676,45 @@ class ElectronReplayApp {
       });
     }
 
-    const torrentClient = this.torrentClient;
+    try {
+      const { torrent, isNew } = await awaitTorrent(
+        this.torrentClient,
+        magnet,
+        60000,
+      );
 
-    let torrent = await torrentClient.get(magnet);
-    let isNew = false;
+      const filename = url.searchParams.get("dn");
 
-    const opts = {
-      path: this.torrentDownloads,
-      uploadLimit: this.peerMode === PeerMode.LEECH ? 0 : -1,
-      destroyStoreOnDestroy: this.peerMode < PeerMode.PERSISTENT_PARTIAL_PEER,
-    };
+      const wacz = matchWACZ(torrent.files, filename);
 
-    if (!torrent) {
-      const p = new Promise<Torrent>((resolve) => {
-        torrentClient.add(magnet, opts, (torrent: Torrent) => {
-          resolve(torrent);
-        });
+      if (!wacz) {
+        console.log(torrent.files.map((x) => x.path, filename));
+        return this.notFound("No WACZ found in torrent");
+      }
+
+      // enable this to download full WACZ in the background
+      if (isNew && this.peerMode === PeerMode.FULL_PEER) {
+        wacz.select();
+      }
+
+      const headers = new Headers({
+        "Content-Type": "application/octet-stream",
       });
-      isNew = true;
-      torrent = await p;
+      const reqHeaders = new Headers(request.headers);
 
-      console.log("Add Torrent", request.url);
+      const { status, start, end } = this.parseRange(
+        reqHeaders,
+        headers,
+        wacz.length,
+      );
 
-      // deselect all files and pieces
-      torrent.files.forEach((file) => file.deselect());
-      torrent.deselect(0, torrent.pieces.length - 1);
-    } else if (!torrent.ready) {
-      const p = new Promise<void>((resolve) => {
-        torrent!.on("ready", () => resolve());
-      });
-      isNew = true;
-      await p;
+      const data =
+        request.method === "HEAD" ? null : wacz.stream({ start, end });
+
+      return new Response(data, { status, headers });
+    } catch (e: unknown) {
+      return this.notFound("Torrent not found: " + (e as Error).toString());
     }
-
-    const filename = url.searchParams.get("dn");
-
-    // filter for exact filename match, or first WACZ
-    const waczs = torrent.files.filter((x: TorrentFile) =>
-      filename ? x.path === filename : x.path.endsWith(".wacz"),
-    );
-
-    if (!waczs.length) {
-      return this.notFound("No WACZ found in torrent");
-    }
-    const wacz = waczs[0] as RealTorrentFile;
-
-    // enable this to download full WACZ in the background
-    if (isNew && this.peerMode === PeerMode.FULL_PEER) {
-      wacz.select();
-    }
-
-    const headers = new Headers({ "Content-Type": "application/octet-stream" });
-    const reqHeaders = new Headers(request.headers);
-
-    const { status, start, end } = this.parseRange(
-      reqHeaders,
-      headers,
-      wacz.length,
-    );
-
-    const data = request.method === "HEAD" ? null : wacz.stream({ start, end });
-
-    return new Response(data, { status, headers });
   }
 
   createMainWindow(argv: string[]) {
