@@ -41,7 +41,7 @@ jobs:
         run: yarn run playwright test
 
       - name: Upload Playwright Test Results, if any
-        if: ${{ !cancelled() }}
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-traces
