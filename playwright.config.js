@@ -6,18 +6,18 @@ export default defineConfig({
   timeout: 60_000,
   expect: { timeout: 60_000 },
 
-  workers: process.env.CI ? 1 : undefined,
-  retries: process.env.CI ? 1 : 0,
+  workers: process.env.CI ? 2 : undefined,
+  retries: process.env.CI ? 2 : 0,
   use: {
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
-    video: "off",
+    video: "retain-on-failure",
   },
 
   projects: [
     {
       name: "chrome",
-      use: { ...devices["Desktop Chrome"] },
+      use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
     {
       name: "firefox",
@@ -31,19 +31,19 @@ export default defineConfig({
   webServer: [
     {
       command: "yarn run test-start-prod",
-      url: "http://localhost:9990",
+      url: "http://127.0.0.1:9990",
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
     },
     {
       command: "yarn run test-start-embed",
-      url: "http://localhost:8020",
+      url: "http://127.0.0.1:8020",
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
     },
     {
       command: "yarn run test-start-sandbox",
-      url: "http://localhost:8030",
+      url: "http://127.0.0.1:8030",
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
     },
