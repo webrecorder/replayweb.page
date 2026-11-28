@@ -1,5 +1,6 @@
 name: site-publish
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
