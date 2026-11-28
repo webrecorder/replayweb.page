@@ -2,14 +2,14 @@ import { test, expect } from "@playwright/test";
 
 test("same-domain embed is loading", async ({ page }) => {
   page.on("response", async (response) => {
-    if (response.url() === "http://localhost:9990/embed.html") {
+    if (response.url() === "http://127.0.0.1:9990/embed.html") {
       expect(await response.headerValue("Content-Security-Policy")).toBe(
         "default-src 'self' 'unsafe-inline' data: blob:",
       );
     }
   });
 
-  await page.goto("http://localhost:9990/embed.html");
+  await page.goto("http://127.0.0.1:9990/embed.html");
 
   const res = page
     .locator("replay-web-page")
@@ -23,7 +23,7 @@ test("same-domain embed is loading", async ({ page }) => {
 });
 
 test("docs page embed is loading", async ({ page }) => {
-  await page.goto("http://localhost:9990/docs/embedding/index.html");
+  await page.goto("http://127.0.0.1:9990/docs/embedding/index.html");
 
   const res = page
     .locator("replay-web-page")
@@ -37,7 +37,7 @@ test("docs page embed is loading", async ({ page }) => {
 });
 
 test("cross-domain embed is loading", async ({ page }) => {
-  await page.goto("http://localhost:8020/");
+  await page.goto("http://127.0.0.1:8020/");
 
   const res = page
     .locator("replay-web-page")
@@ -51,7 +51,7 @@ test("cross-domain embed is loading", async ({ page }) => {
 });
 
 test("same-domain iframe embed is loading", async ({ page }) => {
-  await page.goto("http://localhost:9990/iframe-test.html");
+  await page.goto("http://127.0.0.1:9990/iframe-test.html");
 
   const res = page
     .locator("replay-web-page")
@@ -68,7 +68,7 @@ test("same-domain iframe embed is loading", async ({ page }) => {
 });
 
 test("cross-domain iframe embed is loading", async ({ page }) => {
-  await page.goto("http://localhost:8020/iframe-test-cross.html");
+  await page.goto("http://127.0.0.1:8020/iframe-test-cross.html");
 
   const res = page
     .locator("replay-web-page")
@@ -85,11 +85,11 @@ test("cross-domain iframe embed is loading", async ({ page }) => {
 });
 
 test("sandbox + cross-domain embed is loading", async ({ page }) => {
-  await page.goto("http://localhost:8030/");
+  await page.goto("http://127.0.0.1:8030/");
 
   const sandboxFrame = page.locator("iframe");
   await expect(await sandboxFrame.getAttribute("src")).toBe(
-    "http://localhost:8020/index-sandbox.html",
+    "http://127.0.0.1:8020/index-sandbox.html",
   );
 
   const res = page
@@ -106,7 +106,7 @@ test("sandbox + cross-domain embed is loading", async ({ page }) => {
 
 test("require subdomain iframe", async ({ page }) => {
   // load directly, should be blocked
-  await page.goto("http://localhost:8020/index-sandbox.html");
+  await page.goto("http://127.0.0.1:8020/index-sandbox.html");
 
   const res = page.locator("replay-web-page");
 
@@ -116,7 +116,7 @@ test("require subdomain iframe", async ({ page }) => {
 });
 
 test("csp blocking in place", async ({ page }, workerInfo) => {
-  await page.goto("http://localhost:9990/embed.html");
+  await page.goto("http://127.0.0.1:9990/embed.html");
 
   const frame = page
     .locator("replay-web-page")
@@ -142,11 +142,11 @@ test("csp blocking in place", async ({ page }, workerInfo) => {
 
     // blocks (1 - 3)
     block += await blocked(window, "https://webrecorder.net/");
-    block += await blocked(window, "http://localhost:9990/ui.js");
-    block += await blocked(window, "http://localhost:9990/sw.js");
+    block += await blocked(window, "http://127.0.0.1:9990/ui.js");
+    block += await blocked(window, "http://127.0.0.1:9990/sw.js");
 
     const iframe = document.createElement("iframe");
-    iframe.src = "http://localhost:9990/static/wombat.js";
+    iframe.src = "http://127.0.0.1:9990/static/wombat.js";
     document.body.appendChild(iframe);
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -155,12 +155,12 @@ test("csp blocking in place", async ({ page }, workerInfo) => {
     block += await blocked(iframe.contentWindow, "https://webrecorder.net/");
 
     // (5-6) blocked by csp policy, even though local
-    block += await blocked(iframe.contentWindow, "http://localhost:9990/sw.js");
+    block += await blocked(iframe.contentWindow, "http://127.0.0.1:9990/sw.js");
 
     // not blocked in FF
     block += await blocked(
       iframe.contentWindow,
-      "http://localhost:9990/static/wombat.js",
+      "http://127.0.0.1:9990/static/wombat.js",
     );
 
     return block;
