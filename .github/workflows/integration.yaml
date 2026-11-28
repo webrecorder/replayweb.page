@@ -20,7 +20,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: 'yarn'
 
       - name: Yarn Install
@@ -41,8 +41,10 @@ jobs:
         run: yarn run playwright test
 
       - name: Upload Playwright Test Results, if any
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: playwright-traces
           path: test-results/
           retention-days: 7
+          if-no-files-found: ignore
